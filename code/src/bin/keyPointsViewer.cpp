@@ -30,11 +30,13 @@ int main(int argc ,char** argv) {
   double f64Time = getMsCount();
   SURFComputer::extract(image, keyPointsVector, descriptorsMatrix);
   cout << "SURF computation: " << getMsCount() - f64Time << " [ms]" << endl;
+
   Window window("Original image");
   window.showImage(image);
+
   Window windowKeypoint("Image with keypoints");
   Image imageKeypoints(image);
-  KeyPointsDrawer::draw(imageKeypoints, keyPointsVector);
+  KeyPointsDrawer::draw(image, imageKeypoints, keyPointsVector);
   windowKeypoint.showImage(imageKeypoints);
 
   return 0;

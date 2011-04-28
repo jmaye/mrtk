@@ -22,7 +22,7 @@ class Image {
   cv::Mat mImageMatrix;
 
 public:
-  Image(std::string filenameString) throw (IOException);
+  Image(const std::string& filenameString) throw (IOException);
   Image(const Image& other);
   Image& operator = (const Image& other);
   ~Image();

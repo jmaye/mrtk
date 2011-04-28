@@ -8,7 +8,7 @@
 using namespace cv;
 using namespace std;
 
-Image::Image(string filenameString) throw (IOException)
+Image::Image(const string& filenameString) throw (IOException)
   : mImageMatrix(imread(filenameString)) {
   if (mImageMatrix.empty() == true)
     throw IOException("Image::Image(): unable to load image");

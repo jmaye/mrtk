@@ -6,8 +6,6 @@
 #include <set>
 #include <string>
 
-#include <sys/time.h>
-#include <stdint.h>
 #include <dirent.h> 
 #include <string.h>
 

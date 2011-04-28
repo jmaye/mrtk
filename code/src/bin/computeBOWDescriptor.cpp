@@ -1,16 +1,13 @@
-#include "BOWDictionaryComputer.h"
+#include "Image.h"
+#include "BOWDescriptorComputer.h"
 
 #include <cv.h>
 
 #include <iostream>
 #include <fstream>
-#include <set>
-#include <string>
 
 #include <sys/time.h>
 #include <stdint.h>
-#include <dirent.h> 
-#include <string.h>
 
 using namespace cv;
 using namespace std;
@@ -22,30 +19,28 @@ static uint32_t getMsCount() {
 }
 
 int main(int argc ,char** argv) {
-  if (argc != 3) {
-    cerr << "Usage: " << argv[0] << " <imageDirectory> <dictionaryFile>"
+  if (argc != 4) {
+    cerr << "Usage: " << argv[0] << " <imageFile> <dictionaryFile> <outFile>"
          << endl;
     return -1;
   }
 
-  DIR *d;
-  struct dirent *dir;
-  d = opendir(argv[1]);
-  set<string> filenamesSet;
-  if (d) {
-    while ((dir = readdir(d)) != NULL)
-      if (strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0) {
-        filenamesSet.insert(string(argv[1]) + string(dir->d_name));
-      }
-    closedir(d);
-  }
-
   Mat dictionaryMatrix;
-  cout << "Computing dictionary..." << endl;
+  FileStorage fs(argv[2], FileStorage::READ);
+  if (fs.isOpened()) {
+    fs["dictionary"] >> dictionaryMatrix;
+  } else
+    return -1;
+
+  Image image(argv[1]);
+  Mat descriptorsMatrix;
   double f64Time = getMsCount();
-  BOWDictionaryComputer::compute(filenamesSet, 0.001, 100000, 256,
-    dictionaryMatrix);
-  cout << "Time elapsed: " << getMsCount() - f64Time << endl;
+  BOWDescriptorComputer::compute(image, dictionaryMatrix, descriptorsMatrix);
+  cout << "BOW descriptor computation: " << getMsCount() - f64Time << " [ms]"
+       <<endl;
+
+  ofstream descriptorFile(argv[3]);
+  descriptorFile << descriptorsMatrix;
 
   return 0;
 }

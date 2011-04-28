@@ -13,8 +13,9 @@ class BOWDictionaryComputer {
 
 public:
   static void compute(const std::set<std::string>& filenamesSet,
-    double f64Percentage, uint32_t u32MaxDescriptors,
-    uint32_t u32DictionarySize, cv::Mat& dictionaryMatrix);
+    double f64FilesPercentage, double f64FeaturesPercentage,
+    uint32_t u32MaxDescriptors, uint32_t u32DictionarySize,
+    cv::Mat& dictionaryMatrix);
 
 protected:
 

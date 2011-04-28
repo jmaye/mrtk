@@ -22,8 +22,9 @@ static uint32_t getMsCount() {
 }
 
 int main(int argc ,char** argv) {
-  if (argc != 2) {
-    cerr << "Usage: " << argv[0] << " <imageDirectory>" << endl;
+  if (argc != 3) {
+    cerr << "Usage: " << argv[0] << " <imageDirectory> <dictionaryFilename>"
+         << endl;
     return -1;
   }
 
@@ -42,9 +43,15 @@ int main(int argc ,char** argv) {
   Mat dictionaryMatrix;
   cout << "Computing dictionary..." << endl;
   double f64Time = getMsCount();
-  BOWDictionaryComputer::compute(filenamesSet, 0.001, 100000, 256,
+  BOWDictionaryComputer::compute(filenamesSet, 0.2, 0.3, 1000000, 2048,
     dictionaryMatrix);
   cout << "Time elapsed: " << getMsCount() - f64Time << endl;
+
+  FileStorage fs(argv[2], FileStorage::WRITE);
+  if (fs.isOpened()){
+    fs << "dictionary" << dictionaryMatrix;
+  } else
+    return -1;
 
   return 0;
 }
