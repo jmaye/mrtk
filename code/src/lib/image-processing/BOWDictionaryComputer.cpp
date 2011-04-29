@@ -66,6 +66,7 @@ void BOWDictionaryComputer::compute(const set<string>& filenamesSet,
     filenamesVector.erase(filenamesVector.begin() + u32Idx);
     cout << "Descriptors: " << bowTrainer.descripotorsCount() << endl;
     cout << "Remaining possible images: " << filenamesVector.size() << endl;
+    cout << "Processed images: " << i << endl;
   }
   cout << "Clustering descriptors..." << endl;
   dictionaryMatrix = bowTrainer.cluster();
