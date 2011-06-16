@@ -16,21 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#include "visualization/MainWindow.h"
 
-#include <stdexcept>
-#include <string>
+#include <QtGui/QApplication>
 
-class IOException : public std::runtime_error {
-  IOException& operator = (const IOException &other);
+int main (int argc, char** argv) {
+  QApplication application(argc, argv);
+  MainWindow mainWindow;
 
-public:
-  IOException(const std::string &msg = "");
-  IOException(const IOException &other);
+  mainWindow.show();
 
-protected:
-
-};
-
-#endif // IOEXCEPTION_H
+  return application.exec();
+}

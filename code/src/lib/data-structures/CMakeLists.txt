@@ -1,1 +1,2 @@
-remake_add_library(data-structures LINK exceptions ${OpenCV_LIBS})
+remake_add_library(data-structures)
+remake_add_headers(INSTALL data-structures)

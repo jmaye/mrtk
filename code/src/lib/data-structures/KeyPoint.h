@@ -16,21 +16,51 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+/** \file KeyPoint.h
+  */
 
-#include <stdexcept>
-#include <string>
+#ifndef KEYPOINT_H
+#define KEYPOINT_H
 
-class IOException : public std::runtime_error {
-  IOException& operator = (const IOException &other);
+#include <iosfwd>
+
+/**
+  */
+class KeyPoint {
+  friend std::ostream& operator << (std::ostream& stream, const KeyPoint& obj);
+  friend std::istream& operator >> (std::istream& stream, KeyPoint& obj);
+  friend std::ofstream& operator << (std::ofstream& stream, const KeyPoint& obj);
+  friend std::ifstream& operator >> (std::ifstream& stream, KeyPoint& obj);
+
+  /** Copy constructor
+    */
+  KeyPoint(const KeyPoint& other);
+
+  /** Assignment operator
+    */
+  KeyPoint& operator = (const KeyPoint& other);
+
+  /** Stream methods
+    */
+  virtual void read(std::istream& stream);
+  virtual void write(std::ostream& stream) const;
+  virtual void read(std::ifstream& stream);
+  virtual void write(std::ofstream& stream) const;
 
 public:
-  IOException(const std::string &msg = "");
-  IOException(const IOException &other);
+  /** Constructors
+    */
+  KeyPoint();
+
+  /** Destructor
+    */
+  ~KeyPoint();
+
+  /** Accessors
+    */
 
 protected:
 
 };
 
-#endif // IOEXCEPTION_H
+#endif // KEYPOINT_H

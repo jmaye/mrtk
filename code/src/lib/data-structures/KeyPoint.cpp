@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "Image.h"
+#include "KeyPoint.h"
 
 #include <iostream>
 #include <fstream>
@@ -25,51 +25,51 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Image::Image() {
+KeyPoint::KeyPoint() {
 }
 
-Image::Image(const Image& other) {
+KeyPoint::KeyPoint(const KeyPoint& other) {
 }
 
-Image& Image::operator = (const Image& other) {
+KeyPoint& KeyPoint::operator = (const KeyPoint& other) {
   return *this;
 }
 
-Image::~Image() {
+KeyPoint::~KeyPoint() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void Image::read(std::istream& stream) {
+void KeyPoint::read(std::istream& stream) {
 }
 
-void Image::write(std::ostream& stream) const {
+void KeyPoint::write(std::ostream& stream) const {
 }
 
-void Image::read(std::ifstream& stream) {
+void KeyPoint::read(std::ifstream& stream) {
 }
 
-void Image::write(std::ofstream& stream) const {
+void KeyPoint::write(std::ofstream& stream) const {
 }
 
-std::ostream& operator << (std::ostream& stream, const Image& obj) {
+std::ostream& operator << (std::ostream& stream, const KeyPoint& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::istream& operator >> (std::istream& stream, Image& obj) {
+std::istream& operator >> (std::istream& stream, KeyPoint& obj) {
   obj.read(stream);
   return stream;
 }
 
-std::ofstream& operator << (std::ofstream& stream, const Image& obj) {
+std::ofstream& operator << (std::ofstream& stream, const KeyPoint& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::ifstream& operator >> (std::ifstream& stream, Image& obj) {
+std::ifstream& operator >> (std::ifstream& stream, KeyPoint& obj) {
   obj.read(stream);
   return stream;
 }

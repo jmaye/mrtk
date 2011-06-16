@@ -16,62 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "Image.h"
+#include "MainWindow.h"
 
-#include <iostream>
-#include <fstream>
+#include "ui_MainWindow.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Image::Image() {
+MainWindow::MainWindow() :
+  mpUi(new Ui_MainWindow()) {
+  mpUi->setupUi(this);
 }
 
-Image::Image(const Image& other) {
-}
-
-Image& Image::operator = (const Image& other) {
-  return *this;
-}
-
-Image::~Image() {
-}
-
-/******************************************************************************/
-/* Stream operations                                                          */
-/******************************************************************************/
-
-void Image::read(std::istream& stream) {
-}
-
-void Image::write(std::ostream& stream) const {
-}
-
-void Image::read(std::ifstream& stream) {
-}
-
-void Image::write(std::ofstream& stream) const {
-}
-
-std::ostream& operator << (std::ostream& stream, const Image& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, Image& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream, const Image& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream, Image& obj) {
-  obj.read(stream);
-  return stream;
+MainWindow::~MainWindow() {
+  delete mpUi;
 }
 
 /******************************************************************************/
