@@ -16,12 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+/** \file IOException.h
+    \brief IOException
+  */
+
 #ifndef IOEXCEPTION_H
 #define IOEXCEPTION_H
 
 #include <stdexcept>
 #include <string>
 
+/** IOException
+  */
 class IOException : public std::runtime_error {
   IOException& operator = (const IOException &other);
 

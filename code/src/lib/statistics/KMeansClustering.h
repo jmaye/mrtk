@@ -16,27 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file OutOfBoundException.h
-    \brief OutOfBoundException
+/** \file KMeansClustering.h
+    \brief KMeansClustering
   */
 
-#ifndef OUTOFBOUNDEXCEPTION_H
-#define OUTOFBOUNDEXCEPTION_H
+#ifndef KMEANSCLUSTERING_H
+#define KMEANSCLUSTERING_H
 
-#include <stdexcept>
-#include <string>
+#include "exceptions/InvalidOperationException.h"
 
-/** OutOfBoundException
+#include <vector>
+
+#include <stdint.h>
+
+/** KMeansClustering
   */
-class OutOfBoundException : public std::range_error {
-  OutOfBoundException& operator = (const OutOfBoundException &other);
+class KMeansClustering {
+  /** Constructors
+    */
+  KMeansClustering();
 
 public:
-  OutOfBoundException(const std::string &msg = "");
-  OutOfBoundException(const OutOfBoundException &other);
+  /** Methods
+    */
+  static void cluster(const std::vector<std::vector<double> >&
+    inputPointsVector, uint32_t u32K, std::vector<std::vector<double> >&
+    clusterCentersVector, std::vector<uint32_t>& assignmentsVector)
+    throw (InvalidOperationException);
 
 protected:
 
 };
 
-#endif // OUTOFBOUNDEXCEPTION_H
+#endif // KMEANSCLUSTERING_H

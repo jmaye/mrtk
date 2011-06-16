@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 /** \file KeyPoint.h
+    \brief KeyPoint
   */
 
 #ifndef KEYPOINT_H
@@ -24,7 +25,7 @@
 
 #include <iosfwd>
 
-/**
+/** KeyPoint
   */
 class KeyPoint {
   friend std::ostream& operator << (std::ostream& stream, const KeyPoint& obj);

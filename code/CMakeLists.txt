@@ -14,4 +14,16 @@ remake_project(
   INSTALL /usr
 )
 
-remake_pack_deb()
+remake_pack_deb(libann0 libqt4-gui)
+
+remake_pack_deb(
+  COMPONENT dev
+  DESCRIPTION "Development headers"
+  online-recog
+  libann-dev
+)
+
+remake_doc(
+  html
+  latex
+)

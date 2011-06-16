@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 /** \file MainWindow.h
+    \brief MainWindow
   */
 
 #ifndef MAINWINDOW_H
@@ -26,7 +27,7 @@
 
 class Ui_MainWindow;
 
-/**
+/** MainWindow
   */
 class MainWindow :
   public QMainWindow {

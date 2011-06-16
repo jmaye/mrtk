@@ -16,27 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file OutOfBoundException.h
-    \brief OutOfBoundException
+/** \file GMMClustering.h
+    \brief GMMClustering
   */
 
-#ifndef OUTOFBOUNDEXCEPTION_H
-#define OUTOFBOUNDEXCEPTION_H
+#ifndef GMMCLUSTERING_H
+#define GMMCLUSTERING_H
 
-#include <stdexcept>
-#include <string>
+#include "exceptions/InvalidOperationException.h"
 
-/** OutOfBoundException
+#include <vector>
+
+#include <stdint.h>
+
+/** GMMClustering
   */
-class OutOfBoundException : public std::range_error {
-  OutOfBoundException& operator = (const OutOfBoundException &other);
+class GMMClustering {
+  /** Constructors
+    */
+  GMMClustering();
 
 public:
-  OutOfBoundException(const std::string &msg = "");
-  OutOfBoundException(const OutOfBoundException &other);
+  /** Methods
+    */
+  static void cluster(const std::vector<std::vector<double> >&
+    inputPointsVector, uint32_t u32K, std::vector<std::vector<double> >&
+    meansVector, std::vector<std::vector<std::vector<double> > >&
+    variancesVector, std::vector<double>& weightsVector)
+    throw (InvalidOperationException);
 
 protected:
 
 };
 
-#endif // OUTOFBOUNDEXCEPTION_H
+#endif // GMMCLUSTERING_H

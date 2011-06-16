@@ -16,12 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+/** \file InvalidOperationException.h
+    \brief InvalidOperationException
+  */
+
 #ifndef INVALIDOPERATIONEXCEPTION_H
 #define INVALIDOPERATIONEXCEPTION_H
 
 #include <stdexcept>
 #include <string>
 
+/** InvalidOperationException
+  */
 class InvalidOperationException : public std::runtime_error {
   InvalidOperationException& operator =
   (const InvalidOperationException &other);

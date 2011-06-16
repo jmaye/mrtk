@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 /** \file Image.h
+    \brief Image
   */
 
 #ifndef IMAGE_H
@@ -24,7 +25,7 @@
 
 #include <iosfwd>
 
-/**
+/** Image
   */
 class Image {
   friend std::ostream& operator << (std::ostream& stream, const Image& obj);
