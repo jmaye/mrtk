@@ -40,9 +40,9 @@ public:
   /** Methods
     */
   static void cluster(const std::vector<std::vector<double> >&
-    inputPointsVector, uint32_t u32K, std::vector<std::vector<double> >&
-    clusterCentersVector, std::vector<uint32_t>& assignmentsVector)
-    throw (InvalidOperationException);
+    inputPointsVector, std::vector<std::vector<double> >& clusterCentersVector,
+    std::vector<std::vector<uint32_t> >& assignmentsVector, uint32_t u32K,
+    uint32_t u32MaxIterations, double f64Tol) throw (InvalidOperationException);
 
 protected:
 

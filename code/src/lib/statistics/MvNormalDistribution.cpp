@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "data-structures/KeyPoint.h"
+#include "MvNormalDistribution.h"
 
 #include <iostream>
 #include <fstream>
@@ -25,51 +25,54 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-KeyPoint::KeyPoint() {
+MvNormalDistribution::MvNormalDistribution() {
 }
 
-KeyPoint::KeyPoint(const KeyPoint& other) {
+MvNormalDistribution::MvNormalDistribution(const MvNormalDistribution& other) {
 }
 
-KeyPoint& KeyPoint::operator = (const KeyPoint& other) {
+MvNormalDistribution& MvNormalDistribution::operator = (const
+  MvNormalDistribution& other) {
   return *this;
 }
 
-KeyPoint::~KeyPoint() {
+MvNormalDistribution::~MvNormalDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void KeyPoint::read(std::istream& stream) {
+void MvNormalDistribution::read(std::istream& stream) {
 }
 
-void KeyPoint::write(std::ostream& stream) const {
+void MvNormalDistribution::write(std::ostream& stream) const {
 }
 
-void KeyPoint::read(std::ifstream& stream) {
+void MvNormalDistribution::read(std::ifstream& stream) {
 }
 
-void KeyPoint::write(std::ofstream& stream) const {
+void MvNormalDistribution::write(std::ofstream& stream) const {
 }
 
-std::ostream& operator << (std::ostream& stream, const KeyPoint& obj) {
+std::ostream& operator << (std::ostream& stream, const MvNormalDistribution&
+  obj) {
   obj.write(stream);
   return stream;
 }
 
-std::istream& operator >> (std::istream& stream, KeyPoint& obj) {
+std::istream& operator >> (std::istream& stream, MvNormalDistribution& obj) {
   obj.read(stream);
   return stream;
 }
 
-std::ofstream& operator << (std::ofstream& stream, const KeyPoint& obj) {
+std::ofstream& operator << (std::ofstream& stream, const MvNormalDistribution&
+  obj) {
   obj.write(stream);
   return stream;
 }
 
-std::ifstream& operator >> (std::ifstream& stream, KeyPoint& obj) {
+std::ifstream& operator >> (std::ifstream& stream, MvNormalDistribution& obj) {
   obj.read(stream);
   return stream;
 }

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "Image.h"
+#include "data-structures/Image.h"
 
 #include <iostream>
 #include <fstream>

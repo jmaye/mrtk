@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "MainWindow.h"
+#include "visualization/MainWindow.h"
 
 #include "ui_MainWindow.h"
 

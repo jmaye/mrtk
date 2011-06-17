@@ -16,28 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvalidOperationException.h
-    \brief InvalidOperationException
-  */
+#include "statistics/KMeansClustering.h"
+#include "statistics/UniformDistribution.h"
+#include "statistics/Randomizer.h"
 
-#ifndef INVALIDOPERATIONEXCEPTION_H
-#define INVALIDOPERATIONEXCEPTION_H
+#include <vector>
+#include <iostream>
 
-#include <stdexcept>
-#include <string>
+#include <stdint.h>
 
-/** InvalidOperationException
-  */
-class InvalidOperationException : public std::runtime_error {
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
+int main(int argc, char** argv) {
+  UniformDistribution uniDist(0, 1);
+  Randomizer randomizer;
+  for (uint32_t i = 0; i < 10; i++)
+    //std::cout << uniDist.sample() << std::endl;
+    std::cout << randomizer.sampleNormal(10, 0.1) << std::endl;
+  std::vector<std::vector<double> > inputPointsVector;
+  std::vector<std::vector<double> > clusterCentersVector;
+  std::vector<std::vector<uint32_t> > assignmentsVector;
+  uint32_t u32K;
+  uint32_t u32MaxIterations;
+  double f64Tol;
 
-public:
-  InvalidOperationException(const std::string &msg = "");
-  InvalidOperationException(const InvalidOperationException &other);
-
-protected:
-
-};
-
-#endif // INVALIDOPERATIONEXCEPTION_H
+  KMeansClustering::cluster(inputPointsVector, clusterCentersVector,
+    assignmentsVector, u32K, u32MaxIterations, f64Tol);
+}

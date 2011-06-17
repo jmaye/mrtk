@@ -1,3 +1,3 @@
 remake_include(../lib/)
 
-remake_add_executables(LINK visualization)
+remake_add_executables(LINK visualization statistics)

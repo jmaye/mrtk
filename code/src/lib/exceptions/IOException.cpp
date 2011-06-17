@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "IOException.h"
+#include "exceptions/IOException.h"
 
 IOException::IOException(const std::string &msg) :
   std::runtime_error(msg) {

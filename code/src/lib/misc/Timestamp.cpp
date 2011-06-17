@@ -16,28 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvalidOperationException.h
-    \brief InvalidOperationException
-  */
+#include "Timestamp.h"
 
-#ifndef INVALIDOPERATIONEXCEPTION_H
-#define INVALIDOPERATIONEXCEPTION_H
+#include <sys/time.h>
 
-#include <stdexcept>
-#include <string>
-
-/** InvalidOperationException
-  */
-class InvalidOperationException : public std::runtime_error {
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
-
-public:
-  InvalidOperationException(const std::string &msg = "");
-  InvalidOperationException(const InvalidOperationException &other);
-
-protected:
-
-};
-
-#endif // INVALIDOPERATIONEXCEPTION_H
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+double Timestamp::now() {
+  struct timeval time;
+  gettimeofday(&time, 0);
+  return time.tv_sec + time.tv_usec / 1e6;
+}

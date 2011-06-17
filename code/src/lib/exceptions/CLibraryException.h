@@ -16,28 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvalidOperationException.h
-    \brief InvalidOperationException
+/** \file CLibraryException.h
+    \brief CLibraryException
   */
 
-#ifndef INVALIDOPERATIONEXCEPTION_H
-#define INVALIDOPERATIONEXCEPTION_H
+#ifndef CLIBRARYEXCEPTION_H
+#define CLIBRARYEXCEPTION_H
 
 #include <stdexcept>
 #include <string>
 
-/** InvalidOperationException
+/** CLibraryException
   */
-class InvalidOperationException : public std::runtime_error {
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
+class CLibraryException : public std::runtime_error {
+  CLibraryException& operator = (const CLibraryException &other);
 
 public:
-  InvalidOperationException(const std::string &msg = "");
-  InvalidOperationException(const InvalidOperationException &other);
+  CLibraryException(const std::string &msg = "");
+  CLibraryException(const CLibraryException &other);
 
 protected:
 
 };
 
-#endif // INVALIDOPERATIONEXCEPTION_H
+#endif // CLIBRARYEXCEPTION_H

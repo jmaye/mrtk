@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "OutOfBoundException.h"
+#include "exceptions/OutOfBoundException.h"
 
 using namespace std;
 

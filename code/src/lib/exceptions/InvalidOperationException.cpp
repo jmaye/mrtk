@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "InvalidOperationException.h"
+#include "exceptions/InvalidOperationException.h"
 
 InvalidOperationException::InvalidOperationException(const std::string &msg) :
   std::runtime_error(msg) {

@@ -16,28 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvalidOperationException.h
-    \brief InvalidOperationException
-  */
+#include "exceptions/CLibraryException.h"
 
-#ifndef INVALIDOPERATIONEXCEPTION_H
-#define INVALIDOPERATIONEXCEPTION_H
-
-#include <stdexcept>
-#include <string>
-
-/** InvalidOperationException
-  */
-class InvalidOperationException : public std::runtime_error {
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
-
-public:
-  InvalidOperationException(const std::string &msg = "");
-  InvalidOperationException(const InvalidOperationException &other);
-
-protected:
-
-};
-
-#endif // INVALIDOPERATIONEXCEPTION_H
+CLibraryException::CLibraryException(const std::string &msg) :
+  std::runtime_error(msg) {
+}

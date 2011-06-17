@@ -16,28 +16,56 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvalidOperationException.h
-    \brief InvalidOperationException
+/** \file MvNormalDistribution.h
+    \brief MvNormalDistribution
   */
 
-#ifndef INVALIDOPERATIONEXCEPTION_H
-#define INVALIDOPERATIONEXCEPTION_H
+#ifndef MVNORMALDISTRIBUTION_H
+#define MVNORMALDISTRIBUTION_H
 
-#include <stdexcept>
-#include <string>
+#include <iosfwd>
 
-/** InvalidOperationException
+/** MvNormalDistribution
   */
-class InvalidOperationException : public std::runtime_error {
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
+class MvNormalDistribution {
+  friend std::ostream& operator << (std::ostream& stream, const
+    MvNormalDistribution& obj);
+  friend std::istream& operator >> (std::istream& stream, MvNormalDistribution&
+    obj);
+  friend std::ofstream& operator << (std::ofstream& stream, const
+    MvNormalDistribution& obj);
+  friend std::ifstream& operator >> (std::ifstream& stream,
+    MvNormalDistribution& obj);
+
+  /** Copy constructor
+    */
+  MvNormalDistribution(const MvNormalDistribution& other);
+
+  /** Assignment operator
+    */
+  MvNormalDistribution& operator = (const MvNormalDistribution& other);
+
+  /** Stream methods
+    */
+  virtual void read(std::istream& stream);
+  virtual void write(std::ostream& stream) const;
+  virtual void read(std::ifstream& stream);
+  virtual void write(std::ofstream& stream) const;
 
 public:
-  InvalidOperationException(const std::string &msg = "");
-  InvalidOperationException(const InvalidOperationException &other);
+  /** Constructors
+    */
+  MvNormalDistribution();
+
+  /** Destructor
+    */
+  ~MvNormalDistribution();
+
+  /** Accessors
+    */
 
 protected:
 
 };
 
-#endif // INVALIDOPERATIONEXCEPTION_H
+#endif // MVNORMALDISTRIBUTION_H
