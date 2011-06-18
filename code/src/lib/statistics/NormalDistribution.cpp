@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "NormalDistribution.h"
+#include "statistics/NormalDistribution.h"
 
 #include "statistics/Randomizer.h"
 

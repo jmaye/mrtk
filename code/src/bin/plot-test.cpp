@@ -16,15 +16,57 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "misc/Timestamp.h"
+#include "visualization/Plot2D.h"
 
-#include <sys/time.h>
+#include <QtGui/QApplication>
+/*#include <qwt-qt4/qwt_plot.h>
+#include <qwt-qt4/qwt_plot_curve.h>
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-double Timestamp::now() {
-  struct timeval time;
-  gettimeofday(&time, 0);
-  return time.tv_sec + time.tv_usec / 1e6;
+class Window : public QWidget {
+  public:
+    Window() :
+      valueCount(100),
+      x(valueCount),
+      y1(valueCount),
+      y2(valueCount) {
+      QwtPlot *myPlot = new QwtPlot(QwtText("Two Curves" ), this);
+
+      // add curves
+      QwtPlotCurve *curve1 = new QwtPlotCurve("Curve 1" );
+      QwtPlotCurve *curve2 = new QwtPlotCurve("Curve 2" );
+      createCurveData();
+
+      // copy the data into the curves
+      curve1->setData(x.data(), y1.data(), 100);
+      curve2->setData(x.data(), y2.data(), 100);
+      curve1->attach(myPlot);
+      curve2->attach(myPlot);
+
+      // finally, refresh the plot
+      myPlot->replot();
+
+      setFixedSize(myPlot->sizeHint());
+    }
+
+  private:
+    void createCurveData() {
+      for (int i = 0; i < valueCount; i++) {
+        x[i] = i;
+        y1[i] = i;
+        y2[i] = 100 - i;
+      }
+    }
+
+  private:
+    const int valueCount;
+    QVector<double> x;
+    QVector<double> y1;
+    QVector<double> y2;
+};*/
+
+int main(int argc, char** argv) {
+  QApplication app(argc, argv);
+  Plot2D plot("Test");
+  plot.show();
+  return app.exec();
 }

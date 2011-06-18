@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "MvNormalDistribution.h"
+#include "statistics/MvNormalDistribution.h"
 
 #include <iostream>
 #include <fstream>

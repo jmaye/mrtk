@@ -16,15 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "misc/Timestamp.h"
+/** \file Plot3D.h
+    \brief Plot3D
+  */
 
-#include <sys/time.h>
+#ifndef PLOT3D_H
+#define PLOT3D_H
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-double Timestamp::now() {
-  struct timeval time;
-  gettimeofday(&time, 0);
-  return time.tv_sec + time.tv_usec / 1e6;
-}
+#include <QtGui/QWidget>
+
+/** Plot3D
+  */
+class Plot3D : public QWidget {
+
+public:
+  /** Constructors
+    */
+  Plot3D();
+
+  /** Destructor
+    */
+  ~Plot3D();
+
+  /** Accessors
+    */
+
+protected:
+
+};
+
+#endif // PLOT3D_H

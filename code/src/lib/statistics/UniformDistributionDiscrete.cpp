@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "UniformDistributionDiscrete.h"
+#include "statistics/UniformDistributionDiscrete.h"
 
 #include "statistics/Randomizer.h"
 

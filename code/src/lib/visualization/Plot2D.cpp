@@ -16,15 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "misc/Timestamp.h"
+#include "visualization/Plot2D.h"
 
-#include <sys/time.h>
+#include <stdint.h>
+
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
+
+Plot2D::Plot2D(std::string sName) {
+  mpPlot = new QwtPlot(QwtText(sName.c_str()), this);
+}
+
+Plot2D::~Plot2D() {
+  for (uint32_t i = 0; i < mCurvesVector.size(); i++)
+    delete mCurvesVector[i];
+  mCurvesVector.clear();
+  delete mpPlot;
+}
+
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+void Plot2D::addCurve(std::vector<double> xVector, std::vector<double> yVector,
+  std::string sName) throw(InvalidOperationException) {
+  if (xVector.size() != yVector.size())
+    throw InvalidOperationException("Plot2D::addCurve(): xVector and yVector must have the same size");
+  QwtPlotCurve* pCurve = new QwtPlotCurve(sName.c_str());
+  mCurvesVector.push_back(pCurve);
+}
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
-double Timestamp::now() {
-  struct timeval time;
-  gettimeofday(&time, 0);
-  return time.tv_sec + time.tv_usec / 1e6;
-}
+

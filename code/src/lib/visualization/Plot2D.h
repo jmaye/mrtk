@@ -16,15 +16,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "misc/Timestamp.h"
+/** \file Plot2D.h
+    \brief Plot2D
+  */
 
-#include <sys/time.h>
+#ifndef PLOT2D_H
+#define PLOT2D_H
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-double Timestamp::now() {
-  struct timeval time;
-  gettimeofday(&time, 0);
-  return time.tv_sec + time.tv_usec / 1e6;
-}
+#include "exceptions/InvalidOperationException.h"
+
+#include <QtGui/QWidget>
+#include <QtCore/QVector>
+#include <qwt-qt4/qwt_plot.h>
+#include <qwt-qt4/qwt_plot_curve.h>
+
+#include <string>
+#include <vector>
+
+/** Plot2D
+  */
+class Plot2D : public QWidget {
+  QwtPlot* mpPlot;
+  std::vector<QwtPlotCurve*> mCurvesVector;
+  std::vector<std::pair<QVector, QVector> > mDataVector;
+
+public:
+  /** Constructors
+    */
+  Plot2D(std::string sName);
+
+  /** Destructor
+    */
+  ~Plot2D();
+
+  /** Accessors
+    */
+  void addCurve(std::vector<double> xVector, std::vector<double> yVector,
+    std::string sName) throw(InvalidOperationException);
+
+protected:
+
+};
+
+#endif // PLOT2D_H
