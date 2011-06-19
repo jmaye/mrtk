@@ -17,56 +17,48 @@
  ******************************************************************************/
 
 #include "visualization/Plot2D.h"
+#include "statistics/Randomizer.h"
+#include "statistics/NormalDistribution.h"
 
 #include <QtGui/QApplication>
-/*#include <qwt-qt4/qwt_plot.h>
-#include <qwt-qt4/qwt_plot_curve.h>
 
-class Window : public QWidget {
-  public:
-    Window() :
-      valueCount(100),
-      x(valueCount),
-      y1(valueCount),
-      y2(valueCount) {
-      QwtPlot *myPlot = new QwtPlot(QwtText("Two Curves" ), this);
+#include <vector>
 
-      // add curves
-      QwtPlotCurve *curve1 = new QwtPlotCurve("Curve 1" );
-      QwtPlotCurve *curve2 = new QwtPlotCurve("Curve 2" );
-      createCurveData();
-
-      // copy the data into the curves
-      curve1->setData(x.data(), y1.data(), 100);
-      curve2->setData(x.data(), y2.data(), 100);
-      curve1->attach(myPlot);
-      curve2->attach(myPlot);
-
-      // finally, refresh the plot
-      myPlot->replot();
-
-      setFixedSize(myPlot->sizeHint());
-    }
-
-  private:
-    void createCurveData() {
-      for (int i = 0; i < valueCount; i++) {
-        x[i] = i;
-        y1[i] = i;
-        y2[i] = 100 - i;
-      }
-    }
-
-  private:
-    const int valueCount;
-    QVector<double> x;
-    QVector<double> y1;
-    QVector<double> y2;
-};*/
+#include <stdint.h>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Plot2D plot("Test");
+  Plot2D plot("Normal distribution");
+  std::vector<double> xVector;
+  std::vector<double> yVector;
+
+#if 0
+  double f64X = -10.0;
+  NormalDistribution dist(0, 5);
+  for (uint32_t i = 0; i < 200; i++) {
+    xVector.push_back(f64X);
+    yVector.push_back(dist.pdf(f64X));
+    f64X += 0.1;
+  }
+#else
+  Randomizer randomizer;
+  std::vector<double> dataVector;
+  for (uint32_t i = 0; i < 10000; i++)
+    dataVector.push_back(randomizer.sampleNormal(0, 5));
+
+  double f64X = -10.0;
+  for (uint32_t i = 0; i < 200; i++) {
+    xVector.push_back(f64X);
+    f64X += 0.1;
+  }
+
+  yVector.resize(200, 0);
+  for (uint32_t i = 0; i < dataVector.size(); i++) {
+    if (dataVector[i] >= -10 && dataVector[i] <= 10)
+      yVector[ceil((dataVector[i] + 10) / 0.1)]++;
+  }
+#endif
+  plot.addCurve(xVector, yVector, "Standard");
   plot.show();
   return app.exec();
 }

@@ -24,7 +24,7 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Plot2D::Plot2D(std::string sName) {
+Plot2D::Plot2D(const std::string& sName) {
   mpPlot = new QwtPlot(QwtText(sName.c_str()), this);
 }
 
@@ -39,12 +39,25 @@ Plot2D::~Plot2D() {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void Plot2D::addCurve(std::vector<double> xVector, std::vector<double> yVector,
-  std::string sName) throw(InvalidOperationException) {
+void Plot2D::addCurve(const std::vector<double>& xVector, const
+  std::vector<double>& yVector, const std::string& sName)
+  throw(InvalidOperationException) {
   if (xVector.size() != yVector.size())
     throw InvalidOperationException("Plot2D::addCurve(): xVector and yVector must have the same size");
   QwtPlotCurve* pCurve = new QwtPlotCurve(sName.c_str());
   mCurvesVector.push_back(pCurve);
+  QVector<double> xQVector(xVector.size());
+  QVector<double> yQVector(yVector.size());
+  for (uint32_t i = 0; i < xVector.size(); i++) {
+    xQVector[i] = xVector[i];
+    yQVector[i] = yVector[i];
+  }
+  mDataVector.push_back(std::make_pair(xQVector, yQVector));
+  pCurve->setData(mDataVector[mDataVector.size() - 1].first.data(),
+    mDataVector[mDataVector.size() - 1].second.data(), xVector.size());
+  pCurve->attach(mpPlot);
+  mpPlot->replot();
+  setFixedSize(mpPlot->sizeHint());
 }
 
 /******************************************************************************/

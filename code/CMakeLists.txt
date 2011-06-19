@@ -23,6 +23,7 @@ remake_pack_deb(
   libann-dev
   libqwt5-qt4-dev
   libqt4-dev
+  libeigen2-dev
 )
 
 remake_doc(

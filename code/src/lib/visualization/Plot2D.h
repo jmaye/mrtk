@@ -38,12 +38,12 @@
 class Plot2D : public QWidget {
   QwtPlot* mpPlot;
   std::vector<QwtPlotCurve*> mCurvesVector;
-  std::vector<std::pair<QVector, QVector> > mDataVector;
+  std::vector<std::pair<QVector<double>, QVector<double> > > mDataVector;
 
 public:
   /** Constructors
     */
-  Plot2D(std::string sName);
+  Plot2D(const std::string& sName);
 
   /** Destructor
     */
@@ -51,8 +51,8 @@ public:
 
   /** Accessors
     */
-  void addCurve(std::vector<double> xVector, std::vector<double> yVector,
-    std::string sName) throw(InvalidOperationException);
+  void addCurve(const std::vector<double>& xVector, const std::vector<double>&
+    yVector, const std::string& sName) throw(InvalidOperationException);
 
 protected:
 

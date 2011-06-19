@@ -23,17 +23,20 @@
 #ifndef MVNORMALDISTRIBUTION_H
 #define MVNORMALDISTRIBUTION_H
 
+#include "exceptions/OutOfBoundException.h"
+
+#include <vector>
 #include <iosfwd>
 
 /** MvNormalDistribution
   */
 class MvNormalDistribution {
-  friend std::ostream& operator << (std::ostream& stream, const
+  friend std::ostream& operator << (std::ostream& stream,
+    const MvNormalDistribution& obj);
+  friend std::istream& operator >> (std::istream& stream,
     MvNormalDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream, MvNormalDistribution&
-    obj);
-  friend std::ofstream& operator << (std::ofstream& stream, const
-    MvNormalDistribution& obj);
+  friend std::ofstream& operator << (std::ofstream& stream,
+    const MvNormalDistribution& obj);
   friend std::ifstream& operator >> (std::ifstream& stream,
     MvNormalDistribution& obj);
 
@@ -52,10 +55,15 @@ class MvNormalDistribution {
   virtual void read(std::ifstream& stream);
   virtual void write(std::ofstream& stream) const;
 
+  std::vector<double> mMeanVector;
+  std::vector<std::vector<double> > mCovarianceMatrix;
+
 public:
   /** Constructors
     */
-  MvNormalDistribution();
+  MvNormalDistribution(const std::vector<double>& meanVector,
+    const std::vector<std::vector<double> >& covarianceMatrix)
+    throw (OutOfBoundException);
 
   /** Destructor
     */
@@ -63,6 +71,20 @@ public:
 
   /** Accessors
     */
+  void setMean(const std::vector<double>& meanVector)
+    throw (OutOfBoundException);
+  const std::vector<double>& getMean() const;
+  void setCovariance(const std::vector<std::vector<double> >& covarianceMatrix)
+    throw (OutOfBoundException);
+  const std::vector<std::vector<double> >& getCovariance() const;
+
+  /** Methods
+    */
+  double pdf(const std::vector<double>& xVector) const
+    throw (OutOfBoundException);
+  const std::vector<double>& sample() const;
+  double KLDivergence(const MvNormalDistribution& other) const
+    throw (OutOfBoundException);
 
 protected:
 
