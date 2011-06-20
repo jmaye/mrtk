@@ -82,7 +82,7 @@ public:
     */
   double pdf(const std::vector<double>& xVector) const
     throw (OutOfBoundException);
-  const std::vector<double>& sample() const;
+  const std::vector<double> sample() const;
   double KLDivergence(const MvNormalDistribution& other) const
     throw (OutOfBoundException);
 

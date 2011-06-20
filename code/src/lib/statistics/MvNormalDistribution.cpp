@@ -22,6 +22,8 @@
 
 #include <Eigen/Core>
 #include <Eigen/LU>
+#include <Eigen/Cholesky>
+#include <Eigen/Geometry>
 
 #include <iostream>
 #include <fstream>
@@ -41,7 +43,19 @@ MvNormalDistribution::MvNormalDistribution(const std::vector<double>&
   if (meanVector.size() != covarianceMatrix.size() ||
     covarianceMatrix.size() == 0 ||
     covarianceMatrix.size() != covarianceMatrix[0].size())
-    throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution");
+    throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution(): wrong dimensions for mean or covariance");
+  Eigen::MatrixXd covarianceMatrixEigen(mCovarianceMatrix.size(),
+    (int)mCovarianceMatrix.size());
+  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++) {
+    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
+      covarianceMatrixEigen(i, j) = mCovarianceMatrix[i][j];
+    if (covarianceMatrixEigen(i, i) <= 0)
+      throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution(): variances must be positive");
+  }
+  if (covarianceMatrixEigen.transpose() != covarianceMatrixEigen)
+    throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution(): covariance must be symmetric");
+  if (covarianceMatrixEigen.llt().isPositiveDefinite() == false)
+    throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution(): covariance must be positive definite");
 }
 
 MvNormalDistribution::MvNormalDistribution(const MvNormalDistribution& other) :
@@ -119,6 +133,18 @@ void MvNormalDistribution::setCovariance(
     covarianceMatrix[0].size() != mCovarianceMatrix[0].size())
     throw OutOfBoundException("MvNormalDistribution::setCovariance(): wrong dimensions for the covariance");
   mCovarianceMatrix = covarianceMatrix;
+  Eigen::MatrixXd covarianceMatrixEigen(mCovarianceMatrix.size(),
+    (int)mCovarianceMatrix.size());
+  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++) {
+    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
+      covarianceMatrixEigen(i, j) = mCovarianceMatrix[i][j];
+    if (covarianceMatrixEigen(i, i) <= 0)
+      throw OutOfBoundException("MvNormalDistribution::setCovariance(): variances must be positive");
+  }
+  if (covarianceMatrixEigen.transpose() != covarianceMatrixEigen)
+    throw OutOfBoundException("MvNormalDistribution::setCovariance(): covariance must be symmetric");
+  if (covarianceMatrixEigen.llt().isPositiveDefinite() == false)
+    throw OutOfBoundException("MvNormalDistribution::setCovariance(): covariance must be positive definite");
 }
 
 const std::vector<std::vector<double> >& MvNormalDistribution::getCovariance()
@@ -142,13 +168,15 @@ double MvNormalDistribution::pdf(const std::vector<double>& xVector) const
   for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++)
     for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
       covarianceMatrix(i, j) = mCovarianceMatrix[i][j];
-  return pow(2.0 * M_PI, -mMeanVector.size() / 2.0) *
+  return pow(2.0 * M_PI, -(int32_t)mMeanVector.size() / 2.0) *
     pow(covarianceMatrix.determinant(), -1.0 / 2.0) * exp(-1.0 / 2.0 *
     ((meanVectorMapped - xVectorMapped).transpose() *
     covarianceMatrix.inverse() * (meanVectorMapped - xVectorMapped))(0, 0));
 }
 
-const std::vector<double>& MvNormalDistribution::sample() const {
+const std::vector<double> MvNormalDistribution::sample() const {
+  static Randomizer randomizer;
+  return randomizer.sampleNormal(mMeanVector, mCovarianceMatrix);
 }
 
 double MvNormalDistribution::KLDivergence(const MvNormalDistribution& other)

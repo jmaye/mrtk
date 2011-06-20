@@ -18,6 +18,11 @@
 
 #include "statistics/Randomizer.h"
 
+#include <Eigen/Core>
+#include <Eigen/LU>
+#include <Eigen/Cholesky>
+#include <Eigen/Geometry>
+
 #include <iostream>
 #include <fstream>
 
@@ -126,4 +131,35 @@ double Randomizer::sampleNormal(double f64Mean, double f64Variance) const
   }
   while (f64S >= 1.0 || f64S == 0.0);
   return f64U * sqrt(-2.0 * log(f64S) / f64S) * sqrt(f64Variance) + f64Mean;
+}
+
+const std::vector<double> Randomizer::sampleNormal(const std::vector<double>&
+  meanVector, const std::vector<std::vector<double> >& covarianceMatrix) const
+  throw (OutOfBoundException) {
+  if (meanVector.size() != covarianceMatrix.size() ||
+    covarianceMatrix.size() == 0 ||
+    covarianceMatrix.size() != covarianceMatrix[0].size())
+    throw OutOfBoundException("Randomizer::sampleNormal(): wrong dimensions for mean or covariance");
+  Eigen::MatrixXd covarianceMatrixEigen(covarianceMatrix.size(),
+    (int)covarianceMatrix.size());
+  for (uint32_t i = 0; i < covarianceMatrix.size(); i++) {
+    for (uint32_t j = 0; j < covarianceMatrix[i].size(); j++)
+      covarianceMatrixEigen(i, j) = covarianceMatrix[i][j];
+    if (covarianceMatrixEigen(i, i) <= 0)
+      throw OutOfBoundException("Randomizer::sampleNormal(): variances must be positive");
+  }
+  if (covarianceMatrixEigen.transpose() != covarianceMatrixEigen)
+    throw OutOfBoundException("Randomizer::sampleNormal(): covariance must be symmetric");
+  if (covarianceMatrixEigen.llt().isPositiveDefinite() == false)
+    throw OutOfBoundException("Randomizer::sampleNormal(): covariance must be positive definite");
+  std::vector<double> sampleVector(meanVector.size());
+  for (uint32_t i = 0; i < meanVector.size(); i++)
+    sampleVector[i] = sampleNormal(meanVector[i], covarianceMatrix[i][i]);
+  Eigen::Map<Eigen::VectorXd> sampleVectorMapped(&sampleVector[0],
+    sampleVector.size());
+  Eigen::Map<Eigen::VectorXd> meanVectorMapped(&meanVector[0],
+    meanVector.size());
+  Eigen::MatrixXd LMatrix = covarianceMatrixEigen.llt().matrixL();
+  sampleVectorMapped = meanVectorMapped + LMatrix * sampleVectorMapped;
+  return sampleVector;
 }

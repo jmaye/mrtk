@@ -27,6 +27,7 @@
 #include "exceptions/OutOfBoundException.h"
 
 #include <iosfwd>
+#include <vector>
 
 #include <stdint.h>
 
@@ -78,6 +79,9 @@ public:
   int32_t sampleUniform(int32_t i32MinSupport = 0, int32_t i32MaxSupport = 1)
     const throw (OutOfBoundException);
   double sampleNormal(double f64Mean = 0.0, double f64Variance = 1.0) const
+    throw (OutOfBoundException);
+  const std::vector<double> sampleNormal(const std::vector<double>& meanVector,
+    const std::vector<std::vector<double> >& covarianceMatrix) const
     throw (OutOfBoundException);
 
 protected:

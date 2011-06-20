@@ -19,7 +19,6 @@
 #include "visualization/Plot2D.h"
 #include "statistics/Randomizer.h"
 #include "statistics/NormalDistribution.h"
-#include "statistics/MvNormalDistribution.h"
 
 #include <QtGui/QApplication>
 
@@ -33,7 +32,7 @@ int main(int argc, char** argv) {
   std::vector<double> xVector;
   std::vector<double> yVector;
 
-#if 1
+#if 0
   double f64X = -10.0;
   NormalDistribution dist(0, 1);
   for (uint32_t i = 0; i < 200; i++) {
@@ -43,20 +42,36 @@ int main(int argc, char** argv) {
   }
 #else
   Randomizer randomizer;
-  std::vector<double> dataVector;
-  for (uint32_t i = 0; i < 10000; i++)
-    dataVector.push_back(randomizer.sampleNormal(0, 1));
+//  std::vector<double> dataVector;
+//  for (uint32_t i = 0; i < 10000; i++)
+//    dataVector.push_back(randomizer.sampleNormal(0, 1));
 
-  double f64X = -10.0;
-  for (uint32_t i = 0; i < 200; i++) {
-    xVector.push_back(f64X);
-    f64X += 0.1;
-  }
+//  double f64X = -10.0;
+//  for (uint32_t i = 0; i < 200; i++) {
+//    xVector.push_back(f64X);
+//    f64X += 0.1;
+//  }
 
-  yVector.resize(200, 0.0);
-  for (uint32_t i = 0; i < dataVector.size(); i++) {
-    if (dataVector[i] >= -10.0 && dataVector[i] <= 10.0)
-      yVector[ceil((dataVector[i] + 10.0) / 0.1)]++;
+//  yVector.resize(200, 0.0);
+//  for (uint32_t i = 0; i < dataVector.size(); i++) {
+//    if (dataVector[i] >= -10.0 && dataVector[i] <= 10.0)
+//      yVector[ceil((dataVector[i] + 10.0) / 0.1)]++;
+//  }
+  std::vector<double> meanVector(2);
+  std::vector<std::vector<double> > covarianceMatrix(2);
+  meanVector[0] = 0;
+  meanVector[1] = 0;
+  covarianceMatrix[0].resize(2);
+  covarianceMatrix[0][0] = 1.0;
+  covarianceMatrix[0][1] = -0.9;
+  covarianceMatrix[1].resize(2);
+  covarianceMatrix[1][0] = -0.9;
+  covarianceMatrix[1][1] = 1.0;
+  for (uint32_t i = 0; i < 10000; i++) {
+    std::vector<double> sampleVector = randomizer.sampleNormal(meanVector,
+      covarianceMatrix);
+    xVector.push_back(sampleVector[0]);
+    yVector.push_back(sampleVector[1]);
   }
 #endif
   plot.addCurve(xVector, yVector, "Standard");

@@ -16,50 +16,85 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "visualization/Plot2D.h"
-#include "statistics/Randomizer.h"
-#include "statistics/NormalDistribution.h"
 #include "statistics/MvNormalDistribution.h"
 
 #include <QtGui/QApplication>
+#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
+#include <qwtplot3d-qt4/qwt3d_function.h>
 
+#include <iostream>
 #include <vector>
 
-#include <stdint.h>
+using namespace Qwt3D;
 
-int main(int argc, char** argv) {
-  QApplication app(argc, argv);
-  Plot2D plot("Normal distribution");
-  std::vector<double> xVector;
-  std::vector<double> yVector;
+class MvN :
+  public Function,
+  public MvNormalDistribution {
+  public:
+    MvN(const std::vector<double>& meanVector,
+      const std::vector<std::vector<double> >& covarianceMatrix,
+      SurfacePlot* pw) :
+      Function(pw),
+      MvNormalDistribution(meanVector, covarianceMatrix) {
+    }
 
-#if 1
-  double f64X = -10.0;
-  NormalDistribution dist(0, 1);
-  for (uint32_t i = 0; i < 200; i++) {
-    xVector.push_back(f64X);
-    yVector.push_back(dist.pdf(f64X));
-    f64X += 0.1;
+    double operator()(double f64X, double f64Y) {
+      std::vector<double> inputVector(2);
+      inputVector[0] = f64X;
+      inputVector[1] = f64Y;
+      return pdf(inputVector);
+    }
+};
+
+class Plot : public SurfacePlot {
+  public:
+    Plot();
+};
+
+Plot::Plot() {
+  setTitle("Multivariate Normal Distribution");
+  std::vector<double> meanVector(2);
+  std::vector<std::vector<double> > covarianceMatrix(2);
+  meanVector[0] = 0;
+  meanVector[1] = 0;
+  covarianceMatrix[0].resize(2);
+  covarianceMatrix[0][0] = 1.0;
+  covarianceMatrix[0][1] = 0.9;
+  covarianceMatrix[1].resize(2);
+  covarianceMatrix[1][0] = 0.9;
+  covarianceMatrix[1][1] = 1.0;
+  MvN mvN(meanVector, covarianceMatrix, this);
+
+  mvN.setMesh(41, 31);
+  mvN.setDomain(-10.0, 10.0, -10.0, 10.0);
+  mvN.setMinZ(-10);
+
+  mvN.create();
+
+  setRotation(30, 0, 15);
+  setScale(1, 1, 1);
+  setShift(0.15, 0, 0);
+  setZoom(0.9);
+
+  for (unsigned i = 0; i != coordinates()->axes.size(); ++i) {
+    coordinates()->axes[i].setMajors(7);
+    coordinates()->axes[i].setMinors(4);
   }
-#else
-  Randomizer randomizer;
-  std::vector<double> dataVector;
-  for (uint32_t i = 0; i < 10000; i++)
-    dataVector.push_back(randomizer.sampleNormal(0, 1));
 
-  double f64X = -10.0;
-  for (uint32_t i = 0; i < 200; i++) {
-    xVector.push_back(f64X);
-    f64X += 0.1;
-  }
+  coordinates()->axes[X1].setLabelString("x-axis");
+  coordinates()->axes[Y1].setLabelString("y-axis");
+  coordinates()->axes[Z1].setLabelString(QChar (0x38f));
 
-  yVector.resize(200, 0.0);
-  for (uint32_t i = 0; i < dataVector.size(); i++) {
-    if (dataVector[i] >= -10.0 && dataVector[i] <= 10.0)
-      yVector[ceil((dataVector[i] + 10.0) / 0.1)]++;
-  }
-#endif
-  plot.addCurve(xVector, yVector, "Standard");
+  setCoordinateStyle(BOX);
+
+  updateData();
+  updateGL();
+}
+
+int main(int argc, char **argv) {
+  QApplication a(argc, argv);
+  Plot plot;
+  plot.resize(800, 600);
   plot.show();
-  return app.exec();
+  return a.exec();
 }
