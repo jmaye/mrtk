@@ -124,6 +124,6 @@ double Randomizer::sampleNormal(double f64Mean, double f64Variance) const
     f64V = 2.0 * sampleUniform(0.0, 1.0) - 1.0;
     f64S = f64U * f64U + f64V * f64V;
   }
-  while (f64S >= 1 || f64S == 0);
-  return f64U * sqrt(-2 * log(f64S) / f64S) * sqrt(f64Variance) + f64Mean;
+  while (f64S >= 1.0 || f64S == 0.0);
+  return f64U * sqrt(-2.0 * log(f64S) / f64S) * sqrt(f64Variance) + f64Mean;
 }

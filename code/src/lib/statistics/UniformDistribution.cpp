@@ -120,9 +120,9 @@ double UniformDistribution::getMaxSupport() const {
 
 double UniformDistribution::pdf(double f64X) const {
   if (f64X >= mf64MinSupport && f64X <= mf64MaxSupport)
-    return 1 / (mf64MaxSupport - mf64MinSupport);
+    return 1.0 / (mf64MaxSupport - mf64MinSupport);
   else
-    return 0;
+    return 0.0;
 }
 
 double UniformDistribution::logpdf(double f64X) const

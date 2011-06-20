@@ -18,10 +18,16 @@
 
 #include "statistics/MvNormalDistribution.h"
 
+#include "statistics/Randomizer.h"
+
 #include <Eigen/Core>
+#include <Eigen/LU>
 
 #include <iostream>
 #include <fstream>
+
+#include <cmath>
+#include <stdint.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -99,6 +105,7 @@ void MvNormalDistribution::setMean(const std::vector<double>& meanVector)
   throw (OutOfBoundException) {
   if (meanVector.size() != mMeanVector.size())
     throw OutOfBoundException("MvNormalDistribution::setMean(): wrong dimensions for the mean");
+  mMeanVector = meanVector;
 }
 
 const std::vector<double>& MvNormalDistribution::getMean() const {
@@ -111,6 +118,7 @@ void MvNormalDistribution::setCovariance(
   if (covarianceMatrix.size() != mCovarianceMatrix.size() ||
     covarianceMatrix[0].size() != mCovarianceMatrix[0].size())
     throw OutOfBoundException("MvNormalDistribution::setCovariance(): wrong dimensions for the covariance");
+  mCovarianceMatrix = covarianceMatrix;
 }
 
 const std::vector<std::vector<double> >& MvNormalDistribution::getCovariance()
@@ -126,6 +134,18 @@ double MvNormalDistribution::pdf(const std::vector<double>& xVector) const
   throw (OutOfBoundException) {
   if (xVector.size() != mMeanVector.size())
     throw OutOfBoundException("MvNormalDistribution::pdf(): wrong dimensions for input");
+  Eigen::Map<Eigen::VectorXd> xVectorMapped(&xVector[0], xVector.size());
+  Eigen::Map<Eigen::VectorXd> meanVectorMapped(&mMeanVector[0],
+    mMeanVector.size());
+  Eigen::MatrixXd covarianceMatrix(mCovarianceMatrix.size(),
+    (int)mCovarianceMatrix.size());
+  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++)
+    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
+      covarianceMatrix(i, j) = mCovarianceMatrix[i][j];
+  return pow(2.0 * M_PI, -mMeanVector.size() / 2.0) *
+    pow(covarianceMatrix.determinant(), -1.0 / 2.0) * exp(-1.0 / 2.0 *
+    ((meanVectorMapped - xVectorMapped).transpose() *
+    covarianceMatrix.inverse() * (meanVectorMapped - xVectorMapped))(0, 0));
 }
 
 const std::vector<double>& MvNormalDistribution::sample() const {

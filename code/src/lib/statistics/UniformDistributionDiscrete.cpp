@@ -123,9 +123,9 @@ int32_t UniformDistributionDiscrete::getMaxSupport() const {
 
 double UniformDistributionDiscrete::pdf(int32_t i32X) const {
   if (i32X >= mi32MinSupport && i32X <= mi32MaxSupport)
-    return 1 / (mi32MaxSupport - mi32MinSupport + 1);
+    return 1.0 / (mi32MaxSupport - mi32MinSupport + 1.0);
   else
-    return 0;
+    return 0.0;
 }
 
 double UniformDistributionDiscrete::logpdf(int32_t i32X) const

@@ -26,11 +26,11 @@
 #include <stdint.h>
 
 int main(int argc, char** argv) {
-  UniformDistribution uniDist(0, 1);
+  UniformDistribution uniDist(0.0, 1.0);
   Randomizer randomizer;
   for (uint32_t i = 0; i < 10; i++)
     //std::cout << uniDist.sample() << std::endl;
-    std::cout << randomizer.sampleNormal(10, 0.1) << std::endl;
+    std::cout << randomizer.sampleNormal(10.0, 0.1) << std::endl;
   std::vector<std::vector<double> > inputPointsVector;
   std::vector<std::vector<double> > clusterCentersVector;
   std::vector<std::vector<uint32_t> > assignmentsVector;

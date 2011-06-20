@@ -19,6 +19,7 @@
 #include "visualization/Plot2D.h"
 #include "statistics/Randomizer.h"
 #include "statistics/NormalDistribution.h"
+#include "statistics/MvNormalDistribution.h"
 
 #include <QtGui/QApplication>
 
@@ -32,9 +33,9 @@ int main(int argc, char** argv) {
   std::vector<double> xVector;
   std::vector<double> yVector;
 
-#if 0
+#if 1
   double f64X = -10.0;
-  NormalDistribution dist(0, 5);
+  NormalDistribution dist(0, 1);
   for (uint32_t i = 0; i < 200; i++) {
     xVector.push_back(f64X);
     yVector.push_back(dist.pdf(f64X));
@@ -44,7 +45,7 @@ int main(int argc, char** argv) {
   Randomizer randomizer;
   std::vector<double> dataVector;
   for (uint32_t i = 0; i < 10000; i++)
-    dataVector.push_back(randomizer.sampleNormal(0, 5));
+    dataVector.push_back(randomizer.sampleNormal(0, 1));
 
   double f64X = -10.0;
   for (uint32_t i = 0; i < 200; i++) {
@@ -52,10 +53,10 @@ int main(int argc, char** argv) {
     f64X += 0.1;
   }
 
-  yVector.resize(200, 0);
+  yVector.resize(200, 0.0);
   for (uint32_t i = 0; i < dataVector.size(); i++) {
-    if (dataVector[i] >= -10 && dataVector[i] <= 10)
-      yVector[ceil((dataVector[i] + 10) / 0.1)]++;
+    if (dataVector[i] >= -10.0 && dataVector[i] <= 10.0)
+      yVector[ceil((dataVector[i] + 10.0) / 0.1)]++;
   }
 #endif
   plot.addCurve(xVector, yVector, "Standard");
