@@ -63,9 +63,9 @@ int main(int argc, char** argv) {
   meanVector[1] = 0;
   covarianceMatrix[0].resize(2);
   covarianceMatrix[0][0] = 1.0;
-  covarianceMatrix[0][1] = -0.9;
+  covarianceMatrix[0][1] = -0.0;
   covarianceMatrix[1].resize(2);
-  covarianceMatrix[1][0] = -0.9;
+  covarianceMatrix[1][0] = -0.0;
   covarianceMatrix[1][1] = 1.0;
   for (uint32_t i = 0; i < 10000; i++) {
     std::vector<double> sampleVector = randomizer.sampleNormal(meanVector,

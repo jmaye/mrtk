@@ -85,6 +85,8 @@ public:
   const std::vector<double> sample() const;
   double KLDivergence(const MvNormalDistribution& other) const
     throw (OutOfBoundException);
+  double mahalanobisDistance(const std::vector<double>& xVector) const
+    throw (OutOfBoundException);
 
 protected:
 

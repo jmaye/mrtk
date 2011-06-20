@@ -181,4 +181,44 @@ const std::vector<double> MvNormalDistribution::sample() const {
 
 double MvNormalDistribution::KLDivergence(const MvNormalDistribution& other)
   const throw (OutOfBoundException) {
+  if (other.mMeanVector.size() != mMeanVector.size())
+    throw OutOfBoundException("MvNormalDistribution::KLDivergence(): incompatible dimensions");
+  if (other.mCovarianceMatrix.size() != mCovarianceMatrix.size())
+    throw OutOfBoundException("MvNormalDistribution::KLDivergence(): incompatible dimensions");
+  Eigen::Map<Eigen::VectorXd> mean1VectorMapped(&mMeanVector[0],
+    mMeanVector.size());
+  Eigen::MatrixXd covariance1Matrix(mCovarianceMatrix.size(),
+    (int)mCovarianceMatrix.size());
+  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++)
+    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
+      covariance1Matrix(i, j) = mCovarianceMatrix[i][j];
+  Eigen::Map<Eigen::VectorXd> mean2VectorMapped(&other.mMeanVector[0],
+    other.mMeanVector.size());
+  Eigen::MatrixXd covariance2Matrix(other.mCovarianceMatrix.size(),
+    (int)other.mCovarianceMatrix.size());
+  for (uint32_t i = 0; i < other.mCovarianceMatrix.size(); i++)
+    for (uint32_t j = 0; j < other.mCovarianceMatrix[i].size(); j++)
+      covariance2Matrix(i, j) = other.mCovarianceMatrix[i][j];
+  return 1.0 / 2.0 * (log(covariance2Matrix.determinant() /
+    covariance1Matrix.determinant()) + (covariance2Matrix.inverse() *
+    covariance1Matrix).trace() - mMeanVector.size() + ((mean1VectorMapped -
+    mean2VectorMapped).transpose() * covariance2Matrix.inverse() *
+    (mean1VectorMapped - mean2VectorMapped))(0, 0));
+}
+
+double MvNormalDistribution::mahalanobisDistance(const std::vector<double>&
+  xVector) const throw (OutOfBoundException) {
+  if (xVector.size() != mMeanVector.size())
+    throw OutOfBoundException("MvNormalDistribution::mahalanobisDistance(): incompatible dimensions");
+  Eigen::Map<Eigen::VectorXd> meanVectorMapped(&mMeanVector[0],
+    mMeanVector.size());
+  Eigen::Map<Eigen::VectorXd> xVectorMapped(&xVector[0],
+    xVector.size());
+  Eigen::MatrixXd covarianceMatrix(mCovarianceMatrix.size(),
+    (int)mCovarianceMatrix.size());
+  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++)
+    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
+      covarianceMatrix(i, j) = mCovarianceMatrix[i][j];
+  return sqrt(((xVectorMapped - meanVectorMapped) * covarianceMatrix.inverse() *
+    (xVectorMapped - meanVectorMapped))(0, 0));
 }

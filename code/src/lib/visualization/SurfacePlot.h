@@ -16,33 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Plot3D.h
-    \brief Plot3D
+/** \file SurfacePlot.h
+    \brief SurfacePlot
   */
 
-#ifndef PLOT3D_H
-#define PLOT3D_H
+#ifndef SURFACEPLOT_H
+#define SURFACEPLOT_H
 
-#include <QtGui/QWidget>
+#include "visualization/Function.h"
 
-/** Plot3D
+#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
+
+#include <string>
+
+/** SurfacePlot
   */
-class Plot3D : public QWidget {
+class SurfacePlot :
+  public Qwt3D::SurfacePlot {
 
 public:
   /** Constructors
     */
-  Plot3D();
+  SurfacePlot(const std::string& sName);
 
   /** Destructor
     */
-  ~Plot3D();
+  ~SurfacePlot();
 
   /** Accessors
     */
+  void addFunction(Function& function);
 
 protected:
 
 };
 
-#endif // PLOT3D_H
+#endif // SURFACEPLOT_H

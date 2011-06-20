@@ -137,8 +137,8 @@ double NormalDistribution::KLDivergence(const NormalDistribution& other) const {
   double f64Mu2 = other.mf64Mean;
   double f64Var1 = mf64Variance;
   double f64Var2 = other.mf64Variance;
-  return pow(f64Mu1 - f64Mu2, 2.0) / (2.0 * f64Var2) +
-    1.0 / 2.0 * (f64Var1 / f64Var2 - 1.0 - log(f64Var1 / f64Var2));
+  return 1.0 / 2.0 * (log(f64Var2 / f64Var1) + f64Var1 / f64Var2 - 1.0 +
+    (f64Mu1 - f64Mu2) * 1.0 / f64Var2 * (f64Mu1 - f64Mu2));
 }
 
 double NormalDistribution::mahalanobisDistance(double f64Value) const {

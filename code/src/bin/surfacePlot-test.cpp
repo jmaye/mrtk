@@ -17,24 +17,20 @@
  ******************************************************************************/
 
 #include "statistics/MvNormalDistribution.h"
+#include "visualization/SurfacePlot.h"
+#include "visualization/Function.h"
 
 #include <QtGui/QApplication>
-#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
-#include <qwtplot3d-qt4/qwt3d_function.h>
 
 #include <iostream>
 #include <vector>
-
-using namespace Qwt3D;
 
 class MvN :
   public Function,
   public MvNormalDistribution {
   public:
     MvN(const std::vector<double>& meanVector,
-      const std::vector<std::vector<double> >& covarianceMatrix,
-      SurfacePlot* pw) :
-      Function(pw),
+      const std::vector<std::vector<double> >& covarianceMatrix) :
       MvNormalDistribution(meanVector, covarianceMatrix) {
     }
 
@@ -46,54 +42,21 @@ class MvN :
     }
 };
 
-class Plot : public SurfacePlot {
-  public:
-    Plot();
-};
-
-Plot::Plot() {
-  setTitle("Multivariate Normal Distribution");
+int main(int argc, char** argv) {
+  QApplication a(argc, argv);
+  SurfacePlot plot("Multivariate Normal Distribution");
   std::vector<double> meanVector(2);
   std::vector<std::vector<double> > covarianceMatrix(2);
   meanVector[0] = 0;
   meanVector[1] = 0;
   covarianceMatrix[0].resize(2);
   covarianceMatrix[0][0] = 1.0;
-  covarianceMatrix[0][1] = 0.9;
+  covarianceMatrix[0][1] = -0.5;
   covarianceMatrix[1].resize(2);
-  covarianceMatrix[1][0] = 0.9;
+  covarianceMatrix[1][0] = -0.5;
   covarianceMatrix[1][1] = 1.0;
-  MvN mvN(meanVector, covarianceMatrix, this);
-
-  mvN.setMesh(41, 31);
-  mvN.setDomain(-10.0, 10.0, -10.0, 10.0);
-  mvN.setMinZ(-10);
-
-  mvN.create();
-
-  setRotation(30, 0, 15);
-  setScale(1, 1, 1);
-  setShift(0.15, 0, 0);
-  setZoom(0.9);
-
-  for (unsigned i = 0; i != coordinates()->axes.size(); ++i) {
-    coordinates()->axes[i].setMajors(7);
-    coordinates()->axes[i].setMinors(4);
-  }
-
-  coordinates()->axes[X1].setLabelString("x-axis");
-  coordinates()->axes[Y1].setLabelString("y-axis");
-  coordinates()->axes[Z1].setLabelString(QChar (0x38f));
-
-  setCoordinateStyle(BOX);
-
-  updateData();
-  updateGL();
-}
-
-int main(int argc, char **argv) {
-  QApplication a(argc, argv);
-  Plot plot;
+  MvN mvn(meanVector, covarianceMatrix);
+  plot.addFunction(mvn);
   plot.resize(800, 600);
   plot.show();
   return a.exec();

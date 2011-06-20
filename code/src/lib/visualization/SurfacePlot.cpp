@@ -16,21 +16,50 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "visualization/Plot3D.h"
+#include "visualization/SurfacePlot.h"
+
+#include <stdint.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Plot3D::Plot3D() {
+SurfacePlot::SurfacePlot(const std::string& sName) {
+  setTitle(sName.c_str());
+  setRotation(30, 0, 15);
+  setScale(1, 1, 1);
+  setShift(0.15, 0, 0);
+  setZoom(0.9);
+  for (uint32_t i = 0; i != coordinates()->axes.size(); i++) {
+    coordinates()->axes[i].setMajors(7);
+    coordinates()->axes[i].setMinors(4);
+  }
+
+  coordinates()->axes[Qwt3D::X1].setLabelString("x-axis");
+  coordinates()->axes[Qwt3D::Y1].setLabelString("y-axis");
+  coordinates()->axes[Qwt3D::Z1].setLabelString(QChar (0x38f));
+
+  setCoordinateStyle(Qwt3D::BOX);
+
+  updateData();
+  updateGL();
 }
 
-Plot3D::~Plot3D() {
+SurfacePlot::~SurfacePlot() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
+
+void SurfacePlot::addFunction(Function& function) {
+  function.setMesh(100, 100);
+  function.setDomain(-10.0, 10.0, -10.0, 10.0);
+  function.setMinZ(-10);
+  function.create(*this);
+  updateData();
+  updateGL();
+}
 
 /******************************************************************************/
 /* Methods                                                                    */
