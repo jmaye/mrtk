@@ -19,6 +19,9 @@
 #include "visualization/Plot2D.h"
 #include "statistics/Randomizer.h"
 #include "statistics/NormalDistribution.h"
+#include "statistics/MvNormalDistribution.h"
+
+#include <Eigen/Core>
 
 #include <QtGui/QApplication>
 
@@ -57,21 +60,19 @@ int main(int argc, char** argv) {
 //    if (dataVector[i] >= -10.0 && dataVector[i] <= 10.0)
 //      yVector[ceil((dataVector[i] + 10.0) / 0.1)]++;
 //  }
-  std::vector<double> meanVector(2);
-  std::vector<std::vector<double> > covarianceMatrix(2);
-  meanVector[0] = 0;
-  meanVector[1] = 0;
-  covarianceMatrix[0].resize(2);
-  covarianceMatrix[0][0] = 1.0;
-  covarianceMatrix[0][1] = -0.0;
-  covarianceMatrix[1].resize(2);
-  covarianceMatrix[1][0] = -0.0;
-  covarianceMatrix[1][1] = 1.0;
+  Eigen::Vector2d meanVector(0, 0);
+  Eigen::Matrix2d covarianceMatrix;
+  covarianceMatrix << 1.0, -0.5, -0.5, 1.0;
+  MvNormalDistribution mvn(meanVector, covarianceMatrix);
+  std::cout << mvn << std::endl;
+  NormalDistribution dist(0, 10);
+  std::cout << dist << std::endl;
   for (uint32_t i = 0; i < 10000; i++) {
-    std::vector<double> sampleVector = randomizer.sampleNormal(meanVector,
-      covarianceMatrix);
-    xVector.push_back(sampleVector[0]);
-    yVector.push_back(sampleVector[1]);
+    //Eigen::Vector2d sampleVector = randomizer.sampleNormal(meanVector,
+      //covarianceMatrix);
+    Eigen::Vector2d sampleVector = mvn.sample();
+    xVector.push_back(sampleVector(0));
+    yVector.push_back(sampleVector(1));
   }
 #endif
   plot.addCurve(xVector, yVector, "Standard");

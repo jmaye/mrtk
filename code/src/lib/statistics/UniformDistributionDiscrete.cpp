@@ -59,6 +59,8 @@ void UniformDistributionDiscrete::read(std::istream& stream) {
 }
 
 void UniformDistributionDiscrete::write(std::ostream& stream) const {
+  stream << "mi32MinSupport: " << mi32MinSupport << std::endl
+    << "mi32MaxSupport: " << mi32MaxSupport;
 }
 
 void UniformDistributionDiscrete::read(std::ifstream& stream) {

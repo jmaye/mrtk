@@ -20,9 +20,7 @@
 
 #include "statistics/Randomizer.h"
 
-#include <Eigen/Core>
 #include <Eigen/LU>
-#include <Eigen/Cholesky>
 #include <Eigen/Geometry>
 
 #include <iostream>
@@ -35,38 +33,32 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-MvNormalDistribution::MvNormalDistribution(const std::vector<double>&
-  meanVector, const std::vector<std::vector<double> >& covarianceMatrix)
-  throw (OutOfBoundException) :
-  mMeanVector(meanVector),
-  mCovarianceMatrix(covarianceMatrix) {
-  if (meanVector.size() != covarianceMatrix.size() ||
-    covarianceMatrix.size() == 0 ||
-    covarianceMatrix.size() != covarianceMatrix[0].size())
+MvNormalDistribution::MvNormalDistribution(const Eigen::VectorXd& meanVector,
+  const Eigen::MatrixXd& covarianceMatrix) throw (OutOfBoundException) :
+  mMeanVector(meanVector) {
+  if (meanVector.rows() < 2 || meanVector.rows() != covarianceMatrix.rows())
     throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution(): wrong dimensions for mean or covariance");
-  Eigen::MatrixXd covarianceMatrixEigen(mCovarianceMatrix.size(),
-    (int)mCovarianceMatrix.size());
-  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++) {
-    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
-      covarianceMatrixEigen(i, j) = mCovarianceMatrix[i][j];
-    if (covarianceMatrixEigen(i, i) <= 0)
-      throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution(): variances must be positive");
-  }
-  if (covarianceMatrixEigen.transpose() != covarianceMatrixEigen)
-    throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution(): covariance must be symmetric");
-  if (covarianceMatrixEigen.llt().isPositiveDefinite() == false)
-    throw OutOfBoundException("MvNormalDistribution::MvNormalDistribution(): covariance must be positive definite");
+  mCovarianceMatrix.resize(covarianceMatrix.rows(), covarianceMatrix.cols());
+  setCovariance(covarianceMatrix);
 }
 
 MvNormalDistribution::MvNormalDistribution(const MvNormalDistribution& other) :
   mMeanVector(other.mMeanVector),
-  mCovarianceMatrix(other.mCovarianceMatrix) {
+  mCovarianceMatrix(other.mCovarianceMatrix),
+  mPrecisionMatrix(other.mPrecisionMatrix),
+  mf64Determinant(other.mf64Determinant),
+  mf64Normalizer(other.mf64Normalizer),
+  mTransformation(other.mTransformation) {
 }
 
 MvNormalDistribution& MvNormalDistribution::operator = (const
   MvNormalDistribution& other) {
   mMeanVector = other.mMeanVector;
   mCovarianceMatrix = other.mCovarianceMatrix;
+  mPrecisionMatrix = other.mPrecisionMatrix;
+  mf64Determinant = other.mf64Determinant;
+  mf64Normalizer = other.mf64Normalizer;
+  mTransformation = other.mTransformation;
   return *this;
 }
 
@@ -81,6 +73,8 @@ void MvNormalDistribution::read(std::istream& stream) {
 }
 
 void MvNormalDistribution::write(std::ostream& stream) const {
+  stream << "mMeanVector: " << std::endl << mMeanVector << std::endl
+    << "mCovarianceMatrix: " << std::endl << mCovarianceMatrix;
 }
 
 void MvNormalDistribution::read(std::ifstream& stream) {
@@ -115,110 +109,89 @@ std::ifstream& operator >> (std::ifstream& stream, MvNormalDistribution& obj) {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void MvNormalDistribution::setMean(const std::vector<double>& meanVector)
+void MvNormalDistribution::setMean(const Eigen::VectorXd& meanVector)
   throw (OutOfBoundException) {
-  if (meanVector.size() != mMeanVector.size())
+  if (meanVector.rows() != mMeanVector.rows())
     throw OutOfBoundException("MvNormalDistribution::setMean(): wrong dimensions for the mean");
   mMeanVector = meanVector;
 }
 
-const std::vector<double>& MvNormalDistribution::getMean() const {
+const Eigen::VectorXd& MvNormalDistribution::getMean() const {
   return mMeanVector;
 }
 
-void MvNormalDistribution::setCovariance(
-  const std::vector<std::vector<double> >& covarianceMatrix)
-  throw (OutOfBoundException) {
-  if (covarianceMatrix.size() != mCovarianceMatrix.size() ||
-    covarianceMatrix[0].size() != mCovarianceMatrix[0].size())
-    throw OutOfBoundException("MvNormalDistribution::setCovariance(): wrong dimensions for the covariance");
-  mCovarianceMatrix = covarianceMatrix;
-  Eigen::MatrixXd covarianceMatrixEigen(mCovarianceMatrix.size(),
-    (int)mCovarianceMatrix.size());
-  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++) {
-    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
-      covarianceMatrixEigen(i, j) = mCovarianceMatrix[i][j];
-    if (covarianceMatrixEigen(i, i) <= 0)
-      throw OutOfBoundException("MvNormalDistribution::setCovariance(): variances must be positive");
-  }
-  if (covarianceMatrixEigen.transpose() != covarianceMatrixEigen)
+void MvNormalDistribution::setCovariance(const Eigen::MatrixXd&
+  covarianceMatrix) throw (OutOfBoundException) {
+  if (covarianceMatrix.cols() != mCovarianceMatrix.cols())
+   throw OutOfBoundException("MvNormalDistribution::setCovariance(): wrong dimensions for the covariance");
+  if (covarianceMatrix.transpose() != covarianceMatrix)
     throw OutOfBoundException("MvNormalDistribution::setCovariance(): covariance must be symmetric");
-  if (covarianceMatrixEigen.llt().isPositiveDefinite() == false)
+  mTransformation = covarianceMatrix.llt();
+  if (mTransformation.isPositiveDefinite() == false)
     throw OutOfBoundException("MvNormalDistribution::setCovariance(): covariance must be positive definite");
+  if ((covarianceMatrix.diagonal().cwise() < 0).any() == true)
+    throw OutOfBoundException("MvNormalDistribution::setCovariance(): variances must be positive");
+  mf64Determinant = covarianceMatrix.determinant();
+  mPrecisionMatrix = covarianceMatrix.inverse();
+  mf64Normalizer = pow(2.0 * M_PI, 0.5 * covarianceMatrix.cols()) *
+    sqrt(mf64Determinant);
+  mCovarianceMatrix = covarianceMatrix;
 }
 
-const std::vector<std::vector<double> >& MvNormalDistribution::getCovariance()
-  const {
+const Eigen::MatrixXd& MvNormalDistribution::getCovariance() const {
   return mCovarianceMatrix;
+}
+
+const Eigen::MatrixXd& MvNormalDistribution::getPrecision() const {
+  return mPrecisionMatrix;
+}
+
+double MvNormalDistribution::getDeterminant() const {
+  return mf64Determinant;
+}
+
+double MvNormalDistribution::getNormalizer() const {
+  return mf64Normalizer;
+}
+
+const Eigen::LLT<Eigen::MatrixXd>& MvNormalDistribution::getTransformation()
+  const {
+  return mTransformation;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-double MvNormalDistribution::pdf(const std::vector<double>& xVector) const
+double MvNormalDistribution::pdf(const Eigen::VectorXd& xVector) const
   throw (OutOfBoundException) {
-  if (xVector.size() != mMeanVector.size())
+  if (xVector.rows() != mMeanVector.rows())
     throw OutOfBoundException("MvNormalDistribution::pdf(): wrong dimensions for input");
-  Eigen::Map<Eigen::VectorXd> xVectorMapped(&xVector[0], xVector.size());
-  Eigen::Map<Eigen::VectorXd> meanVectorMapped(&mMeanVector[0],
-    mMeanVector.size());
-  Eigen::MatrixXd covarianceMatrix(mCovarianceMatrix.size(),
-    (int)mCovarianceMatrix.size());
-  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++)
-    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
-      covarianceMatrix(i, j) = mCovarianceMatrix[i][j];
-  return pow(2.0 * M_PI, -(int32_t)mMeanVector.size() / 2.0) *
-    pow(covarianceMatrix.determinant(), -1.0 / 2.0) * exp(-1.0 / 2.0 *
-    ((meanVectorMapped - xVectorMapped).transpose() *
-    covarianceMatrix.inverse() * (meanVectorMapped - xVectorMapped))(0, 0));
+  return 1 / mf64Normalizer * exp(-1.0 / 2.0 *
+    ((mMeanVector - xVector).transpose() * mPrecisionMatrix *
+    (mMeanVector - xVector))(0, 0));
 }
 
-const std::vector<double> MvNormalDistribution::sample() const {
+const Eigen::VectorXd MvNormalDistribution::sample() const {
   static Randomizer randomizer;
-  return randomizer.sampleNormal(mMeanVector, mCovarianceMatrix);
+  return randomizer.sampleNormal(*this);
 }
 
 double MvNormalDistribution::KLDivergence(const MvNormalDistribution& other)
   const throw (OutOfBoundException) {
-  if (other.mMeanVector.size() != mMeanVector.size())
+  if (other.mMeanVector.rows() != mMeanVector.rows() ||
+    other.mCovarianceMatrix.rows() != mCovarianceMatrix.rows())
     throw OutOfBoundException("MvNormalDistribution::KLDivergence(): incompatible dimensions");
-  if (other.mCovarianceMatrix.size() != mCovarianceMatrix.size())
-    throw OutOfBoundException("MvNormalDistribution::KLDivergence(): incompatible dimensions");
-  Eigen::Map<Eigen::VectorXd> mean1VectorMapped(&mMeanVector[0],
-    mMeanVector.size());
-  Eigen::MatrixXd covariance1Matrix(mCovarianceMatrix.size(),
-    (int)mCovarianceMatrix.size());
-  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++)
-    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
-      covariance1Matrix(i, j) = mCovarianceMatrix[i][j];
-  Eigen::Map<Eigen::VectorXd> mean2VectorMapped(&other.mMeanVector[0],
-    other.mMeanVector.size());
-  Eigen::MatrixXd covariance2Matrix(other.mCovarianceMatrix.size(),
-    (int)other.mCovarianceMatrix.size());
-  for (uint32_t i = 0; i < other.mCovarianceMatrix.size(); i++)
-    for (uint32_t j = 0; j < other.mCovarianceMatrix[i].size(); j++)
-      covariance2Matrix(i, j) = other.mCovarianceMatrix[i][j];
-  return 1.0 / 2.0 * (log(covariance2Matrix.determinant() /
-    covariance1Matrix.determinant()) + (covariance2Matrix.inverse() *
-    covariance1Matrix).trace() - mMeanVector.size() + ((mean1VectorMapped -
-    mean2VectorMapped).transpose() * covariance2Matrix.inverse() *
-    (mean1VectorMapped - mean2VectorMapped))(0, 0));
+  return 1.0 / 2.0 * (log(other.mf64Determinant / mf64Determinant) +
+    (other.mPrecisionMatrix * mCovarianceMatrix).trace() - mMeanVector.rows() +
+    ((mMeanVector - other.mMeanVector).transpose() * other.mPrecisionMatrix *
+    (mMeanVector - other.mMeanVector))(0, 0));
 }
 
-double MvNormalDistribution::mahalanobisDistance(const std::vector<double>&
-  xVector) const throw (OutOfBoundException) {
-  if (xVector.size() != mMeanVector.size())
+double MvNormalDistribution::mahalanobisDistance(const Eigen::VectorXd& xVector)
+  const throw (OutOfBoundException) {
+  if (xVector.rows() != mMeanVector.rows())
     throw OutOfBoundException("MvNormalDistribution::mahalanobisDistance(): incompatible dimensions");
-  Eigen::Map<Eigen::VectorXd> meanVectorMapped(&mMeanVector[0],
-    mMeanVector.size());
-  Eigen::Map<Eigen::VectorXd> xVectorMapped(&xVector[0],
-    xVector.size());
-  Eigen::MatrixXd covarianceMatrix(mCovarianceMatrix.size(),
-    (int)mCovarianceMatrix.size());
-  for (uint32_t i = 0; i < mCovarianceMatrix.size(); i++)
-    for (uint32_t j = 0; j < mCovarianceMatrix[i].size(); j++)
-      covarianceMatrix(i, j) = mCovarianceMatrix[i][j];
-  return sqrt(((xVectorMapped - meanVectorMapped) * covarianceMatrix.inverse() *
-    (xVectorMapped - meanVectorMapped))(0, 0));
+  return sqrt(((xVector - mMeanVector) * mPrecisionMatrix *
+    (xVector - mMeanVector))(0, 0));
 }

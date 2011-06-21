@@ -18,7 +18,6 @@
 
 #include "statistics/Randomizer.h"
 
-#include <Eigen/Core>
 #include <Eigen/LU>
 #include <Eigen/Cholesky>
 #include <Eigen/Geometry>
@@ -58,6 +57,7 @@ void Randomizer::read(std::istream& stream) {
 }
 
 void Randomizer::write(std::ostream& stream) const {
+  stream << "mf64Seed: " << mf64Seed;
 }
 
 void Randomizer::read(std::ifstream& stream) {
@@ -125,41 +125,36 @@ double Randomizer::sampleNormal(double f64Mean, double f64Variance) const
     throw OutOfBoundException("Randomizer::sampleNormal(): f64Variance must be greater than 0");
   double f64U, f64V, f64S;
   do {
-    f64U = 2.0 * sampleUniform(0.0, 1.0) - 1.0;
-    f64V = 2.0 * sampleUniform(0.0, 1.0) - 1.0;
+    f64U = 2.0 * sampleUniform() - 1.0;
+    f64V = 2.0 * sampleUniform() - 1.0;
     f64S = f64U * f64U + f64V * f64V;
   }
   while (f64S >= 1.0 || f64S == 0.0);
   return f64U * sqrt(-2.0 * log(f64S) / f64S) * sqrt(f64Variance) + f64Mean;
 }
 
-const std::vector<double> Randomizer::sampleNormal(const std::vector<double>&
-  meanVector, const std::vector<std::vector<double> >& covarianceMatrix) const
+const Eigen::VectorXd Randomizer::sampleNormal(const Eigen::VectorXd&
+  meanVector, const Eigen::MatrixXd& covarianceMatrix) const
   throw (OutOfBoundException) {
-  if (meanVector.size() != covarianceMatrix.size() ||
-    covarianceMatrix.size() == 0 ||
-    covarianceMatrix.size() != covarianceMatrix[0].size())
+  if (meanVector.rows() < 2 || meanVector.rows() != covarianceMatrix.rows())
     throw OutOfBoundException("Randomizer::sampleNormal(): wrong dimensions for mean or covariance");
-  Eigen::MatrixXd covarianceMatrixEigen(covarianceMatrix.size(),
-    (int)covarianceMatrix.size());
-  for (uint32_t i = 0; i < covarianceMatrix.size(); i++) {
-    for (uint32_t j = 0; j < covarianceMatrix[i].size(); j++)
-      covarianceMatrixEigen(i, j) = covarianceMatrix[i][j];
-    if (covarianceMatrixEigen(i, i) <= 0)
-      throw OutOfBoundException("Randomizer::sampleNormal(): variances must be positive");
-  }
-  if (covarianceMatrixEigen.transpose() != covarianceMatrixEigen)
+  if (covarianceMatrix.transpose() != covarianceMatrix)
     throw OutOfBoundException("Randomizer::sampleNormal(): covariance must be symmetric");
-  if (covarianceMatrixEigen.llt().isPositiveDefinite() == false)
+  if (covarianceMatrix.llt().isPositiveDefinite() == false)
     throw OutOfBoundException("Randomizer::sampleNormal(): covariance must be positive definite");
-  std::vector<double> sampleVector(meanVector.size());
-  for (uint32_t i = 0; i < meanVector.size(); i++)
-    sampleVector[i] = sampleNormal(meanVector[i], covarianceMatrix[i][i]);
-  Eigen::Map<Eigen::VectorXd> sampleVectorMapped(&sampleVector[0],
-    sampleVector.size());
-  Eigen::Map<Eigen::VectorXd> meanVectorMapped(&meanVector[0],
-    meanVector.size());
-  Eigen::MatrixXd LMatrix = covarianceMatrixEigen.llt().matrixL();
-  sampleVectorMapped = meanVectorMapped + LMatrix * sampleVectorMapped;
-  return sampleVector;
+  if ((covarianceMatrix.diagonal().cwise() < 0).any() == true)
+    throw OutOfBoundException("Randomizer::sampleNormal(): variances must be positive");
+  Eigen::VectorXd sampleVector(meanVector.rows());
+  for (uint32_t i = 0; i < (uint32_t)meanVector.rows(); i++)
+    sampleVector(i) = sampleNormal(meanVector(i), covarianceMatrix(i, i));
+  return meanVector + covarianceMatrix.llt().matrixL() * sampleVector;
+}
+
+const Eigen::VectorXd Randomizer::sampleNormal(const MvNormalDistribution& dist)
+  const {
+  Eigen::VectorXd sampleVector(dist.getMean().rows());
+  for (uint32_t i = 0; i < (uint32_t)dist.getMean().rows(); i++)
+    sampleVector(i) = sampleNormal(dist.getMean()(i),
+      dist.getCovariance()(i, i));
+  return dist.getMean() + dist.getTransformation().matrixL() * sampleVector;
 }

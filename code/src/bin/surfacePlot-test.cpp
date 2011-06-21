@@ -20,24 +20,21 @@
 #include "visualization/SurfacePlot.h"
 #include "visualization/Function.h"
 
-#include <QtGui/QApplication>
+#include <Eigen/Core>
 
-#include <iostream>
-#include <vector>
+#include <QtGui/QApplication>
 
 class MvN :
   public Function,
   public MvNormalDistribution {
   public:
-    MvN(const std::vector<double>& meanVector,
-      const std::vector<std::vector<double> >& covarianceMatrix) :
+    MvN(const Eigen::VectorXd& meanVector, const Eigen::MatrixXd&
+      covarianceMatrix) :
       MvNormalDistribution(meanVector, covarianceMatrix) {
     }
 
     double operator()(double f64X, double f64Y) {
-      std::vector<double> inputVector(2);
-      inputVector[0] = f64X;
-      inputVector[1] = f64Y;
+      Eigen::Vector2d inputVector(f64X, f64Y);
       return pdf(inputVector);
     }
 };
@@ -45,16 +42,9 @@ class MvN :
 int main(int argc, char** argv) {
   QApplication a(argc, argv);
   SurfacePlot plot("Multivariate Normal Distribution");
-  std::vector<double> meanVector(2);
-  std::vector<std::vector<double> > covarianceMatrix(2);
-  meanVector[0] = 0;
-  meanVector[1] = 0;
-  covarianceMatrix[0].resize(2);
-  covarianceMatrix[0][0] = 1.0;
-  covarianceMatrix[0][1] = -0.5;
-  covarianceMatrix[1].resize(2);
-  covarianceMatrix[1][0] = -0.5;
-  covarianceMatrix[1][1] = 1.0;
+  Eigen::Vector2d meanVector(0, 0);
+  Eigen::Matrix2d covarianceMatrix;
+  covarianceMatrix << 1.0, -0.5, -0.5, 1.0;
   MvN mvn(meanVector, covarianceMatrix);
   plot.addFunction(mvn);
   plot.resize(800, 600);

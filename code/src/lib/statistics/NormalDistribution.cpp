@@ -29,23 +29,26 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-NormalDistribution::NormalDistribution(double f64Mean, double f64Variance)
-  throw (OutOfBoundException) :
-  mf64Mean(f64Mean),
-  mf64Variance(f64Variance) {
-  if (mf64Variance <= 0.0)
-    throw OutOfBoundException("NormalDistribution::NormalDistribution(): mf64Variance must be greater than 0");
+NormalDistribution::NormalDistribution(double f64Mean, double f64Variance) :
+  mf64Mean(f64Mean) {
+  setVariance(f64Variance);
 }
 
 NormalDistribution::NormalDistribution(const NormalDistribution& other) :
   mf64Mean(other.mf64Mean),
-  mf64Variance(other.mf64Variance) {
+  mf64Variance(other.mf64Variance),
+  mf64Precision(other.mf64Precision),
+  mf64StandardDeviation(other.mf64StandardDeviation),
+  mf64Normalizer(other.mf64Normalizer) {
 }
 
 NormalDistribution& NormalDistribution::operator = (const NormalDistribution&
   other) {
   mf64Mean = other.mf64Mean;
   mf64Variance = other.mf64Variance;
+  mf64Precision = other.mf64Precision;
+  mf64StandardDeviation = other.mf64StandardDeviation;
+  mf64Normalizer = other.mf64Normalizer;
   return *this;
 }
 
@@ -60,6 +63,8 @@ void NormalDistribution::read(std::istream& stream) {
 }
 
 void NormalDistribution::write(std::ostream& stream) const {
+  stream << "mf64Mean: " << mf64Mean << std::endl
+    << "mf64Variance: " << mf64Variance;
 }
 
 void NormalDistribution::read(std::ifstream& stream) {
@@ -107,10 +112,25 @@ void NormalDistribution::setVariance(double f64Variance)
   mf64Variance = f64Variance;
   if (mf64Variance <= 0.0)
     throw OutOfBoundException("UniGaussian::setVariance(): mf64Variance must be greater than 0");
+  mf64Precision = 1.0 / f64Variance;
+  mf64StandardDeviation = sqrt(f64Variance);
+  mf64Normalizer = sqrt(2.0 * M_PI * mf64Variance);
 }
 
 double NormalDistribution::getVariance() const {
   return mf64Variance;
+}
+
+double NormalDistribution::getPrecision() const {
+  return mf64Precision;
+}
+
+double NormalDistribution::getStandardDeviation() const {
+  return mf64StandardDeviation;
+}
+
+double NormalDistribution::getNormalizer() const {
+  return mf64Normalizer;
 }
 
 /******************************************************************************/
@@ -118,12 +138,12 @@ double NormalDistribution::getVariance() const {
 /******************************************************************************/
 
 double NormalDistribution::pdf(double f64X) const {
-  return (1.0 / sqrt(2.0 * M_PI * mf64Variance)) *
+  return (1.0 / mf64Normalizer) *
     exp(-pow(f64X - mf64Mean, 2.0) / (2.0 * mf64Variance));
 }
 
 double NormalDistribution::logpdf(double f64X) const {
-  return -1.0 / 2 * (log(2.0) + log(M_PI) + log(mf64Variance)) -
+  return -1.0 / 2.0 * (log(2.0) + log(M_PI) + log(mf64Variance)) -
     (pow(f64X - mf64Mean, 2.0) / (2.0 * mf64Variance));
 }
 
@@ -133,18 +153,12 @@ double NormalDistribution::sample() const {
 }
 
 double NormalDistribution::KLDivergence(const NormalDistribution& other) const {
-  double f64Mu1 = mf64Mean;
-  double f64Mu2 = other.mf64Mean;
-  double f64Var1 = mf64Variance;
-  double f64Var2 = other.mf64Variance;
-  return 1.0 / 2.0 * (log(f64Var2 / f64Var1) + f64Var1 / f64Var2 - 1.0 +
-    (f64Mu1 - f64Mu2) * 1.0 / f64Var2 * (f64Mu1 - f64Mu2));
+  return 1.0 / 2.0 * (log(other.mf64Variance * mf64Precision) +
+    other.mf64Precision * mf64Variance - 1.0 +
+    (mf64Mean - other.mf64Mean) * other.mf64Precision *
+    (mf64Mean - other.mf64Mean));
 }
 
 double NormalDistribution::mahalanobisDistance(double f64Value) const {
-  return sqrt((f64Value - mf64Mean) / mf64Variance * (f64Value - mf64Mean));
-}
-
-double NormalDistribution::standardDeviation() const {
-  return sqrt(mf64Variance);
+  return sqrt((f64Value - mf64Mean) * mf64Precision * (f64Value - mf64Mean));
 }

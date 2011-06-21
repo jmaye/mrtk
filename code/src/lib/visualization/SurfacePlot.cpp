@@ -54,7 +54,7 @@ SurfacePlot::~SurfacePlot() {
 
 void SurfacePlot::addFunction(Function& function) {
   function.setMesh(100, 100);
-  function.setDomain(-10.0, 10.0, -10.0, 10.0);
+  function.setDomain(-6.0, 6.0, -4.0, 4.0);
   function.setMinZ(-10);
   function.create(*this);
   updateData();

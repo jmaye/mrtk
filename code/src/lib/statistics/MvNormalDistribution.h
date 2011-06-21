@@ -25,7 +25,9 @@
 
 #include "exceptions/OutOfBoundException.h"
 
-#include <vector>
+#include <Eigen/Core>
+#include <Eigen/Cholesky>
+
 #include <iosfwd>
 
 /** MvNormalDistribution
@@ -55,15 +57,18 @@ class MvNormalDistribution {
   virtual void read(std::ifstream& stream);
   virtual void write(std::ofstream& stream) const;
 
-  std::vector<double> mMeanVector;
-  std::vector<std::vector<double> > mCovarianceMatrix;
+  Eigen::VectorXd mMeanVector;
+  Eigen::MatrixXd mCovarianceMatrix;
+  Eigen::MatrixXd mPrecisionMatrix;
+  double mf64Determinant;
+  double mf64Normalizer;
+  Eigen::LLT<Eigen::MatrixXd> mTransformation;
 
 public:
   /** Constructors
     */
-  MvNormalDistribution(const std::vector<double>& meanVector,
-    const std::vector<std::vector<double> >& covarianceMatrix)
-    throw (OutOfBoundException);
+  MvNormalDistribution(const Eigen::VectorXd& meanVector,
+    const Eigen::MatrixXd& covarianceMatrix) throw (OutOfBoundException);
 
   /** Destructor
     */
@@ -71,21 +76,24 @@ public:
 
   /** Accessors
     */
-  void setMean(const std::vector<double>& meanVector)
+  void setMean(const Eigen::VectorXd& meanVector)
     throw (OutOfBoundException);
-  const std::vector<double>& getMean() const;
-  void setCovariance(const std::vector<std::vector<double> >& covarianceMatrix)
+  const Eigen::VectorXd& getMean() const;
+  void setCovariance(const Eigen::MatrixXd& covarianceMatrix)
     throw (OutOfBoundException);
-  const std::vector<std::vector<double> >& getCovariance() const;
+  const Eigen::MatrixXd& getCovariance() const;
+  const Eigen::MatrixXd& getPrecision() const;
+  double getDeterminant() const;
+  double getNormalizer() const;
+  const Eigen::LLT<Eigen::MatrixXd>& getTransformation() const;
 
   /** Methods
     */
-  double pdf(const std::vector<double>& xVector) const
-    throw (OutOfBoundException);
-  const std::vector<double> sample() const;
+  double pdf(const Eigen::VectorXd& xVector) const throw (OutOfBoundException);
+  const Eigen::VectorXd sample() const;
   double KLDivergence(const MvNormalDistribution& other) const
     throw (OutOfBoundException);
-  double mahalanobisDistance(const std::vector<double>& xVector) const
+  double mahalanobisDistance(const Eigen::VectorXd& xVector) const
     throw (OutOfBoundException);
 
 protected:

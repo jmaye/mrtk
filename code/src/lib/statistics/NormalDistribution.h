@@ -56,12 +56,14 @@ class NormalDistribution {
 
   double mf64Mean;
   double mf64Variance;
+  double mf64Precision;
+  double mf64StandardDeviation;
+  double mf64Normalizer;
 
 public:
   /** Constructors
     */
-  NormalDistribution(double f64Mean = 0.0, double f64Variance = 1.0)
-    throw (OutOfBoundException);
+  NormalDistribution(double f64Mean = 0.0, double f64Variance = 1.0);
 
   /** Destructor
     */
@@ -73,6 +75,9 @@ public:
   double getMean() const;
   void setVariance(double f64Variance) throw (OutOfBoundException);
   double getVariance() const;
+  double getPrecision() const;
+  double getStandardDeviation() const;
+  double getNormalizer() const;
 
   /** Methods
     */
@@ -81,7 +86,6 @@ public:
   double sample() const;
   double KLDivergence(const NormalDistribution& other) const;
   double mahalanobisDistance(double f64Value) const;
-  double standardDeviation() const;
 
 protected:
 

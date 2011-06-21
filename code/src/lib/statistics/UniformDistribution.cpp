@@ -58,6 +58,8 @@ void UniformDistribution::read(std::istream& stream) {
 }
 
 void UniformDistribution::write(std::ostream& stream) const {
+  stream << "mf64MinSupport: " << mf64MinSupport << std::endl
+    << "mf64MaxSupport: " << mf64MaxSupport;
 }
 
 void UniformDistribution::read(std::ifstream& stream) {

@@ -25,9 +25,11 @@
 
 #include "misc/Timestamp.h"
 #include "exceptions/OutOfBoundException.h"
+#include "statistics/MvNormalDistribution.h"
+
+#include <Eigen/Core>
 
 #include <iosfwd>
-#include <vector>
 
 #include <stdint.h>
 
@@ -74,15 +76,16 @@ public:
 
   /** Methods
     */
-  double sampleUniform(double f64MinSupport = 0.0, double f64MaxSupport = 0.0)
+  double sampleUniform(double f64MinSupport = 0.0, double f64MaxSupport = 1.0)
     const throw (OutOfBoundException);
-  int32_t sampleUniform(int32_t i32MinSupport = 0, int32_t i32MaxSupport = 1)
+  int32_t sampleUniform(int32_t i32MinSupport, int32_t i32MaxSupport)
     const throw (OutOfBoundException);
   double sampleNormal(double f64Mean = 0.0, double f64Variance = 1.0) const
     throw (OutOfBoundException);
-  const std::vector<double> sampleNormal(const std::vector<double>& meanVector,
-    const std::vector<std::vector<double> >& covarianceMatrix) const
+  const Eigen::VectorXd sampleNormal(const Eigen::VectorXd& meanVector,
+    const Eigen::MatrixXd& covarianceMatrix) const
     throw (OutOfBoundException);
+  const Eigen::VectorXd sampleNormal(const MvNormalDistribution& dist) const;
 
 protected:
 
