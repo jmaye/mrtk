@@ -33,7 +33,7 @@
 
 #include <stdint.h>
 
-/** Randomizer
+/** This class implements a random sampler for different kind of distributions.
   */
 class Randomizer {
   friend std::ostream& operator << (std::ostream& stream,

@@ -30,7 +30,7 @@
 
 #include <iosfwd>
 
-/** MvNormalDistribution
+/** This class represents a multivariate normal distribution.
   */
 class MvNormalDistribution {
   friend std::ostream& operator << (std::ostream& stream,

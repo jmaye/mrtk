@@ -30,7 +30,7 @@
 
 #include <stdint.h>
 
-/** UniformDistributionDiscrete
+/** This class represents a discrete uniform distribution.
   */
 class UniformDistributionDiscrete {
   friend std::ostream& operator << (std::ostream& stream,

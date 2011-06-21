@@ -28,7 +28,7 @@
 
 #include <iosfwd>
 
-/** UniformDistribution
+/** This class represents a uniform distribution.
   */
 class UniformDistribution {
   friend std::ostream& operator << (std::ostream& stream,

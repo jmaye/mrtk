@@ -29,7 +29,7 @@
 
 #include <stdint.h>
 
-/** GMMClustering
+/** This class implements the GMM clustering algorithm.
   */
 class GMMClustering {
   /** Constructors

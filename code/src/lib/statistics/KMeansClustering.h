@@ -29,7 +29,7 @@
 
 #include <stdint.h>
 
-/** KMeansClustering
+/** This class implements the K-means clustering algorithm.
   */
 class KMeansClustering {
   /** Constructors

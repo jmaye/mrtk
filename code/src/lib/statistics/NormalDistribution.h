@@ -27,7 +27,7 @@
 
 #include <iosfwd>
 
-/** NormalDistribution
+/** This class represents a normal distribution.
   */
 class NormalDistribution {
   friend std::ostream& operator << (std::ostream& stream,
