@@ -16,79 +16,76 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/UniformDistributionDiscrete.h"
+#include "statistics/BinomialDistribution.h"
 
+#include "functions/LogBinomial.h"
 #include "statistics/Randomizer.h"
 
 #include <iostream>
 #include <fstream>
 
+#include <cmath>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-UniformDistributionDiscrete::UniformDistributionDiscrete(int32_t i32MinSupport,
-  int32_t i32MaxSupport) throw (OutOfBoundException) :
-  mi32MinSupport(i32MinSupport),
-  mi32MaxSupport(i32MaxSupport) {
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::UniformDistributionDiscrete(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+BinomialDistribution::BinomialDistribution(uint32_t u32TrialsNbr, double f64P) {
+  setP(f64P);
+  setTrialsNbr(u32TrialsNbr);
 }
 
-UniformDistributionDiscrete::UniformDistributionDiscrete(
-  const UniformDistributionDiscrete& other) :
-  mi32MinSupport(other.mi32MinSupport),
-  mi32MaxSupport(other.mi32MaxSupport) {
+BinomialDistribution::BinomialDistribution(const BinomialDistribution& other) :
+  mf64P(other.mf64P),
+  mu32TrialsNbr(other.mu32TrialsNbr) {
 }
 
-UniformDistributionDiscrete& UniformDistributionDiscrete::operator =
-  (const UniformDistributionDiscrete& other) {
-  mi32MinSupport = other.mi32MinSupport;
-  mi32MaxSupport = other.mi32MaxSupport;
+BinomialDistribution& BinomialDistribution::operator =
+  (const BinomialDistribution& other) {
+  mf64P = other.mf64P;
+  mu32TrialsNbr = other.mu32TrialsNbr;
   return *this;
 }
 
-UniformDistributionDiscrete::~UniformDistributionDiscrete() {
+BinomialDistribution::~BinomialDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void UniformDistributionDiscrete::read(std::istream& stream) {
+void BinomialDistribution::read(std::istream& stream) {
 }
 
-void UniformDistributionDiscrete::write(std::ostream& stream) const {
-  stream << "mi32MinSupport: " << mi32MinSupport << std::endl
-    << "mi32MaxSupport: " << mi32MaxSupport;
+void BinomialDistribution::write(std::ostream& stream) const {
+  stream << "mf64P: " << mf64P << std::endl
+    << "mu32TrialsNbr: " << mu32TrialsNbr;
 }
 
-void UniformDistributionDiscrete::read(std::ifstream& stream) {
+void BinomialDistribution::read(std::ifstream& stream) {
 }
 
-void UniformDistributionDiscrete::write(std::ofstream& stream) const {
+void BinomialDistribution::write(std::ofstream& stream) const {
 }
 
 std::ostream& operator << (std::ostream& stream,
-  const UniformDistributionDiscrete& obj) {
+  const BinomialDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::istream& operator >> (std::istream& stream,
-  UniformDistributionDiscrete& obj) {
+std::istream& operator >> (std::istream& stream, BinomialDistribution& obj) {
   obj.read(stream);
   return stream;
 }
 
 std::ofstream& operator << (std::ofstream& stream,
-  const UniformDistributionDiscrete& obj) {
+  const BinomialDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::ifstream& operator >> (std::ifstream& stream,
-  UniformDistributionDiscrete& obj) {
+std::ifstream& operator >> (std::ifstream& stream, BinomialDistribution& obj) {
   obj.read(stream);
   return stream;
 }
@@ -97,45 +94,49 @@ std::ifstream& operator >> (std::ifstream& stream,
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void UniformDistributionDiscrete::setMinSupport(int32_t i32Value)
+void BinomialDistribution::setP(double f64P) throw (OutOfBoundException) {
+  if (f64P < 0.0 || f64P > 1.0)
+    throw OutOfBoundException("BinomialDistribution::setP(): f64P must be between 0 and 1");
+  mf64P = f64P;
+}
+
+double BinomialDistribution::getP() const {
+  return mf64P;
+}
+
+void BinomialDistribution::setTrialsNbr(uint32_t u32TrialsNbr)
   throw (OutOfBoundException) {
-  mi32MinSupport = i32Value;
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::setMinSupport(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+  if (u32TrialsNbr == 0)
+    throw OutOfBoundException("BinomialDistribution::setTrialsNbr(): u32TrialsNbr must be larger than 0");
+  mu32TrialsNbr = u32TrialsNbr;
 }
 
-int32_t UniformDistributionDiscrete::getMinSupport() const {
-  return mi32MinSupport;
-}
-
-void UniformDistributionDiscrete::setMaxSupport(int32_t i32Value)
-  throw (OutOfBoundException) {
-  mi32MaxSupport = i32Value;
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::setMaxSupport(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
-}
-
-int32_t UniformDistributionDiscrete::getMaxSupport() const {
-  return mi32MaxSupport;
+uint32_t BinomialDistribution::getTrialsNbr() const {
+  return mu32TrialsNbr;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-double UniformDistributionDiscrete::pmf(int32_t i32X) const {
-  if (i32X >= mi32MinSupport && i32X <= mi32MaxSupport)
-    return 1.0 / (mi32MaxSupport - mi32MinSupport + 1.0);
-  else
-    return 0.0;
+double BinomialDistribution::pmf(uint32_t u32SuccNbr) const {
+  return exp(logpmf(u32SuccNbr));
 }
 
-double UniformDistributionDiscrete::logpmf(int32_t i32X) const
-  throw (InvalidOperationException){
-  throw InvalidOperationException("UniformDistributionDiscrete::logpmf(): undefined");
+double BinomialDistribution::logpmf(uint32_t u32SuccNbr) const
+  throw (OutOfBoundException) {
+  if (u32SuccNbr > mu32TrialsNbr)
+    throw OutOfBoundException("BinomialDistribution::logpmf(): u32SuccNbr must be smaller than u32TrialsNbr");
+  LogBinomial logBinomial;
+  return logBinomial(mu32TrialsNbr, u32SuccNbr) + mu32TrialsNbr * log(mf64P)
+    + (mu32TrialsNbr - u32SuccNbr) * log(1 - mf64P);
 }
 
-int32_t UniformDistributionDiscrete::sample() const {
+uint32_t BinomialDistribution::sample() const {
   static Randomizer randomizer;
-  return randomizer.sampleUniform(mi32MinSupport, mi32MaxSupport);
+  uint32_t u32SuccNbr = 0;
+  for (uint32_t i = 0; i < mu32TrialsNbr; i++)
+    if (randomizer.sampleBernoulli(mf64P) == true)
+      u32SuccNbr++;
+  return u32SuccNbr;
 }

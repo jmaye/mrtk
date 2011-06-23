@@ -17,7 +17,8 @@
  ******************************************************************************/
 
 /** \file MvNormalDistribution.h
-    \brief MvNormalDistribution
+    \brief This file defines the MvNormalDistribution class, which represents a
+           multivariate normal distribution
   */
 
 #ifndef MVNORMALDISTRIBUTION_H
@@ -30,7 +31,9 @@
 
 #include <iosfwd>
 
-/** This class represents a multivariate normal distribution.
+/** The MvNormalDistribution class represents a multivariate normal
+    distribution.
+    \brief Multivariate normal distribution
   */
 class MvNormalDistribution {
   friend std::ostream& operator << (std::ostream& stream,
@@ -42,59 +45,89 @@ class MvNormalDistribution {
   friend std::ifstream& operator >> (std::ifstream& stream,
     MvNormalDistribution& obj);
 
-  /** Copy constructor
-    */
-  MvNormalDistribution(const MvNormalDistribution& other);
-
-  /** Assignment operator
-    */
-  MvNormalDistribution& operator = (const MvNormalDistribution& other);
-
-  /** Stream methods
+  /** \name Streaming methods
+    @{
     */
   virtual void read(std::istream& stream);
   virtual void write(std::ostream& stream) const;
   virtual void read(std::ifstream& stream);
   virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
 
+  /** \name Private members
+    @{
+    */
+  /// Mean of the normal distribution
   Eigen::VectorXd mMeanVector;
+  /// Covariance matrix of the normal distribution
   Eigen::MatrixXd mCovarianceMatrix;
+  /// Precision matrix of the normal distribution
   Eigen::MatrixXd mPrecisionMatrix;
+  /// Determinant of the covariance matrix
   double mf64Determinant;
+  /// Normalizer of the distribution
   double mf64Normalizer;
+  /// Cholesky decomposition of the covariance matrix
   Eigen::LLT<Eigen::MatrixXd> mTransformation;
+  /** @}
+    */
 
 public:
-  /** Constructors
+  /** \name Constructors/destructor
+    @{
     */
+  /// Constructs the distribution from the parameters
   MvNormalDistribution(const Eigen::VectorXd& meanVector,
     const Eigen::MatrixXd& covarianceMatrix) throw (OutOfBoundException);
-
-  /** Destructor
-    */
+  /// Copy constructor
+  MvNormalDistribution(const MvNormalDistribution& other);
+  /// Assignment operator
+  MvNormalDistribution& operator = (const MvNormalDistribution& other);
+  /// Destructor
   ~MvNormalDistribution();
-
-  /** Accessors
+  /** @}
     */
+
+  /** \name Accessors
+    @{
+    */
+  /// Sets the mean of the distribution
   void setMean(const Eigen::VectorXd& meanVector)
     throw (OutOfBoundException);
+  /// Returns the mean of the distribution
   const Eigen::VectorXd& getMean() const;
+  /// Sets the covariance matrix of the distribution
   void setCovariance(const Eigen::MatrixXd& covarianceMatrix)
     throw (OutOfBoundException);
+  /// Returns the covariance matrix of the distribution
   const Eigen::MatrixXd& getCovariance() const;
+  /// Returns the precision matrix of the distribution
   const Eigen::MatrixXd& getPrecision() const;
+  /// Returns the determinant of the covariance matrix
   double getDeterminant() const;
+  /// Returns the normalizer of the distribution
   double getNormalizer() const;
+  /// Returns the cholesky decomposition of the covariance matrix
   const Eigen::LLT<Eigen::MatrixXd>& getTransformation() const;
-
-  /** Methods
+  /** @}
     */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the probability density at a point
   double pdf(const Eigen::VectorXd& xVector) const throw (OutOfBoundException);
+  /// Returns a sample of the distribution
   const Eigen::VectorXd sample() const;
+  /// Returns the KL-divergence with another distribution
   double KLDivergence(const MvNormalDistribution& other) const
     throw (OutOfBoundException);
+  /// Returns the Mahalanobis distance from a point
   double mahalanobisDistance(const Eigen::VectorXd& xVector) const
     throw (OutOfBoundException);
+  /** @}
+    */
 
 protected:
 

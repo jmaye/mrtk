@@ -17,7 +17,8 @@
  ******************************************************************************/
 
 /** \file KMeansClustering.h
-    \brief KMeansClustering
+    \brief This file defines the KMeansClustering class, which implements a
+           K-Means clustering algorithm
   */
 
 #ifndef KMEANSCLUSTERING_H
@@ -29,20 +30,30 @@
 
 #include <stdint.h>
 
-/** This class implements the K-means clustering algorithm.
+/** This class implements a K-means clustering algorithm based on
+    Expectation-Maximization
+    \brief K-Means clustering algorithm
   */
 class KMeansClustering {
-  /** Constructors
+  /** \name Private constructors
+    @{
     */
+  /// Default constructor
   KMeansClustering();
+  /** @}
+    */
 
 public:
-  /** Methods
+  /** \name Methods
+    @{
     */
+  /// Clusters the input data points
   static void cluster(const std::vector<std::vector<double> >&
     inputPointsVector, std::vector<std::vector<double> >& clusterCentersVector,
     std::vector<std::vector<uint32_t> >& assignmentsVector, uint32_t u32K,
     uint32_t u32MaxIterations, double f64Tol) throw (InvalidOperationException);
+  /** @}
+    */
 
 protected:
 

@@ -16,8 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "exceptions/CLibraryException.h"
+#include "functions/LogFactorial.h"
 
-CLibraryException::CLibraryException(const std::string &msg) :
-  std::runtime_error(msg) {
+#include <cmath>
+
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
+
+LogFactorial::LogFactorial() {
+}
+
+LogFactorial::~LogFactorial() {
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+double LogFactorial::operator() (uint32_t u32N) {
+  double f64Value = 0.0;
+  for (uint32_t i = 1; i < u32N; i++) {
+    f64Value += log(i + 1);
+  }
+  return f64Value;
 }

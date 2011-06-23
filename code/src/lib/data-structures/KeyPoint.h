@@ -17,7 +17,8 @@
  ******************************************************************************/
 
 /** \file KeyPoint.h
-    \brief KeyPoint
+    \brief This file defines the class KeyPoint, which represents an interest
+           point in an image
   */
 
 #ifndef KEYPOINT_H
@@ -25,39 +26,60 @@
 
 #include <iosfwd>
 
-/** KeyPoint
+/** The class KeyPoint represents an interest point in an image
+    \brief An interest point
   */
 class KeyPoint {
   friend std::ostream& operator << (std::ostream& stream, const KeyPoint& obj);
   friend std::istream& operator >> (std::istream& stream, KeyPoint& obj);
-  friend std::ofstream& operator << (std::ofstream& stream, const KeyPoint& obj);
+  friend std::ofstream& operator << (std::ofstream& stream,
+    const KeyPoint& obj);
   friend std::ifstream& operator >> (std::ifstream& stream, KeyPoint& obj);
 
-  /** Copy constructor
+  /** \name Private constructors
+    @{
     */
+  /// Copy constructor
   KeyPoint(const KeyPoint& other);
 
-  /** Assignment operator
-    */
+  /// Assignment operator
   KeyPoint& operator = (const KeyPoint& other);
+  /** @}
+    */
 
-  /** Stream methods
+  /** \name Streaming methods
+    @{
     */
   virtual void read(std::istream& stream);
   virtual void write(std::ostream& stream) const;
   virtual void read(std::ifstream& stream);
   virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
 
 public:
-  /** Constructors
+  /** \name Constructors/destructor
+    @{
     */
+  /// Default constructor
   KeyPoint();
-
-  /** Destructor
-    */
+  /// Destructor
   ~KeyPoint();
+  /** @}
+    */
 
-  /** Accessors
+  /** \name Accessors
+    @{
+    */
+
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+
+  /** @}
     */
 
 protected:

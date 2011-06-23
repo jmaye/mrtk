@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 /** \file Image.h
-    \brief Image
+    \brief This file defines the class Image, which represents an image
   */
 
 #ifndef IMAGE_H
@@ -25,7 +25,8 @@
 
 #include <iosfwd>
 
-/** Image
+/** The class Image represents an image
+    \brief An image
   */
 class Image {
   friend std::ostream& operator << (std::ostream& stream, const Image& obj);
@@ -33,31 +34,49 @@ class Image {
   friend std::ofstream& operator << (std::ofstream& stream, const Image& obj);
   friend std::ifstream& operator >> (std::ifstream& stream, Image& obj);
 
-  /** Copy constructor
+  /** \name Private constructors
+    @{
     */
+  /// Copy constructor
   Image(const Image& other);
-
-  /** Assignment operator
-    */
+  /// Assignment operator
   Image& operator = (const Image& other);
+  /** @}
+    */
 
-  /** Stream methods
+  /** \name Streaming methods
+    @{
     */
   virtual void read(std::istream& stream);
   virtual void write(std::ostream& stream) const;
   virtual void read(std::ifstream& stream);
   virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
 
 public:
-  /** Constructors
+  /** \name Constructors/destructor
+    @{
     */
+  /// Default constructor
   Image();
-
-  /** Destructor
-    */
+  /// Destructor
   ~Image();
+  /** @}
+    */
 
-  /** Accessors
+  /** \name Accessors
+    @{
+    */
+
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+
+  /** @}
     */
 
 protected:

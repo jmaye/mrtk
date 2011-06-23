@@ -9,40 +9,42 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file UniformDistribution.h
-    \brief This file defines the UniformDistribution class, which represents a
-           uniform distribution
+/** \file ExponentialDistribution.h
+    \brief This file defines the ExponentialDistribution class, which represents
+           an exponential distribution
   */
 
-#ifndef UNIFORMDISTRIBUTION_H
-#define UNIFORMDISTRIBUTION_H
+#ifndef EXPONENTIALDISTRIBUTION_H
+#define EXPONENTIALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "exceptions/InvalidOperationException.h"
 
 #include <iosfwd>
 
-/** The UniformDistribution class represents a uniform distribution
-    \brief Uniform distribution
+/** The ExponentialDistribution class represents an exponential distribution,
+    i.e., a continuous distribution that models the time between events in a
+    Poisson process, or the time for a continuous process to change state. The
+    events appear at a constant average rate.
+    \brief Exponential distribution
   */
-class UniformDistribution {
+class ExponentialDistribution {
   friend std::ostream& operator << (std::ostream& stream,
-    const UniformDistribution& obj);
+    const ExponentialDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,
-    UniformDistribution& obj);
+    ExponentialDistribution& obj);
   friend std::ofstream& operator << (std::ofstream& stream,
-    const UniformDistribution& obj);
+    const ExponentialDistribution& obj);
   friend std::ifstream& operator >> (std::ifstream& stream,
-    UniformDistribution& obj);
+    ExponentialDistribution& obj);
 
-  /** \name Streaming methods
+  /** \name Stream methods
     @{
     */
   virtual void read(std::istream& stream);
@@ -52,13 +54,11 @@ class UniformDistribution {
   /** @}
     */
 
-  /** \name Streaming methods
+  /** \name Private members
     @{
     */
-  /// Minimum support of the distribution
-  double mf64MinSupport;
-  /// Maximum support of the distribution
-  double mf64MaxSupport;
+  /// Rate
+  double mf64Lambda;
   /** @}
     */
 
@@ -66,41 +66,40 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs a uniform distribution from parameters
-  UniformDistribution(double f64MinSupport = 0.0, double f64MaxSupport = 1.0)
-    throw (OutOfBoundException);
+  /// Constructs distribution from parameter
+  ExponentialDistribution(double f64Lambda);
   /// Copy constructor
-  UniformDistribution(const UniformDistribution& other);
-  /// Assignment operator
-  UniformDistribution& operator = (const UniformDistribution& other);
+  ExponentialDistribution(const ExponentialDistribution& other);
+  //// Assignment operator
+  ExponentialDistribution& operator = (const ExponentialDistribution& other);
   /// Destructor
-  ~UniformDistribution();
+  ~ExponentialDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the minimum support of the distribution
-  void setMinSupport(double f64Value) throw (OutOfBoundException);
-  /// Returns the minimum support of the distribution
-  double getMinSupport() const;
-  /// Sets the maximum support of the distribution
-  void setMaxSupport(double f64Value) throw (OutOfBoundException);
-  /// Returns the maximum support of the distribution
-  double getMaxSupport() const;
+  /// Sets the event rate
+  void setLambda(double f64Lambda) throw (OutOfBoundException);
+  /// Returns the event rate
+  double getLambda() const;
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Returns probability density function of a point
+  /// Returns the probability density function at a point
   double pdf(double f64X) const;
-  /// Returns log-probability density function of a point
-  double logpdf(double f64X) const throw (InvalidOperationException);
+  /// Returns the log-probability density function at a point
+  double logpdf(double f64X) const throw (OutOfBoundException);
+  /// Returns the cumulative density function at a point
+  double cdf(double f64X) const;
   /// Returns a sample from the distribution
   double sample() const;
+  /// Returns the KL-divergence with another distribution
+  double KLDivergence(const ExponentialDistribution& other) const;
   /** @}
     */
 
@@ -108,4 +107,4 @@ protected:
 
 };
 
-#endif // UNIFORMDISTRIBUTION_H
+#endif // EXPONENTIALDISTRIBUTION_H

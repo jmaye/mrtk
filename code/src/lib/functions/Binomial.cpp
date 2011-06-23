@@ -16,40 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvalidOperationException.h
-    \brief This file defines the InvalidOperationException class, which
-           represents any exception occuring when an invalid operation is
-           requested
-  */
+#include "functions/Binomial.h"
 
-#ifndef INVALIDOPERATIONEXCEPTION_H
-#define INVALIDOPERATIONEXCEPTION_H
+#include "functions/Factorial.h"
 
-#include <stdexcept>
-#include <string>
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-/** The class InvalidOperationException represents any
-    exceptions when the requested method will not be able to perform
-    \brief Invalid operation requested
-  */
-class InvalidOperationException : public std::runtime_error {
-  /// Assignment operator
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
+Binomial::Binomial() {
+}
 
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Constructs exception from message
-  InvalidOperationException(const std::string &msg = "");
-  /// Copy constructor
-  InvalidOperationException(const InvalidOperationException &other);
-  /** @}
-    */
+Binomial::~Binomial() {
+}
 
-protected:
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
 
-};
-
-#endif // INVALIDOPERATIONEXCEPTION_H
+uint32_t Binomial::operator() (uint32_t u32N, uint32_t u32K) {
+  Factorial factorial;
+  return factorial(u32N) / (factorial(u32K) * factorial(u32N - u32K));
+}

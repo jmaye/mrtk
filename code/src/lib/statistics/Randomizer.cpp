@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <limits>
 
 #include <stdlib.h>
 #include <cmath>
@@ -157,4 +158,64 @@ const Eigen::VectorXd Randomizer::sampleNormal(const MvNormalDistribution& dist)
     sampleVector(i) = sampleNormal(dist.getMean()(i),
       dist.getCovariance()(i, i));
   return dist.getMean() + dist.getTransformation().matrixL() * sampleVector;
+}
+
+bool Randomizer::sampleBernoulli(double f64P) const
+  throw (OutOfBoundException) {
+  if (f64P < 0.0 || f64P > 1.0)
+    throw OutOfBoundException("Randomizer::sampleBernoulli(): f64P must be between 0 and 1");
+  if (sampleUniform() >= 1.0 - f64P)
+    return true;
+  else
+    return false;
+}
+
+uint32_t Randomizer::sampleCategorical(const Eigen::VectorXd&
+  eventProbabilitiesVector) const throw (OutOfBoundException) {
+  if (fabs(eventProbabilitiesVector.sum() - 1.0) >
+    std::numeric_limits<double>::epsilon() ||
+    (eventProbabilitiesVector.cwise() < 0).any() == true)
+    throw OutOfBoundException("Randomizer::sampleCategorical(): event probabilities must sum to 1 and probabilities bigger or equal to 0");
+  Eigen::VectorXd cumProbVector =
+    Eigen::VectorXd::Zero(eventProbabilitiesVector.rows() + 1);
+  double f64Sum = 0.0;
+  for (uint32_t i = 1; i < (uint32_t)eventProbabilitiesVector.rows() + 1; i++) {
+    f64Sum += eventProbabilitiesVector(i);
+    cumProbVector(i) += f64Sum;
+  }
+  double f64U = sampleUniform();
+  for (uint32_t i = 1; i < (uint32_t)eventProbabilitiesVector.rows() + 1; i++) {
+    if (f64U > cumProbVector(i - 1) && f64U <= cumProbVector(i))
+      return i - 1;
+  }
+  return eventProbabilitiesVector.rows() - 1;
+}
+
+uint32_t Randomizer::samplePoisson(double f64Lambda) const
+  throw (OutOfBoundException) {
+  if (f64Lambda <= 0)
+    throw OutOfBoundException("Randomizer::samplePoisson(): f64Lambda must be strictly positive");
+  double f64L = exp(-f64Lambda);
+  uint32_t u32K = 0;
+  double f64P = 1.0;
+  do {
+    u32K++;
+    f64P *= sampleUniform();
+  }
+  while (f64P > f64L);
+  return u32K - 1;
+}
+
+double Randomizer::sampleExponential(double f64Lambda) const
+  throw (OutOfBoundException) {
+  if (f64Lambda <= 0)
+    throw OutOfBoundException("Randomizer::sampleExponential(): f64Lambda must be strictly positive");
+  return -log(sampleUniform()) / f64Lambda;
+}
+
+uint32_t Randomizer::sampleGeometric(double f64P) const
+  throw (OutOfBoundException) {
+  if (f64P < 0.0 || f64P > 1.0)
+    throw OutOfBoundException("Randomizer::sampleExponential(): f64P must be between 0 and 1");
+  return floor(log(sampleUniform()) / log(1 - f64P));
 }

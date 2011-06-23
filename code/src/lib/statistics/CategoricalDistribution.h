@@ -9,43 +9,42 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file UniformDistributionDiscrete.h
-    \brief This file defines the UniformDistributionDiscrete class, which
-           represents a discrete uniform distribution
+/** \file CategoricalDistribution.h
+    \brief This file defines the CategoricalDistribution class, which
+           represents a categorical distribution
   */
 
-#ifndef UNIFORMDISTRIBUTIONDISCRETE_H
-#define UNIFORMDISTRIBUTIONDISCRETE_H
+#ifndef CATEGORICALDISTRIBUTION_H
+#define CATEGORICALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
 #include "exceptions/InvalidOperationException.h"
+
+#include <Eigen/Core>
 
 #include <iosfwd>
 
 #include <stdint.h>
 
-/** The UniformDistributionDiscrete class represents a discrete uniform
-    distribution.
-    \brief Discrete uniform distribution
+/** The CategoricalDistribution class represents a categorical distribution,
+    i.e., the discrete distribution of a random event that can take one out of K
+    values
+    \brief Categorical distribution
   */
-class UniformDistributionDiscrete {
-  friend std::ostream& operator << (std::ostream& stream,
-    const UniformDistributionDiscrete& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    UniformDistributionDiscrete& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const UniformDistributionDiscrete& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    UniformDistributionDiscrete& obj);
+class CategoricalDistribution {
+  friend std::ostream& operator << (std::ostream& stream, const CategoricalDistribution& obj);
+  friend std::istream& operator >> (std::istream& stream, CategoricalDistribution& obj);
+  friend std::ofstream& operator << (std::ofstream& stream, const CategoricalDistribution& obj);
+  friend std::ifstream& operator >> (std::ifstream& stream, CategoricalDistribution& obj);
 
-  /** \name Streaming methods
+  /** \name Stream methods
     @{
     */
   virtual void read(std::istream& stream);
@@ -58,10 +57,8 @@ class UniformDistributionDiscrete {
   /** \name Private members
     @{
     */
-  /// Minimum support of the distribution
-  int32_t mi32MinSupport;
-  /// Maximum support of the distribution
-  int32_t mi32MaxSupport;
+  /// Events probabilities
+  Eigen::VectorXd mEventProbabilitiesVector;
   /** @}
     */
 
@@ -69,30 +66,25 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs a distribution from the parameters
-  UniformDistributionDiscrete(int32_t i32MinSupport, int32_t i32MaxSupport)
-    throw (OutOfBoundException);
+  /// Constructs distribution from parameters
+  CategoricalDistribution(const Eigen::VectorXd& eventProbabilitiesVector);
   /// Copy constructor
-  UniformDistributionDiscrete(const UniformDistributionDiscrete& other);
-  /// Assignment operator
-  UniformDistributionDiscrete& operator = (const UniformDistributionDiscrete&
-    other);
+  CategoricalDistribution(const CategoricalDistribution& other);
+  //// Assignment operator
+  CategoricalDistribution& operator = (const CategoricalDistribution& other);
   /// Destructor
-  ~UniformDistributionDiscrete();
+  ~CategoricalDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the minimum support for the distribution
-  void setMinSupport(int32_t i32Value) throw (OutOfBoundException);
-  /// Returns the minimum support for the distribution
-  int32_t getMinSupport() const;
-  /// Sets the maximum support for the distribution
-  void setMaxSupport(int32_t i32Value) throw (OutOfBoundException);
-  /// Returns the maximum support for the distribution
-  int32_t getMaxSupport() const;
+  /// Sets the event probabilities
+  void setEventProbabilities(const Eigen::VectorXd& eventProbabilitiesVector)
+    throw (OutOfBoundException);
+  /// Returns the event probabilities
+  const Eigen::VectorXd& getEventProbabilities() const;
   /** @}
     */
 
@@ -100,11 +92,11 @@ public:
     @{
     */
   /// Returns the probability mass function at a point
-  double pmf(int32_t i32X) const;
+  double pmf(uint32_t u32Event) const throw (OutOfBoundException);
   /// Returns the log-probability mass function at a point
-  double logpmf(int32_t i32X) const throw (InvalidOperationException);
+  double logpmf(uint32_t u32Event) const throw (InvalidOperationException);
   /// Returns a sample from the distribution
-  int32_t sample() const;
+  uint32_t sample() const;
   /** @}
     */
 
@@ -112,4 +104,4 @@ protected:
 
 };
 
-#endif // UNIFORMDISTRIBUTIONDISCRETE_H
+#endif // CATEGORICALDISTRIBUTION_H

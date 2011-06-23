@@ -17,7 +17,8 @@
  ******************************************************************************/
 
 /** \file Randomizer.h
-    \brief Randomizer
+    \brief This file defines the Randomizer class, which implements random
+           sampling from several distributions
   */
 
 #ifndef RANDOMIZER_H
@@ -33,7 +34,8 @@
 
 #include <stdint.h>
 
-/** This class implements a random sampler for different kind of distributions.
+/** The Randomizer class implements random sampling from several distributions
+    \brief Random sampling from distributions
   */
 class Randomizer {
   friend std::ostream& operator << (std::ostream& stream,
@@ -43,49 +45,80 @@ class Randomizer {
     const Randomizer& obj);
   friend std::ifstream& operator >> (std::ifstream& stream, Randomizer& obj);
 
-  /** Copy constructor
-    */
-  Randomizer(const Randomizer& other);
-
-  /** Assignment operator
-    */
-  Randomizer& operator = (const Randomizer& other);
-
-  /** Stream methods
+  /** \name Streaming methods
+    @{
     */
   virtual void read(std::istream& stream);
   virtual void write(std::ostream& stream) const;
   virtual void read(std::ifstream& stream);
   virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
 
+  /** \name Private members
+    @{
+    */
+  /// Seed of the random sampling
   double mf64Seed;
+  /** @}
+    */
 
 public:
-  /** Constructors
+  /** \name Constructors/destructor
+    @{
     */
   Randomizer(double f64Seed = Timestamp::now());
-
-  /** Destructor
-    */
+  /// Copy constructor
+  Randomizer(const Randomizer& other);
+  /// Assignment operator
+  Randomizer& operator = (const Randomizer& other);
+  /// Destructor
   ~Randomizer();
-
-  /** Accessors
+  /** @}
     */
+
+  /** \name Accessors
+    @{
+    */
+  /// Sets the seed of the random sampler
   void setSeed(double f64Seed);
+  /// Returns the seed of the random sampler
   double getSeed() const;
-
-  /** Methods
+  /** @}
     */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns a sample from a uniform distribution
   double sampleUniform(double f64MinSupport = 0.0, double f64MaxSupport = 1.0)
     const throw (OutOfBoundException);
+  /// Returns a sample from a discrete uniform distribution
   int32_t sampleUniform(int32_t i32MinSupport, int32_t i32MaxSupport)
     const throw (OutOfBoundException);
+  /// Returns a sample from a normal distribution
   double sampleNormal(double f64Mean = 0.0, double f64Variance = 1.0) const
     throw (OutOfBoundException);
+  /// Returns a sample from a multivariate normal distribution
   const Eigen::VectorXd sampleNormal(const Eigen::VectorXd& meanVector,
     const Eigen::MatrixXd& covarianceMatrix) const
     throw (OutOfBoundException);
+  /// Returns a sample from a multivariate normal distribution
   const Eigen::VectorXd sampleNormal(const MvNormalDistribution& dist) const;
+  /// Returns a sample from the Bernoulli distribution
+  bool sampleBernoulli(double f64P) const throw (OutOfBoundException);
+  /// Returns a sample from the categorical distribution
+  uint32_t sampleCategorical(const Eigen::VectorXd& eventProbabilitiesVector)
+    const throw (OutOfBoundException);
+  /// Returns a sample from the Poisson distribution
+  uint32_t samplePoisson(double f64Lambda) const throw (OutOfBoundException);
+  /// Returns a sample from the exponential distribution
+  double sampleExponential(double f64Lambda) const
+    throw (OutOfBoundException);
+  /// Returns a sample from the geometric distribution
+  uint32_t sampleGeometric(double f64P) const throw (OutOfBoundException);
+  /** @}
+    */
 
 protected:
 

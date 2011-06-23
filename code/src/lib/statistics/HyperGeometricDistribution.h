@@ -9,40 +9,44 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file UniformDistribution.h
-    \brief This file defines the UniformDistribution class, which represents a
-           uniform distribution
+/** \file HyperGeometricDistribution.h
+    \brief This file defines the HyperGeometricDistribution class, which
+           represents an hypergeometric distribution
   */
 
-#ifndef UNIFORMDISTRIBUTION_H
-#define UNIFORMDISTRIBUTION_H
+#ifndef HYPERGEOMETRICDISTRIBUTION_H
+#define HYPERGEOMETRICDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "exceptions/InvalidOperationException.h"
 
 #include <iosfwd>
 
-/** The UniformDistribution class represents a uniform distribution
-    \brief Uniform distribution
-  */
-class UniformDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const UniformDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    UniformDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const UniformDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    UniformDistribution& obj);
+#include <stdint.h>
 
-  /** \name Streaming methods
+/** The HyperGeometricDistribution class represents an hyper geometric
+    distribution, i.e., a discrete distribution that models the number of
+    successes in a sequence of N draws from a finite population without
+    replacement
+    \brief Hypergeometric distribution
+  */
+class HyperGeometricDistribution {
+  friend std::ostream& operator << (std::ostream& stream,
+    const HyperGeometricDistribution& obj);
+  friend std::istream& operator >> (std::istream& stream,
+    HyperGeometricDistribution& obj);
+  friend std::ofstream& operator << (std::ofstream& stream,
+    const HyperGeometricDistribution& obj);
+  friend std::ifstream& operator >> (std::ifstream& stream,
+    HyperGeometricDistribution& obj);
+
+  /** \name Stream methods
     @{
     */
   virtual void read(std::istream& stream);
@@ -52,13 +56,15 @@ class UniformDistribution {
   /** @}
     */
 
-  /** \name Streaming methods
+  /** \name Private members
     @{
     */
-  /// Minimum support of the distribution
-  double mf64MinSupport;
-  /// Maximum support of the distribution
-  double mf64MaxSupport;
+  /// Number of balls
+  uint32_t mu32N;
+  /// Number of white balls
+  uint32_t mu32m;
+  /// Number of draws
+  uint32_t mu32n;
   /** @}
     */
 
@@ -66,41 +72,45 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs a uniform distribution from parameters
-  UniformDistribution(double f64MinSupport = 0.0, double f64MaxSupport = 1.0)
-    throw (OutOfBoundException);
+  /// Constructs distribution from parameters
+  HyperGeometricDistribution(uint32_t u32N, uint32_t u32m, uint32_t u32n);
   /// Copy constructor
-  UniformDistribution(const UniformDistribution& other);
-  /// Assignment operator
-  UniformDistribution& operator = (const UniformDistribution& other);
+  HyperGeometricDistribution(const HyperGeometricDistribution& other);
+  //// Assignment operator
+  HyperGeometricDistribution& operator = (const HyperGeometricDistribution&
+    other);
   /// Destructor
-  ~UniformDistribution();
+  ~HyperGeometricDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the minimum support of the distribution
-  void setMinSupport(double f64Value) throw (OutOfBoundException);
-  /// Returns the minimum support of the distribution
-  double getMinSupport() const;
-  /// Sets the maximum support of the distribution
-  void setMaxSupport(double f64Value) throw (OutOfBoundException);
-  /// Returns the maximum support of the distribution
-  double getMaxSupport() const;
+  /// Sets the number of balls
+  void setN(uint32_t u32N) throw (OutOfBoundException);
+  /// Returns the number of balls
+  uint32_t getN() const;
+  /// Sets the number of white balls
+  void setm(uint32_t u32m) throw (OutOfBoundException);
+  /// Returns the number of white balls
+  uint32_t getm() const;
+  /// Sets the number of draws
+  void setn(uint32_t u32n) throw (OutOfBoundException);
+  /// Returns the number of draws
+  uint32_t getn() const;
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Returns probability density function of a point
-  double pdf(double f64X) const;
-  /// Returns log-probability density function of a point
-  double logpdf(double f64X) const throw (InvalidOperationException);
+  /// Returns the probability mass function at a point
+  double pmf(uint32_t u32X) const;
+  /// Returns the log-probability mass function at a point
+  double logpmf(uint32_t u32X) const throw (OutOfBoundException);
   /// Returns a sample from the distribution
-  double sample() const;
+  uint32_t sample() const;
   /** @}
     */
 
@@ -108,4 +118,4 @@ protected:
 
 };
 
-#endif // UNIFORMDISTRIBUTION_H
+#endif // HYPERGEOMETRICDISTRIBUTION_H

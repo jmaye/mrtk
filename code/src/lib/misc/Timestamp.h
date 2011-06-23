@@ -17,23 +17,33 @@
  ******************************************************************************/
 
 /** \file Timestamp.h
-    \brief Timestamp
+    \brief This file defines the Timestamp class, which implements timestamping
+           facilities
   */
 
 #ifndef TIMESTAMP_H
 #define TIMESTAMP_H
 
-/** Timestamp
+/** The class Timestamp implements timestamping facilities
+    \brief Timestamping facilities
   */
 class Timestamp {
-  /** Constructors
+  /** \name Private constructors
+    @{
     */
+  /// Default constructor
   Timestamp();
+  /** @}
+    */
 
 public:
-  /** Methods
+  /** \name Methods
+    @{
     */
+  /// Returns the system time in ms
   static double now();
+  /** @}
+    */
 
 protected:
 

@@ -9,40 +9,43 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file UniformDistribution.h
-    \brief This file defines the UniformDistribution class, which represents a
-           uniform distribution
+/** \file BinomialDistribution.h
+    \brief This file defines the BinomialDistribution class, which represents a
+           binomial distribution
   */
 
-#ifndef UNIFORMDISTRIBUTION_H
-#define UNIFORMDISTRIBUTION_H
+#ifndef BINOMIALDISTRIBUTION_H
+#define BINOMIALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "exceptions/InvalidOperationException.h"
 
 #include <iosfwd>
 
-/** The UniformDistribution class represents a uniform distribution
-    \brief Uniform distribution
-  */
-class UniformDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const UniformDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    UniformDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const UniformDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    UniformDistribution& obj);
+#include <stdint.h>
 
-  /** \name Streaming methods
+/** The BinomialDistribution class represents a binomial distribution, i.e., the
+    discrete distribution of the number of successes in N independent Bernoulli
+    draws, each with the same probability of success p
+    \brief Binomial distribution
+  */
+class BinomialDistribution {
+  friend std::ostream& operator << (std::ostream& stream,
+    const BinomialDistribution& obj);
+  friend std::istream& operator >> (std::istream& stream,
+    BinomialDistribution& obj);
+  friend std::ofstream& operator << (std::ofstream& stream,
+    const BinomialDistribution& obj);
+  friend std::ifstream& operator >> (std::ifstream& stream,
+    BinomialDistribution& obj);
+
+  /** \name Stream methods
     @{
     */
   virtual void read(std::istream& stream);
@@ -52,13 +55,13 @@ class UniformDistribution {
   /** @}
     */
 
-  /** \name Streaming methods
+  /** \name Private members
     @{
     */
-  /// Minimum support of the distribution
-  double mf64MinSupport;
-  /// Maximum support of the distribution
-  double mf64MaxSupport;
+  /// Success probability
+  double mf64P;
+  /// Number of trials
+  uint32_t mu32TrialsNbr;
   /** @}
     */
 
@@ -66,41 +69,40 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs a uniform distribution from parameters
-  UniformDistribution(double f64MinSupport = 0.0, double f64MaxSupport = 1.0)
-    throw (OutOfBoundException);
+  /// Constructs the distribution from the parameter
+  BinomialDistribution(uint32_t u32TrialsNbr, double f64P);
   /// Copy constructor
-  UniformDistribution(const UniformDistribution& other);
-  /// Assignment operator
-  UniformDistribution& operator = (const UniformDistribution& other);
+  BinomialDistribution(const BinomialDistribution& other);
+  //// Assignment operator
+  BinomialDistribution& operator = (const BinomialDistribution& other);
   /// Destructor
-  ~UniformDistribution();
+  ~BinomialDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the minimum support of the distribution
-  void setMinSupport(double f64Value) throw (OutOfBoundException);
-  /// Returns the minimum support of the distribution
-  double getMinSupport() const;
-  /// Sets the maximum support of the distribution
-  void setMaxSupport(double f64Value) throw (OutOfBoundException);
-  /// Returns the maximum support of the distribution
-  double getMaxSupport() const;
+  /// Sets the success probability
+  void setP(double f64P) throw (OutOfBoundException);
+  /// Returns the success probability
+  double getP() const;
+  /// Sets the number of trials
+  void setTrialsNbr(uint32_t u32TrialsNbr) throw (OutOfBoundException);
+  /// Returns the number of trials
+  uint32_t getTrialsNbr() const;
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Returns probability density function of a point
-  double pdf(double f64X) const;
-  /// Returns log-probability density function of a point
-  double logpdf(double f64X) const throw (InvalidOperationException);
+  /// Returns the probability mass function at a point
+  double pmf(uint32_t u32SuccNbr) const;
+  /// Returns the log-probability mass at a point
+  double logpmf(uint32_t u32SuccNbr) const throw (OutOfBoundException);
   /// Returns a sample from the distribution
-  double sample() const;
+  uint32_t sample() const;
   /** @}
     */
 
@@ -108,4 +110,4 @@ protected:
 
 };
 
-#endif // UNIFORMDISTRIBUTION_H
+#endif // BINOMIALDISTRIBUTION_H

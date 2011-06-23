@@ -16,79 +16,73 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/UniformDistributionDiscrete.h"
+#include "statistics/ExponentialDistribution.h"
 
 #include "statistics/Randomizer.h"
 
 #include <iostream>
 #include <fstream>
 
+#include <cmath>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-UniformDistributionDiscrete::UniformDistributionDiscrete(int32_t i32MinSupport,
-  int32_t i32MaxSupport) throw (OutOfBoundException) :
-  mi32MinSupport(i32MinSupport),
-  mi32MaxSupport(i32MaxSupport) {
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::UniformDistributionDiscrete(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+ExponentialDistribution::ExponentialDistribution(double f64Lambda) {
+  setLambda(f64Lambda);
 }
 
-UniformDistributionDiscrete::UniformDistributionDiscrete(
-  const UniformDistributionDiscrete& other) :
-  mi32MinSupport(other.mi32MinSupport),
-  mi32MaxSupport(other.mi32MaxSupport) {
+ExponentialDistribution::ExponentialDistribution(const
+  ExponentialDistribution& other) :
+  mf64Lambda(other.mf64Lambda){
 }
 
-UniformDistributionDiscrete& UniformDistributionDiscrete::operator =
-  (const UniformDistributionDiscrete& other) {
-  mi32MinSupport = other.mi32MinSupport;
-  mi32MaxSupport = other.mi32MaxSupport;
+ExponentialDistribution& ExponentialDistribution::operator =
+  (const ExponentialDistribution& other) {
+  mf64Lambda = other.mf64Lambda;
   return *this;
 }
 
-UniformDistributionDiscrete::~UniformDistributionDiscrete() {
+ExponentialDistribution::~ExponentialDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void UniformDistributionDiscrete::read(std::istream& stream) {
+void ExponentialDistribution::read(std::istream& stream) {
 }
 
-void UniformDistributionDiscrete::write(std::ostream& stream) const {
-  stream << "mi32MinSupport: " << mi32MinSupport << std::endl
-    << "mi32MaxSupport: " << mi32MaxSupport;
+void ExponentialDistribution::write(std::ostream& stream) const {
+  stream << "mf64Lambda: " << mf64Lambda;
 }
 
-void UniformDistributionDiscrete::read(std::ifstream& stream) {
+void ExponentialDistribution::read(std::ifstream& stream) {
 }
 
-void UniformDistributionDiscrete::write(std::ofstream& stream) const {
+void ExponentialDistribution::write(std::ofstream& stream) const {
 }
 
 std::ostream& operator << (std::ostream& stream,
-  const UniformDistributionDiscrete& obj) {
+  const ExponentialDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::istream& operator >> (std::istream& stream,
-  UniformDistributionDiscrete& obj) {
+std::istream& operator >> (std::istream& stream, ExponentialDistribution& obj) {
   obj.read(stream);
   return stream;
 }
 
 std::ofstream& operator << (std::ofstream& stream,
-  const UniformDistributionDiscrete& obj) {
+  const ExponentialDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
 std::ifstream& operator >> (std::ifstream& stream,
-  UniformDistributionDiscrete& obj) {
+  ExponentialDistribution& obj) {
   obj.read(stream);
   return stream;
 }
@@ -97,45 +91,43 @@ std::ifstream& operator >> (std::ifstream& stream,
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void UniformDistributionDiscrete::setMinSupport(int32_t i32Value)
+void ExponentialDistribution::setLambda(double f64Lambda)
   throw (OutOfBoundException) {
-  mi32MinSupport = i32Value;
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::setMinSupport(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+  if (f64Lambda <= 0)
+    throw OutOfBoundException("ExponentialDistribution::setLambda(): f64Lambda must be strictly positive");
+  mf64Lambda = f64Lambda;
 }
 
-int32_t UniformDistributionDiscrete::getMinSupport() const {
-  return mi32MinSupport;
-}
-
-void UniformDistributionDiscrete::setMaxSupport(int32_t i32Value)
-  throw (OutOfBoundException) {
-  mi32MaxSupport = i32Value;
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::setMaxSupport(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
-}
-
-int32_t UniformDistributionDiscrete::getMaxSupport() const {
-  return mi32MaxSupport;
+double ExponentialDistribution::getLambda() const {
+  return mf64Lambda;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-double UniformDistributionDiscrete::pmf(int32_t i32X) const {
-  if (i32X >= mi32MinSupport && i32X <= mi32MaxSupport)
-    return 1.0 / (mi32MaxSupport - mi32MinSupport + 1.0);
-  else
-    return 0.0;
+double ExponentialDistribution::pdf(double f64X) const {
+  return exp(logpdf(f64X));
 }
 
-double UniformDistributionDiscrete::logpmf(int32_t i32X) const
-  throw (InvalidOperationException){
-  throw InvalidOperationException("UniformDistributionDiscrete::logpmf(): undefined");
+double ExponentialDistribution::logpdf(double f64X) const
+  throw (OutOfBoundException) {
+  if (f64X < 0)
+    throw OutOfBoundException("ExponentialDistribution::logpdf(): f64X must be strictly positive");
+  return log(mf64Lambda) -mf64Lambda * f64X;
 }
 
-int32_t UniformDistributionDiscrete::sample() const {
+double ExponentialDistribution::cdf(double f64X) const {
+  return 1.0 - exp(-mf64Lambda * f64X);
+}
+
+double ExponentialDistribution::sample() const {
   static Randomizer randomizer;
-  return randomizer.sampleUniform(mi32MinSupport, mi32MaxSupport);
+  return randomizer.sampleExponential(mf64Lambda);
+}
+
+double ExponentialDistribution::KLDivergence(const ExponentialDistribution&
+  other) const {
+  return log(mf64Lambda) - log(other.mf64Lambda) +
+    other.mf64Lambda / mf64Lambda -1;
 }

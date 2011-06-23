@@ -16,40 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvalidOperationException.h
-    \brief This file defines the InvalidOperationException class, which
-           represents any exception occuring when an invalid operation is
-           requested
-  */
+#include "functions/Factorial.h"
 
-#ifndef INVALIDOPERATIONEXCEPTION_H
-#define INVALIDOPERATIONEXCEPTION_H
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include <stdexcept>
-#include <string>
+Factorial::Factorial() {
+}
 
-/** The class InvalidOperationException represents any
-    exceptions when the requested method will not be able to perform
-    \brief Invalid operation requested
-  */
-class InvalidOperationException : public std::runtime_error {
-  /// Assignment operator
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
+Factorial::~Factorial() {
+}
 
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Constructs exception from message
-  InvalidOperationException(const std::string &msg = "");
-  /// Copy constructor
-  InvalidOperationException(const InvalidOperationException &other);
-  /** @}
-    */
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
 
-protected:
-
-};
-
-#endif // INVALIDOPERATIONEXCEPTION_H
+uint32_t Factorial::operator() (uint32_t u32N) {
+  uint32_t u32Value = 1;
+  for (uint32_t i = 1; i < u32N; i++) {
+    u32Value *= (i + 1);
+  }
+  return u32Value;
+}

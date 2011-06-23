@@ -9,40 +9,46 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file UniformDistribution.h
-    \brief This file defines the UniformDistribution class, which represents a
-           uniform distribution
+/** \file MultinomialDistribution.h
+    \brief This file defines the MultinomialDistribution class, which represents
+           a multinomial distribution
   */
 
-#ifndef UNIFORMDISTRIBUTION_H
-#define UNIFORMDISTRIBUTION_H
+#ifndef MULTINOMIALDISTRIBUTION_H
+#define MULTINOMIALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "exceptions/InvalidOperationException.h"
+
+#include <Eigen/Core>
 
 #include <iosfwd>
+#include <vector>
 
-/** The UniformDistribution class represents a uniform distribution
-    \brief Uniform distribution
+#include <stdint.h>
+
+/** The MultinomialDistribution class represents a multinomial distribution,
+    i.e., the discrete distribution of N independent categorical distribution
+    draws
+    \brief Multinomial distribution
   */
-class UniformDistribution {
+class MultinomialDistribution {
   friend std::ostream& operator << (std::ostream& stream,
-    const UniformDistribution& obj);
+    const MultinomialDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,
-    UniformDistribution& obj);
+    MultinomialDistribution& obj);
   friend std::ofstream& operator << (std::ofstream& stream,
-    const UniformDistribution& obj);
+    const MultinomialDistribution& obj);
   friend std::ifstream& operator >> (std::ifstream& stream,
-    UniformDistribution& obj);
+    MultinomialDistribution& obj);
 
-  /** \name Streaming methods
+  /** \name Stream methods
     @{
     */
   virtual void read(std::istream& stream);
@@ -52,13 +58,13 @@ class UniformDistribution {
   /** @}
     */
 
-  /** \name Streaming methods
+  /** \name Private members
     @{
     */
-  /// Minimum support of the distribution
-  double mf64MinSupport;
-  /// Maximum support of the distribution
-  double mf64MaxSupport;
+  /// Events probabilities
+  Eigen::VectorXd mEventProbabilitiesVector;
+  /// Number of trials
+  uint32_t mu32TrialsNbr;
   /** @}
     */
 
@@ -66,41 +72,43 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs a uniform distribution from parameters
-  UniformDistribution(double f64MinSupport = 0.0, double f64MaxSupport = 1.0)
-    throw (OutOfBoundException);
+  /// Constructs the distribution from the parameters
+  MultinomialDistribution(uint32_t u32TrialsNbr,
+    const Eigen::VectorXd& eventProbabilitiesVector);
   /// Copy constructor
-  UniformDistribution(const UniformDistribution& other);
-  /// Assignment operator
-  UniformDistribution& operator = (const UniformDistribution& other);
+  MultinomialDistribution(const MultinomialDistribution& other);
+  //// Assignment operator
+  MultinomialDistribution& operator = (const MultinomialDistribution& other);
   /// Destructor
-  ~UniformDistribution();
+  ~MultinomialDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the minimum support of the distribution
-  void setMinSupport(double f64Value) throw (OutOfBoundException);
-  /// Returns the minimum support of the distribution
-  double getMinSupport() const;
-  /// Sets the maximum support of the distribution
-  void setMaxSupport(double f64Value) throw (OutOfBoundException);
-  /// Returns the maximum support of the distribution
-  double getMaxSupport() const;
+  /// Sets the event probabilities
+  void setEventProbabilities(const Eigen::VectorXd& eventProbabilitiesVector)
+    throw (OutOfBoundException);
+  /// Returns the event probabilities
+  const Eigen::VectorXd& getEventProbabilities() const;
+  /// Sets the number of trials
+  void setTrialsNbr(uint32_t u32TrialsNbr) throw (OutOfBoundException);
+  /// Returns the number of trials
+  uint32_t getTrialsNbr() const;
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Returns probability density function of a point
-  double pdf(double f64X) const;
-  /// Returns log-probability density function of a point
-  double logpdf(double f64X) const throw (InvalidOperationException);
+  /// Returns the probability mass function at a point
+  double pmf(const Eigen::VectorXi& xVector) const;
+  /// Returns the log-probability mass function at a point
+  double logpmf(const Eigen::VectorXi& xVector) const
+    throw (OutOfBoundException);
   /// Returns a sample from the distribution
-  double sample() const;
+  const Eigen::VectorXi sample() const;
   /** @}
     */
 
@@ -108,4 +116,4 @@ protected:
 
 };
 
-#endif // UNIFORMDISTRIBUTION_H
+#endif // MULTINOMIALDISTRIBUTION_H

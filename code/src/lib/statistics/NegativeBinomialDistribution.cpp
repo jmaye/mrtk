@@ -16,79 +16,80 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/UniformDistributionDiscrete.h"
+#include "statistics/NegativeBinomialDistribution.h"
 
+#include "functions/LogBinomial.h"
 #include "statistics/Randomizer.h"
 
 #include <iostream>
 #include <fstream>
 
+#include <cmath>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-UniformDistributionDiscrete::UniformDistributionDiscrete(int32_t i32MinSupport,
-  int32_t i32MaxSupport) throw (OutOfBoundException) :
-  mi32MinSupport(i32MinSupport),
-  mi32MaxSupport(i32MaxSupport) {
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::UniformDistributionDiscrete(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+NegativeBinomialDistribution::NegativeBinomialDistribution(uint32_t
+  u32FailuresNbr, double f64P) {
+  setP(f64P);
+  setFailuresNbr(u32FailuresNbr);
 }
 
-UniformDistributionDiscrete::UniformDistributionDiscrete(
-  const UniformDistributionDiscrete& other) :
-  mi32MinSupport(other.mi32MinSupport),
-  mi32MaxSupport(other.mi32MaxSupport) {
+NegativeBinomialDistribution::NegativeBinomialDistribution(const
+  NegativeBinomialDistribution& other) :
+  mf64P(other.mf64P),
+  mu32FailuresNbr(other.mu32FailuresNbr) {
 }
 
-UniformDistributionDiscrete& UniformDistributionDiscrete::operator =
-  (const UniformDistributionDiscrete& other) {
-  mi32MinSupport = other.mi32MinSupport;
-  mi32MaxSupport = other.mi32MaxSupport;
+NegativeBinomialDistribution& NegativeBinomialDistribution::operator =
+  (const NegativeBinomialDistribution& other) {
+  mf64P = other.mf64P;
+  mu32FailuresNbr = other.mu32FailuresNbr;
   return *this;
 }
 
-UniformDistributionDiscrete::~UniformDistributionDiscrete() {
+NegativeBinomialDistribution::~NegativeBinomialDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void UniformDistributionDiscrete::read(std::istream& stream) {
+void NegativeBinomialDistribution::read(std::istream& stream) {
 }
 
-void UniformDistributionDiscrete::write(std::ostream& stream) const {
-  stream << "mi32MinSupport: " << mi32MinSupport << std::endl
-    << "mi32MaxSupport: " << mi32MaxSupport;
+void NegativeBinomialDistribution::write(std::ostream& stream) const {
+  stream << "mf64P: " << mf64P << std::endl
+    << "mu32FailuresNbr: " << mu32FailuresNbr;
 }
 
-void UniformDistributionDiscrete::read(std::ifstream& stream) {
+void NegativeBinomialDistribution::read(std::ifstream& stream) {
 }
 
-void UniformDistributionDiscrete::write(std::ofstream& stream) const {
+void NegativeBinomialDistribution::write(std::ofstream& stream) const {
 }
 
 std::ostream& operator << (std::ostream& stream,
-  const UniformDistributionDiscrete& obj) {
+  const NegativeBinomialDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
 std::istream& operator >> (std::istream& stream,
-  UniformDistributionDiscrete& obj) {
+  NegativeBinomialDistribution& obj) {
   obj.read(stream);
   return stream;
 }
 
 std::ofstream& operator << (std::ofstream& stream,
-  const UniformDistributionDiscrete& obj) {
+  const NegativeBinomialDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
 std::ifstream& operator >> (std::ifstream& stream,
-  UniformDistributionDiscrete& obj) {
+  NegativeBinomialDistribution& obj) {
   obj.read(stream);
   return stream;
 }
@@ -97,45 +98,42 @@ std::ifstream& operator >> (std::ifstream& stream,
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void UniformDistributionDiscrete::setMinSupport(int32_t i32Value)
+void NegativeBinomialDistribution::setP(double f64P)
   throw (OutOfBoundException) {
-  mi32MinSupport = i32Value;
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::setMinSupport(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+  if (f64P < 0.0 || f64P > 1.0)
+    throw OutOfBoundException("NegativeBinomialDistribution::setP(): f64P must be between 0 and 1");
+  mf64P = f64P;
 }
 
-int32_t UniformDistributionDiscrete::getMinSupport() const {
-  return mi32MinSupport;
+double NegativeBinomialDistribution::getP() const {
+  return mf64P;
 }
 
-void UniformDistributionDiscrete::setMaxSupport(int32_t i32Value)
+void NegativeBinomialDistribution::setFailuresNbr(uint32_t u32FailuresNbr)
   throw (OutOfBoundException) {
-  mi32MaxSupport = i32Value;
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::setMaxSupport(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+  if (u32FailuresNbr == 0)
+    throw OutOfBoundException("NegativeBinomialDistribution::setFailuresNbr(): u32FailuresNbr must be larger than 0");
+  mu32FailuresNbr = u32FailuresNbr;
 }
 
-int32_t UniformDistributionDiscrete::getMaxSupport() const {
-  return mi32MaxSupport;
+uint32_t NegativeBinomialDistribution::getFailuresNbr() const {
+  return mu32FailuresNbr;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-double UniformDistributionDiscrete::pmf(int32_t i32X) const {
-  if (i32X >= mi32MinSupport && i32X <= mi32MaxSupport)
-    return 1.0 / (mi32MaxSupport - mi32MinSupport + 1.0);
-  else
-    return 0.0;
+double NegativeBinomialDistribution::pmf(uint32_t u32SuccNbr) const {
+  return exp(logpmf(u32SuccNbr));
 }
 
-double UniformDistributionDiscrete::logpmf(int32_t i32X) const
-  throw (InvalidOperationException){
-  throw InvalidOperationException("UniformDistributionDiscrete::logpmf(): undefined");
+double NegativeBinomialDistribution::logpmf(uint32_t u32SuccNbr) const {
+  LogBinomial logBinomial;
+  return logBinomial(u32SuccNbr + mu32FailuresNbr - 1, u32SuccNbr) +
+    mu32FailuresNbr * log(1 - mf64P) + u32SuccNbr * log(mf64P);
 }
 
-int32_t UniformDistributionDiscrete::sample() const {
-  static Randomizer randomizer;
-  return randomizer.sampleUniform(mi32MinSupport, mi32MaxSupport);
+uint32_t NegativeBinomialDistribution::sample() const {
+  return 0.0;
 }

@@ -167,7 +167,7 @@ double MvNormalDistribution::pdf(const Eigen::VectorXd& xVector) const
   throw (OutOfBoundException) {
   if (xVector.rows() != mMeanVector.rows())
     throw OutOfBoundException("MvNormalDistribution::pdf(): wrong dimensions for input");
-  return 1 / mf64Normalizer * exp(-1.0 / 2.0 *
+  return 1 / mf64Normalizer * exp(-0.5 *
     ((mMeanVector - xVector).transpose() * mPrecisionMatrix *
     (mMeanVector - xVector))(0, 0));
 }
@@ -182,7 +182,7 @@ double MvNormalDistribution::KLDivergence(const MvNormalDistribution& other)
   if (other.mMeanVector.rows() != mMeanVector.rows() ||
     other.mCovarianceMatrix.rows() != mCovarianceMatrix.rows())
     throw OutOfBoundException("MvNormalDistribution::KLDivergence(): incompatible dimensions");
-  return 1.0 / 2.0 * (log(other.mf64Determinant / mf64Determinant) +
+  return 0.5 * (log(other.mf64Determinant / mf64Determinant) +
     (other.mPrecisionMatrix * mCovarianceMatrix).trace() - mMeanVector.rows() +
     ((mMeanVector - other.mMeanVector).transpose() * other.mPrecisionMatrix *
     (mMeanVector - other.mMeanVector))(0, 0));

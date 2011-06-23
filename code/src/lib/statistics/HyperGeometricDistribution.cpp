@@ -16,79 +16,85 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/UniformDistributionDiscrete.h"
+#include "statistics/HyperGeometricDistribution.h"
 
 #include "statistics/Randomizer.h"
+#include "functions/LogBinomial.h"
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+
+#include <cmath>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-UniformDistributionDiscrete::UniformDistributionDiscrete(int32_t i32MinSupport,
-  int32_t i32MaxSupport) throw (OutOfBoundException) :
-  mi32MinSupport(i32MinSupport),
-  mi32MaxSupport(i32MaxSupport) {
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::UniformDistributionDiscrete(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+HyperGeometricDistribution::HyperGeometricDistribution(uint32_t u32N, uint32_t
+  u32m, uint32_t u32n) {
+  setN(u32N);
+  setm(u32m);
+  setn(u32n);
 }
 
-UniformDistributionDiscrete::UniformDistributionDiscrete(
-  const UniformDistributionDiscrete& other) :
-  mi32MinSupport(other.mi32MinSupport),
-  mi32MaxSupport(other.mi32MaxSupport) {
+HyperGeometricDistribution::HyperGeometricDistribution(const
+  HyperGeometricDistribution& other) :
+  mu32N(other.mu32N),
+  mu32m(other.mu32m),
+  mu32n(other.mu32n) {
 }
 
-UniformDistributionDiscrete& UniformDistributionDiscrete::operator =
-  (const UniformDistributionDiscrete& other) {
-  mi32MinSupport = other.mi32MinSupport;
-  mi32MaxSupport = other.mi32MaxSupport;
+HyperGeometricDistribution& HyperGeometricDistribution::operator =
+  (const HyperGeometricDistribution& other) {
+  mu32N = other.mu32N;
+  mu32m = other.mu32m;
+  mu32n = other.mu32n;
   return *this;
 }
 
-UniformDistributionDiscrete::~UniformDistributionDiscrete() {
+HyperGeometricDistribution::~HyperGeometricDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void UniformDistributionDiscrete::read(std::istream& stream) {
+void HyperGeometricDistribution::read(std::istream& stream) {
 }
 
-void UniformDistributionDiscrete::write(std::ostream& stream) const {
-  stream << "mi32MinSupport: " << mi32MinSupport << std::endl
-    << "mi32MaxSupport: " << mi32MaxSupport;
+void HyperGeometricDistribution::write(std::ostream& stream) const {
+  stream << "mu32N: " << mu32N << std::endl
+    << "mu32m: " << mu32m << std::endl
+    << "mu32n: " << mu32n;
 }
 
-void UniformDistributionDiscrete::read(std::ifstream& stream) {
+void HyperGeometricDistribution::read(std::ifstream& stream) {
 }
 
-void UniformDistributionDiscrete::write(std::ofstream& stream) const {
+void HyperGeometricDistribution::write(std::ofstream& stream) const {
 }
 
 std::ostream& operator << (std::ostream& stream,
-  const UniformDistributionDiscrete& obj) {
+  const HyperGeometricDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
 std::istream& operator >> (std::istream& stream,
-  UniformDistributionDiscrete& obj) {
+  HyperGeometricDistribution& obj) {
   obj.read(stream);
   return stream;
 }
 
 std::ofstream& operator << (std::ofstream& stream,
-  const UniformDistributionDiscrete& obj) {
+  const HyperGeometricDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
 std::ifstream& operator >> (std::ifstream& stream,
-  UniformDistributionDiscrete& obj) {
+  HyperGeometricDistribution& obj) {
   obj.read(stream);
   return stream;
 }
@@ -97,45 +103,57 @@ std::ifstream& operator >> (std::ifstream& stream,
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void UniformDistributionDiscrete::setMinSupport(int32_t i32Value)
+void HyperGeometricDistribution::setN(uint32_t u32N)
   throw (OutOfBoundException) {
-  mi32MinSupport = i32Value;
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::setMinSupport(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+  if (u32N == 0)
+    throw OutOfBoundException("HyperGeometricDistribution::setN(): u32N must be strictly positive");
+  mu32N = u32N;
 }
 
-int32_t UniformDistributionDiscrete::getMinSupport() const {
-  return mi32MinSupport;
+uint32_t HyperGeometricDistribution::getN() const {
+  return mu32N;
 }
 
-void UniformDistributionDiscrete::setMaxSupport(int32_t i32Value)
+void HyperGeometricDistribution::setm(uint32_t u32m)
   throw (OutOfBoundException) {
-  mi32MaxSupport = i32Value;
-  if (mi32MinSupport > mi32MaxSupport)
-    throw OutOfBoundException("UniformDistributionDiscrete::setMaxSupport(): mi32MinSupport must be smaller or equal than mi32MaxSupport");
+  if (u32m > mu32N)
+    throw OutOfBoundException("HyperGeometricDistribution::setm(): u32m must be smaller or equal to u32N");
+  mu32m = u32m;
 }
 
-int32_t UniformDistributionDiscrete::getMaxSupport() const {
-  return mi32MaxSupport;
+uint32_t HyperGeometricDistribution::getm() const {
+  return mu32m;
+}
+
+void HyperGeometricDistribution::setn(uint32_t u32n)
+  throw (OutOfBoundException) {
+  if (u32n == 0 || u32n > mu32N)
+    throw OutOfBoundException("HyperGeometricDistribution::setn(): u32n must be smaller or equal to u32N and strictly positive");
+  mu32n = u32n;
+}
+
+uint32_t HyperGeometricDistribution::getn() const {
+  return mu32n;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-double UniformDistributionDiscrete::pmf(int32_t i32X) const {
-  if (i32X >= mi32MinSupport && i32X <= mi32MaxSupport)
-    return 1.0 / (mi32MaxSupport - mi32MinSupport + 1.0);
-  else
-    return 0.0;
+double HyperGeometricDistribution::pmf(uint32_t u32X) const {
+  return exp(logpmf(u32X));
 }
 
-double UniformDistributionDiscrete::logpmf(int32_t i32X) const
-  throw (InvalidOperationException){
-  throw InvalidOperationException("UniformDistributionDiscrete::logpmf(): undefined");
+double HyperGeometricDistribution::logpmf(uint32_t u32X) const
+  throw (OutOfBoundException) {
+  if (u32X < std::max((uint32_t)0, mu32n + mu32m - mu32N) ||
+    u32X > std::min(mu32m, mu32n))
+    throw OutOfBoundException("HyperGeometricDistribution::logpmf(): u32X has invalid value");
+  LogBinomial logBinomial;
+  return logBinomial(mu32m, u32X) + logBinomial(mu32N - mu32m, mu32n - u32X) -
+    logBinomial(mu32N, mu32n);
 }
 
-int32_t UniformDistributionDiscrete::sample() const {
-  static Randomizer randomizer;
-  return randomizer.sampleUniform(mi32MinSupport, mi32MaxSupport);
+uint32_t HyperGeometricDistribution::sample() const {
+  return 0.0;
 }

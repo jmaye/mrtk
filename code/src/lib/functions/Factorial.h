@@ -9,42 +9,44 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvalidOperationException.h
-    \brief This file defines the InvalidOperationException class, which
-           represents any exception occuring when an invalid operation is
-           requested
+/** \file Factorial.h
+    \brief This file defines the Factorial class, which implements the factorial
+           function
   */
 
-#ifndef INVALIDOPERATIONEXCEPTION_H
-#define INVALIDOPERATIONEXCEPTION_H
+#ifndef FACTORIAL_H
+#define FACTORIAL_H
 
-#include <stdexcept>
-#include <string>
+#include <stdint.h>
 
-/** The class InvalidOperationException represents any
-    exceptions when the requested method will not be able to perform
-    \brief Invalid operation requested
+/** The Factorial class implements the factorial function
+    \brief Factorial function
   */
-class InvalidOperationException : public std::runtime_error {
-  /// Assignment operator
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
+class Factorial {
 
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs exception from message
-  InvalidOperationException(const std::string &msg = "");
-  /// Copy constructor
-  InvalidOperationException(const InvalidOperationException &other);
+  /// Default constructor
+  Factorial();
+  /// Destructor
+  ~Factorial();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the factorial of a number
+  uint32_t operator() (uint32_t u32N);
   /** @}
     */
 
@@ -52,4 +54,4 @@ protected:
 
 };
 
-#endif // INVALIDOPERATIONEXCEPTION_H
+#endif // FACTORIAL_H

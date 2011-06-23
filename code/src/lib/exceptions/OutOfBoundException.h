@@ -17,7 +17,8 @@
  ******************************************************************************/
 
 /** \file OutOfBoundException.h
-    \brief OutOfBoundException
+    \brief This file defines the OutOfBoundException class, which represents any
+           exceptions where the input variables are out of bounds
   */
 
 #ifndef OUTOFBOUNDEXCEPTION_H
@@ -26,14 +27,24 @@
 #include <stdexcept>
 #include <string>
 
-/** OutOfBoundException
+/** The class OutOfBoundException represents any
+    exceptions where the input variables are out of bounds
+    \brief Out of bounds exception for input variables
   */
 class OutOfBoundException : public std::range_error {
+  /// Assignment operator
   OutOfBoundException& operator = (const OutOfBoundException &other);
 
 public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Constructs exception from message
   OutOfBoundException(const std::string &msg = "");
+  /// Copy constructor
   OutOfBoundException(const OutOfBoundException &other);
+  /** @}
+    */
 
 protected:
 

@@ -143,8 +143,12 @@ double NormalDistribution::pdf(double f64X) const {
 }
 
 double NormalDistribution::logpdf(double f64X) const {
-  return -1.0 / 2.0 * (log(2.0) + log(M_PI) + log(mf64Variance)) -
+  return -0.5 * (log(2.0) + log(M_PI) + log(mf64Variance)) -
     (pow(f64X - mf64Mean, 2.0) / (2.0 * mf64Variance));
+}
+
+double NormalDistribution::cdf(double f64X) const {
+  return 0.5 * (1.0 + erf((f64X - mf64Mean) / mf64Normalizer));
 }
 
 double NormalDistribution::sample() const {
@@ -153,7 +157,7 @@ double NormalDistribution::sample() const {
 }
 
 double NormalDistribution::KLDivergence(const NormalDistribution& other) const {
-  return 1.0 / 2.0 * (log(other.mf64Variance * mf64Precision) +
+  return 0.5 * (log(other.mf64Variance * mf64Precision) +
     other.mf64Precision * mf64Variance - 1.0 +
     (mf64Mean - other.mf64Mean) * other.mf64Precision *
     (mf64Mean - other.mf64Mean));

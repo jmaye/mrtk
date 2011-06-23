@@ -17,7 +17,8 @@
  ******************************************************************************/
 
 /** \file GMMClustering.h
-    \brief GMMClustering
+    \brief This file defines the GMMClustering class, which implements a GMM
+           clustering algorithm
   */
 
 #ifndef GMMCLUSTERING_H
@@ -29,21 +30,31 @@
 
 #include <stdint.h>
 
-/** This class implements the GMM clustering algorithm.
+/** This class implements a Gaussian Mixture Model algorithm based on
+    Exceptation-Maximization
+    \brief Gaussian Mixture Model clustering algorithm
   */
 class GMMClustering {
-  /** Constructors
+  /** \name Private constructors
+    @{
     */
+  /// Default constructor
   GMMClustering();
+  /** @}
+    */
 
 public:
-  /** Methods
+  /** \name Methods
+    @{
     */
+  /// Clusters the input data points
   static void cluster(const std::vector<std::vector<double> >&
     inputPointsVector, uint32_t u32K, std::vector<std::vector<double> >&
     meansVector, std::vector<std::vector<std::vector<double> > >&
     variancesVector, std::vector<double>& weightsVector)
     throw (InvalidOperationException);
+  /** @}
+    */
 
 protected:
 

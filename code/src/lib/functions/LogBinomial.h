@@ -9,34 +9,49 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file CLibraryException.h
-    \brief CLibraryException
+/** \file LogBinomial.h
+    \brief This file defines the LogBinomial class, which implements the
+           log-binomial function
   */
 
-#ifndef CLIBRARYEXCEPTION_H
-#define CLIBRARYEXCEPTION_H
+#ifndef LOGBINOMIAL_H
+#define LOGBINOMIAL_H
 
-#include <stdexcept>
-#include <string>
+#include <stdint.h>
 
-/** CLibraryException
+/** The LogBinomial class implements the log-binomial function
+    \brief Log-binomial function
   */
-class CLibraryException : public std::runtime_error {
-  CLibraryException& operator = (const CLibraryException &other);
+class LogBinomial {
 
 public:
-  CLibraryException(const std::string &msg = "");
-  CLibraryException(const CLibraryException &other);
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  LogBinomial();
+  /// Destructor
+  ~LogBinomial();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the log-binomial of (N, K)
+  double operator() (uint32_t u32N, uint32_t u32K);
+  /** @}
+    */
 
 protected:
 
 };
 
-#endif // CLIBRARYEXCEPTION_H
+#endif // LOGBINOMIAL_H
