@@ -24,12 +24,15 @@
 #ifndef FACTORIAL_H
 #define FACTORIAL_H
 
+#include "functions/DiscreteFunction.h"
+
 #include <stdint.h>
 
 /** The Factorial class implements the factorial function
     \brief Factorial function
   */
-class Factorial {
+class Factorial :
+  public DiscreteFunction {
 
 public:
   /** \name Constructors/destructor

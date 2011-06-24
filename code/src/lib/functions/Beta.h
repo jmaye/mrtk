@@ -23,12 +23,15 @@
 #ifndef BETA_H
 #define BETA_H
 
+#include "functions/MvContinuousFunction.h"
+
 #include <Eigen/Core>
 
 /** The Beta class implements the beta function
     \brief Beta function
   */
-class Beta {
+class Beta :
+  public MvContinuousFunction {
 
 public:
   /** \name Constructors/destructor

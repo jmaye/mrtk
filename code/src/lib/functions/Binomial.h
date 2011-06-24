@@ -24,12 +24,15 @@
 #ifndef BINOMIAL_H
 #define BINOMIAL_H
 
+#include "functions/MvDiscreteFunction.h"
+
 #include <stdint.h>
 
 /** The Binomial class implements the binomial function
     \brief Binomial function
   */
-class Binomial {
+class Binomial :
+  public MvDiscreteFunction {
 
 public:
   /** \name Constructors/destructor

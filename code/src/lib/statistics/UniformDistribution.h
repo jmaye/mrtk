@@ -26,13 +26,15 @@
 
 #include "exceptions/OutOfBoundException.h"
 #include "exceptions/InvalidOperationException.h"
+#include "statistics/ContinuousDistribution.h"
 
 #include <iosfwd>
 
 /** The UniformDistribution class represents a uniform distribution
     \brief Uniform distribution
   */
-class UniformDistribution {
+class UniformDistribution :
+  public ContinuousDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const UniformDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

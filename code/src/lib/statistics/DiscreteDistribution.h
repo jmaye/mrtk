@@ -16,34 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BernoulliDistribution.h
-    \brief This file defines the BernoulliDistribution class, which represents a
-           Bernoulli distribution
+/** \file DiscreteDistribution.h
+    \brief DiscreteDistribution
   */
 
-#ifndef BERNOULLIDISTRIBUTION_H
-#define BERNOULLIDISTRIBUTION_H
-
-#include "exceptions/OutOfBoundException.h"
-#include "exceptions/InvalidOperationException.h"
-#include "statistics/DiscreteDistribution.h"
+#ifndef DISCRETEDISTRIBUTION_H
+#define DISCRETEDISTRIBUTION_H
 
 #include <iosfwd>
 
-/** The class BernoulliDistribution represents a Bernoulli distribution, i.e.,
-    the discrete distribution of a random event with success or failure
-    \brief Bernoulli distribution
+/** DiscreteDistribution
   */
-class BernoulliDistribution :
-  public DiscreteDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const BernoulliDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    BernoulliDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const BernoulliDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    BernoulliDistribution& obj);
+class DiscreteDistribution {
+  friend std::ostream& operator << (std::ostream& stream, const DiscreteDistribution& obj);
+  friend std::istream& operator >> (std::istream& stream, DiscreteDistribution& obj);
+  friend std::ofstream& operator << (std::ofstream& stream, const DiscreteDistribution& obj);
+  friend std::ifstream& operator >> (std::ifstream& stream, DiscreteDistribution& obj);
+
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  DiscreteDistribution(const DiscreteDistribution& other);
+
+  //// Assignment operator
+  DiscreteDistribution& operator = (const DiscreteDistribution& other);
+  /** @}
+    */
 
   /** \name Stream methods
     @{
@@ -55,11 +54,17 @@ class BernoulliDistribution :
   /** @}
     */
 
+  /** \name Private methods
+    @{
+    */
+
+  /** @}
+    */
+
   /** \name Private members
     @{
     */
-  /// Success probability
-  double mf64P;
+
   /** @}
     */
 
@@ -67,36 +72,24 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs the distribution from the parameter
-  BernoulliDistribution(double f64P);
-  /// Copy constructor
-  BernoulliDistribution(const BernoulliDistribution& other);
-  //// Assignment operator
-  BernoulliDistribution& operator = (const BernoulliDistribution& other);
+  /// Default constructor
+  DiscreteDistribution();
   /// Destructor
-  ~BernoulliDistribution();
+  ~DiscreteDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the value for p
-  void setP(double f64P) throw (OutOfBoundException);
-  /// Returns the value of p
-  double getP() const;
+
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Returns the probability mass function at a point
-  double pmf(bool bX) const;
-  /// Returns the log-probability mass function at a point
-  double logpmf(bool bX) const throw (InvalidOperationException);
-  /// Returns a sample from the distribution
-  bool sample() const;
+
   /** @}
     */
 
@@ -104,4 +97,4 @@ protected:
 
 };
 
-#endif // BERNOULLIDISTRIBUTION_H
+#endif // DISCRETEDISTRIBUTION_H

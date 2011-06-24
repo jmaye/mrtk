@@ -26,6 +26,7 @@
 
 #include "exceptions/OutOfBoundException.h"
 #include "exceptions/InvalidOperationException.h"
+#include "statistics/DiscreteDistribution.h"
 
 #include <Eigen/Core>
 
@@ -38,7 +39,8 @@
     values
     \brief Categorical distribution
   */
-class CategoricalDistribution {
+class CategoricalDistribution :
+  public DiscreteDistribution {
   friend std::ostream& operator << (std::ostream& stream, const CategoricalDistribution& obj);
   friend std::istream& operator >> (std::istream& stream, CategoricalDistribution& obj);
   friend std::ofstream& operator << (std::ofstream& stream, const CategoricalDistribution& obj);

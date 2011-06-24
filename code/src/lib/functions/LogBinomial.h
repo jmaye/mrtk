@@ -24,12 +24,15 @@
 #ifndef LOGBINOMIAL_H
 #define LOGBINOMIAL_H
 
+#include "functions/MvDiscreteFunction.h"
+
 #include <stdint.h>
 
 /** The LogBinomial class implements the log-binomial function
     \brief Log-binomial function
   */
-class LogBinomial {
+class LogBinomial :
+  public MvDiscreteFunction {
 
 public:
   /** \name Constructors/destructor

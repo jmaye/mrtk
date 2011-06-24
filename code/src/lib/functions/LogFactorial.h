@@ -24,12 +24,15 @@
 #ifndef LOGFACTORIAL_H
 #define LOGFACTORIAL_H
 
+#include "functions/DiscreteFunction.h"
+
 #include <stdint.h>
 
 /** The Factorial class implements the factorial function
     \brief Factorial function
   */
-class LogFactorial {
+class LogFactorial :
+  public DiscreteFunction {
 
 public:
   /** \name Constructors/destructor

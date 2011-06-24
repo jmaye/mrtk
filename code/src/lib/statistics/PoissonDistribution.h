@@ -25,6 +25,7 @@
 #define POISSONDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
+#include "statistics/DiscreteDistribution.h"
 
 #include <iosfwd>
 
@@ -36,7 +37,8 @@
     average rate
     \brief Poisson distribution
   */
-class PoissonDistribution {
+class PoissonDistribution :
+  public DiscreteDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const PoissonDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

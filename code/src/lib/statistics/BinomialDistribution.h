@@ -25,6 +25,7 @@
 #define BINOMIALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
+#include "statistics/MvDiscreteDistribution.h"
 
 #include <iosfwd>
 
@@ -35,7 +36,8 @@
     draws, each with the same probability of success p
     \brief Binomial distribution
   */
-class BinomialDistribution {
+class BinomialDistribution :
+  public MvDiscreteDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const BinomialDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

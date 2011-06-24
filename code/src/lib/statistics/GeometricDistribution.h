@@ -25,6 +25,7 @@
 #define GEOMETRICDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
+#include "statistics/DiscreteDistribution.h"
 
 #include <iosfwd>
 
@@ -36,7 +37,8 @@
     process changes state.
     \brief Geometric distribution
   */
-class GeometricDistribution {
+class GeometricDistribution :
+  public DiscreteDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const GeometricDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

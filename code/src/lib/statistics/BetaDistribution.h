@@ -25,6 +25,7 @@
 #define BETADISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
+#include "statistics/ContinuousDistribution.h"
 
 #include <iosfwd>
 
@@ -33,7 +34,8 @@
     Bernoulli distribution
     \brief Beta distribution
   */
-class BetaDistribution {
+class BetaDistribution :
+  public ContinuousDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const BetaDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

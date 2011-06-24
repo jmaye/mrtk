@@ -24,12 +24,15 @@
 #ifndef LOGBETA_H
 #define LOGBETA_H
 
+#include "functions/MvContinuousFunction.h"
+
 #include <Eigen/Core>
 
 /** The LogBeta class implements the log-beta function
     \brief Log-beta function
   */
-class LogBeta {
+class LogBeta :
+  public MvContinuousFunction {
 
 public:
   /** \name Constructors/destructor

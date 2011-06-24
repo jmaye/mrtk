@@ -25,13 +25,15 @@
 #define NORMALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
+#include "statistics/ContinuousDistribution.h"
 
 #include <iosfwd>
 
 /** The NormalDistribution class represents a normal distribution
     \brief Normal distribution
   */
-class NormalDistribution {
+class NormalDistribution :
+  public ContinuousDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const NormalDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,
