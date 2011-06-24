@@ -16,35 +16,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file HyperGeometricDistribution.h
-    \brief This file defines the HyperGeometricDistribution class, which
-           represents an hypergeometric distribution
+/** \file BetaDistribution.h
+    \brief This file defines the BetaDistribution class, which represents
+           a beta distribution
   */
 
-#ifndef HYPERGEOMETRICDISTRIBUTION_H
-#define HYPERGEOMETRICDISTRIBUTION_H
+#ifndef BETADISTRIBUTION_H
+#define BETADISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
 
 #include <iosfwd>
 
-#include <stdint.h>
-
-/** The HyperGeometricDistribution class represents an hyper geometric
-    distribution, i.e., a discrete distribution that models the number of
-    successes in a sequence of N draws from a finite population without
-    replacement
-    \brief Hypergeometric distribution
+/** The BetaDistribution class represents a beta distribution,
+    i.e., a continuous distribution that is a conjugate prior to the binomial or
+    Bernoulli distribution
+    \brief Beta distribution
   */
-class HyperGeometricDistribution {
+class BetaDistribution {
   friend std::ostream& operator << (std::ostream& stream,
-    const HyperGeometricDistribution& obj);
+    const BetaDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,
-    HyperGeometricDistribution& obj);
+    BetaDistribution& obj);
   friend std::ofstream& operator << (std::ofstream& stream,
-    const HyperGeometricDistribution& obj);
+    const BetaDistribution& obj);
   friend std::ifstream& operator >> (std::ifstream& stream,
-    HyperGeometricDistribution& obj);
+    BetaDistribution& obj);
 
   /** \name Stream methods
     @{
@@ -59,12 +56,10 @@ class HyperGeometricDistribution {
   /** \name Private members
     @{
     */
-  /// Number of balls
-  uint32_t mu32N;
-  /// Number of white balls
-  uint32_t mu32m;
-  /// Number of draws
-  uint32_t mu32n;
+  /// mf64Alpha - 1 corresponds to success observations
+  double mf64Alpha;
+  /// mf64Beta - 1 corresponds to failure observations
+  double mf64Beta;
   /// Normalizer
   double mf64Normalizer;
   /** @}
@@ -75,32 +70,27 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  HyperGeometricDistribution(uint32_t u32N, uint32_t u32m, uint32_t u32n);
+  BetaDistribution(double f64Alpha, double f64Beta);
   /// Copy constructor
-  HyperGeometricDistribution(const HyperGeometricDistribution& other);
+  BetaDistribution(const BetaDistribution& other);
   //// Assignment operator
-  HyperGeometricDistribution& operator = (const HyperGeometricDistribution&
-    other);
+  BetaDistribution& operator = (const BetaDistribution& other);
   /// Destructor
-  ~HyperGeometricDistribution();
+  ~BetaDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of balls
-  void setN(uint32_t u32N) throw (OutOfBoundException);
-  /// Returns the number of balls
-  uint32_t getN() const;
-  /// Sets the number of white balls
-  void setm(uint32_t u32m) throw (OutOfBoundException);
-  /// Returns the number of white balls
-  uint32_t getm() const;
-  /// Sets the number of draws
-  void setn(uint32_t u32n) throw (OutOfBoundException);
-  /// Returns the number of draws
-  uint32_t getn() const;
+  /// Sets the number of successes
+  void setAlpha(double f64Alpha) throw (OutOfBoundException);
+  /// Returns the number of successes
+  double getAlpha() const;
+  /// Sets the number of failures
+  void setBeta(double f64Beta) throw (OutOfBoundException);
+  /// Returns the number of failures
+  double getBeta() const;
   /// Returns the normalizer
   double getNormalizer() const;
   /** @}
@@ -109,12 +99,12 @@ public:
   /** \name Methods
     @{
     */
-  /// Returns the probability mass function at a point
-  double pmf(uint32_t u32X) const;
-  /// Returns the log-probability mass function at a point
-  double logpmf(uint32_t u32X) const throw (OutOfBoundException);
+  /// Returns the probability density function at a point
+  double pdf(double f64X) const;
+  /// Returns the log-probability density function at a point
+  double logpdf(double f64X) const throw (OutOfBoundException);
   /// Returns a sample from the distribution
-  uint32_t sample() const;
+  double sample() const;
   /** @}
     */
 
@@ -122,4 +112,4 @@ protected:
 
 };
 
-#endif // HYPERGEOMETRICDISTRIBUTION_H
+#endif // BETADISTRIBUTION_H

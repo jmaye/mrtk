@@ -117,6 +117,12 @@ public:
     throw (OutOfBoundException);
   /// Returns a sample from the geometric distribution
   uint32_t sampleGeometric(double f64P) const throw (OutOfBoundException);
+  /// Returns a sample from the gamma distribution
+  double sampleGamma(double f64K, double f64Theta) const
+    throw (OutOfBoundException);
+  /// Returns a sample from the beta distribution
+  double sampleBeta(double f64Alpha, double f64Beta) const
+    throw (OutOfBoundException);
   /** @}
     */
 

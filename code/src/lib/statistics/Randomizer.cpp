@@ -210,12 +210,67 @@ double Randomizer::sampleExponential(double f64Lambda) const
   throw (OutOfBoundException) {
   if (f64Lambda <= 0)
     throw OutOfBoundException("Randomizer::sampleExponential(): f64Lambda must be strictly positive");
-  return -log(sampleUniform()) / f64Lambda;
+  double f64U;
+  do {
+    f64U = sampleUniform();
+  }
+  while (f64U == 0);
+  return -log(f64U) / f64Lambda;
 }
 
 uint32_t Randomizer::sampleGeometric(double f64P) const
   throw (OutOfBoundException) {
   if (f64P < 0.0 || f64P > 1.0)
     throw OutOfBoundException("Randomizer::sampleExponential(): f64P must be between 0 and 1");
-  return floor(log(sampleUniform()) / log(1 - f64P));
+  double f64U;
+  do {
+    f64U = sampleUniform();
+  }
+  while (f64U == 0);
+  return floor(log(f64U) / log(1 - f64P));
+}
+
+double Randomizer::sampleGamma(double f64K, double f64Theta) const
+  throw (OutOfBoundException) {
+  if (f64K <= 0)
+    throw OutOfBoundException("Randomizer::sampleGamma(): f64K must be strictly positive");
+  if (f64Theta <= 0)
+    throw OutOfBoundException("Randomizer::sampleGamma(): f64Beta must be strictly positive");
+  uint32_t u32IntegralPart = floor(f64K);
+  double f64FractionalPart = f64K - u32IntegralPart;
+  double f64Y = 0;
+  for (uint32_t i = 0; i < u32IntegralPart; i++)
+    f64Y += sampleExponential(f64Theta);
+  double f64B = (M_E + f64FractionalPart) / M_E;
+  double f64Z = 0;
+  if (fabs(f64FractionalPart - 0) > std::numeric_limits<double>::epsilon())
+    while (true) {
+      double f64P = f64B * sampleUniform();
+      if (f64P > 1) {
+        f64Z = pow(f64P, 1.0 / f64FractionalPart);
+        if (sampleUniform() > exp(-f64Z))
+          continue;
+        else
+          break;
+      }
+      else {
+        f64Z = -log((f64B - f64P) / f64FractionalPart);
+        if (sampleUniform() > pow(f64Z, f64FractionalPart - 1))
+          continue;
+        else
+          break;
+      }
+    }
+  return f64Y + f64Z / f64Theta;
+}
+
+double Randomizer::sampleBeta(double f64Alpha, double f64Beta) const
+  throw (OutOfBoundException) {
+  if (f64Alpha <= 0)
+    throw OutOfBoundException("Randomizer::sampleBeta(): f64Alpha must be strictly positive");
+  if (f64Beta <= 0)
+    throw OutOfBoundException("Randomizer::sampleBeta(): f64Beta must be strictly positive");
+  double f64X = sampleGamma(f64Alpha, 1);
+  double f64Y = sampleGamma(f64Beta, 1);
+  return f64X / (f64X + f64Y);
 }

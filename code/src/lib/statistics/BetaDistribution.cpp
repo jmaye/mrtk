@@ -16,10 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/BinomialDistribution.h"
+#include "statistics/BetaDistribution.h"
 
-#include "functions/LogBinomial.h"
+#include "functions/LogBeta.h"
 #include "statistics/Randomizer.h"
+
+#include <Eigen/Core>
 
 #include <iostream>
 #include <fstream>
@@ -30,62 +32,64 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BinomialDistribution::BinomialDistribution(uint32_t u32TrialsNbr, double f64P) {
-  setP(f64P);
-  setTrialsNbr(u32TrialsNbr);
+BetaDistribution::BetaDistribution(double f64Alpha, double f64Beta) {
+  setAlpha(f64Alpha);
+  setBeta(f64Beta);
 }
 
-BinomialDistribution::BinomialDistribution(const BinomialDistribution& other) :
-  mf64P(other.mf64P),
-  mu32TrialsNbr(other.mu32TrialsNbr) {
+BetaDistribution::BetaDistribution(const
+  BetaDistribution& other) :
+  mf64Alpha(other.mf64Alpha),
+  mf64Beta(other.mf64Beta) {
 }
 
-BinomialDistribution& BinomialDistribution::operator =
-  (const BinomialDistribution& other) {
-  mf64P = other.mf64P;
-  mu32TrialsNbr = other.mu32TrialsNbr;
+BetaDistribution& BetaDistribution::operator =
+  (const BetaDistribution& other) {
+  mf64Alpha = other.mf64Alpha;
+  mf64Beta = other.mf64Beta;
   return *this;
 }
 
-BinomialDistribution::~BinomialDistribution() {
+BetaDistribution::~BetaDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void BinomialDistribution::read(std::istream& stream) {
+void BetaDistribution::read(std::istream& stream) {
 }
 
-void BinomialDistribution::write(std::ostream& stream) const {
-  stream << "mf64P: " << mf64P << std::endl
-    << "mu32TrialsNbr: " << mu32TrialsNbr;
+void BetaDistribution::write(std::ostream& stream) const {
+  stream << "mf64Alpha: " << mf64Alpha << std::endl
+    << "mf64Beta: " << mf64Beta;
 }
 
-void BinomialDistribution::read(std::ifstream& stream) {
+void BetaDistribution::read(std::ifstream& stream) {
 }
 
-void BinomialDistribution::write(std::ofstream& stream) const {
+void BetaDistribution::write(std::ofstream& stream) const {
 }
 
 std::ostream& operator << (std::ostream& stream,
-  const BinomialDistribution& obj) {
+  const BetaDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::istream& operator >> (std::istream& stream, BinomialDistribution& obj) {
+std::istream& operator >> (std::istream& stream, BetaDistribution& obj) {
   obj.read(stream);
   return stream;
 }
 
 std::ofstream& operator << (std::ofstream& stream,
-  const BinomialDistribution& obj) {
+  const BetaDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::ifstream& operator >> (std::ifstream& stream, BinomialDistribution& obj) {
+std::ifstream& operator >> (std::ifstream& stream,
+  BetaDistribution& obj) {
   obj.read(stream);
   return stream;
 }
@@ -94,49 +98,53 @@ std::ifstream& operator >> (std::ifstream& stream, BinomialDistribution& obj) {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BinomialDistribution::setP(double f64P) throw (OutOfBoundException) {
-  if (f64P < 0.0 || f64P > 1.0)
-    throw OutOfBoundException("BinomialDistribution::setP(): f64P must be between 0 and 1");
-  mf64P = f64P;
-}
-
-double BinomialDistribution::getP() const {
-  return mf64P;
-}
-
-void BinomialDistribution::setTrialsNbr(uint32_t u32TrialsNbr)
+void BetaDistribution::setAlpha(double f64Alpha)
   throw (OutOfBoundException) {
-  if (u32TrialsNbr == 0)
-    throw OutOfBoundException("BinomialDistribution::setTrialsNbr(): u32TrialsNbr must be larger than 0");
-  mu32TrialsNbr = u32TrialsNbr;
+  if (f64Alpha <= 0)
+    throw OutOfBoundException("BetaDistribution::setAlpha(): f64Alpha must be strictly positive");
+  mf64Alpha = f64Alpha;
+  LogBeta logBeta;
+  mf64Normalizer = logBeta(Eigen::Vector2d(mf64Alpha, mf64Beta));
 }
 
-uint32_t BinomialDistribution::getTrialsNbr() const {
-  return mu32TrialsNbr;
+double BetaDistribution::getAlpha() const {
+  return mf64Alpha;
+}
+
+void BetaDistribution::setBeta(double f64Beta)
+  throw (OutOfBoundException) {
+  if (f64Beta <= 0)
+    throw OutOfBoundException("BetaDistribution::setBeta(): f64Beta must be strictly positive");
+  mf64Beta = f64Beta;
+  LogBeta logBeta;
+  mf64Normalizer = logBeta(Eigen::Vector2d(mf64Alpha, mf64Beta));
+}
+
+double BetaDistribution::getBeta() const {
+  return mf64Beta;
+}
+
+double BetaDistribution::getNormalizer() const {
+  return mf64Normalizer;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-double BinomialDistribution::pmf(uint32_t u32SuccNbr) const {
-  return exp(logpmf(u32SuccNbr));
+double BetaDistribution::pdf(double f64X) const {
+  return exp(logpdf(f64X));
 }
 
-double BinomialDistribution::logpmf(uint32_t u32SuccNbr) const
+double BetaDistribution::logpdf(double f64X) const
   throw (OutOfBoundException) {
-  if (u32SuccNbr > mu32TrialsNbr)
-    throw OutOfBoundException("BinomialDistribution::logpmf(): u32SuccNbr must be smaller than u32TrialsNbr");
-  LogBinomial logBinomial;
-  return logBinomial(mu32TrialsNbr, u32SuccNbr) + u32SuccNbr * log(mf64P)
-    + (mu32TrialsNbr - u32SuccNbr) * log(1 - mf64P);
+  if (f64X < 0 || f64X > 1)
+    throw OutOfBoundException("BetaDistribution::logpdf(): f64X must be in [0,1]");
+  return (mf64Alpha - 1) * log(f64X) + (mf64Beta - 1) * log(1 - f64X) -
+    mf64Normalizer;
 }
 
-uint32_t BinomialDistribution::sample() const {
+double BetaDistribution::sample() const {
   static Randomizer randomizer;
-  uint32_t u32SuccNbr = 0;
-  for (uint32_t i = 0; i < mu32TrialsNbr; i++)
-    if (randomizer.sampleBernoulli(mf64P) == true)
-      u32SuccNbr++;
-  return u32SuccNbr;
+  return randomizer.sampleBeta(mf64Alpha, mf64Beta);
 }

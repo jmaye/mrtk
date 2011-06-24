@@ -16,85 +16,79 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/HyperGeometricDistribution.h"
+#include "statistics/DirichletDistribution.h"
 
 #include "statistics/Randomizer.h"
-#include "functions/LogBinomial.h"
+#include "functions/LogBeta.h"
+
+#include <Eigen/Array>
 
 #include <iostream>
 #include <fstream>
-#include <algorithm>
+#include <limits>
 
 #include <cmath>
+#include <stdint.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-HyperGeometricDistribution::HyperGeometricDistribution(uint32_t u32N, uint32_t
-  u32m, uint32_t u32n) {
-  setN(u32N);
-  setm(u32m);
-  setn(u32n);
+DirichletDistribution::DirichletDistribution(const Eigen::VectorXd&
+  alphaVector) {
+  setAlpha(alphaVector);
 }
 
-HyperGeometricDistribution::HyperGeometricDistribution(const
-  HyperGeometricDistribution& other) :
-  mu32N(other.mu32N),
-  mu32m(other.mu32m),
-  mu32n(other.mu32n) {
+DirichletDistribution::DirichletDistribution(const
+  DirichletDistribution& other) :
+  mAlphaVector(other.mAlphaVector) {
 }
 
-HyperGeometricDistribution& HyperGeometricDistribution::operator =
-  (const HyperGeometricDistribution& other) {
-  mu32N = other.mu32N;
-  mu32m = other.mu32m;
-  mu32n = other.mu32n;
+DirichletDistribution& DirichletDistribution::operator =
+  (const DirichletDistribution& other) {
+  mAlphaVector = other.mAlphaVector;
   return *this;
 }
 
-HyperGeometricDistribution::~HyperGeometricDistribution() {
+DirichletDistribution::~DirichletDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void HyperGeometricDistribution::read(std::istream& stream) {
+void DirichletDistribution::read(std::istream& stream) {
 }
 
-void HyperGeometricDistribution::write(std::ostream& stream) const {
-  stream << "mu32N: " << mu32N << std::endl
-    << "mu32m: " << mu32m << std::endl
-    << "mu32n: " << mu32n;
+void DirichletDistribution::write(std::ostream& stream) const {
+  stream << "mAlphaVector: " << mAlphaVector;
 }
 
-void HyperGeometricDistribution::read(std::ifstream& stream) {
+void DirichletDistribution::read(std::ifstream& stream) {
 }
 
-void HyperGeometricDistribution::write(std::ofstream& stream) const {
+void DirichletDistribution::write(std::ofstream& stream) const {
 }
 
 std::ostream& operator << (std::ostream& stream,
-  const HyperGeometricDistribution& obj) {
+  const DirichletDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::istream& operator >> (std::istream& stream,
-  HyperGeometricDistribution& obj) {
+std::istream& operator >> (std::istream& stream, DirichletDistribution& obj) {
   obj.read(stream);
   return stream;
 }
 
 std::ofstream& operator << (std::ofstream& stream,
-  const HyperGeometricDistribution& obj) {
+  const DirichletDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
 std::ifstream& operator >> (std::ifstream& stream,
-  HyperGeometricDistribution& obj) {
+  DirichletDistribution& obj) {
   obj.read(stream);
   return stream;
 }
@@ -103,44 +97,22 @@ std::ifstream& operator >> (std::ifstream& stream,
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void HyperGeometricDistribution::setN(uint32_t u32N)
+void DirichletDistribution::setAlpha(const Eigen::VectorXd& alphaVector)
   throw (OutOfBoundException) {
-  if (u32N == 0)
-    throw OutOfBoundException("HyperGeometricDistribution::setN(): u32N must be strictly positive");
-  mu32N = u32N;
-  LogBinomial logBinomial;
-  mf64Normalizer = logBinomial(mu32N, mu32n);
+  if ((alphaVector.cwise() <= 0).any() == true)
+    throw OutOfBoundException("DirichletDistribution::setAlpha(): alphaVector must be strictly positive");
+  if (alphaVector.rows() < 2)
+    throw OutOfBoundException("DirichletDistribution::setAlpha(): alphaVector must contain at least 2 values");
+  mAlphaVector = alphaVector;
+  LogBeta logBeta;
+  mf64Normalizer = logBeta(mAlphaVector);
 }
 
-uint32_t HyperGeometricDistribution::getN() const {
-  return mu32N;
+const Eigen::VectorXd& DirichletDistribution::getAlpha() const {
+  return mAlphaVector;
 }
 
-void HyperGeometricDistribution::setm(uint32_t u32m)
-  throw (OutOfBoundException) {
-  if (u32m > mu32N)
-    throw OutOfBoundException("HyperGeometricDistribution::setm(): u32m must be smaller or equal to u32N");
-  mu32m = u32m;
-}
-
-uint32_t HyperGeometricDistribution::getm() const {
-  return mu32m;
-}
-
-void HyperGeometricDistribution::setn(uint32_t u32n)
-  throw (OutOfBoundException) {
-  if (u32n == 0 || u32n > mu32N)
-    throw OutOfBoundException("HyperGeometricDistribution::setn(): u32n must be smaller or equal to u32N and strictly positive");
-  mu32n = u32n;
-  LogBinomial logBinomial;
-  mf64Normalizer = logBinomial(mu32N, mu32n);
-}
-
-uint32_t HyperGeometricDistribution::getn() const {
-  return mu32n;
-}
-
-double HyperGeometricDistribution::getNormalizer() const {
+double DirichletDistribution::getNormalizer() const {
   return mf64Normalizer;
 }
 
@@ -148,20 +120,30 @@ double HyperGeometricDistribution::getNormalizer() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-double HyperGeometricDistribution::pmf(uint32_t u32X) const {
-  return exp(logpmf(u32X));
+double DirichletDistribution::pdf(const Eigen::VectorXd& xVector) const {
+  return exp(logpdf(xVector));
 }
 
-double HyperGeometricDistribution::logpmf(uint32_t u32X) const
+double DirichletDistribution::logpdf(const Eigen::VectorXd& xVector) const
   throw (OutOfBoundException) {
-  if (u32X < std::max((uint32_t)0, mu32n + mu32m - mu32N) ||
-    u32X > std::min(mu32m, mu32n))
-    throw OutOfBoundException("HyperGeometricDistribution::logpmf(): u32X has invalid value");
-  LogBinomial logBinomial;
-  return logBinomial(mu32m, u32X) + logBinomial(mu32N - mu32m, mu32n - u32X) -
-    mf64Normalizer;
+  if (fabs(xVector.sum() - 1.0) > std::numeric_limits<double>::epsilon())
+    throw OutOfBoundException("DirichletDistribution::logpdf(): input vector must sum to 1");
+  if ((xVector.cwise() <= 0).any() == true)
+    throw OutOfBoundException("DirichletDistribution::logpdf(): input vector must be strictly positive");
+  double f64Return = 0;
+  for (uint32_t i = 0; i < (uint32_t)mAlphaVector.rows(); i++)
+    f64Return += (mAlphaVector(i) - 1) * log(xVector(i));
+  return f64Return - mf64Normalizer;
 }
 
-uint32_t HyperGeometricDistribution::sample() const {
-  return 0.0;
+const Eigen::VectorXd DirichletDistribution::sample() const {
+  static Randomizer randomizer;
+  Eigen::VectorXd sampleGammaVector(mAlphaVector.rows());
+  for (uint32_t i = 0; i < (uint32_t)mAlphaVector.rows(); i++)
+    sampleGammaVector(i) = randomizer.sampleGamma(mAlphaVector(i), 1);
+  Eigen::VectorXd sampleDirVector(mAlphaVector.rows());
+  double f64Sum = sampleGammaVector.sum();
+  for (uint32_t i = 0; i < (uint32_t)mAlphaVector.rows(); i++)
+    sampleDirVector(i) = sampleGammaVector(i) / f64Sum;
+  return sampleDirVector;
 }

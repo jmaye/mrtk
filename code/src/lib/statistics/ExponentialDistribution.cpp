@@ -114,7 +114,7 @@ double ExponentialDistribution::logpdf(double f64X) const
   throw (OutOfBoundException) {
   if (f64X < 0)
     throw OutOfBoundException("ExponentialDistribution::logpdf(): f64X must be strictly positive");
-  return log(mf64Lambda) -mf64Lambda * f64X;
+  return log(mf64Lambda) - mf64Lambda * f64X;
 }
 
 double ExponentialDistribution::cdf(double f64X) const {

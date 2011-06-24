@@ -16,9 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/BinomialDistribution.h"
+#include "statistics/GammaDistribution.h"
 
-#include "functions/LogBinomial.h"
 #include "statistics/Randomizer.h"
 
 #include <iostream>
@@ -30,62 +29,64 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BinomialDistribution::BinomialDistribution(uint32_t u32TrialsNbr, double f64P) {
-  setP(f64P);
-  setTrialsNbr(u32TrialsNbr);
+GammaDistribution::GammaDistribution(double f64K, double f64Theta) {
+  setK(f64K);
+  setTheta(f64Theta);
 }
 
-BinomialDistribution::BinomialDistribution(const BinomialDistribution& other) :
-  mf64P(other.mf64P),
-  mu32TrialsNbr(other.mu32TrialsNbr) {
+GammaDistribution::GammaDistribution(const
+  GammaDistribution& other) :
+  mf64K(other.mf64K),
+  mf64Theta(other.mf64Theta) {
 }
 
-BinomialDistribution& BinomialDistribution::operator =
-  (const BinomialDistribution& other) {
-  mf64P = other.mf64P;
-  mu32TrialsNbr = other.mu32TrialsNbr;
+GammaDistribution& GammaDistribution::operator =
+  (const GammaDistribution& other) {
+  mf64K = other.mf64K;
+  mf64Theta = other.mf64Theta;
   return *this;
 }
 
-BinomialDistribution::~BinomialDistribution() {
+GammaDistribution::~GammaDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void BinomialDistribution::read(std::istream& stream) {
+void GammaDistribution::read(std::istream& stream) {
 }
 
-void BinomialDistribution::write(std::ostream& stream) const {
-  stream << "mf64P: " << mf64P << std::endl
-    << "mu32TrialsNbr: " << mu32TrialsNbr;
+void GammaDistribution::write(std::ostream& stream) const {
+  stream << "mf64K: " << mf64K << std::endl
+    << "mf64Theta: " << mf64Theta;
 }
 
-void BinomialDistribution::read(std::ifstream& stream) {
+void GammaDistribution::read(std::ifstream& stream) {
 }
 
-void BinomialDistribution::write(std::ofstream& stream) const {
+void GammaDistribution::write(std::ofstream& stream) const {
 }
 
 std::ostream& operator << (std::ostream& stream,
-  const BinomialDistribution& obj) {
+  const GammaDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::istream& operator >> (std::istream& stream, BinomialDistribution& obj) {
+std::istream& operator >> (std::istream& stream, GammaDistribution& obj) {
   obj.read(stream);
   return stream;
 }
 
 std::ofstream& operator << (std::ofstream& stream,
-  const BinomialDistribution& obj) {
+  const GammaDistribution& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::ifstream& operator >> (std::ifstream& stream, BinomialDistribution& obj) {
+std::ifstream& operator >> (std::ifstream& stream,
+  GammaDistribution& obj) {
   obj.read(stream);
   return stream;
 }
@@ -94,49 +95,50 @@ std::ifstream& operator >> (std::ifstream& stream, BinomialDistribution& obj) {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BinomialDistribution::setP(double f64P) throw (OutOfBoundException) {
-  if (f64P < 0.0 || f64P > 1.0)
-    throw OutOfBoundException("BinomialDistribution::setP(): f64P must be between 0 and 1");
-  mf64P = f64P;
-}
-
-double BinomialDistribution::getP() const {
-  return mf64P;
-}
-
-void BinomialDistribution::setTrialsNbr(uint32_t u32TrialsNbr)
+void GammaDistribution::setK(double f64K)
   throw (OutOfBoundException) {
-  if (u32TrialsNbr == 0)
-    throw OutOfBoundException("BinomialDistribution::setTrialsNbr(): u32TrialsNbr must be larger than 0");
-  mu32TrialsNbr = u32TrialsNbr;
+  if (f64K <= 0)
+    throw OutOfBoundException("GammaDistribution::setK(): f64K must be strictly positive");
+  mf64K = f64K;
+  mf64Normalizer = mf64K * log(mf64Theta) + lgamma(mf64K);
 }
 
-uint32_t BinomialDistribution::getTrialsNbr() const {
-  return mu32TrialsNbr;
+double GammaDistribution::getK() const {
+  return mf64K;
+}
+
+void GammaDistribution::setTheta(double f64Theta)
+  throw (OutOfBoundException) {
+  if (f64Theta <= 0)
+    throw OutOfBoundException("GammaDistribution::setTheta(): f64Beta must be strictly positive");
+  mf64Theta = f64Theta;
+  mf64Normalizer = mf64K * log(mf64Theta) + lgamma(mf64K);
+}
+
+double GammaDistribution::getTheta() const {
+  return mf64Theta;
+}
+
+double GammaDistribution::getNormalizer() const {
+  return mf64Normalizer;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-double BinomialDistribution::pmf(uint32_t u32SuccNbr) const {
-  return exp(logpmf(u32SuccNbr));
+double GammaDistribution::pdf(double f64X) const {
+  return exp(logpdf(f64X));
 }
 
-double BinomialDistribution::logpmf(uint32_t u32SuccNbr) const
+double GammaDistribution::logpdf(double f64X) const
   throw (OutOfBoundException) {
-  if (u32SuccNbr > mu32TrialsNbr)
-    throw OutOfBoundException("BinomialDistribution::logpmf(): u32SuccNbr must be smaller than u32TrialsNbr");
-  LogBinomial logBinomial;
-  return logBinomial(mu32TrialsNbr, u32SuccNbr) + u32SuccNbr * log(mf64P)
-    + (mu32TrialsNbr - u32SuccNbr) * log(1 - mf64P);
+  if (f64X < 0)
+    throw OutOfBoundException("GammaDistribution::logpdf(): f64X must be positive");
+  return (mf64K - 1) * log(f64X) - f64X / mf64Theta - mf64Normalizer;
 }
 
-uint32_t BinomialDistribution::sample() const {
+double GammaDistribution::sample() const {
   static Randomizer randomizer;
-  uint32_t u32SuccNbr = 0;
-  for (uint32_t i = 0; i < mu32TrialsNbr; i++)
-    if (randomizer.sampleBernoulli(mf64P) == true)
-      u32SuccNbr++;
-  return u32SuccNbr;
+  return randomizer.sampleGamma(mf64K, mf64Theta);
 }
