@@ -24,7 +24,7 @@
 #ifndef RANDOMIZER_H
 #define RANDOMIZER_H
 
-#include "misc/Timestamp.h"
+#include "utils/Timestamp.h"
 #include "exceptions/OutOfBoundException.h"
 #include "statistics/MvNormalDistribution.h"
 
