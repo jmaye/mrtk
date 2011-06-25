@@ -21,6 +21,8 @@
 #include "statistics/NormalDistribution.h"
 #include "statistics/MvNormalDistribution.h"
 #include "functions/ExpFunction.h"
+#include "functions/LogFunction.h"
+#include "functions/FactorialFunction.h"
 
 #include <Eigen/Core>
 
@@ -33,6 +35,10 @@
 int main(int argc, char** argv) {
   ExpFunction<> expFunction;
   std::cout << expFunction(10) << std::endl;
+  LogFunction<> logFunction;
+  std::cout << logFunction(10) << std::endl;
+  FactorialFunction factorialFunction;
+  std::cout << factorialFunction(10) << std::endl;
   QApplication app(argc, argv);
   Plot2D plot("Normal distribution");
   std::vector<double> xVector;
