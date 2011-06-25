@@ -16,14 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file BinomialFunction.h
+    \brief This file defines the BinomialFunction class, which implements the
+           binomial function
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef BINOMIALFUNCTION_H
+#define BINOMIALFUNCTION_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include <stdint.h>
 
-#endif // CONTINUOUSFUNCTION_H
+/** The BinomialFunction class implements the binomial function
+    \brief Binomial function
+  */
+class BinomialFunction {
+
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  BinomialFunction();
+  /// Destructor
+  ~BinomialFunction();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the binomial of (N, K)
+  uint32_t operator() (uint32_t u32N, uint32_t u32K);
+  /** @}
+    */
+
+protected:
+
+};
+
+#endif // BINOMIALFUNCTION_H

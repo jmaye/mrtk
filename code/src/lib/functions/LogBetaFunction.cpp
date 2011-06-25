@@ -9,21 +9,36 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
-  */
+#include "functions/LogBetaFunction.h"
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#include <cmath>
+#include <stdint.h>
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#endif // CONTINUOUSFUNCTION_H
+LogBetaFunction::LogBetaFunction() {
+}
+
+LogBetaFunction::~LogBetaFunction() {
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+double LogBetaFunction::operator() (const Eigen::VectorXd& inputVector) {
+  double f64Return = 0;
+  for (uint32_t i = 0; i < (uint32_t)inputVector.rows(); i++)
+    f64Return += lgamma(inputVector(i));
+  f64Return -= lgamma(inputVector.sum());
+  return f64Return;
+}

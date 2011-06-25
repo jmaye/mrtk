@@ -16,14 +16,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file ExpFunction.h
+    \brief This file defines the ExpFunction class, which represents the
+           exponential function
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef EXPFUNCTION_H
+#define EXPFUNCTION_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include "functions/ContinuousFunction.h"
 
-#endif // CONTINUOUSFUNCTION_H
+/** The ExpFunction class represents the exponential function
+    \brief Exponential function
+  */
+template <typename X = double> class ExpFunction :
+  public ContinuousFunction<double, X> {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  ExpFunction();
+  /// Destructor
+  virtual ~ExpFunction();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  virtual X getValue(const X& argument) const;
+  /** @}
+    */
+
+protected:
+
+};
+
+#include "functions/ExpFunction.tpp"
+
+#endif // EXPFUNCTION_H

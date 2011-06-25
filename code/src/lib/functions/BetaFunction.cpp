@@ -9,21 +9,34 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
-  */
+#include "functions/BetaFunction.h"
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#include "functions/LogBetaFunction.h"
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include <cmath>
 
-#endif // CONTINUOUSFUNCTION_H
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
+
+BetaFunction::BetaFunction() {
+}
+
+BetaFunction::~BetaFunction() {
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+double BetaFunction::operator() (const Eigen::VectorXd& inputVector) {
+  LogBetaFunction logBetaFunction;
+  return exp(logBetaFunction(inputVector));
+}

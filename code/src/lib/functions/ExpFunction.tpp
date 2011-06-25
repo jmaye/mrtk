@@ -9,21 +9,32 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
-  */
+#include <cmath>
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+template <typename X>
+ExpFunction<X>::ExpFunction() {
+}
 
-#endif // CONTINUOUSFUNCTION_H
+template <typename X>
+ExpFunction<X>::~ExpFunction() {
+}
+
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+template <typename X>
+X ExpFunction<X>::getValue(const X& argument) const {
+  return exp(argument);
+}

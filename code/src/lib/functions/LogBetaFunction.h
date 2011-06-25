@@ -16,14 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file LogBetaFunction.h
+    \brief This file defines the LogBetaFunction class, which implements the
+           log-beta function
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef LOGBETAFUNCTION_H
+#define LOGBETAFUNCTION_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include <Eigen/Core>
 
-#endif // CONTINUOUSFUNCTION_H
+/** The LogBetaFunction class implements the log-beta function
+    \brief Log-beta function
+  */
+class LogBetaFunction {
+
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  LogBetaFunction();
+  /// Destructor
+  ~LogBetaFunction();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the log-beta function B(inputVector)
+  double operator() (const Eigen::VectorXd& inputVector);
+  /** @}
+    */
+
+protected:
+
+};
+
+#endif // LOGBETAFUNCTION_H

@@ -17,84 +17,13 @@
  ******************************************************************************/
 
 /** \file DiscreteFunction.h
-    \brief DiscreteFunction
+    \brief This file is an interface to the discrete functions
   */
 
 #ifndef DISCRETEFUNCTION_H
 #define DISCRETEFUNCTION_H
 
-#include <iosfwd>
-
-/** DiscreteFunction
-  */
-class DiscreteFunction {
-  friend std::ostream& operator << (std::ostream& stream, const DiscreteFunction& obj);
-  friend std::istream& operator >> (std::istream& stream, DiscreteFunction& obj);
-  friend std::ofstream& operator << (std::ofstream& stream, const DiscreteFunction& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream, DiscreteFunction& obj);
-
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  DiscreteFunction(const DiscreteFunction& other);
-
-  //// Assignment operator
-  DiscreteFunction& operator = (const DiscreteFunction& other);
-  /** @}
-    */
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private methods
-    @{
-    */
-
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-
-  /** @}
-    */
-
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  DiscreteFunction();
-  /// Destructor
-  ~DiscreteFunction();
-  /** @}
-    */
-
-  /** \name Accessors
-    @{
-    */
-
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-
-  /** @}
-    */
-
-protected:
-
-};
+#include "functions/DiscreteFunction1v.h"
+#include "functions/DiscreteFunctionMv.h"
 
 #endif // DISCRETEFUNCTION_H

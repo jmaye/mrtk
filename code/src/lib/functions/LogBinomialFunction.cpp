@@ -9,21 +9,33 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
-  */
+#include "functions/LogBinomialFunction.h"
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#include "functions/LogFactorialFunction.h"
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#endif // CONTINUOUSFUNCTION_H
+LogBinomialFunction::LogBinomialFunction() {
+}
+
+LogBinomialFunction::~LogBinomialFunction() {
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+double LogBinomialFunction::operator() (uint32_t u32N, uint32_t u32K) {
+  LogFactorialFunction logFactorialFunction;
+  return logFactorialFunction(u32N) - (logFactorialFunction(u32K) +
+    logFactorialFunction(u32N - u32K));
+}

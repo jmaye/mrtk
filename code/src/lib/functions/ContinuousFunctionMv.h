@@ -16,14 +16,48 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file ContinuousFunctionMv.h
+    \brief This file defines the class ContinuousFunctionMv, which is an
+           interface to the multivariate continuous functions
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef CONTINUOUSFUNCTIONMV_H
+#define CONTINUOUSFUNCTIONMV_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include "functions/Function.h"
 
-#endif // CONTINUOUSFUNCTION_H
+#include <Eigen/Core>
+
+#include <cstdlib>
+
+/** The class ContinuousFunctionMv is an interface to the multivariate
+    continuous functions
+    \brief Multivariate continuous function
+  */
+template <typename Y, typename X, size_t M> class ContinuousFunction :
+  public virtual Function<Y, Eigen::Matrix<X, M, 1> > {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  ContinuousFunction();
+  /// Destructor
+  virtual ~ContinuousFunction();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  virtual size_t getNumVariables() const;
+  /** @}
+    */
+
+protected:
+
+};
+
+#include "functions/ContinuousFunctionMv.tpp"
+
+#endif // CONTINUOUSFUNCTIONMV_H

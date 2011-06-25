@@ -16,14 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file LogBinomialFunction.h
+    \brief This file defines the LogBinomialFunction class, which implements the
+           log-binomial function
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef LOGBINOMIALFUNCTION_H
+#define LOGBINOMIALFUNCTION_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include <stdint.h>
 
-#endif // CONTINUOUSFUNCTION_H
+/** The LogBinomialFunction class implements the log-binomial function
+    \brief Log-binomial function
+  */
+class LogBinomialFunction {
+
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  LogBinomialFunction();
+  /// Destructor
+  ~LogBinomialFunction();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the log-binomial of (N, K)
+  double operator() (uint32_t u32N, uint32_t u32K);
+  /** @}
+    */
+
+protected:
+
+};
+
+#endif // LOGBINOMIAL_H

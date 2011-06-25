@@ -16,14 +16,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file BetaFunction.h
+    \brief This file defines the BetaFunction class, which implements the beta
+           function
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef BETAFUNCTION_H
+#define BETAFUNCTION_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include <Eigen/Core>
 
-#endif // CONTINUOUSFUNCTION_H
+/** The BetaFunction class implements the beta function
+    \brief Beta function
+  */
+class BetaFunction {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  BetaFunction();
+  /// Destructor
+  ~BetaFunction();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the beta function B(inputVector)
+  double operator() (const Eigen::VectorXd& inputVector);
+  /** @}
+    */
+
+protected:
+
+};
+
+#endif // BETAFUNCTION_H

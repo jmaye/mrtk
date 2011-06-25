@@ -9,21 +9,30 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
-  */
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+template <typename Y, typename X>
+ContinuousFunction<Y, X>::ContinuousFunction() {
+}
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+template <typename Y, typename X>
+ContinuousFunction<Y, X>::~ContinuousFunction() {
+}
 
-#endif // CONTINUOUSFUNCTION_H
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+template <typename Y, typename X>
+size_t ContinuousFunction<Y, X>::getNumVariables() const {
+  return 1;
+}

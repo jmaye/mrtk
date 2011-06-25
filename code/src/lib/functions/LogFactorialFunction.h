@@ -16,14 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file LogFactorialFunction.h
+    \brief This file defines the LogFactorialFunction class, which implements
+           the log-factorial function
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef LOGFACTORIALFUNCTION_H
+#define LOGFACTORIALFUNCTION_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include "functions/DiscreteFunction.h"
 
-#endif // CONTINUOUSFUNCTION_H
+#include <stdint.h>
+
+/** The LogFactorialFunction class implements the log-factorial function
+    \brief Log-factorial function
+  */
+class LogFactorialFunction {
+
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  LogFactorialFunction();
+  /// Destructor
+  ~LogFactorialFunction();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the log-factorial of a number
+  double operator() (uint32_t u32N);
+  /** @}
+    */
+
+protected:
+
+};
+
+#endif // LOGFACTORIALFUNCTION_H

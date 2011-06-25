@@ -16,14 +16,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file ContinuousFunction1v.h
+    \brief This file contains an interface to the univariate continuous
+           functions
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef CONTINUOUSFUNCTION1V_H
+#define CONTINUOUSFUNCTION1V_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+/** The ContinuousFunction1v class represents an interface to the univariate
+    continuous functions
+    \brief Univariate continuous function
+  */
 
-#endif // CONTINUOUSFUNCTION_H
+#include "functions/Function.h"
+
+#include <cstdlib>
+
+template <typename Y, typename X, size_t M = 1> class ContinuousFunction;
+
+template <typename Y, typename X> class ContinuousFunction<Y, X> :
+  public virtual Function<Y, X> {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  ContinuousFunction();
+  /// Destructor
+  virtual ~ContinuousFunction();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  virtual size_t getNumVariables() const;
+  /** @}
+    */
+
+protected:
+
+};
+
+#include "functions/ContinuousFunction1v.tpp"
+
+#endif // CONTINUOUSFUNCTION1V_H

@@ -16,14 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file FactorialFunction.h
+    \brief This file defines the FactorialFunction class, which implements the
+           factorial function
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef FACTORIAL_H
+#define FACTORIAL_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include <stdint.h>
 
-#endif // CONTINUOUSFUNCTION_H
+/** The FactorialFunction class implements the factorial function
+    \brief Factorial function
+  */
+class FactorialFunction {
+
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  FactorialFunction();
+  /// Destructor
+  ~FactorialFunction();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Returns the factorial of a number
+  uint32_t operator() (uint32_t u32N);
+  /** @}
+    */
+
+protected:
+
+};
+
+#endif // FACTORIAL_H

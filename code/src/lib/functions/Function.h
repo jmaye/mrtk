@@ -16,14 +16,65 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunction.h
-    \brief This file is an interface to the continuous functions
+/** \file Fonction.h
+    \brief This file defines the class Fonction, which is an interface for any
+           kind of functions
   */
 
-#ifndef CONTINUOUSFUNCTION_H
-#define CONTINUOUSFUNCTION_H
+#ifndef FUNCTION_H
+#define FUNCTION_H
 
-#include "functions/ContinuousFunction1v.h"
-#include "functions/ContinuousFunctionMv.h"
+#include <cstdlib>
 
-#endif // CONTINUOUSFUNCTION_H
+/** The Function class is an interface to any kind of mathematical functions
+    \brief Function
+  */
+template <typename Y, typename X> class Function {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Function(const Function& other);
+  //// Assignment operator
+  Function& operator = (const Function& other);
+  /** @}
+    */
+
+public:
+  /** \name Types
+    @{
+    */
+  typedef X Domain;
+  typedef Y Codomain;
+  /** @}
+    */
+
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  Function();
+  /// Destructor
+  virtual ~Function();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  /// Access the function value for the given argument
+  virtual Y getValue(const X& argument) const = 0;
+  /// Access the function value for the given argument
+  virtual Y operator()(const X& argument) const;
+  /// Access the function's number of variables
+  virtual size_t getNumVariables() const = 0;
+  /** @}
+    */
+
+protected:
+
+};
+
+#include "functions/Function.tpp"
+
+#endif // FUNCTION_H
