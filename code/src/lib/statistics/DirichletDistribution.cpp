@@ -19,7 +19,7 @@
 #include "statistics/DirichletDistribution.h"
 
 #include "statistics/Randomizer.h"
-#include "functions/LogBeta.h"
+#include "functions/LogBetaFunction.h"
 
 #include <Eigen/Array>
 
@@ -104,8 +104,8 @@ void DirichletDistribution::setAlpha(const Eigen::VectorXd& alphaVector)
   if (alphaVector.rows() < 2)
     throw OutOfBoundException("DirichletDistribution::setAlpha(): alphaVector must contain at least 2 values");
   mAlphaVector = alphaVector;
-  LogBeta logBeta;
-  mf64Normalizer = logBeta(mAlphaVector);
+  LogBetaFunction logBetaFunction;
+  mf64Normalizer = logBetaFunction(mAlphaVector);
 }
 
 const Eigen::VectorXd& DirichletDistribution::getAlpha() const {

@@ -18,7 +18,7 @@
 
 #include "MultinomialDistribution.h"
 
-#include "functions/LogFactorial.h"
+#include "functions/LogFactorialFunction.h"
 #include "statistics/Randomizer.h"
 
 #include <Eigen/Array>
@@ -140,11 +140,11 @@ double MultinomialDistribution::logpmf(const Eigen::VectorXi& xVector) const
     throw OutOfBoundException("MultinomialDistribution::logpmf(): sum of the input vector must be equal to the trial numbers");
   if (xVector.rows() != mEventProbabilitiesVector.rows())
     throw OutOfBoundException("MultinomialDistribution::logpmf(): input vector must have the same dimension as the event probabilities vector");
-  LogFactorial logFactorial;
-  double f64Sum = logFactorial(mu32TrialsNbr);
+  LogFactorialFunction logFactorialFunction;
+  double f64Sum = logFactorialFunction(mu32TrialsNbr);
   for (uint32_t i = 0; i < (uint32_t)xVector.rows(); i++)
     f64Sum += xVector(i) * log(mEventProbabilitiesVector(i)) -
-      logFactorial(xVector(i));
+      logFactorialFunction(xVector(i));
   return f64Sum;
 }
 

@@ -18,7 +18,7 @@
 
 #include "statistics/NegativeBinomialDistribution.h"
 
-#include "functions/LogBinomial.h"
+#include "functions/LogBinomialFunction.h"
 #include "statistics/Randomizer.h"
 
 #include <iostream>
@@ -129,8 +129,8 @@ double NegativeBinomialDistribution::pmf(uint32_t u32SuccNbr) const {
 }
 
 double NegativeBinomialDistribution::logpmf(uint32_t u32SuccNbr) const {
-  LogBinomial logBinomial;
-  return logBinomial(u32SuccNbr + mu32FailuresNbr - 1, u32SuccNbr) +
+  LogBinomialFunction logBinomialFunction;
+  return logBinomialFunction(u32SuccNbr + mu32FailuresNbr - 1, u32SuccNbr) +
     mu32FailuresNbr * log(1 - mf64P) + u32SuccNbr * log(mf64P);
 }
 

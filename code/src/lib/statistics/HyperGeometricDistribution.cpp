@@ -19,7 +19,7 @@
 #include "statistics/HyperGeometricDistribution.h"
 
 #include "statistics/Randomizer.h"
-#include "functions/LogBinomial.h"
+#include "functions/LogBinomialFunction.h"
 
 #include <iostream>
 #include <fstream>
@@ -108,8 +108,8 @@ void HyperGeometricDistribution::setN(uint32_t u32N)
   if (u32N == 0)
     throw OutOfBoundException("HyperGeometricDistribution::setN(): u32N must be strictly positive");
   mu32N = u32N;
-  LogBinomial logBinomial;
-  mf64Normalizer = logBinomial(mu32N, mu32n);
+  LogBinomialFunction logBinomialFunction;
+  mf64Normalizer = logBinomialFunction(mu32N, mu32n);
 }
 
 uint32_t HyperGeometricDistribution::getN() const {
@@ -132,8 +132,8 @@ void HyperGeometricDistribution::setn(uint32_t u32n)
   if (u32n == 0 || u32n > mu32N)
     throw OutOfBoundException("HyperGeometricDistribution::setn(): u32n must be smaller or equal to u32N and strictly positive");
   mu32n = u32n;
-  LogBinomial logBinomial;
-  mf64Normalizer = logBinomial(mu32N, mu32n);
+  LogBinomialFunction logBinomialFunction;
+  mf64Normalizer = logBinomialFunction(mu32N, mu32n);
 }
 
 uint32_t HyperGeometricDistribution::getn() const {
@@ -157,9 +157,9 @@ double HyperGeometricDistribution::logpmf(uint32_t u32X) const
   if (u32X < std::max((uint32_t)0, mu32n + mu32m - mu32N) ||
     u32X > std::min(mu32m, mu32n))
     throw OutOfBoundException("HyperGeometricDistribution::logpmf(): u32X has invalid value");
-  LogBinomial logBinomial;
-  return logBinomial(mu32m, u32X) + logBinomial(mu32N - mu32m, mu32n - u32X) -
-    mf64Normalizer;
+  LogBinomialFunction logBinomialFunction;
+  return logBinomialFunction(mu32m, u32X) +
+    logBinomialFunction(mu32N - mu32m, mu32n - u32X) - mf64Normalizer;
 }
 
 uint32_t HyperGeometricDistribution::sample() const {

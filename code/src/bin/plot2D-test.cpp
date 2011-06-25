@@ -20,6 +20,7 @@
 #include "statistics/Randomizer.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/MvNormalDistribution.h"
+#include "functions/ExpFunction.h"
 
 #include <Eigen/Core>
 
@@ -30,6 +31,8 @@
 #include <stdint.h>
 
 int main(int argc, char** argv) {
+  ExpFunction<> expFunction;
+  std::cout << expFunction(10) << std::endl;
   QApplication app(argc, argv);
   Plot2D plot("Normal distribution");
   std::vector<double> xVector;

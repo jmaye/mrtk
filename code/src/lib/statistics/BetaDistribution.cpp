@@ -18,7 +18,7 @@
 
 #include "statistics/BetaDistribution.h"
 
-#include "functions/LogBeta.h"
+#include "functions/LogBetaFunction.h"
 #include "statistics/Randomizer.h"
 
 #include <Eigen/Core>
@@ -103,8 +103,8 @@ void BetaDistribution::setAlpha(double f64Alpha)
   if (f64Alpha <= 0)
     throw OutOfBoundException("BetaDistribution::setAlpha(): f64Alpha must be strictly positive");
   mf64Alpha = f64Alpha;
-  LogBeta logBeta;
-  mf64Normalizer = logBeta(Eigen::Vector2d(mf64Alpha, mf64Beta));
+  LogBetaFunction logBetaFunction;
+  mf64Normalizer = logBetaFunction(Eigen::Vector2d(mf64Alpha, mf64Beta));
 }
 
 double BetaDistribution::getAlpha() const {
@@ -116,8 +116,8 @@ void BetaDistribution::setBeta(double f64Beta)
   if (f64Beta <= 0)
     throw OutOfBoundException("BetaDistribution::setBeta(): f64Beta must be strictly positive");
   mf64Beta = f64Beta;
-  LogBeta logBeta;
-  mf64Normalizer = logBeta(Eigen::Vector2d(mf64Alpha, mf64Beta));
+  LogBetaFunction logBetaFunction;
+  mf64Normalizer = logBetaFunction(Eigen::Vector2d(mf64Alpha, mf64Beta));
 }
 
 double BetaDistribution::getBeta() const {

@@ -18,7 +18,7 @@
 
 #include "statistics/PoissonDistribution.h"
 
-#include "functions/LogFactorial.h"
+#include "functions/LogFactorialFunction.h"
 #include "statistics/Randomizer.h"
 
 #include <iostream>
@@ -110,8 +110,8 @@ double PoissonDistribution::pmf(uint32_t u32X) const {
 }
 
 double PoissonDistribution::logpmf(uint32_t u32X) const {
-  LogFactorial logFactorial;
-  return u32X * log(mf64Lambda) - mf64Lambda - logFactorial(u32X);
+  LogFactorialFunction logFactorialFunction;
+  return u32X * log(mf64Lambda) - mf64Lambda - logFactorialFunction(u32X);
 }
 
 uint32_t PoissonDistribution::sample() const {
