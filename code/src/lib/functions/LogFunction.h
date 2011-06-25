@@ -16,38 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteFunction1v.h
-    \brief This file defines the class DiscreteFunction1v, which is an interface
-           to the univariate functions
+/** \file LogFunction.h
+    \brief This file defines the LogFunction class, which represents the
+           log function
   */
 
-#ifndef DISCRETEFUNCTION1V_H
-#define DISCRETEFUNCTION1V_H
+#ifndef LOGFUNCTION_H
+#define LOGFUNCTION_H
 
-#include "functions/Function.h"
+#include "functions/ContinuousFunction.h"
 
-/** The class DiscreteFunction1v is an interface to the univariate discrete
-    functions
-    \brief Univariate discrete function
+/** The LogFunction class represents the exponential function
+    \brief Exponential function
   */
-template <typename Y, typename X, size_t M = 1> class DiscreteFunction;
-template <typename Y, typename X> class DiscreteFunction<Y, X> :
-  public virtual Function<Y, X> {
+template <typename X = double> class LogFunction :
+  public ContinuousFunction<double, X> {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  DiscreteFunction();
+  LogFunction();
   /// Destructor
-  virtual ~DiscreteFunction();
+  virtual ~LogFunction();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  virtual size_t getNumVariables() const;
+  virtual X getValue(const X& argument) const;
   /** @}
     */
 
@@ -55,6 +53,6 @@ protected:
 
 };
 
-#include "functions/DiscreteFunction1v.tpp"
+#include "functions/LogFunction.tpp"
 
-#endif // DISCRETEFUNCTION1V_H
+#endif // LOGFUNCTION_H

@@ -17,84 +17,45 @@
  ******************************************************************************/
 
 /** \file DiscreteFunctionMv.h
-    \brief DiscreteFunctionMv
+    \brief This file defines the class DiscreteFunctionMv, which is an interface
+           to the multivariate discrete functions
   */
 
 #ifndef DISCRETEFUNCTIONMV_H
 #define DISCRETEFUNCTIONMV_H
 
-#include <iosfwd>
+#include "functions/Function.h"
 
-/** DiscreteFunctionMv
+#include <Eigen/Core>
+
+/** The DiscreteFunctionMv class is an interface to the multivariate discrete
+    functions
+    \brief Multivariate discrete function
   */
-class DiscreteFunctionMv {
-  friend std::ostream& operator << (std::ostream& stream, const DiscreteFunctionMv& obj);
-  friend std::istream& operator >> (std::istream& stream, DiscreteFunctionMv& obj);
-  friend std::ofstream& operator << (std::ofstream& stream, const DiscreteFunctionMv& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream, DiscreteFunctionMv& obj);
-
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  DiscreteFunctionMv(const DiscreteFunctionMv& other);
-
-  //// Assignment operator
-  DiscreteFunctionMv& operator = (const DiscreteFunctionMv& other);
-  /** @}
-    */
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private methods
-    @{
-    */
-
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-
-  /** @}
-    */
-
+template <typename Y, typename X, size_t M> class DiscreteFunction :
+  public virtual Function<Y, Eigen::Matrix<X, M, 1>  > {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  DiscreteFunctionMv();
+  DiscreteFunction();
   /// Destructor
-  ~DiscreteFunctionMv();
+  virtual ~DiscreteFunction();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-
+  virtual size_t getNumVariables() const;
   /** @}
     */
 
 protected:
 
 };
+
+#include "functions/DiscreteFunctionMv.tpp"
 
 #endif // DISCRETEFUNCTIONMV_H

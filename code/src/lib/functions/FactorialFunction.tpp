@@ -9,52 +9,36 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteFunction1v.h
-    \brief This file defines the class DiscreteFunction1v, which is an interface
-           to the univariate functions
-  */
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#ifndef DISCRETEFUNCTION1V_H
-#define DISCRETEFUNCTION1V_H
+FactorialFunction::FactorialFunction() {
+}
 
-#include "functions/Function.h"
+FactorialFunction::~FactorialFunction() {
+}
 
-/** The class DiscreteFunction1v is an interface to the univariate discrete
-    functions
-    \brief Univariate discrete function
-  */
-template <typename Y, typename X, size_t M = 1> class DiscreteFunction;
-template <typename Y, typename X> class DiscreteFunction<Y, X> :
-  public virtual Function<Y, X> {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  DiscreteFunction();
-  /// Destructor
-  virtual ~DiscreteFunction();
-  /** @}
-    */
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
-  /** \name Accessors
-    @{
-    */
-  virtual size_t getNumVariables() const;
-  /** @}
-    */
+size_t FactorialFunction::getValue(const size_t& argument) const {
+  if (argument) {
+    size_t value = 1;
 
-protected:
+    for (size_t x = 1; x < argument; ++x)
+      value *= x+1;
 
-};
-
-#include "functions/DiscreteFunction1v.tpp"
-
-#endif // DISCRETEFUNCTION1V_H
+    return value;
+  }
+  else
+    return 1;
+}

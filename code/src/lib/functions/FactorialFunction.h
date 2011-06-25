@@ -17,20 +17,20 @@
  ******************************************************************************/
 
 /** \file FactorialFunction.h
-    \brief This file defines the FactorialFunction class, which implements the
+    \brief This file defines the FactorialFunction class, which represents the
            factorial function
   */
 
-#ifndef FACTORIAL_H
-#define FACTORIAL_H
+#ifndef FACTORIALFUNCTION_H
+#define FACTORIALFUNCTION_H
 
-#include <stdint.h>
+#include "functions/DiscreteFunction.h"
 
-/** The FactorialFunction class implements the factorial function
+/** The FactorialFunction class represents the factorial function
     \brief Factorial function
   */
-class FactorialFunction {
-
+class FactorialFunction :
+  public virtual DiscreteFunction<size_t, size_t> {
 public:
   /** \name Constructors/destructor
     @{
@@ -38,15 +38,14 @@ public:
   /// Default constructor
   FactorialFunction();
   /// Destructor
-  ~FactorialFunction();
+  virtual ~FactorialFunction();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Returns the factorial of a number
-  uint32_t operator() (uint32_t u32N);
+  virtual size_t getValue(const size_t& argument) const;
   /** @}
     */
 
@@ -54,4 +53,6 @@ protected:
 
 };
 
-#endif // FACTORIAL_H
+#include "functions/FactorialFunction.tpp"
+
+#endif // FACTORIALFUNCTION_H

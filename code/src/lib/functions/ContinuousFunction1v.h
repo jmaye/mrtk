@@ -24,17 +24,15 @@
 #ifndef CONTINUOUSFUNCTION1V_H
 #define CONTINUOUSFUNCTION1V_H
 
-/** The ContinuousFunction1v class represents an interface to the univariate
-    continuous functions
-    \brief Univariate continuous function
-  */
-
 #include "functions/Function.h"
 
 #include <cstdlib>
 
+/** The ContinuousFunction1v class represents an interface to the univariate
+    continuous functions
+    \brief Univariate continuous function
+  */
 template <typename Y, typename X, size_t M = 1> class ContinuousFunction;
-
 template <typename Y, typename X> class ContinuousFunction<Y, X> :
   public virtual Function<Y, X> {
 public:

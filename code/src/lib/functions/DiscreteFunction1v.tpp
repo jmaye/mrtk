@@ -16,69 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/DiscreteFunction1v.h"
-
-#include <iostream>
-#include <fstream>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-DiscreteFunction1v::DiscreteFunction1v() {
+template <typename Y, typename X>
+DiscreteFunction<Y, X>::DiscreteFunction() {
 }
 
-DiscreteFunction1v::DiscreteFunction1v(const DiscreteFunction1v& other) {
-}
-
-DiscreteFunction1v& DiscreteFunction1v::operator = (const DiscreteFunction1v& other) {
-  return *this;
-}
-
-DiscreteFunction1v::~DiscreteFunction1v() {
-}
-
-/******************************************************************************/
-/* Stream operations                                                          */
-/******************************************************************************/
-
-void DiscreteFunction1v::read(std::istream& stream) {
-}
-
-void DiscreteFunction1v::write(std::ostream& stream) const {
-}
-
-void DiscreteFunction1v::read(std::ifstream& stream) {
-}
-
-void DiscreteFunction1v::write(std::ofstream& stream) const {
-}
-
-std::ostream& operator << (std::ostream& stream, const DiscreteFunction1v& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, DiscreteFunction1v& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream, const DiscreteFunction1v& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream, DiscreteFunction1v& obj) {
-  obj.read(stream);
-  return stream;
+template <typename Y, typename X>
+DiscreteFunction<Y, X>::~DiscreteFunction() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
+template <typename Y, typename X>
+size_t DiscreteFunction<Y, X>::getNumVariables() const {
+  return 1;
+}

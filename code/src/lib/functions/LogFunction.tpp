@@ -9,52 +9,32 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteFunction1v.h
-    \brief This file defines the class DiscreteFunction1v, which is an interface
-           to the univariate functions
-  */
+#include <cmath>
 
-#ifndef DISCRETEFUNCTION1V_H
-#define DISCRETEFUNCTION1V_H
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include "functions/Function.h"
+template <typename X>
+LogFunction<X>::LogFunction() {
+}
 
-/** The class DiscreteFunction1v is an interface to the univariate discrete
-    functions
-    \brief Univariate discrete function
-  */
-template <typename Y, typename X, size_t M = 1> class DiscreteFunction;
-template <typename Y, typename X> class DiscreteFunction<Y, X> :
-  public virtual Function<Y, X> {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  DiscreteFunction();
-  /// Destructor
-  virtual ~DiscreteFunction();
-  /** @}
-    */
+template <typename X>
+LogFunction<X>::~LogFunction() {
+}
 
-  /** \name Accessors
-    @{
-    */
-  virtual size_t getNumVariables() const;
-  /** @}
-    */
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
-protected:
-
-};
-
-#include "functions/DiscreteFunction1v.tpp"
-
-#endif // DISCRETEFUNCTION1V_H
+template <typename X>
+X LogFunction<X>::getValue(const X& argument) const {
+  return log(argument);
+}

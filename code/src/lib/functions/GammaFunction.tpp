@@ -16,26 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/FactorialFunction.h"
+#include <cmath>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-FactorialFunction::FactorialFunction() {
+template <typename X>
+GammaFunction<X>::GammaFunction() {
 }
 
-FactorialFunction::~FactorialFunction() {
+GammaFunction<size_t>::GammaFunction() {
+}
+
+template <typename X>
+GammaFunction<X>::~GammaFunction() {
+}
+
+GammaFunction<size_t>::~GammaFunction() {
 }
 
 /******************************************************************************/
-/* Methods                                                                    */
+/* Accessors                                                                  */
 /******************************************************************************/
 
-uint32_t FactorialFunction::operator() (uint32_t u32N) {
-  uint32_t u32Value = 1;
-  for (uint32_t i = 1; i < u32N; i++) {
-    u32Value *= (i + 1);
-  }
-  return u32Value;
+template <typename X>
+X GammaFunction<X>::getValue(const X& argument) const {
+  return tgamma(argument);
+}
+
+size_t GammaFunction<size_t>::getValue(const size_t& argument) const {
+  return FactorialFunction::getValue(argument-1);
 }
