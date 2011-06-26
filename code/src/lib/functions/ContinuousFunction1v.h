@@ -26,15 +26,13 @@
 
 #include "functions/Function.h"
 
-#include <cstdlib>
-
 /** The ContinuousFunction1v class represents an interface to the univariate
     continuous functions
     \brief Univariate continuous function
   */
 template <typename Y, typename X, size_t M = 1> class ContinuousFunction;
 template <typename Y, typename X> class ContinuousFunction<Y, X> :
-  public virtual Function<Y, X> {
+  public Function<Y, X> {
 public:
   /** \name Constructors/destructor
     @{
@@ -49,6 +47,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function's number of variables
   virtual size_t getNumVariables() const;
   /** @}
     */

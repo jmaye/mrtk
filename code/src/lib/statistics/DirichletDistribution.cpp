@@ -104,7 +104,8 @@ void DirichletDistribution::setAlpha(const Eigen::VectorXd& alphaVector)
   if (alphaVector.rows() < 2)
     throw OutOfBoundException("DirichletDistribution::setAlpha(): alphaVector must contain at least 2 values");
   mAlphaVector = alphaVector;
-  LogBetaFunction logBetaFunction;
+  //TODO: change this
+  LogBetaFunction<double, 256> logBetaFunction;
   mf64Normalizer = logBetaFunction(mAlphaVector);
 }
 

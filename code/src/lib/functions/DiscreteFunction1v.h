@@ -32,7 +32,7 @@
   */
 template <typename Y, typename X, size_t M = 1> class DiscreteFunction;
 template <typename Y, typename X> class DiscreteFunction<Y, X> :
-  public virtual Function<Y, X> {
+  public Function<Y, X> {
 public:
   /** \name Constructors/destructor
     @{
@@ -47,6 +47,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function's number of variables
   virtual size_t getNumVariables() const;
   /** @}
     */

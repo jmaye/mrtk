@@ -9,35 +9,77 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+/** \file LogGammaFunction.h
+    \brief This file defines the LogGammaFunction class, which represents the
+           log-gamma function
+  */
+
+#ifndef LOGGAMMAFUNCTION_H
+#define LOGGAMMAFUNCTION_H
+
+#include "functions/ContinuousFunction.h"
 #include "functions/LogFactorialFunction.h"
+#include "exceptions/OutOfBoundException.h"
 
-#include <cmath>
+/** The LogGammaFunction class represents the gamma function
+    \brief Log-gamma function
+  */
+template <typename X = size_t> class LogGammaFunction :
+  public ContinuousFunction<double, X> {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  LogGammaFunction();
+  /// Destructor
+  virtual ~LogGammaFunction();
+  /** @}
+    */
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+  /** \name Accessors
+    @{
+    */
+  virtual double getValue(const X& argument) const;
+  /** @}
+    */
 
-LogFactorialFunction::LogFactorialFunction() {
-}
+protected:
 
-LogFactorialFunction::~LogFactorialFunction() {
-}
+};
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+template <> class LogGammaFunction<size_t> :
+  public LogFactorialFunction {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  LogGammaFunction();
+  /// Destructor
+  virtual ~LogGammaFunction();
+  /** @}
+    */
 
-double LogFactorialFunction::operator() (uint32_t u32N) {
-  double f64Value = 0.0;
-  for (uint32_t i = 1; i < u32N; i++) {
-    f64Value += log(i + 1);
-  }
-  return f64Value;
-}
+  /** \name Accessors
+    @{
+    */
+  virtual double getValue(const size_t& argument) const
+    throw (OutOfBoundException);
+  /** @}
+    */
+
+protected:
+
+};
+
+#include "functions/LogGammaFunction.tpp"
+
+#endif // LOGGAMMAFUNCTION_H

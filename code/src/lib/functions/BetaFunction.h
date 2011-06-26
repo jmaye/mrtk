@@ -17,19 +17,20 @@
  ******************************************************************************/
 
 /** \file BetaFunction.h
-    \brief This file defines the BetaFunction class, which implements the beta
-           function
+    \brief This file defines the BetaFunction class, which represents the
+           beta function
   */
 
 #ifndef BETAFUNCTION_H
 #define BETAFUNCTION_H
 
-#include <Eigen/Core>
+#include "functions/ContinuousFunction.h"
 
-/** The BetaFunction class implements the beta function
+/** The BetaFunction class represents the beta function
     \brief Beta function
   */
-class BetaFunction {
+template <typename X, size_t M> class BetaFunction :
+  public ContinuousFunction<double, X, M> {
 public:
   /** \name Constructors/destructor
     @{
@@ -37,20 +38,22 @@ public:
   /// Default constructor
   BetaFunction();
   /// Destructor
-  ~BetaFunction();
+  virtual ~BetaFunction();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Returns the beta function B(inputVector)
-  double operator() (const Eigen::VectorXd& inputVector);
+  /// Access the function value for the given argument
+  virtual double getValue(const Eigen::Matrix<X, M, 1>& argument) const;
   /** @}
     */
 
 protected:
 
 };
+
+#include "functions/BetaFunction.tpp"
 
 #endif // BETAFUNCTION_H

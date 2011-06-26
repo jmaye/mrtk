@@ -16,27 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/BetaFunction.h"
-
-#include "functions/LogBetaFunction.h"
-
-#include <cmath>
+#include "functions/GammaFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BetaFunction::BetaFunction() {
+template <typename X, size_t M>
+BetaFunction<X, M>::BetaFunction() {
 }
 
-BetaFunction::~BetaFunction() {
+template <typename X, size_t M>
+BetaFunction<X, M>::~BetaFunction() {
 }
 
 /******************************************************************************/
-/* Methods                                                                    */
+/* Accessors                                                                  */
 /******************************************************************************/
 
-double BetaFunction::operator() (const Eigen::VectorXd& inputVector) {
-  LogBetaFunction logBetaFunction;
-  return exp(logBetaFunction(inputVector));
+template <typename X, size_t M>
+double BetaFunction<X, M>::getValue(const Eigen::Matrix<X, M, 1>& argument)
+  const {
+  GammaFunction<X> gamma;
+  X sum = X(0);
+  X productGamma = X(1);
+
+  for (index_t i = 0; i < M; i++) {
+    sum += argument(i);
+    productGamma *= gamma(argument(i));
+  }
+
+  return (double)productGamma / gamma(sum);
 }

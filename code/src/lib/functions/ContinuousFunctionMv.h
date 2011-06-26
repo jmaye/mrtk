@@ -28,14 +28,12 @@
 
 #include <Eigen/Core>
 
-#include <cstdlib>
-
 /** The class ContinuousFunctionMv is an interface to the multivariate
     continuous functions
     \brief Multivariate continuous function
   */
 template <typename Y, typename X, size_t M> class ContinuousFunction :
-  public virtual Function<Y, Eigen::Matrix<X, M, 1> > {
+  public Function<Y, Eigen::Matrix<X, M, 1> > {
 public:
   /** \name Constructors/destructor
     @{
@@ -50,6 +48,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function's number of variables
   virtual size_t getNumVariables() const;
   /** @}
     */

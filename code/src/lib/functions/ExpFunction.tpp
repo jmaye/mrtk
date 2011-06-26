@@ -35,6 +35,6 @@ ExpFunction<X>::~ExpFunction() {
 /******************************************************************************/
 
 template <typename X>
-X ExpFunction<X>::getValue(const X& argument) const {
+double ExpFunction<X>::getValue(const X& argument) const {
   return exp(argument);
 }

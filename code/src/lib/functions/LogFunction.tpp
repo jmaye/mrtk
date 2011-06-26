@@ -35,6 +35,10 @@ LogFunction<X>::~LogFunction() {
 /******************************************************************************/
 
 template <typename X>
-X LogFunction<X>::getValue(const X& argument) const {
-  return log(argument);
+double LogFunction<X>::getValue(const X& argument) const
+  throw (OutOfBoundException) {
+  if (argument > X(0))
+    return log(argument);
+  else
+    throw OutOfBoundException("LogFunction<X>::getValue():: argument must be strictly positive");
 }

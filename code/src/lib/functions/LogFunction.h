@@ -24,6 +24,7 @@
 #ifndef LOGFUNCTION_H
 #define LOGFUNCTION_H
 
+#include "exceptions/OutOfBoundException.h"
 #include "functions/ContinuousFunction.h"
 
 /** The LogFunction class represents the exponential function
@@ -45,7 +46,8 @@ public:
   /** \name Accessors
     @{
     */
-  virtual X getValue(const X& argument) const;
+  /// Access the function value for the given argument
+  virtual double getValue(const X& argument) const throw (OutOfBoundException);
   /** @}
     */
 

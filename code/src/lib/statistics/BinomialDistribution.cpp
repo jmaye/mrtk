@@ -128,7 +128,9 @@ double BinomialDistribution::logpmf(uint32_t u32SuccNbr) const
   if (u32SuccNbr > mu32TrialsNbr)
     throw OutOfBoundException("BinomialDistribution::logpmf(): u32SuccNbr must be smaller than u32TrialsNbr");
   LogBinomialFunction logBinomialFunction;
-  return logBinomialFunction(mu32TrialsNbr, u32SuccNbr) + u32SuccNbr *
+  Eigen::Matrix<size_t, 2, 1> argument;
+  argument << mu32TrialsNbr, u32SuccNbr;
+  return logBinomialFunction(argument) + u32SuccNbr *
     log(mf64P) + (mu32TrialsNbr - u32SuccNbr) * log(1 - mf64P);
 }
 

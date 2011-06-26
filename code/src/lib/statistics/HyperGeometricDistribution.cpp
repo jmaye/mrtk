@@ -109,7 +109,9 @@ void HyperGeometricDistribution::setN(uint32_t u32N)
     throw OutOfBoundException("HyperGeometricDistribution::setN(): u32N must be strictly positive");
   mu32N = u32N;
   LogBinomialFunction logBinomialFunction;
-  mf64Normalizer = logBinomialFunction(mu32N, mu32n);
+  Eigen::Matrix<size_t, 2, 1> argument;
+  argument << mu32N, mu32n;
+  mf64Normalizer = logBinomialFunction(argument);
 }
 
 uint32_t HyperGeometricDistribution::getN() const {
@@ -133,7 +135,9 @@ void HyperGeometricDistribution::setn(uint32_t u32n)
     throw OutOfBoundException("HyperGeometricDistribution::setn(): u32n must be smaller or equal to u32N and strictly positive");
   mu32n = u32n;
   LogBinomialFunction logBinomialFunction;
-  mf64Normalizer = logBinomialFunction(mu32N, mu32n);
+  Eigen::Matrix<size_t, 2, 1> argument;
+  argument << mu32N, mu32n;
+  mf64Normalizer = logBinomialFunction(argument);
 }
 
 uint32_t HyperGeometricDistribution::getn() const {
@@ -158,8 +162,12 @@ double HyperGeometricDistribution::logpmf(uint32_t u32X) const
     u32X > std::min(mu32m, mu32n))
     throw OutOfBoundException("HyperGeometricDistribution::logpmf(): u32X has invalid value");
   LogBinomialFunction logBinomialFunction;
-  return logBinomialFunction(mu32m, u32X) +
-    logBinomialFunction(mu32N - mu32m, mu32n - u32X) - mf64Normalizer;
+  Eigen::Matrix<size_t, 2, 1> argument1;
+  argument1 << mu32m, u32X;
+  Eigen::Matrix<size_t, 2, 1> argument2;
+  argument2 << mu32N - mu32m, mu32n - u32X;
+  return logBinomialFunction(argument1) +
+    logBinomialFunction(argument2) - mf64Normalizer;
 }
 
 uint32_t HyperGeometricDistribution::sample() const {

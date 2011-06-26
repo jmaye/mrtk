@@ -16,29 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/LogBetaFunction.h"
-
 #include <cmath>
-#include <stdint.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-LogBetaFunction::LogBetaFunction() {
+template <typename X>
+LogGammaFunction<X>::LogGammaFunction() {
 }
 
-LogBetaFunction::~LogBetaFunction() {
+LogGammaFunction<size_t>::LogGammaFunction() {
+}
+
+template <typename X>
+LogGammaFunction<X>::~LogGammaFunction() {
+}
+
+LogGammaFunction<size_t>::~LogGammaFunction() {
 }
 
 /******************************************************************************/
-/* Methods                                                                    */
+/* Accessors                                                                  */
 /******************************************************************************/
 
-double LogBetaFunction::operator() (const Eigen::VectorXd& inputVector) {
-  double f64Return = 0;
-  for (uint32_t i = 0; i < (uint32_t)inputVector.rows(); i++)
-    f64Return += lgamma(inputVector(i));
-  f64Return -= lgamma(inputVector.sum());
-  return f64Return;
+template <typename X>
+double LogGammaFunction<X>::getValue(const X& argument) const {
+  return lgamma(argument);
+}
+
+double LogGammaFunction<size_t>::getValue(const size_t& argument) const
+  throw (OutOfBoundException) {
+  if (argument != 0)
+    return LogFactorialFunction::getValue(argument - 1);
+  else throw OutOfBoundException("LogGammaFunction<size_t>::getValue(): argument must be strictly positive");
 }

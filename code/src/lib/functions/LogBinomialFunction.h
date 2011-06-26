@@ -17,20 +17,20 @@
  ******************************************************************************/
 
 /** \file LogBinomialFunction.h
-    \brief This file defines the LogBinomialFunction class, which implements the
+    \brief This file defines the LogBinomialFunction class, which represents the
            log-binomial function
   */
 
 #ifndef LOGBINOMIALFUNCTION_H
 #define LOGBINOMIALFUNCTION_H
 
-#include <stdint.h>
+#include "functions/DiscreteFunction.h"
 
-/** The LogBinomialFunction class implements the log-binomial function
-    \brief Log-binomial function
+/** The LogBinomialFunction class represents the binomial function
+    \brief Binomial function
   */
-class LogBinomialFunction {
-
+class LogBinomialFunction :
+  public virtual DiscreteFunction<double, size_t, 2> {
 public:
   /** \name Constructors/destructor
     @{
@@ -38,15 +38,14 @@ public:
   /// Default constructor
   LogBinomialFunction();
   /// Destructor
-  ~LogBinomialFunction();
+  virtual ~LogBinomialFunction();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Returns the log-binomial of (N, K)
-  double operator() (uint32_t u32N, uint32_t u32K);
+  virtual double getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const;
   /** @}
     */
 
@@ -54,4 +53,6 @@ protected:
 
 };
 
-#endif // LOGBINOMIAL_H
+#include "functions/LogBinomialFunction.tpp"
+
+#endif // LOGBINOMIALFUNCTION_H

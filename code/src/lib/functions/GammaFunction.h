@@ -26,6 +26,7 @@
 
 #include "functions/ContinuousFunction.h"
 #include "functions/FactorialFunction.h"
+#include "exceptions/OutOfBoundException.h"
 
 /** The GammaFunction class represents the gamma function
     \brief Gamma function
@@ -46,7 +47,7 @@ public:
   /** \name Accessors
     @{
     */
-  virtual X getValue(const X& argument) const;
+  virtual double getValue(const X& argument) const;
   /** @}
     */
 
@@ -55,8 +56,7 @@ protected:
 };
 
 template <> class GammaFunction<size_t> :
-  public FactorialFunction,
-  public ClassType<GammaFunction<size_t> > {
+  public FactorialFunction {
 public:
   /** \name Constructors/destructor
     @{
@@ -71,7 +71,8 @@ public:
   /** \name Accessors
     @{
     */
-  virtual size_t getValue(const size_t& argument) const;
+  virtual size_t getValue(const size_t& argument) const
+    throw (OutOfBoundException);
   /** @}
     */
 

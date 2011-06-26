@@ -103,7 +103,7 @@ void BetaDistribution::setAlpha(double f64Alpha)
   if (f64Alpha <= 0)
     throw OutOfBoundException("BetaDistribution::setAlpha(): f64Alpha must be strictly positive");
   mf64Alpha = f64Alpha;
-  LogBetaFunction logBetaFunction;
+  LogBetaFunction<double, 2> logBetaFunction;
   mf64Normalizer = logBetaFunction(Eigen::Vector2d(mf64Alpha, mf64Beta));
 }
 
@@ -116,7 +116,7 @@ void BetaDistribution::setBeta(double f64Beta)
   if (f64Beta <= 0)
     throw OutOfBoundException("BetaDistribution::setBeta(): f64Beta must be strictly positive");
   mf64Beta = f64Beta;
-  LogBetaFunction logBetaFunction;
+  LogBetaFunction<double, 2> logBetaFunction;
   mf64Normalizer = logBetaFunction(Eigen::Vector2d(mf64Alpha, mf64Beta));
 }
 

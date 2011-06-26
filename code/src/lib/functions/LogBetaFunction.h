@@ -17,20 +17,20 @@
  ******************************************************************************/
 
 /** \file LogBetaFunction.h
-    \brief This file defines the LogBetaFunction class, which implements the
+    \brief This file defines the LogBetaFunction class, which represents the
            log-beta function
   */
 
 #ifndef LOGBETAFUNCTION_H
 #define LOGBETAFUNCTION_H
 
-#include <Eigen/Core>
+#include "functions/ContinuousFunction.h"
 
-/** The LogBetaFunction class implements the log-beta function
-    \brief Log-beta function
+/** The LogBetaFunction class represents the beta function
+    \brief Beta function
   */
-class LogBetaFunction {
-
+template <typename X, size_t M> class LogBetaFunction :
+  public ContinuousFunction<double, X, M> {
 public:
   /** \name Constructors/destructor
     @{
@@ -38,20 +38,22 @@ public:
   /// Default constructor
   LogBetaFunction();
   /// Destructor
-  ~LogBetaFunction();
+  virtual ~LogBetaFunction();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Returns the log-beta function B(inputVector)
-  double operator() (const Eigen::VectorXd& inputVector);
+  /// Access the function value for the given argument
+  virtual double getValue(const Eigen::Matrix<X, M, 1>& argument) const;
   /** @}
     */
 
 protected:
 
 };
+
+#include "functions/LogBetaFunction.tpp"
 
 #endif // LOGBETAFUNCTION_H

@@ -17,20 +17,20 @@
  ******************************************************************************/
 
 /** \file BinomialFunction.h
-    \brief This file defines the BinomialFunction class, which implements the
+    \brief This file defines the BinomialFunction class, which represents the
            binomial function
   */
 
 #ifndef BINOMIALFUNCTION_H
 #define BINOMIALFUNCTION_H
 
-#include <stdint.h>
+#include "functions/DiscreteFunction.h"
 
-/** The BinomialFunction class implements the binomial function
+/** The BinomialFunction class represents the binomial function
     \brief Binomial function
   */
-class BinomialFunction {
-
+class BinomialFunction :
+  public DiscreteFunction<size_t, size_t, 2> {
 public:
   /** \name Constructors/destructor
     @{
@@ -38,20 +38,21 @@ public:
   /// Default constructor
   BinomialFunction();
   /// Destructor
-  ~BinomialFunction();
+  virtual ~BinomialFunction();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Returns the binomial of (N, K)
-  uint32_t operator() (uint32_t u32N, uint32_t u32K);
+  virtual size_t getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const;
   /** @}
     */
 
 protected:
 
 };
+
+#include "functions/BinomialFunction.tpp"
 
 #endif // BINOMIALFUNCTION_H

@@ -30,16 +30,6 @@
     \brief Function
   */
 template <typename Y, typename X> class Function {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  Function(const Function& other);
-  //// Assignment operator
-  Function& operator = (const Function& other);
-  /** @}
-    */
-
 public:
   /** \name Types
     @{

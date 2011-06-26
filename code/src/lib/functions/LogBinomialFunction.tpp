@@ -16,26 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/BinomialFunction.h"
-
-#include "functions/FactorialFunction.h"
+#include "functions/LogFactorialFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BinomialFunction::BinomialFunction() {
+LogBinomialFunction::LogBinomialFunction() {
 }
 
-BinomialFunction::~BinomialFunction() {
+LogBinomialFunction::~LogBinomialFunction() {
 }
 
 /******************************************************************************/
-/* Methods                                                                    */
+/* Accessors                                                                  */
 /******************************************************************************/
 
-uint32_t BinomialFunction::operator() (uint32_t u32N, uint32_t u32K) {
-  FactorialFunction factorialFunction;
-  return factorialFunction(u32N) / (factorialFunction(u32K) *
-    factorialFunction(u32N - u32K));
+double LogBinomialFunction::getValue(const Eigen::Matrix<size_t, 2, 1>&
+  argument) const {
+  LogFactorialFunction logFactorial;
+  return logFactorial(argument(0)) - (logFactorial(argument(1)) +
+    logFactorial(argument(0) - argument(1)));
 }

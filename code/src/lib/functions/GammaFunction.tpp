@@ -41,10 +41,13 @@ GammaFunction<size_t>::~GammaFunction() {
 /******************************************************************************/
 
 template <typename X>
-X GammaFunction<X>::getValue(const X& argument) const {
+double GammaFunction<X>::getValue(const X& argument) const {
   return tgamma(argument);
 }
 
-size_t GammaFunction<size_t>::getValue(const size_t& argument) const {
-  return FactorialFunction::getValue(argument-1);
+size_t GammaFunction<size_t>::getValue(const size_t& argument) const
+  throw (OutOfBoundException) {
+  if (argument)
+    return FactorialFunction::getValue(argument - 1);
+  else throw OutOfBoundException("GammaFunction<size_t>::getValue(): argument must be strictly positive");
 }

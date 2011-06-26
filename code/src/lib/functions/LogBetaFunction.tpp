@@ -16,26 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/LogBinomialFunction.h"
-
-#include "functions/LogFactorialFunction.h"
+#include "functions/LogGammaFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-LogBinomialFunction::LogBinomialFunction() {
+template <typename X, size_t M>
+LogBetaFunction<X, M>::LogBetaFunction() {
 }
 
-LogBinomialFunction::~LogBinomialFunction() {
+template <typename X, size_t M>
+LogBetaFunction<X, M>::~LogBetaFunction() {
 }
 
 /******************************************************************************/
-/* Methods                                                                    */
+/* Accessors                                                                  */
 /******************************************************************************/
 
-double LogBinomialFunction::operator() (uint32_t u32N, uint32_t u32K) {
-  LogFactorialFunction logFactorialFunction;
-  return logFactorialFunction(u32N) - (logFactorialFunction(u32K) +
-    logFactorialFunction(u32N - u32K));
+template <typename X, size_t M>
+double LogBetaFunction<X, M>::getValue(const Eigen::Matrix<X, M, 1>& argument)
+  const {
+  LogGammaFunction<X> logGamma;
+  X sum = X(0);
+  X logSumGamma = X(0);
+
+  for (size_t i = 0; i < M; i++) {
+    sum += argument(i);
+    logSumGamma += logGamma(argument(i));
+  }
+
+  return logSumGamma - logGamma(sum);
 }

@@ -130,7 +130,9 @@ double NegativeBinomialDistribution::pmf(uint32_t u32SuccNbr) const {
 
 double NegativeBinomialDistribution::logpmf(uint32_t u32SuccNbr) const {
   LogBinomialFunction logBinomialFunction;
-  return logBinomialFunction(u32SuccNbr + mu32FailuresNbr - 1, u32SuccNbr) +
+  Eigen::Matrix<size_t, 2, 1> argument;
+  argument << u32SuccNbr + mu32FailuresNbr - 1, u32SuccNbr;
+  return logBinomialFunction(argument) +
     mu32FailuresNbr * log(1 - mf64P) + u32SuccNbr * log(mf64P);
 }
 

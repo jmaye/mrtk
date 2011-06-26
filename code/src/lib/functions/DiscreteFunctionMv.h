@@ -25,6 +25,7 @@
 #define DISCRETEFUNCTIONMV_H
 
 #include "functions/Function.h"
+#include "utils/SizeTSupport.h"
 
 #include <Eigen/Core>
 
@@ -33,7 +34,7 @@
     \brief Multivariate discrete function
   */
 template <typename Y, typename X, size_t M> class DiscreteFunction :
-  public virtual Function<Y, Eigen::Matrix<X, M, 1>  > {
+  public Function<Y, Eigen::Matrix<X, M, 1>  > {
 public:
   /** \name Constructors/destructor
     @{
@@ -48,6 +49,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function's number of variables
   virtual size_t getNumVariables() const;
   /** @}
     */

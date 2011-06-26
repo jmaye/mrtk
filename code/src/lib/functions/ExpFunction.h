@@ -45,7 +45,8 @@ public:
   /** \name Accessors
     @{
     */
-  virtual X getValue(const X& argument) const;
+  /// Access the function value for the given argument
+  virtual double getValue(const X& argument) const;
   /** @}
     */
 

@@ -9,51 +9,32 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogFactorialFunction.h
-    \brief This file defines the LogFactorialFunction class, which represents
-           the log-factorial function
-  */
+#include "functions/FactorialFunction.h"
 
-#ifndef LOGFACTORIALFUNCTION_H
-#define LOGFACTORIALFUNCTION_H
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include "functions/DiscreteFunction.h"
+BinomialFunction::BinomialFunction() {
+}
 
-/** The LogFactorialFunction class represents the log-factorial function
-    \brief Log-factorial function
-  */
-class LogFactorialFunction :
-  public virtual DiscreteFunction<double, size_t> {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogFactorialFunction();
-  /// Destructor
-  virtual ~LogFactorialFunction();
-  /** @}
-    */
+BinomialFunction::~BinomialFunction() {
+}
 
-  /** \name Accessors
-    @{
-    */
-  /// Access the function value for the given argument
-  virtual double getValue(const size_t& argument) const;
-  /** @}
-    */
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
-protected:
-
-};
-
-#include "functions/LogFactorialFunction.tpp"
-
-#endif // LOGFACTORIALFUNCTION_H
+size_t BinomialFunction::getValue(const Eigen::Matrix<size_t, 2, 1>& argument)
+  const {
+  FactorialFunction factorial;
+  return factorial(argument(0)) / (factorial(argument(1)) *
+    factorial(argument(0) - argument(1)));
+}

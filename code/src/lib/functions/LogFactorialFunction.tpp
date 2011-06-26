@@ -9,51 +9,38 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogFactorialFunction.h
-    \brief This file defines the LogFactorialFunction class, which represents
-           the log-factorial function
-  */
+#include <cmath>
 
-#ifndef LOGFACTORIALFUNCTION_H
-#define LOGFACTORIALFUNCTION_H
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include "functions/DiscreteFunction.h"
+LogFactorialFunction::LogFactorialFunction() {
+}
 
-/** The LogFactorialFunction class represents the log-factorial function
-    \brief Log-factorial function
-  */
-class LogFactorialFunction :
-  public virtual DiscreteFunction<double, size_t> {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogFactorialFunction();
-  /// Destructor
-  virtual ~LogFactorialFunction();
-  /** @}
-    */
+LogFactorialFunction::~LogFactorialFunction() {
+}
 
-  /** \name Accessors
-    @{
-    */
-  /// Access the function value for the given argument
-  virtual double getValue(const size_t& argument) const;
-  /** @}
-    */
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
-protected:
+double LogFactorialFunction::getValue(const size_t& argument) const {
+  if (argument) {
+    double value = 0.0;
 
-};
+    for (size_t x = 1; x < argument; x++)
+      value += log(x + 1);
 
-#include "functions/LogFactorialFunction.tpp"
-
-#endif // LOGFACTORIALFUNCTION_H
+    return value;
+  }
+  else
+    return 0.0;
+}

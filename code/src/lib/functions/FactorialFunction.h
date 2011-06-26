@@ -30,7 +30,7 @@
     \brief Factorial function
   */
 class FactorialFunction :
-  public virtual DiscreteFunction<size_t, size_t> {
+  public DiscreteFunction<size_t, size_t> {
 public:
   /** \name Constructors/destructor
     @{
@@ -45,6 +45,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function value for the given argument
   virtual size_t getValue(const size_t& argument) const;
   /** @}
     */
