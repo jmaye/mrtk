@@ -38,16 +38,16 @@ public:
     @{
     */
   /// Default constructor
-  LogGammaFunction();
+  inline LogGammaFunction();
   /// Destructor
-  virtual ~LogGammaFunction();
+  inline virtual ~LogGammaFunction();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  virtual double getValue(const X& argument) const;
+  inline virtual double getValue(const X& argument) const;
   /** @}
     */
 
@@ -62,16 +62,16 @@ public:
     @{
     */
   /// Default constructor
-  LogGammaFunction();
+  inline LogGammaFunction();
   /// Destructor
-  virtual ~LogGammaFunction();
+  inline virtual ~LogGammaFunction();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  virtual double getValue(const size_t& argument) const
+  inline virtual double getValue(const size_t& argument) const
     throw (OutOfBoundException);
   /** @}
     */

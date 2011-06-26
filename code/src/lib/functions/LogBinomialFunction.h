@@ -36,16 +36,16 @@ public:
     @{
     */
   /// Default constructor
-  LogBinomialFunction();
+  inline LogBinomialFunction();
   /// Destructor
-  virtual ~LogBinomialFunction();
+  inline virtual ~LogBinomialFunction();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  virtual double getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const;
+  inline virtual double getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const;
   /** @}
     */
 

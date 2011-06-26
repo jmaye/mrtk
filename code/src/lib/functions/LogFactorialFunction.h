@@ -36,9 +36,9 @@ public:
     @{
     */
   /// Default constructor
-  LogFactorialFunction();
+  inline LogFactorialFunction();
   /// Destructor
-  virtual ~LogFactorialFunction();
+  inline virtual ~LogFactorialFunction();
   /** @}
     */
 
@@ -46,7 +46,7 @@ public:
     @{
     */
   /// Access the function value for the given argument
-  virtual double getValue(const size_t& argument) const;
+  inline virtual double getValue(const size_t& argument) const;
   /** @}
     */
 
