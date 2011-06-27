@@ -25,7 +25,6 @@
 #define MVNORMALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "statistics/MvContinuousDistribution.h"
 
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
@@ -36,8 +35,7 @@
     distribution.
     \brief Multivariate normal distribution
   */
-class MvNormalDistribution :
-  public MvContinuousDistribution {
+class MvNormalDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const MvNormalDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

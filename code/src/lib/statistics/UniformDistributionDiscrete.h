@@ -26,7 +26,6 @@
 
 #include "exceptions/OutOfBoundException.h"
 #include "exceptions/InvalidOperationException.h"
-#include "statistics/DiscreteDistribution.h"
 
 #include <iosfwd>
 
@@ -36,8 +35,7 @@
     distribution.
     \brief Discrete uniform distribution
   */
-class UniformDistributionDiscrete :
-  public DiscreteDistribution {
+class UniformDistributionDiscrete {
   friend std::ostream& operator << (std::ostream& stream,
     const UniformDistributionDiscrete& obj);
   friend std::istream& operator >> (std::istream& stream,

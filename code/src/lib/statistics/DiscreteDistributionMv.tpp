@@ -9,76 +9,31 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "DiscreteDistribution.h"
-
-#include <iostream>
-#include <fstream>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-DiscreteDistribution::DiscreteDistribution() {
+template <typename X, size_t M>
+DiscreteDistribution<X, M>::DiscreteDistribution() {
 }
 
-DiscreteDistribution::DiscreteDistribution(const DiscreteDistribution& other) {
-}
-
-DiscreteDistribution& DiscreteDistribution::operator = (const DiscreteDistribution& other) {
-  return *this;
-}
-
-DiscreteDistribution::~DiscreteDistribution() {
-}
-
-/******************************************************************************/
-/* Stream operations                                                          */
-/******************************************************************************/
-
-void DiscreteDistribution::read(std::istream& stream) {
-}
-
-void DiscreteDistribution::write(std::ostream& stream) const {
-}
-
-void DiscreteDistribution::read(std::ifstream& stream) {
-}
-
-void DiscreteDistribution::write(std::ofstream& stream) const {
-}
-
-std::ostream& operator << (std::ostream& stream, const DiscreteDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, DiscreteDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream, const DiscreteDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream, DiscreteDistribution& obj) {
-  obj.read(stream);
-  return stream;
+template <typename X, size_t M>
+DiscreteDistribution<X, M>::~DiscreteDistribution() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
+template <typename X, size_t M> 
+double DiscreteDistribution<X, M>::getValue(const Eigen::Matrix<X, M, 1>&
+  argument) const {
+  return pmf(argument);
+}

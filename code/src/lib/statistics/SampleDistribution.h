@@ -9,21 +9,53 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteDistribution.h
-    \brief This file is an interface to the discrete distributions
+/** \file ContinuousDistribution.h
+    \brief This file defines the class SampleDistribution, which represents an
+           interface to sample distributions
   */
 
-#ifndef DISCRETEDISTRIBUTION_H
-#define DISCRETEDISTRIBUTION_H
 
-#include "statistics/DiscreteDistribution1v.h"
-#include "statistics/DiscreteDistributionMv.h"
+#ifndef SAMPLEDISTRIBUTION_H
+#define SAMPLEDISTRIBUTION_H
 
-#endif // DISCRETEDISTRIBUTION_H
+#include "statistics/Distribution.h"
+
+/** The SampleDistribution class represents an interface to sample
+    distributions, i.e. distributions which can directly be sampled from
+    \brief Sample distribution
+  */
+template <typename X> class SampleDistribution :
+  public Distribution<X> {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  SampleDistribution();
+  /// Destructor
+  virtual ~SampleDistribution();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  /// Access a sample drawn from the distribution
+  virtual X getSample() const = 0;
+  /** @}
+    */
+
+protected:
+
+};
+
+#include "statistics/SampleDistribution.tpp"
+
+#endif // SAMPLEDISTRIBUTION_H

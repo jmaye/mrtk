@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteDistribution.h
-    \brief This file is an interface to the discrete distributions
-  */
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#ifndef DISCRETEDISTRIBUTION_H
-#define DISCRETEDISTRIBUTION_H
+template <typename X>
+SampleDistribution<X>::SampleDistribution() {
+}
 
-#include "statistics/DiscreteDistribution1v.h"
-#include "statistics/DiscreteDistributionMv.h"
-
-#endif // DISCRETEDISTRIBUTION_H
+template <typename X>
+SampleDistribution<X>::~SampleDistribution() {
+}

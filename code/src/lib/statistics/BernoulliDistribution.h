@@ -26,7 +26,6 @@
 
 #include "exceptions/OutOfBoundException.h"
 #include "exceptions/InvalidOperationException.h"
-#include "statistics/DiscreteDistribution.h"
 
 #include <iosfwd>
 
@@ -34,8 +33,7 @@
     the discrete distribution of a random event with success or failure
     \brief Bernoulli distribution
   */
-class BernoulliDistribution :
-  public DiscreteDistribution {
+class BernoulliDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const BernoulliDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

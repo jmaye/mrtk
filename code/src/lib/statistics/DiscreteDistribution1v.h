@@ -16,80 +16,50 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MvDiscreteDistribution.h
-    \brief MvDiscreteDistribution
+/** \file DiscreteDistribution1v.h
+    \brief This file contains an interface to the univariate discrete
+           distributions
   */
 
-#ifndef MVDISCRETEDISTRIBUTION_H
-#define MVDISCRETEDISTRIBUTION_H
+#ifndef DISCRETEDISTRIBUTION1V_H
+#define DISCRETEDISTRIBUTION1V_H
 
-#include <iosfwd>
+#include "functions/ContinuousFunction1v.h"
+#include "statistics/Distribution.h"
 
-/** MvDiscreteDistribution
+/** The DiscreteDistribution1v class represents an interface to the univariate
+    discrete distributions
+    \brief Univariate discrete distribution
   */
-class MvDiscreteDistribution {
-  friend std::ostream& operator << (std::ostream& stream, const MvDiscreteDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream, MvDiscreteDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream, const MvDiscreteDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream, MvDiscreteDistribution& obj);
-
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  MvDiscreteDistribution(const MvDiscreteDistribution& other);
-
-  //// Assignment operator
-  MvDiscreteDistribution& operator = (const MvDiscreteDistribution& other);
-  /** @}
-    */
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private methods
-    @{
-    */
-
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-
-  /** @}
-    */
-
+template <typename X, size_t M = 1> class DiscreteDistribution;
+template <typename X> class DiscreteDistribution<X> :
+  public DiscreteFunction<double, X>,
+  public Distribution<X> {
 public:
+  /** \name Types
+    @{
+    */
+  typedef DiscreteDistribution<X> DistributionType;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  MvDiscreteDistribution();
+  DiscreteDistribution();
   /// Destructor
-  ~MvDiscreteDistribution();
+  virtual ~DiscreteDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-
+  /// Access the probablity of the variable to take on the given value
+  virtual double pmf(const X& value) const = 0;
+  /// Interface to function
+  virtual double getValue(const X& argument) const;
   /** @}
     */
 
@@ -97,4 +67,6 @@ protected:
 
 };
 
-#endif // MVDISCRETEDISTRIBUTION_H
+#include "statistics/DiscreteDistribution1v.tpp"
+
+#endif // DISCRETEDISTRIBUTION1V_H

@@ -25,7 +25,6 @@
 #define DIRICHLETDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "statistics/MvDiscreteDistribution.h"
 
 #include <Eigen/Core>
 
@@ -36,8 +35,7 @@
     or categorical distribution
     \brief Dirichlet distribution
   */
-class DirichletDistribution : 
-  public MvDiscreteDistribution {
+class DirichletDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const DirichletDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

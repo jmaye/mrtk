@@ -25,7 +25,6 @@
 #define EXPONENTIALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "statistics/ContinuousDistribution.h"
 
 #include <iosfwd>
 
@@ -35,8 +34,7 @@
     events appear at a constant average rate.
     \brief Exponential distribution
   */
-class ExponentialDistribution :
-  public ContinuousDistribution {
+class ExponentialDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const ExponentialDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

@@ -9,21 +9,49 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteDistribution.h
-    \brief This file is an interface to the discrete distributions
+/** \file Distribution.h
+    \brief This file contains an interface to any kind of distributions
   */
 
-#ifndef DISCRETEDISTRIBUTION_H
-#define DISCRETEDISTRIBUTION_H
+#ifndef DISTRIBUTION_H
+#define DISTRIBUTION_H
 
-#include "statistics/DiscreteDistribution1v.h"
-#include "statistics/DiscreteDistributionMv.h"
+#include "functions/Function.h"
 
-#endif // DISCRETEDISTRIBUTION_H
+/** The Distribution class represents an interface to any kind of distributions
+    \brief Distribution
+  */
+template <typename X> class Distribution :
+  public Function<double, X> {
+public:
+  /** \name Types
+    @{
+    */
+  typedef X VariableType;
+  /** @}
+    */
+
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  Distribution();
+  /// Destructor
+  virtual ~Distribution();
+  /** @}
+    */
+
+protected:
+
+};
+
+#include "statistics/Distribution.tpp"
+
+#endif // DISTRIBUTION_H

@@ -32,8 +32,7 @@
 /** The NormalDistribution class represents a normal distribution
     \brief Normal distribution
   */
-class NormalDistribution :
-  public ContinuousDistribution {
+class NormalDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const NormalDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

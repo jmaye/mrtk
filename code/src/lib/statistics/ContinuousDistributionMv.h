@@ -16,49 +16,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BetaDistribution.h
-    \brief This file defines the BetaDistribution class, which represents
-           a beta distribution
+/** \file ContinuousDistributionMv.h
+    \brief This file contains an interface to the multivariate continuous
+           distributions
   */
 
-#ifndef BETADISTRIBUTION_H
-#define BETADISTRIBUTION_H
+#ifndef CONTINUOUSDISTRIBUTIONMV_H
+#define CONTINUOUSDISTRIBUTIONMV_H
 
-#include "statistics/DirichletDistribution.h"
+#include "functions/ContinuousFunctionMv.h"
+#include "statistics/Distribution.h"
 
-/** The BetaDistribution class represents a beta distribution,
-    i.e., a continuous distribution that is a conjugate prior to the binomial or
-    Bernoulli distribution
-    \brief Beta distribution
+/** The ContinuousDistributionMv class represents an interface to the
+    multivariate continuous distributions
+    \brief Multivariate continuous distribution
   */
-class BetaDistribution :
-  public DirichletDistribution<2> {
+template <typename X, size_t M> class ContinuousDistribution :
+  public ContinuousFunction<double, X, M>,
+  public Distribution<Eigen::Matrix<X, M, 1> > {
 public:
+  /** \name Types
+    @{
+    */
+  typedef ContinuousDistribution<X, M> DistributionType;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs distribution from parameters
-  BetaDistribution(double f64Alpha, double f64Beta);
-  /// Copy constructor
-  BetaDistribution(const BetaDistribution& other);
-  //// Assignment operator
-  BetaDistribution& operator = (const BetaDistribution& other);
+  /// Default constructor
+  ContinuousDistribution();
   /// Destructor
-  ~BetaDistribution();
+  virtual ~ContinuousDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of successes
-  void setAlpha(double f64Alpha) throw (OutOfBoundException);
-  /// Returns the number of successes
-  double getAlpha() const;
-  /// Sets the number of failures
-  void setBeta(double f64Beta) throw (OutOfBoundException);
-  /// Returns the number of failures
-  double getBeta() const;
+  /// Access the probablity densitiy function at the given value
+  virtual double pdf(const Eigen::Matrix<X, M, 1>& value) const = 0;
+  /// Interface to function
+  virtual double getValue(const Eigen::Matrix<X, M, 1>& argument) const;
   /** @}
     */
 
@@ -66,6 +66,6 @@ protected:
 
 };
 
-#include "statistics/BetaDistribution.tpp"
+#include "statistics/ContinuousDistributionMv.tpp"
 
-#endif // BETADISTRIBUTION_H
+#endif // CONTINUOUSDISTRIBUTIONMV_H

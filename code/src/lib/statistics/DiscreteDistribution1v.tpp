@@ -16,69 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "MvContinuousDistribution.h"
-
-#include <iostream>
-#include <fstream>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-MvContinuousDistribution::MvContinuousDistribution() {
+template <typename X>
+DiscreteDistribution<X>::DiscreteDistribution() {
 }
 
-MvContinuousDistribution::MvContinuousDistribution(const MvContinuousDistribution& other) {
-}
-
-MvContinuousDistribution& MvContinuousDistribution::operator = (const MvContinuousDistribution& other) {
-  return *this;
-}
-
-MvContinuousDistribution::~MvContinuousDistribution() {
-}
-
-/******************************************************************************/
-/* Stream operations                                                          */
-/******************************************************************************/
-
-void MvContinuousDistribution::read(std::istream& stream) {
-}
-
-void MvContinuousDistribution::write(std::ostream& stream) const {
-}
-
-void MvContinuousDistribution::read(std::ifstream& stream) {
-}
-
-void MvContinuousDistribution::write(std::ofstream& stream) const {
-}
-
-std::ostream& operator << (std::ostream& stream, const MvContinuousDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, MvContinuousDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream, const MvContinuousDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream, MvContinuousDistribution& obj) {
-  obj.read(stream);
-  return stream;
+template <typename X>
+DiscreteDistribution<X>::~DiscreteDistribution() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
+template <typename X>
+double DiscreteDistribution<X>::getValue(const X& argument) const {
+  return pmf(argument);
+}

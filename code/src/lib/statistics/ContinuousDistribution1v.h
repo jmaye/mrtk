@@ -16,80 +16,50 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MvContinuousDistribution.h
-    \brief MvContinuousDistribution
+/** \file ContinuousDistribution1v.h
+    \brief This file contains an interface to the univariate continuous
+           distributions
   */
 
-#ifndef MVCONTINUOUSDISTRIBUTION_H
-#define MVCONTINUOUSDISTRIBUTION_H
+#ifndef CONTINUOUSDISTRIBUTION1V_H
+#define CONTINUOUSDISTRIBUTION1V_H
 
-#include <iosfwd>
+#include "functions/ContinuousFunction1v.h"
+#include "statistics/Distribution.h"
 
-/** MvContinuousDistribution
+/** The ContinuousDistribution1v class represents an interface to the univariate
+    continuous distributions
+    \brief Univariate continuous distribution
   */
-class MvContinuousDistribution {
-  friend std::ostream& operator << (std::ostream& stream, const MvContinuousDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream, MvContinuousDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream, const MvContinuousDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream, MvContinuousDistribution& obj);
-
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  MvContinuousDistribution(const MvContinuousDistribution& other);
-
-  //// Assignment operator
-  MvContinuousDistribution& operator = (const MvContinuousDistribution& other);
-  /** @}
-    */
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private methods
-    @{
-    */
-
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-
-  /** @}
-    */
-
+template <typename X, size_t M = 1> class ContinuousDistribution;
+template <typename X> class ContinuousDistribution<X> :
+  public ContinuousFunction<double, X>,
+  public Distribution<X> {
 public:
+  /** \name Types
+    @{
+    */
+  typedef ContinuousDistribution<X> DistributionType;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  MvContinuousDistribution();
+  ContinuousDistribution();
   /// Destructor
-  ~MvContinuousDistribution();
+  virtual ~ContinuousDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-
+  /// Access the probablity densitiy function at the given value
+  virtual double pdf(const X& value) const = 0;
+  /// Interface to function
+  virtual double getValue(const X& argument) const;
   /** @}
     */
 
@@ -97,4 +67,6 @@ protected:
 
 };
 
-#endif // MVCONTINUOUSDISTRIBUTION_H
+#include "statistics/ContinuousDistribution1v.tpp"
+
+#endif // CONTINUOUSDISTRIBUTION1V_H

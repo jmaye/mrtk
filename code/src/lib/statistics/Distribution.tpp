@@ -9,21 +9,21 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteDistribution.h
-    \brief This file is an interface to the discrete distributions
-  */
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#ifndef DISCRETEDISTRIBUTION_H
-#define DISCRETEDISTRIBUTION_H
+template <typename X>
+Distribution<X>::Distribution() {
+}
 
-#include "statistics/DiscreteDistribution1v.h"
-#include "statistics/DiscreteDistributionMv.h"
-
-#endif // DISCRETEDISTRIBUTION_H
+template <typename X>
+Distribution<X>::~Distribution() {
+}

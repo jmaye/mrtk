@@ -25,7 +25,6 @@
 #define NEGATIVEBINOMIALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "statistics/MvDiscreteDistribution.h"
 
 #include <iosfwd>
 
@@ -37,8 +36,7 @@
     number r of failures occurs
     \brief Negative binomial distribution
   */
-class NegativeBinomialDistribution :
-  public MvDiscreteDistribution {
+class NegativeBinomialDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const NegativeBinomialDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

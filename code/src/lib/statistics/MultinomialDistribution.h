@@ -25,7 +25,6 @@
 #define MULTINOMIALDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "statistics/MvDiscreteDistribution.h"
 
 #include <Eigen/Core>
 
@@ -39,8 +38,7 @@
     draws
     \brief Multinomial distribution
   */
-class MultinomialDistribution :
-  public MvDiscreteDistribution {
+class MultinomialDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const MultinomialDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

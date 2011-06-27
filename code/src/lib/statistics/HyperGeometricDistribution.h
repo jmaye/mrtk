@@ -25,7 +25,6 @@
 #define HYPERGEOMETRICDISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "statistics/DiscreteDistribution.h"
 
 #include <iosfwd>
 
@@ -37,8 +36,7 @@
     replacement
     \brief Hypergeometric distribution
   */
-class HyperGeometricDistribution :
-  public DiscreteDistribution {
+class HyperGeometricDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const HyperGeometricDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

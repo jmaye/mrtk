@@ -16,69 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "ContinuousDistribution.h"
-
-#include <iostream>
-#include <fstream>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-ContinuousDistribution::ContinuousDistribution() {
+template <typename X>
+ContinuousDistribution<X>::ContinuousDistribution() {
 }
 
-ContinuousDistribution::ContinuousDistribution(const ContinuousDistribution& other) {
-}
-
-ContinuousDistribution& ContinuousDistribution::operator = (const ContinuousDistribution& other) {
-  return *this;
-}
-
-ContinuousDistribution::~ContinuousDistribution() {
-}
-
-/******************************************************************************/
-/* Stream operations                                                          */
-/******************************************************************************/
-
-void ContinuousDistribution::read(std::istream& stream) {
-}
-
-void ContinuousDistribution::write(std::ostream& stream) const {
-}
-
-void ContinuousDistribution::read(std::ifstream& stream) {
-}
-
-void ContinuousDistribution::write(std::ofstream& stream) const {
-}
-
-std::ostream& operator << (std::ostream& stream, const ContinuousDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, ContinuousDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream, const ContinuousDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream, ContinuousDistribution& obj) {
-  obj.read(stream);
-  return stream;
+template <typename X>
+ContinuousDistribution<X>::~ContinuousDistribution() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
+template <typename X>
+double ContinuousDistribution<X>::getValue(const X& argument) const {
+  return pdf(argument);
+}

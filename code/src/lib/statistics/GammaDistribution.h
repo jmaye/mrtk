@@ -25,7 +25,6 @@
 #define GAMMADISTRIBUTION_H
 
 #include "exceptions/OutOfBoundException.h"
-#include "statistics/ContinuousDistribution.h"
 
 #include <iosfwd>
 
@@ -35,8 +34,7 @@
     Poisson/Exponential/... distributions
     \brief Gamma distribution
   */
-class GammaDistribution :
-  public ContinuousDistribution {
+class GammaDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const GammaDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,

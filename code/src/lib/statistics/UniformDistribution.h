@@ -33,8 +33,7 @@
 /** The UniformDistribution class represents a uniform distribution
     \brief Uniform distribution
   */
-class UniformDistribution :
-  public ContinuousDistribution {
+class UniformDistribution {
   friend std::ostream& operator << (std::ostream& stream,
     const UniformDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,
