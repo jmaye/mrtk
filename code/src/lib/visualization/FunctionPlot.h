@@ -16,28 +16,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BinomialFunction.cpp
-    \brief This file is a testing binary for the BinomialFunction class
+/** \file FunctionPlot.h
+    \brief This file is an interface for plotting any kind of functions
   */
 
-#include "functions/BinomialFunction.h"
+#ifndef FUNCTIONPLOT_H
+#define FUNCTIONPLOT_H
 
-#include <iostream>
+#include <Eigen/Core>
 
-int main(int argc, char** argv) {
-  BinomialFunction b;
+#include <string>
 
-  Eigen::Matrix<size_t, 2, 1> argument;
+/** The FunctionPlot class is an interface for plotting any kind of functions
+    \brief Function plotting interface
+  */
+template <typename Y, typename X, size_t M> class FunctionPlot {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  FunctionPlot(const std::string& title,
+    const Eigen::Matrix<X, M, 1>& minimum, const Eigen::Matrix<X, M, 1>&
+    maximum);
+  /// Destructor
+  virtual ~FunctionPlot();
+  /** @}
+    */
 
-  argument(0) = 2;
-  argument(1) = 1;
-  std::cout << "b(2, 1): " << b(argument) << std::endl;
-  argument(0) = 10;
-  argument(1) = 2;
-  std::cout << "b(10, 2): " << b(argument) << std::endl;
-  argument(0) = 2;
-  argument(1) = 2;
-  std::cout << "b(2, 2): " << b(argument) << std::endl;
+  /** \name Accessors
+    @{
+    */
+  /// Sets the plot's title
+  void setTitle(const std::string& title);
+  /// Returns the plot's title
+  const std::string& getTitle() const;
+  /** @}
+    */
 
-  return 0;
-}
+protected:
+  std::string mTitle;
+
+};
+
+#include "visualization/FunctionPlot.tpp"
+
+#endif // FUNCTIONPLOT_H

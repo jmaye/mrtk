@@ -9,35 +9,38 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BinomialFunction.cpp
-    \brief This file is a testing binary for the BinomialFunction class
-  */
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include "functions/BinomialFunction.h"
+template <typename Y, typename X, size_t M>
+FunctionPlot<Y, X, M>::FunctionPlot(const std::string& title,
+  const Eigen::Matrix<X, M, 1>& minimum, const Eigen::Matrix<X, M, 1>&
+  maximum) :
+  mTitle(title) {
+}
 
-#include <iostream>
+template <typename Y, typename X, size_t M>
+FunctionPlot<Y, X, M>::~FunctionPlot() {
+}
 
-int main(int argc, char** argv) {
-  BinomialFunction b;
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
-  Eigen::Matrix<size_t, 2, 1> argument;
+template <typename Y, typename X, size_t M>
+void FunctionPlot<Y, X, M>::setTitle(const std::string& title) {
+  mTitle = title;
+}
 
-  argument(0) = 2;
-  argument(1) = 1;
-  std::cout << "b(2, 1): " << b(argument) << std::endl;
-  argument(0) = 10;
-  argument(1) = 2;
-  std::cout << "b(10, 2): " << b(argument) << std::endl;
-  argument(0) = 2;
-  argument(1) = 2;
-  std::cout << "b(2, 2): " << b(argument) << std::endl;
-
-  return 0;
+template <typename Y, typename X, size_t M>
+const std::string& FunctionPlot<Y, X, M>::getTitle() const {
+  return mTitle;
 }

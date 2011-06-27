@@ -16,28 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BinomialFunction.cpp
-    \brief This file is a testing binary for the BinomialFunction class
+/** \file ContinuousFunctionPlot1d.h
+    \brief This file contains a plotting tool for 1-dimensional continuous
+           functions
   */
 
-#include "functions/BinomialFunction.h"
+#ifndef CONTINUOUSFUNCTIONPLOT1D_H
+#define CONTINUOUSFUNCTIONPLOT1D_H
 
-#include <iostream>
+#include "visualization/FunctionPlot.h"
 
-int main(int argc, char** argv) {
-  BinomialFunction b;
+#include <QtGui/QWidget>
+#include <QtCore/QVector>
+#include <qwt-qt4/qwt_plot.h>
+#include <qwt-qt4/qwt_plot_curve.h>
 
-  Eigen::Matrix<size_t, 2, 1> argument;
+/** The ContinuousFunctionPlot1d class is a plotting tool for 1-dimensional
+    continuous functions
+    \brief 1-d continuous function plotting tool
+  */
+template <typename Y, typename X, size_t M = 1> class ContinuousFunctionPlot;
+template <typename Y, typename X> class ContinuousFunctionPlot<Y, X> :
+  public FunctionPlot<Y, X, 1>,
+  public QWidget {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  ContinuousFunctionPlot();
+  /// Destructor
+  virtual ~ContinuousFunctionPlot();
+  /** @}
+    */
 
-  argument(0) = 2;
-  argument(1) = 1;
-  std::cout << "b(2, 1): " << b(argument) << std::endl;
-  argument(0) = 10;
-  argument(1) = 2;
-  std::cout << "b(10, 2): " << b(argument) << std::endl;
-  argument(0) = 2;
-  argument(1) = 2;
-  std::cout << "b(2, 2): " << b(argument) << std::endl;
+  /** \name Accessors
+    @{
+    */
+  /** @}
+    */
 
-  return 0;
-}
+protected:
+  QwtPlot* mpPlot;
+  QwtPlotCurve* mCurve;
+  QVector<X> mXData;
+  QVector<Y> myData;
+
+};
+
+#include "visualization/ContinuousFunctionPlot1d.tpp"
+
+#endif // CONTINUOUSFUNCTIONPLOT1D_H
