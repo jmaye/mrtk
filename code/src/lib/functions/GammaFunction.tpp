@@ -46,8 +46,8 @@ double GammaFunction<X>::getValue(const X& argument) const {
 }
 
 size_t GammaFunction<size_t>::getValue(const size_t& argument) const
-  throw (OutOfBoundException) {
+  throw (BadArgumentException<size_t>) {
   if (argument)
     return FactorialFunction::getValue(argument - 1);
-  else throw OutOfBoundException("GammaFunction<size_t>::getValue(): argument must be strictly positive");
+  else throw BadArgumentException<size_t>(argument, "GammaFunction<size_t>::getValue(): argument must be strictly positive");
 }

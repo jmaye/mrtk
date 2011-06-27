@@ -56,7 +56,7 @@ public:
   /** \name Accessors
     @{
     */
-  /// Access the probablity densitiy function at the given value
+  /// Access the probablity density function at the given value
   virtual double pdf(const X& value) const = 0;
   /// Interface to function
   virtual double getValue(const X& argument) const;

@@ -109,4 +109,6 @@ protected:
 
 };
 
+#include "statistics/UniformDistribution.tpp"
+
 #endif // UNIFORMDISTRIBUTION_H

@@ -16,28 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/LogFactorialFunction.h"
+#include <sstream>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-LogBinomialFunction::LogBinomialFunction() {
+template <typename X>
+BadArgumentException<X>::BadArgumentException(const X& argument,
+  const std::string& msg) :
+  mMsg(msg),
+  mArg(argument) {
 }
 
-LogBinomialFunction::~LogBinomialFunction() {
+template <typename X>
+BadArgumentException<X>::BadArgumentException(const BadArgumentException<X>&
+  other) throw() :
+  mMsg(other.mMsg),
+  mArg(other.mArg) {
+}
+
+template <typename X>
+BadArgumentException<X>& BadArgumentException<X>::operator =
+  (const BadArgumentException<X>& other) throw() {
+  mMsg = other.mMsg;
+  mArg = other.mArg;
+  return *this;
+}
+
+template <typename X>
+BadArgumentException<X>::~BadArgumentException() throw() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
-
-double LogBinomialFunction::getValue(const Eigen::Matrix<size_t, 2, 1>&
-  argument) const throw (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >) {
-  LogFactorialFunction logFactorial;
-  if (argument(0) >= argument(1))
-    return logFactorial(argument(0)) - (logFactorial(argument(1)) +
-      logFactorial(argument(0) - argument(1)));
-  else
-    throw BadArgumentException<Eigen::Matrix<size_t, 2, 1> >(argument, "LogBinomialFunction::getValue(): argument(0) must be larger than argument(1)");
+template <typename X>
+const char* BadArgumentException<X>::what() const throw() {
+  std::stringstream stream;
+  stream << mMsg << " [argument = " << mArg << "]";
+  return stream.str().c_str();
 }

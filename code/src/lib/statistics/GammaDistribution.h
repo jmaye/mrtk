@@ -113,4 +113,6 @@ protected:
 
 };
 
+#include "statistics/GammaDistribution.tpp"
+
 #endif // GAMMADISTRIBUTION_H

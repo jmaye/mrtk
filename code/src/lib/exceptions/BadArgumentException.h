@@ -9,77 +9,59 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogGammaFunction.h
-    \brief This file defines the LogGammaFunction class, which represents the
-           log-gamma function
+/** \file BadArgumentException.h
+    \brief This file defines the BadArgumentException class, which
+           is thrown whenever the arguments of a function are invalid
   */
 
-#ifndef LOGGAMMAFUNCTION_H
-#define LOGGAMMAFUNCTION_H
+#ifndef BADARGUMENTEXCEPTION_H
+#define BADARGUMENTEXCEPTION_H
 
-#include "functions/ContinuousFunction.h"
-#include "functions/LogFactorialFunction.h"
-#include "exceptions/BadArgumentException.h"
+#include <exception>
+#include <string>
 
-/** The LogGammaFunction class represents the gamma function
-    \brief Log-gamma function
+/** The class BadArgumentException represents any
+    exceptions occuring when the arguments passed to a function are invalid
+    \brief Invalid operation requested
   */
-template <typename X = size_t> class LogGammaFunction :
-  public ContinuousFunction<double, X> {
+template <typename X> class BadArgumentException :
+  public std::exception {
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Default constructor
-  LogGammaFunction();
+  /// Constructs exception from argument and string
+  BadArgumentException(const X& argument, const std::string& msg);
+  /// Copy constructor
+  BadArgumentException(const BadArgumentException& other) throw();
+  /// Assignment operator
+  BadArgumentException& operator = (const BadArgumentException& other) throw();
   /// Destructor
-  virtual ~LogGammaFunction();
+  virtual ~BadArgumentException() throw();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  virtual double getValue(const X& argument) const;
+  /// Access the exception string
+  virtual const char* what() const throw();
   /** @}
     */
 
 protected:
+  std::string mMsg;
+  X mArg;
 
 };
 
-template <> class LogGammaFunction<size_t> :
-  public LogFactorialFunction {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogGammaFunction();
-  /// Destructor
-  virtual ~LogGammaFunction();
-  /** @}
-    */
+#include "exceptions/BadArgumentException.tpp"
 
-  /** \name Accessors
-    @{
-    */
-  virtual double getValue(const size_t& argument) const
-    throw (BadArgumentException<size_t>);
-  /** @}
-    */
-
-protected:
-
-};
-
-#include "functions/LogGammaFunction.tpp"
-
-#endif // LOGGAMMAFUNCTION_H
+#endif // BADARGUMENTEXCEPTION_H

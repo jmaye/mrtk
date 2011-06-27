@@ -16,70 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogGammaFunction.h
-    \brief This file defines the LogGammaFunction class, which represents the
-           log-gamma function
+/** \file BetaFunction.cpp
+    \brief This file is a testing binary for the LogFunction class
   */
 
-#ifndef LOGGAMMAFUNCTION_H
-#define LOGGAMMAFUNCTION_H
+#include "functions/LogFunction.h"
 
-#include "functions/ContinuousFunction.h"
-#include "functions/LogFactorialFunction.h"
-#include "exceptions/BadArgumentException.h"
+#include <iostream>
 
-/** The LogGammaFunction class represents the gamma function
-    \brief Log-gamma function
-  */
-template <typename X = size_t> class LogGammaFunction :
-  public ContinuousFunction<double, X> {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogGammaFunction();
-  /// Destructor
-  virtual ~LogGammaFunction();
-  /** @}
-    */
+int main(int argc, char** argv) {
+  LogFunction<size_t> l_1;
 
-  /** \name Accessors
-    @{
-    */
-  virtual double getValue(const X& argument) const;
-  /** @}
-    */
+  std::cout << "l_1(1): " << l_1(1) << std::endl;
 
-protected:
 
-};
+  LogFunction<double> l_2;
 
-template <> class LogGammaFunction<size_t> :
-  public LogFactorialFunction {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogGammaFunction();
-  /// Destructor
-  virtual ~LogGammaFunction();
-  /** @}
-    */
+  std::cout << "l_2(0.5): " << l_2(0.5) << std::endl;
 
-  /** \name Accessors
-    @{
-    */
-  virtual double getValue(const size_t& argument) const
-    throw (BadArgumentException<size_t>);
-  /** @}
-    */
-
-protected:
-
-};
-
-#include "functions/LogGammaFunction.tpp"
-
-#endif // LOGGAMMAFUNCTION_H
+  return 0;
+}

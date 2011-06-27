@@ -112,4 +112,6 @@ protected:
 
 };
 
+#include "statistics/UniformDistributionDiscrete.tpp"
+
 #endif // UNIFORMDISTRIBUTIONDISCRETE_H

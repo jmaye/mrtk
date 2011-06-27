@@ -133,4 +133,6 @@ protected:
 
 };
 
+#include "statistics/MvNormalDistribution.tpp"
+
 #endif // MVNORMALDISTRIBUTION_H

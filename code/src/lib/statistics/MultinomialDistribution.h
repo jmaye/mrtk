@@ -116,4 +116,6 @@ protected:
 
 };
 
+#include "statistics/MultinomialDistribution.tpp"
+
 #endif // MULTINOMIALDISTRIBUTION_H

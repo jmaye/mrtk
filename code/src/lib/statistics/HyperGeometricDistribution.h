@@ -122,4 +122,6 @@ protected:
 
 };
 
+#include "statistics/HyperGeometricDistribution.tpp"
+
 #endif // HYPERGEOMETRICDISTRIBUTION_H

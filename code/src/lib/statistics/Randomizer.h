@@ -26,7 +26,7 @@
 
 #include "utils/Timestamp.h"
 #include "exceptions/OutOfBoundException.h"
-#include "statistics/MvNormalDistribution.h"
+//#include "statistics/MvNormalDistribution.h"
 
 #include <Eigen/Core>
 
@@ -104,7 +104,7 @@ public:
     const Eigen::MatrixXd& covarianceMatrix) const
     throw (OutOfBoundException);
   /// Returns a sample from a multivariate normal distribution
-  const Eigen::VectorXd sampleNormal(const MvNormalDistribution& dist) const;
+  //const Eigen::VectorXd sampleNormal(const MvNormalDistribution& dist) const;
   /// Returns a sample from the Bernoulli distribution
   bool sampleBernoulli(double f64P) const throw (OutOfBoundException);
   /// Returns a sample from the categorical distribution

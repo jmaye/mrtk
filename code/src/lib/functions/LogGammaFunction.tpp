@@ -46,8 +46,8 @@ double LogGammaFunction<X>::getValue(const X& argument) const {
 }
 
 double LogGammaFunction<size_t>::getValue(const size_t& argument) const
-  throw (OutOfBoundException) {
+  throw (BadArgumentException<size_t>) {
   if (argument)
     return LogFactorialFunction::getValue(argument - 1);
-  else throw OutOfBoundException("LogGammaFunction<size_t>::getValue(): argument must be strictly positive");
+  else throw BadArgumentException<size_t>(argument, "LogGammaFunction<size_t>::getValue(): argument must be strictly positive");
 }

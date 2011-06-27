@@ -112,4 +112,6 @@ protected:
 
 };
 
+#include "statistics/NegativeBinomialDistribution.tpp"
+
 #endif // NEGATIVEBINOMIALDISTRIBUTION_H

@@ -25,6 +25,7 @@
 #define BINOMIALFUNCTION_H
 
 #include "functions/DiscreteFunction.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The BinomialFunction class represents the binomial function
     \brief Binomial function
@@ -45,7 +46,8 @@ public:
   /** \name Accessors
     @{
     */
-  virtual size_t getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const;
+  virtual size_t getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const
+    throw (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >);
   /** @}
     */
 

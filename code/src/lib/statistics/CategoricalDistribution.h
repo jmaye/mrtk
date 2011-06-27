@@ -104,4 +104,6 @@ protected:
 
 };
 
+#include "statistics/CategoricalDistribution.tpp"
+
 #endif // CATEGORICALDISTRIBUTION_H

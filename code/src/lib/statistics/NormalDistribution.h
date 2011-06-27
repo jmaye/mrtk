@@ -125,4 +125,6 @@ protected:
 
 };
 
+#include "statistics/NormalDistribution.tpp"
+
 #endif // NORMALDISTRIBUTION_H

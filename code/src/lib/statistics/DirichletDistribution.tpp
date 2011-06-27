@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/DirichletDistribution.h"
-
 #include "statistics/Randomizer.h"
 #include "functions/LogBetaFunction.h"
 

@@ -105,4 +105,6 @@ protected:
 
 };
 
+#include "statistics/PoissonDistribution.tpp"
+
 #endif // POISSONDISTRIBUTION_H

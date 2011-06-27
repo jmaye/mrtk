@@ -151,14 +151,14 @@ const Eigen::VectorXd Randomizer::sampleNormal(const Eigen::VectorXd&
   return meanVector + covarianceMatrix.llt().matrixL() * sampleVector;
 }
 
-const Eigen::VectorXd Randomizer::sampleNormal(const MvNormalDistribution& dist)
-  const {
-  Eigen::VectorXd sampleVector(dist.getMean().rows());
-  for (uint32_t i = 0; i < (uint32_t)dist.getMean().rows(); i++)
-    sampleVector(i) = sampleNormal(dist.getMean()(i),
-      dist.getCovariance()(i, i));
-  return dist.getMean() + dist.getTransformation().matrixL() * sampleVector;
-}
+//const Eigen::VectorXd Randomizer::sampleNormal(const MvNormalDistribution& dist)
+//  const {
+//  Eigen::VectorXd sampleVector(dist.getMean().rows());
+//  for (uint32_t i = 0; i < (uint32_t)dist.getMean().rows(); i++)
+//    sampleVector(i) = sampleNormal(dist.getMean()(i),
+//      dist.getCovariance()(i, i));
+//  return dist.getMean() + dist.getTransformation().matrixL() * sampleVector;
+//}
 
 bool Randomizer::sampleBernoulli(double f64P) const
   throw (OutOfBoundException) {

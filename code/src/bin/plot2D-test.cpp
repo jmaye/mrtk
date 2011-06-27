@@ -18,8 +18,8 @@
 
 #include "visualization/Plot2D.h"
 #include "statistics/Randomizer.h"
-#include "statistics/NormalDistribution.h"
-#include "statistics/MvNormalDistribution.h"
+//#include "statistics/NormalDistribution.h"
+//#include "statistics/MvNormalDistribution.h"
 #include "functions/ExpFunction.h"
 #include "functions/LogFunction.h"
 #include "functions/FactorialFunction.h"
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
   ExpFunction<> expFunction;
   std::cout << expFunction(10) << std::endl;
   LogFunction<> logFunction;
-  std::cout << logFunction(1) << std::endl;
+  std::cout << logFunction(-1) << std::endl;
   FactorialFunction factorialFunction;
   std::cout << factorialFunction(10.9) << std::endl;
   QApplication app(argc, argv);
@@ -72,14 +72,14 @@ int main(int argc, char** argv) {
   Eigen::Vector2d meanVector(0, 0);
   Eigen::Matrix2d covarianceMatrix;
   covarianceMatrix << 1.0, -0.5, -0.5, 1.0;
-  MvNormalDistribution mvn(meanVector, covarianceMatrix);
-  std::cout << mvn << std::endl;
-  NormalDistribution dist(0, 10);
-  std::cout << dist << std::endl;
+  //MvNormalDistribution mvn(meanVector, covarianceMatrix);
+  //std::cout << mvn << std::endl;
+  //NormalDistribution dist(0, 10);
+  //std::cout << dist << std::endl;
   for (uint32_t i = 0; i < 10000; i++) {
-    //Eigen::Vector2d sampleVector = randomizer.sampleNormal(meanVector,
-      //covarianceMatrix);
-    Eigen::Vector2d sampleVector = mvn.sample();
+    Eigen::Vector2d sampleVector = randomizer.sampleNormal(meanVector,
+      covarianceMatrix);
+    //Eigen::Vector2d sampleVector = mvn.sample();
     xVector.push_back(sampleVector(0));
     yVector.push_back(sampleVector(1));
   }

@@ -105,4 +105,6 @@ protected:
 
 };
 
+#include "statistics/GeometricDistribution.tpp"
+
 #endif // GEOMETRICDISTRIBUTION_H

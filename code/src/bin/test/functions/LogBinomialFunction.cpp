@@ -16,70 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogGammaFunction.h
-    \brief This file defines the LogGammaFunction class, which represents the
-           log-gamma function
+/** \file BetaFunction.cpp
+    \brief This file is a testing binary for the LogBinomialFunction class
   */
 
-#ifndef LOGGAMMAFUNCTION_H
-#define LOGGAMMAFUNCTION_H
+#include "functions/BetaFunction.h"
 
-#include "functions/ContinuousFunction.h"
-#include "functions/LogFactorialFunction.h"
-#include "exceptions/BadArgumentException.h"
+#include <iostream>
 
-/** The LogGammaFunction class represents the gamma function
-    \brief Log-gamma function
-  */
-template <typename X = size_t> class LogGammaFunction :
-  public ContinuousFunction<double, X> {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogGammaFunction();
-  /// Destructor
-  virtual ~LogGammaFunction();
-  /** @}
-    */
+int main(int argc, char** argv) {
+  BetaFunction<size_t, 2> b_1;
 
-  /** \name Accessors
-    @{
-    */
-  virtual double getValue(const X& argument) const;
-  /** @}
-    */
+  Eigen::Matrix<size_t, 2, 1> argument1;
 
-protected:
+  argument1(0) = 1;
+  argument1(1) = 1;
+  std::cout << "b_1(1, 1): " << b_1(argument1) << std::endl;
+  argument1(0) = 1;
+  argument1(1) = 2;
+  std::cout << "b_1(1, 2): " << b_1(argument1) << std::endl;
+  argument1(0) = 2;
+  argument1(1) = 2;
+  std::cout << "b_1(2, 2): " << b_1(argument1) << std::endl;
 
-};
+  BetaFunction<double, 2> b_2;
 
-template <> class LogGammaFunction<size_t> :
-  public LogFactorialFunction {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogGammaFunction();
-  /// Destructor
-  virtual ~LogGammaFunction();
-  /** @}
-    */
+  Eigen::Matrix<double, 2, 1> argument2;
 
-  /** \name Accessors
-    @{
-    */
-  virtual double getValue(const size_t& argument) const
-    throw (BadArgumentException<size_t>);
-  /** @}
-    */
+  argument1(0) = 0.5;
+  argument1(1) = 0.5;
+  std::cout << "b_2(0.5, 0.5): " << b_2(argument2) << std::endl;
+  argument1(0) = 0.4;
+  argument1(1) = -0.6;
+  std::cout << "b_2(0.4, -0.6): " << b_2(argument2) << std::endl;
 
-protected:
-
-};
-
-#include "functions/LogGammaFunction.tpp"
-
-#endif // LOGGAMMAFUNCTION_H
+  return 0;
+}

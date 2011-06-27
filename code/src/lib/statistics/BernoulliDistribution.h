@@ -102,4 +102,6 @@ protected:
 
 };
 
+#include "statistics/BernoulliDistribution.tpp"
+
 #endif // BERNOULLIDISTRIBUTION_H

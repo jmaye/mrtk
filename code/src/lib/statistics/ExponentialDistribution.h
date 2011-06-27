@@ -107,4 +107,6 @@ protected:
 
 };
 
+#include "statistics/ExponentialDistribution.tpp"
+
 #endif // EXPONENTIALDISTRIBUTION_H

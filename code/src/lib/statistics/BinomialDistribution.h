@@ -110,4 +110,6 @@ protected:
 
 };
 
+#include "statistics/BinomialDistribution.tpp"
+
 #endif // BINOMIALDISTRIBUTION_H

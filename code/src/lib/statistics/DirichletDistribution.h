@@ -24,9 +24,9 @@
 #ifndef DIRICHLETDISTRIBUTION_H
 #define DIRICHLETDISTRIBUTION_H
 
+#include "statistics/ContinuousDistribution.h"
+#include "statistics/SampleDistribution.h"
 #include "exceptions/OutOfBoundException.h"
-
-#include <Eigen/Core>
 
 #include <iosfwd>
 
@@ -35,7 +35,10 @@
     or categorical distribution
     \brief Dirichlet distribution
   */
-class DirichletDistribution {
+template <size_t M> class DirichletDistribution :
+  public ContinuousDistribution<double, M>,
+  public ContinuousDistribution<double, M - 1>,
+  public SampleDistribution<double> {
   friend std::ostream& operator << (std::ostream& stream,
     const DirichletDistribution& obj);
   friend std::istream& operator >> (std::istream& stream,
@@ -55,28 +58,18 @@ class DirichletDistribution {
   /** @}
     */
 
-  /** \name Private members
-    @{
-    */
-  /// Pseudo-counts
-  Eigen::VectorXd mAlphaVector;
-  /// Normalizer
-  double mf64Normalizer;
-  /** @}
-    */
-
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameters
-  DirichletDistribution(const Eigen::VectorXd& alphaVector);
+  DirichletDistribution(const Eigen::Matrix<double, M, 1>& alphaVector);
   /// Copy constructor
   DirichletDistribution(const DirichletDistribution& other);
   //// Assignment operator
   DirichletDistribution& operator = (const DirichletDistribution& other);
   /// Destructor
-  ~DirichletDistribution();
+  virtual ~DirichletDistribution();
   /** @}
     */
 
@@ -84,28 +77,35 @@ public:
     @{
     */
   /// Sets the number of successes
-  void setAlpha(const Eigen::VectorXd& alphaVector) throw (OutOfBoundException);
+  void setAlpha(const Eigen::Matrix<double, M, 1>& alphaVector)
+    throw (OutOfBoundException);
   /// Returns the number of successes
-  const Eigen::VectorXd& getAlpha() const;
+  const Eigen::Matrix<double, M, 1>& getAlpha() const;
   /// Returns the normalizer
   double getNormalizer() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Returns the probability density function at a point
-  double pdf(const Eigen::VectorXd& xVector) const;
-  /// Returns the log-probability density function at a point
-  double logpdf(const Eigen::VectorXd& xVector) const throw (OutOfBoundException);
-  /// Returns a sample from the distribution
-  const Eigen::VectorXd sample() const;
+  /// Access the probablity density function at the given value
+  virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
+  /// Access the log-probablity density function at the given value
+  double logpdf(const Eigen::Matrix<double, M, 1>& value) const
+    throw (OutOfBoundException);
+  /// Access a sample drawn from the distribution
+  virtual const Eigen::Matrix<double, M, 1> getSample() const;
   /** @}
     */
 
 protected:
+  /** \name Protected members
+    @{
+    */
+  /// Pseudo-counts
+  Eigen::Matrix<double, M, 1> mAlphaVector;
+  /// Normalizer
+  double mf64Normalizer;
+  /** @}
+    */
 
 };
+
+#include "statistics/DirichletDistribution.tpp"
 
 #endif // DIRICHLETDISTRIBUTION_H

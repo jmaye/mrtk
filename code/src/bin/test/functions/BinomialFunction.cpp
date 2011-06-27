@@ -16,70 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogGammaFunction.h
-    \brief This file defines the LogGammaFunction class, which represents the
-           log-gamma function
+/** \file BinomialFunction.cpp
+    \brief This file is a testing binary for the BinomialFunction class
   */
 
-#ifndef LOGGAMMAFUNCTION_H
-#define LOGGAMMAFUNCTION_H
+#include "functions/BinomialFunction.h"
 
-#include "functions/ContinuousFunction.h"
-#include "functions/LogFactorialFunction.h"
-#include "exceptions/BadArgumentException.h"
+#include <iostream>
 
-/** The LogGammaFunction class represents the gamma function
-    \brief Log-gamma function
-  */
-template <typename X = size_t> class LogGammaFunction :
-  public ContinuousFunction<double, X> {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogGammaFunction();
-  /// Destructor
-  virtual ~LogGammaFunction();
-  /** @}
-    */
+int main(int argc, char** argv) {
+  BinomialFunction b;
 
-  /** \name Accessors
-    @{
-    */
-  virtual double getValue(const X& argument) const;
-  /** @}
-    */
+  Eigen::Matrix<size_t, 2, 1> argument1;
 
-protected:
+  argument1(0) = 1;
+  argument1(1) = 1;
+  std::cout << "b(1, 1): " << b(argument1) << std::endl;
+  argument1(0) = 1;
+  argument1(1) = 2;
+  std::cout << "b(1, 2): " << b(argument1) << std::endl;
+  argument1(0) = 2;
+  argument1(1) = 2;
+  std::cout << "b(2, 2): " << b(argument1) << std::endl;
 
-};
-
-template <> class LogGammaFunction<size_t> :
-  public LogFactorialFunction {
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  LogGammaFunction();
-  /// Destructor
-  virtual ~LogGammaFunction();
-  /** @}
-    */
-
-  /** \name Accessors
-    @{
-    */
-  virtual double getValue(const size_t& argument) const
-    throw (BadArgumentException<size_t>);
-  /** @}
-    */
-
-protected:
-
-};
-
-#include "functions/LogGammaFunction.tpp"
-
-#endif // LOGGAMMAFUNCTION_H
+  return 0;
+}

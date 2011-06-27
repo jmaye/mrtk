@@ -26,7 +26,7 @@
 
 #include "functions/ContinuousFunction.h"
 #include "functions/FactorialFunction.h"
-#include "exceptions/OutOfBoundException.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The GammaFunction class represents the gamma function
     \brief Gamma function
@@ -72,7 +72,7 @@ public:
     @{
     */
   virtual size_t getValue(const size_t& argument) const
-    throw (OutOfBoundException);
+    throw (BadArgumentException<size_t>);
   /** @}
     */
 
