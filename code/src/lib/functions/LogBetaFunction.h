@@ -36,9 +36,9 @@ public:
     @{
     */
   /// Default constructor
-  inline LogBetaFunction();
+  LogBetaFunction();
   /// Destructor
-  inline virtual ~LogBetaFunction();
+  virtual ~LogBetaFunction();
   /** @}
     */
 
@@ -46,7 +46,7 @@ public:
     @{
     */
   /// Access the function value for the given argument
-  inline virtual double getValue(const Eigen::Matrix<X, M, 1>& argument) const;
+  virtual double getValue(const Eigen::Matrix<X, M, 1>& argument) const;
   /** @}
     */
 

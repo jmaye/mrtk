@@ -30,22 +30,22 @@
     \brief Binomial function
   */
 class LogBinomialFunction :
-  public virtual DiscreteFunction<double, size_t, 2> {
+  public DiscreteFunction<double, size_t, 2> {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  inline LogBinomialFunction();
+  LogBinomialFunction();
   /// Destructor
-  inline virtual ~LogBinomialFunction();
+  virtual ~LogBinomialFunction();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  inline virtual double getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const;
+  virtual double getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const;
   /** @}
     */
 

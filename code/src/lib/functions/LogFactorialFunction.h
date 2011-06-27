@@ -30,15 +30,15 @@
     \brief Log-factorial function
   */
 class LogFactorialFunction :
-  public virtual DiscreteFunction<double, size_t> {
+  public DiscreteFunction<double, size_t> {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  inline LogFactorialFunction();
+  LogFactorialFunction();
   /// Destructor
-  inline virtual ~LogFactorialFunction();
+  virtual ~LogFactorialFunction();
   /** @}
     */
 
@@ -46,7 +46,7 @@ public:
     @{
     */
   /// Access the function value for the given argument
-  inline virtual double getValue(const size_t& argument) const;
+  virtual double getValue(const size_t& argument) const;
   /** @}
     */
 
