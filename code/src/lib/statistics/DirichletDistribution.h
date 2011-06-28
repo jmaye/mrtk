@@ -26,7 +26,7 @@
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
-#include "exceptions/OutOfBoundException.h"
+#include "exceptions/BadArgumentException.h"
 
 #include <iosfwd>
 
@@ -37,16 +37,19 @@
   */
 template <size_t M> class DirichletDistribution :
   public ContinuousDistribution<double, M>,
-  public ContinuousDistribution<double, M - 1>,
-  public SampleDistribution<double> {
+  public SampleDistribution<Eigen::Matrix<double, M, 1> > {
+  template <size_t N>
   friend std::ostream& operator << (std::ostream& stream,
-    const DirichletDistribution& obj);
+    const DirichletDistribution<N>& obj);
+  template <size_t N>
   friend std::istream& operator >> (std::istream& stream,
-    DirichletDistribution& obj);
+    DirichletDistribution<N>& obj);
+  template <size_t N>
   friend std::ofstream& operator << (std::ofstream& stream,
-    const DirichletDistribution& obj);
+    const DirichletDistribution<N>& obj);
+  template <size_t N>
   friend std::ifstream& operator >> (std::ifstream& stream,
-    DirichletDistribution& obj);
+    DirichletDistribution<N>& obj);
 
   /** \name Stream methods
     @{
@@ -65,9 +68,9 @@ public:
   /// Constructs distribution from parameters
   DirichletDistribution(const Eigen::Matrix<double, M, 1>& alphaVector);
   /// Copy constructor
-  DirichletDistribution(const DirichletDistribution& other);
+  DirichletDistribution(const DirichletDistribution<M>& other);
   //// Assignment operator
-  DirichletDistribution& operator = (const DirichletDistribution& other);
+  DirichletDistribution& operator = (const DirichletDistribution<M>& other);
   /// Destructor
   virtual ~DirichletDistribution();
   /** @}
@@ -78,18 +81,18 @@ public:
     */
   /// Sets the number of successes
   void setAlpha(const Eigen::Matrix<double, M, 1>& alphaVector)
-    throw (OutOfBoundException);
+    throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the number of successes
   const Eigen::Matrix<double, M, 1>& getAlpha() const;
   /// Returns the normalizer
   double getNormalizer() const;
-  /// Access the probablity density function at the given value
+  /// Access the probability density function at the given value
   virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
   /// Access the log-probablity density function at the given value
   double logpdf(const Eigen::Matrix<double, M, 1>& value) const
-    throw (OutOfBoundException);
+    throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Access a sample drawn from the distribution
-  virtual const Eigen::Matrix<double, M, 1> getSample() const;
+  virtual Eigen::Matrix<double, M, 1> getSample() const;
   /** @}
     */
 

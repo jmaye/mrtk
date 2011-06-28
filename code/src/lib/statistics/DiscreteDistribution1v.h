@@ -24,7 +24,7 @@
 #ifndef DISCRETEDISTRIBUTION1V_H
 #define DISCRETEDISTRIBUTION1V_H
 
-#include "functions/ContinuousFunction1v.h"
+#include "functions/DiscreteFunction.h"
 #include "statistics/Distribution.h"
 
 /** The DiscreteDistribution1v class represents an interface to the univariate
@@ -34,7 +34,17 @@
 template <typename X, size_t M = 1> class DiscreteDistribution;
 template <typename X> class DiscreteDistribution<X> :
   public DiscreteFunction<double, X>,
-  public Distribution<X> {
+  public virtual Distribution<X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  DiscreteDistribution(const DiscreteDistribution<X>& other);
+  /// Assignment operator
+  DiscreteDistribution& operator = (const DiscreteDistribution<X>& other);
+  /** @}
+    */
+
 public:
   /** \name Types
     @{

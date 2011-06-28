@@ -31,6 +31,16 @@
   */
 template <typename X, size_t M> class LogBetaFunction :
   public ContinuousFunction<double, X, M> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  LogBetaFunction(const LogBetaFunction<X, M>& other);
+  /// Assignment operator
+  LogBetaFunction& operator = (const LogBetaFunction<X, M>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

@@ -32,6 +32,16 @@
   */
 class BinomialFunction :
   public DiscreteFunction<size_t, size_t, 2> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  BinomialFunction(const BinomialFunction& other);
+  /// Assignment operator
+  BinomialFunction& operator = (const BinomialFunction& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

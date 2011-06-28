@@ -32,6 +32,16 @@
   */
 template <typename X = double> class LogFunction :
   public ContinuousFunction<double, X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  LogFunction(const LogFunction<X>& other);
+  /// Assignment operator
+  LogFunction& operator = (const LogFunction<X>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

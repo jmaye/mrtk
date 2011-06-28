@@ -24,7 +24,7 @@
 #ifndef CONTINUOUSDISTRIBUTIONMV_H
 #define CONTINUOUSDISTRIBUTIONMV_H
 
-#include "functions/ContinuousFunctionMv.h"
+#include "functions/ContinuousFunction.h"
 #include "statistics/Distribution.h"
 
 /** The ContinuousDistributionMv class represents an interface to the
@@ -33,7 +33,18 @@
   */
 template <typename X, size_t M> class ContinuousDistribution :
   public ContinuousFunction<double, X, M>,
-  public Distribution<Eigen::Matrix<X, M, 1> > {
+  public virtual Distribution<Eigen::Matrix<X, M, 1> > {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ContinuousDistribution(const ContinuousDistribution<X, M>& other);
+  /// Assignment operator
+  ContinuousDistribution& operator =
+    (const ContinuousDistribution<X, M>& other);
+  /** @}
+    */
+
 public:
   /** \name Types
     @{

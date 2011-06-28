@@ -29,7 +29,17 @@
     \brief Distribution
   */
 template <typename X> class Distribution :
-  public Function<double, X> {
+  public virtual Function<double, X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Distribution(const Distribution<X>& other);
+  /// Assignment operator
+  Distribution& operator = (const Distribution<X>& other);
+  /** @}
+    */
+
 public:
   /** \name Types
     @{

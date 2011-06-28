@@ -20,10 +20,19 @@
     \brief This file is a testing binary for the DirichletDistribution class
   */
 
-//#include "statistics/DirichletDistribution.h"
+#include "statistics/DirichletDistribution.h"
 
 #include <iostream>
 
 int main(int argc, char** argv) {
+  Eigen::Matrix<double, 2, 1> alpha;
+  alpha(0) = 0.1;
+  alpha(1) = 0.9;
+  DirichletDistribution<2> dist(alpha);
+  std::cout << dist << std::endl;
+  Eigen::Matrix<double, 2, 1> value;
+  value(0) = 0.9;
+  value(1) = 0.1;
+  std::cout << dist(value) << std::endl;
   return 0;
 }

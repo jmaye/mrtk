@@ -33,6 +33,16 @@
   */
 template <typename X = size_t> class LogGammaFunction :
   public ContinuousFunction<double, X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  LogGammaFunction(const LogGammaFunction<X>& other);
+  /// Assignment operator
+  LogGammaFunction& operator = (const LogGammaFunction<X>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
@@ -57,6 +67,16 @@ protected:
 
 template <> class LogGammaFunction<size_t> :
   public LogFactorialFunction {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  LogGammaFunction(const LogGammaFunction& other);
+  /// Assignment operator
+  LogGammaFunction& operator = (const LogGammaFunction& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

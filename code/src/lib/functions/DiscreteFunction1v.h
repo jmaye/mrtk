@@ -32,7 +32,17 @@
   */
 template <typename Y, typename X, size_t M = 1> class DiscreteFunction;
 template <typename Y, typename X> class DiscreteFunction<Y, X> :
-  public Function<Y, X> {
+  public virtual Function<Y, X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  DiscreteFunction(const DiscreteFunction<Y, X>& other);
+  /// Assignment operator
+  DiscreteFunction& operator = (const DiscreteFunction<Y, X>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

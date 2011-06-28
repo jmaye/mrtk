@@ -31,6 +31,16 @@
   */
 class FactorialFunction :
   public DiscreteFunction<size_t, size_t> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  FactorialFunction(const FactorialFunction& other);
+  /// Assignment operator
+  FactorialFunction& operator = (const FactorialFunction& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

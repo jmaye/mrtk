@@ -37,7 +37,7 @@ ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const std::string& title,
   mXData.resize(round((maximum(0) - minimum(0)) / resolution));
   mYData.resize(round((maximum(0) - minimum(0)) / resolution));
   X xValue = minimum(0);
-  for (size_t i = 0; i < mXData.size(); i++) {
+  for (size_t i = 0; i < (size_t)mXData.size(); i++) {
     mXData[i] = xValue;
     mYData[i] = function(xValue);
     xValue += resolution;

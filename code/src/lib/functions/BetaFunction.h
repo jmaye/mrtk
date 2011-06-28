@@ -31,6 +31,16 @@
   */
 template <typename X, size_t M> class BetaFunction :
   public ContinuousFunction<double, X, M> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  BetaFunction(const BetaFunction<X, M>& other);
+  /// Assignment operator
+  BetaFunction& operator = (const BetaFunction<X, M>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

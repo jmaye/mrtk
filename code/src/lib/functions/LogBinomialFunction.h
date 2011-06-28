@@ -32,6 +32,16 @@
   */
 class LogBinomialFunction :
   public DiscreteFunction<double, size_t, 2> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  LogBinomialFunction(const LogBinomialFunction& other);
+  /// Assignment operator
+  LogBinomialFunction& operator = (const LogBinomialFunction& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

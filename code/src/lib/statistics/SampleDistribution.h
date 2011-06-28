@@ -32,7 +32,7 @@
     \brief Sample distribution
   */
 template <typename X> class SampleDistribution :
-  public Distribution<X> {
+  public virtual Distribution<X> {
 public:
   /** \name Constructors/destructor
     @{

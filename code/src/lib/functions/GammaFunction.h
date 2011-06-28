@@ -33,6 +33,16 @@
   */
 template <typename X = size_t> class GammaFunction :
   public ContinuousFunction<double, X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  GammaFunction(const GammaFunction<X>& other);
+  /// Assignment operator
+  GammaFunction& operator = (const GammaFunction<X>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
@@ -57,6 +67,16 @@ protected:
 
 template <> class GammaFunction<size_t> :
   public FactorialFunction {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  GammaFunction(const GammaFunction& other);
+  /// Assignment operator
+  GammaFunction& operator = (const GammaFunction& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

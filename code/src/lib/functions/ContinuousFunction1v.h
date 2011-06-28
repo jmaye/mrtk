@@ -32,7 +32,17 @@
   */
 template <typename Y, typename X, size_t M = 1> class ContinuousFunction;
 template <typename Y, typename X> class ContinuousFunction<Y, X> :
-  public Function<Y, X> {
+  public virtual Function<Y, X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ContinuousFunction(const ContinuousFunction<Y, X>& other);
+  /// Assignment operator
+  ContinuousFunction& operator = (const ContinuousFunction<Y, X>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

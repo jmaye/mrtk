@@ -25,68 +25,78 @@
 #include <fstream>
 #include <limits>
 
-#include <cmath>
-#include <stdint.h>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-DirichletDistribution::DirichletDistribution(const Eigen::VectorXd&
-  alphaVector) {
+template <size_t M>
+DirichletDistribution<M>::DirichletDistribution(const
+  Eigen::Matrix<double, M, 1>& alphaVector) {
   setAlpha(alphaVector);
 }
 
-DirichletDistribution::DirichletDistribution(const
-  DirichletDistribution& other) :
+template <size_t M>
+DirichletDistribution<M>::DirichletDistribution::DirichletDistribution(const
+  DirichletDistribution<M>& other) :
   mAlphaVector(other.mAlphaVector) {
 }
 
-DirichletDistribution& DirichletDistribution::operator =
-  (const DirichletDistribution& other) {
+template <size_t M>
+DirichletDistribution<M>& DirichletDistribution<M>::operator =
+  (const DirichletDistribution<M>& other) {
   mAlphaVector = other.mAlphaVector;
   return *this;
 }
 
-DirichletDistribution::~DirichletDistribution() {
+template <size_t M>
+DirichletDistribution<M>::~DirichletDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void DirichletDistribution::read(std::istream& stream) {
+template <size_t M>
+void DirichletDistribution<M>::read(std::istream& stream) {
 }
 
-void DirichletDistribution::write(std::ostream& stream) const {
-  stream << "mAlphaVector: " << mAlphaVector;
+template <size_t M>
+void DirichletDistribution<M>::write(std::ostream& stream) const {
+  stream << "mAlphaVector: " << std::endl << mAlphaVector;
 }
 
-void DirichletDistribution::read(std::ifstream& stream) {
+template <size_t M>
+void DirichletDistribution<M>::read(std::ifstream& stream) {
 }
 
-void DirichletDistribution::write(std::ofstream& stream) const {
+template <size_t M>
+void DirichletDistribution<M>::write(std::ofstream& stream) const {
 }
 
-std::ostream& operator << (std::ostream& stream,
-  const DirichletDistribution& obj) {
+template <size_t M>
+std::ostream& operator << (std::ostream& stream, const
+  DirichletDistribution<M>& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::istream& operator >> (std::istream& stream, DirichletDistribution& obj) {
+template <size_t M>
+std::istream& operator >> (std::istream& stream, DirichletDistribution<M>&
+  obj) {
   obj.read(stream);
   return stream;
 }
 
-std::ofstream& operator << (std::ofstream& stream,
-  const DirichletDistribution& obj) {
+template <size_t M>
+std::ofstream& operator << (std::ofstream& stream, const
+  DirichletDistribution<M>& obj) {
   obj.write(stream);
   return stream;
 }
 
-std::ifstream& operator >> (std::ifstream& stream,
-  DirichletDistribution& obj) {
+template <size_t M>
+std::ifstream& operator >> (std::ifstream& stream, DirichletDistribution<M>&
+  obj) {
   obj.read(stream);
   return stream;
 }
@@ -95,54 +105,56 @@ std::ifstream& operator >> (std::ifstream& stream,
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void DirichletDistribution::setAlpha(const Eigen::VectorXd& alphaVector)
-  throw (OutOfBoundException) {
+template <size_t M>
+void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
+  alphaVector) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if ((alphaVector.cwise() <= 0).any() == true)
-    throw OutOfBoundException("DirichletDistribution::setAlpha(): alphaVector must be strictly positive");
-  if (alphaVector.rows() < 2)
-    throw OutOfBoundException("DirichletDistribution::setAlpha(): alphaVector must contain at least 2 values");
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alphaVector, "DirichletDistribution<M>::setAlpha(): alphaVector must be strictly positive");
+  if (M < 2)
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alphaVector, "DirichletDistribution<M>::setAlpha(): alphaVector must contain at least 2 values");
   mAlphaVector = alphaVector;
-  //TODO: change this
-  LogBetaFunction<double, 256> logBetaFunction;
+  LogBetaFunction<double, M> logBetaFunction;
   mf64Normalizer = logBetaFunction(mAlphaVector);
 }
 
-const Eigen::VectorXd& DirichletDistribution::getAlpha() const {
+template <size_t M>
+const Eigen::Matrix<double, M, 1>& DirichletDistribution<M>::getAlpha() const {
   return mAlphaVector;
 }
 
-double DirichletDistribution::getNormalizer() const {
+template <size_t M>
+double DirichletDistribution<M>::getNormalizer() const {
   return mf64Normalizer;
 }
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
-double DirichletDistribution::pdf(const Eigen::VectorXd& xVector) const {
-  return exp(logpdf(xVector));
+template <size_t M>
+double DirichletDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
+  const {
+  return exp(logpdf(value));
 }
 
-double DirichletDistribution::logpdf(const Eigen::VectorXd& xVector) const
-  throw (OutOfBoundException) {
-  if (fabs(xVector.sum() - 1.0) > std::numeric_limits<double>::epsilon())
-    throw OutOfBoundException("DirichletDistribution::logpdf(): input vector must sum to 1");
-  if ((xVector.cwise() <= 0).any() == true)
-    throw OutOfBoundException("DirichletDistribution::logpdf(): input vector must be strictly positive");
+template <size_t M>
+double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
+  value) const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
+  if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution::logpdf(): input vector must sum to 1");
+  if ((value.cwise() <= 0).any() == true)
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution::logpdf(): input vector must be strictly positive");
   double f64Return = 0;
-  for (uint32_t i = 0; i < (uint32_t)mAlphaVector.rows(); i++)
-    f64Return += (mAlphaVector(i) - 1) * log(xVector(i));
+  for (size_t i = 0; i < M; i++)
+    f64Return += (mAlphaVector(i) - 1) * log(value(i));
   return f64Return - mf64Normalizer;
 }
 
-const Eigen::VectorXd DirichletDistribution::sample() const {
+template <size_t M>
+Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
   static Randomizer randomizer;
-  Eigen::VectorXd sampleGammaVector(mAlphaVector.rows());
-  for (uint32_t i = 0; i < (uint32_t)mAlphaVector.rows(); i++)
+  Eigen::Matrix<double, M, 1> sampleGammaVector;
+  for (size_t i = 0; i < M; i++)
     sampleGammaVector(i) = randomizer.sampleGamma(mAlphaVector(i), 1);
-  Eigen::VectorXd sampleDirVector(mAlphaVector.rows());
+  Eigen::Matrix<double, M, 1> sampleDirVector;
   double f64Sum = sampleGammaVector.sum();
-  for (uint32_t i = 0; i < (uint32_t)mAlphaVector.rows(); i++)
+  for (size_t i = 0; i < M; i++)
     sampleDirVector(i) = sampleGammaVector(i) / f64Sum;
   return sampleDirVector;
 }

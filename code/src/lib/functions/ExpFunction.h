@@ -31,6 +31,16 @@
   */
 template <typename X = double> class ExpFunction :
   public ContinuousFunction<double, X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ExpFunction(const ExpFunction<X>& other);
+  /// Assignment operator
+  ExpFunction& operator = (const ExpFunction<X>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

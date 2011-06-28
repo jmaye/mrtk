@@ -31,6 +31,16 @@
   */
 class LogFactorialFunction :
   public DiscreteFunction<double, size_t> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  LogFactorialFunction(const LogFactorialFunction& other);
+  /// Assignment operator
+  LogFactorialFunction& operator = (const LogFactorialFunction& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

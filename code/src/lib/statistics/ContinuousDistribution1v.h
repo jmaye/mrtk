@@ -24,7 +24,7 @@
 #ifndef CONTINUOUSDISTRIBUTION1V_H
 #define CONTINUOUSDISTRIBUTION1V_H
 
-#include "functions/ContinuousFunction1v.h"
+#include "functions/ContinuousFunction.h"
 #include "statistics/Distribution.h"
 
 /** The ContinuousDistribution1v class represents an interface to the univariate
@@ -34,7 +34,17 @@
 template <typename X, size_t M = 1> class ContinuousDistribution;
 template <typename X> class ContinuousDistribution<X> :
   public ContinuousFunction<double, X>,
-  public Distribution<X> {
+  public virtual Distribution<X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ContinuousDistribution(const ContinuousDistribution<X>& other);
+  /// Assignment operator
+  ContinuousDistribution& operator = (const ContinuousDistribution<X>& other);
+  /** @}
+    */
+
 public:
   /** \name Types
     @{

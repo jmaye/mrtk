@@ -33,7 +33,17 @@
     \brief Multivariate continuous function
   */
 template <typename Y, typename X, size_t M> class ContinuousFunction :
-  public Function<Y, Eigen::Matrix<X, M, 1> > {
+  public virtual Function<Y, Eigen::Matrix<X, M, 1> > {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ContinuousFunction(const ContinuousFunction<Y, X, M>& other);
+  /// Assignment operator
+  ContinuousFunction& operator = (const ContinuousFunction<Y, X, M>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{

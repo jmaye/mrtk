@@ -24,7 +24,7 @@
 #ifndef DISCRETEDISTRIBUTIONMV_H
 #define DISCRETEDISTRIBUTIONMV_H
 
-#include "functions/ContinuousFunctionMv.h"
+#include "functions/DiscreteFunction.h"
 #include "statistics/Distribution.h"
 
 /** The DiscreteDistributionMv class represents an interface to the
@@ -33,7 +33,17 @@
   */
 template <typename X, size_t M> class DiscreteDistribution :
   public DiscreteFunction<double, X, M>,
-  public Distribution<Eigen::Matrix<X, M, 1> > {
+  public virtual Distribution<Eigen::Matrix<X, M, 1> > {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  DiscreteDistribution(const DiscreteDistribution<X, M>& other);
+  /// Assignment operator
+  DiscreteDistribution& operator = (const DiscreteDistribution<X, M>& other);
+  /** @}
+    */
+
 public:
   /** \name Types
     @{
