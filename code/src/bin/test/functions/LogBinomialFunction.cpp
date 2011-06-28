@@ -16,39 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BetaFunction.cpp
+/** \file LogBinomialFunction.cpp
     \brief This file is a testing binary for the LogBinomialFunction class
   */
 
-#include "functions/BetaFunction.h"
+#include "functions/LogBinomialFunction.h"
 
 #include <iostream>
+#include <limits>
 
 int main(int argc, char** argv) {
-  BetaFunction<size_t, 2> b_1;
+  LogBinomialFunction b;
 
-  Eigen::Matrix<size_t, 2, 1> argument1;
+  Eigen::Matrix<size_t, 2, 1> argument;
 
-  argument1(0) = 1;
-  argument1(1) = 1;
-  std::cout << "b_1(1, 1): " << b_1(argument1) << std::endl;
-  argument1(0) = 1;
-  argument1(1) = 2;
-  std::cout << "b_1(1, 2): " << b_1(argument1) << std::endl;
-  argument1(0) = 2;
-  argument1(1) = 2;
-  std::cout << "b_1(2, 2): " << b_1(argument1) << std::endl;
+  argument(0) = 10;
+  argument(1) = 0;
+  std::cout << "b(10, 0): " << b(argument) << std::endl;
+  if (fabs(b(argument) - 0.0) > std::numeric_limits<double>::epsilon())
+    return 1;
+  argument(0) = 10;
+  argument(1) = 1;
+  std::cout << "b(10, 1): " << b(argument) << std::endl;
+  if (fabs(b(argument) - log(10)) > 1e-10)
+    return 1;
+  argument(0) = 8;
+  argument(1) = 4;
+  std::cout << "b(8, 4): " << b(argument) << std::endl;
+  if (fabs(b(argument) - log(70)) > 1e-10)
+    return 1;
 
-  BetaFunction<double, 2> b_2;
-
-  Eigen::Matrix<double, 2, 1> argument2;
-
-  argument1(0) = 0.5;
-  argument1(1) = 0.5;
-  std::cout << "b_2(0.5, 0.5): " << b_2(argument2) << std::endl;
-  argument1(0) = 0.4;
-  argument1(1) = -0.6;
-  std::cout << "b_2(0.4, -0.6): " << b_2(argument2) << std::endl;
+  try {
+    argument(0) = 2;
+    argument(1) = 5;
+    std::cout << "b(2, 5): " << std::fixed << b(argument) << std::endl;
+  }
+  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
 
   return 0;
 }

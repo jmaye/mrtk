@@ -25,6 +25,7 @@
 #define CONTINUOUSFUNCTIONPLOT1D_H
 
 #include "visualization/FunctionPlot.h"
+#include "exceptions/BadArgumentException.h"
 
 #include <QtGui/QWidget>
 #include <QtCore/QVector>
@@ -43,8 +44,16 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Default constructor
-  ContinuousFunctionPlot();
+  /// Constructs plot from parameters
+  ContinuousFunctionPlot(const std::string& title, const Function<Y, X>&
+    function, const Eigen::Matrix<X, 1, 1>& minimum, const
+    Eigen::Matrix<X, 1, 1>& maximum, const X& resolution) throw
+    (BadArgumentException<Eigen::Matrix<X, 1, 1> >, BadArgumentException<X>);
+  /// Copy constructor
+  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X>& other);
+  /// Assignment operator
+  ContinuousFunctionPlot<Y, X>& operator =
+    (const ContinuousFunctionPlot<Y, X>& other);
   /// Destructor
   virtual ~ContinuousFunctionPlot();
   /** @}
@@ -58,9 +67,10 @@ public:
 
 protected:
   QwtPlot* mpPlot;
-  QwtPlotCurve* mCurve;
+  QwtPlotCurve* mpCurve;
   QVector<X> mXData;
-  QVector<Y> myData;
+  QVector<Y> mYData;
+  X mResolution;
 
 };
 

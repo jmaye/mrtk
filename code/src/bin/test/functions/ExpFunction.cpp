@@ -23,19 +23,18 @@
 #include "functions/ExpFunction.h"
 
 #include <iostream>
+#include <limits>
 
 int main(int argc, char** argv) {
-  ExpFunction<double> e_1;
+  ExpFunction<double> e;
 
-  std::cout << "e_1(0): " << e_1(0) << std::endl;
-  std::cout << "e_1(-10): " << e_1(-10) << std::endl;
-  std::cout << "e_1(1): " << e_1(1) << std::endl;
+  std::cout << "e(0): " << std::fixed << e(0) << std::endl;
+  if (fabs(e(0) - 1.0) > std::numeric_limits<double>::epsilon())
+    return 1;
 
-  ExpFunction<size_t> e_2;
-
-  std::cout << "e_2(0): " << e_2(0) << std::endl;
-  std::cout << "e_2(-10): " << e_2(-10) << std::endl;
-  std::cout << "e_2(1): " << e_2(1) << std::endl;
+  std::cout << "e(1): " << std::fixed << e(1) << std::endl;
+  if (fabs(e(1) - M_E) > std::numeric_limits<double>::epsilon())
+    return 1;
 
   return 0;
 }

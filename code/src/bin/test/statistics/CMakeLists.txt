@@ -1,1 +1,1 @@
-remake_add_executables(TESTING)
+remake_add_executables(TESTING LINK statistics)

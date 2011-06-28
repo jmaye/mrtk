@@ -23,16 +23,25 @@
 #include "functions/LogFunction.h"
 
 #include <iostream>
+#include <limits>
 
 int main(int argc, char** argv) {
-  LogFunction<size_t> l_1;
+  LogFunction<double> l;
 
-  std::cout << "l_1(1): " << l_1(1) << std::endl;
+  std::cout << "l(1): " << std::fixed << l(1) << std::endl;
+  if (fabs(l(1) - 0) > std::numeric_limits<double>::epsilon())
+    return 1;
 
+  std::cout << "l(e): " << std::fixed << l(M_E) << std::endl;
+  if (fabs(l(M_E) - 1.0) > std::numeric_limits<double>::epsilon())
+    return 1;
 
-  LogFunction<double> l_2;
-
-  std::cout << "l_2(0.5): " << l_2(0.5) << std::endl;
+  try {
+    std::cout << "l(0): " << std::fixed << l(0) << std::endl;
+  }
+  catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
 
   return 0;
 }

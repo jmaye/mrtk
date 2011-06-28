@@ -28,8 +28,28 @@ int main(int argc, char** argv) {
   FactorialFunction f;
 
   std::cout << "f(0): " << f(0) << std::endl;
+  if (f(0) != 1)
+    return 1;
+
   std::cout << "f(1): " << f(1) << std::endl;
+  if (f(1) != 1)
+    return 1;
+
   std::cout << "f(2): " << f(2) << std::endl;
+  if (f(2) != 2)
+    return 1;
+
+  std::cout << "f(3): " << f(3) << std::endl;
+  if (f(3) != 6)
+    return 1;
+
+  std::cout << "f(4): " << f(4) << std::endl;
+  if (f(4) != 24)
+    return 1;
+
+  std::cout << "f(5): " << f(5) << std::endl;
+  if (f(5) != 120)
+    return 1;
 
   return 0;
 }

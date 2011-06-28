@@ -21,9 +21,19 @@
   */
 
 #include "visualization/ContinuousFunctionPlot.h"
+#include "functions/LogFunction.h"
 
-#include <iostream>
+#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
-  return 0;
+  Eigen::Matrix<double, 1, 1> minimum;
+  minimum(0) = 0.1;
+  Eigen::Matrix<double, 1, 1> maximum;
+  maximum(0) = 10;
+  LogFunction<double> log;
+  QApplication app(argc, argv);
+  ContinuousFunctionPlot<double, double> plot("LogFunction", log, minimum,
+    maximum, 0.1);
+  plot.show();
+  return app.exec();
 }

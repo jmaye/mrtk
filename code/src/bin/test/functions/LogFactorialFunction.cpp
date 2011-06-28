@@ -21,15 +21,38 @@
   */
 
 #include "functions/LogFactorialFunction.h"
+#include "functions/FactorialFunction.h"
 
+#include <limits>
 #include <iostream>
 
 int main(int argc, char** argv) {
-  LogFactorialFunction f;
+  LogFactorialFunction lf;
+  FactorialFunction f;
 
-  std::cout << "f(0): " << f(0) << std::endl;
-  std::cout << "f(1): " << f(1) << std::endl;
-  std::cout << "f(2): " << f(2) << std::endl;
+  std::cout << "lf(0): " << std::fixed << lf(0) << std::endl;
+  if (fabs(lf(0) - 0.0) > std::numeric_limits<double>::epsilon())
+    return 1;
+
+  std::cout << "lf(1): " << std::fixed << lf(1) << std::endl;
+  if (fabs(lf(1) - 0.0) > std::numeric_limits<double>::epsilon())
+    return 1;
+
+  std::cout << "lf(2): " << std::fixed << lf(2) << std::endl;
+  if (fabs(lf(2) - log(f(2))) > std::numeric_limits<double>::epsilon())
+    return 1;
+
+  std::cout << "lf(3): " << std::fixed << lf(3) << std::endl;
+  if (fabs(lf(3) - log(f(3))) > std::numeric_limits<double>::epsilon())
+    return 1;
+
+  std::cout << "lf(4): " << std::fixed << lf(4) << std::endl;
+  if (fabs(lf(4) - log(f(4))) > 1e-12)
+    return 1;
+
+  std::cout << "lf(5): " << std::fixed << lf(5) << std::endl;
+  if (fabs(lf(5) - log(f(5))) > 1e-12)
+    return 1;
 
   return 0;
 }

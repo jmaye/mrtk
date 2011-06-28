@@ -23,6 +23,8 @@
 #ifndef FUNCTIONPLOT_H
 #define FUNCTIONPLOT_H
 
+#include "functions/Function.h"
+
 #include <Eigen/Core>
 
 #include <string>
@@ -35,10 +37,13 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Default constructor
-  FunctionPlot(const std::string& title,
-    const Eigen::Matrix<X, M, 1>& minimum, const Eigen::Matrix<X, M, 1>&
-    maximum);
+  /// Constructs plot from parameters
+  FunctionPlot(const std::string& title, const Function<Y, X>& function, const
+    Eigen::Matrix<X, M, 1>& minimum, const Eigen::Matrix<X, M, 1>& maximum);
+  /// Copy constructor
+  FunctionPlot(const FunctionPlot<Y, X, M>& other);
+  /// Assignment operator
+  FunctionPlot<Y, X, M>& operator = (const FunctionPlot<Y, X, M>& other);
   /// Destructor
   virtual ~FunctionPlot();
   /** @}
@@ -51,11 +56,21 @@ public:
   void setTitle(const std::string& title);
   /// Returns the plot's title
   const std::string& getTitle() const;
+  /// Sets the plot's minimum
+  void setMinimum(const Eigen::Matrix<X, M, 1>& minimum);
+  /// Returns the plot's minimum
+  const Eigen::Matrix<X, M, 1>& getMinimum() const;
+  /// Sets the plot's maximum
+  void setMaximum(const Eigen::Matrix<X, M, 1>& maximum);
+  /// Returns the plot's maximum
+  const Eigen::Matrix<X, M, 1>& getMaximum() const;
   /** @}
     */
 
 protected:
   std::string mTitle;
+  Eigen::Matrix<X, M, 1> mMinimum;
+  Eigen::Matrix<X, M, 1> mMaximum;
 
 };
 

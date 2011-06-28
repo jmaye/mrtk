@@ -21,10 +21,28 @@
 /******************************************************************************/
 
 template <typename Y, typename X, size_t M>
-FunctionPlot<Y, X, M>::FunctionPlot(const std::string& title,
-  const Eigen::Matrix<X, M, 1>& minimum, const Eigen::Matrix<X, M, 1>&
-  maximum) :
-  mTitle(title) {
+FunctionPlot<Y, X, M>::FunctionPlot(const std::string& title, const
+  Function<Y, X>& function, const Eigen::Matrix<X, M, 1>& minimum, const
+  Eigen::Matrix<X, M, 1>& maximum) :
+  mTitle(title),
+  mMinimum(minimum),
+  mMaximum(maximum) {
+}
+
+template <typename Y, typename X, size_t M>
+FunctionPlot<Y, X, M>::FunctionPlot(const FunctionPlot<Y, X, M>& other) :
+  mTitle(other.mTitle),
+  mMinimum(other.mMinimum),
+  mMaximum(other.mMaximum) {
+}
+
+template <typename Y, typename X, size_t M>
+FunctionPlot<Y, X, M>& FunctionPlot<Y, X, M>::operator =
+  (const FunctionPlot<Y, X, M>& other) {
+  mTitle = other.mTitle;
+  mMinimum = other.mMinimum;
+  mMaximum = other.mMaximum;
+  return *this;
 }
 
 template <typename Y, typename X, size_t M>
@@ -43,4 +61,24 @@ void FunctionPlot<Y, X, M>::setTitle(const std::string& title) {
 template <typename Y, typename X, size_t M>
 const std::string& FunctionPlot<Y, X, M>::getTitle() const {
   return mTitle;
+}
+
+template <typename Y, typename X, size_t M>
+void FunctionPlot<Y, X, M>::setMinimum(const Eigen::Matrix<X, M, 1>& minimum) {
+  mMinimum = minimum;
+}
+
+template <typename Y, typename X, size_t M>
+const Eigen::Matrix<X, M, 1>& FunctionPlot<Y, X, M>::getMinimum() const {
+  return mMinimum;
+}
+
+template <typename Y, typename X, size_t M>
+void FunctionPlot<Y, X, M>::setMaximum(const Eigen::Matrix<X, M, 1>& maximum) {
+  mMaximum = maximum;
+}
+
+template <typename Y, typename X, size_t M>
+const Eigen::Matrix<X, M, 1>& FunctionPlot<Y, X, M>::getMaximum() const {
+  return mMaximum;
 }

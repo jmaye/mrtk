@@ -29,7 +29,7 @@
 
 /** The class BadArgumentException represents any
     exceptions occuring when the arguments passed to a function are invalid
-    \brief Invalid operation requested
+    \brief Bad argument exception
   */
 template <typename X> class BadArgumentException :
   public std::exception {

@@ -23,6 +23,7 @@
 #include "functions/BetaFunction.h"
 
 #include <iostream>
+#include <limits>
 
 int main(int argc, char** argv) {
   BetaFunction<size_t, 2> b_1;
@@ -31,24 +32,35 @@ int main(int argc, char** argv) {
 
   argument1(0) = 1;
   argument1(1) = 1;
-  std::cout << "b_1(1, 1): " << b_1(argument1) << std::endl;
+  std::cout << "b_1(1, 1): " << std::fixed << b_1(argument1) << std::endl;
+  if (fabs(b_1(argument1) -  1.0) > std::numeric_limits<double>::epsilon())
+    return 1;
+
   argument1(0) = 1;
   argument1(1) = 2;
-  std::cout << "b_1(1, 2): " << b_1(argument1) << std::endl;
+  std::cout << "b_1(1, 2): " << std::fixed << b_1(argument1) << std::endl;
+  if (fabs(b_1(argument1) -  0.5) > std::numeric_limits<double>::epsilon())
+    return 1;
+
   argument1(0) = 2;
   argument1(1) = 2;
   std::cout << "b_1(2, 2): " << b_1(argument1) << std::endl;
+  if (fabs(b_1(argument1) -  1.0 / 6.0) >
+    std::numeric_limits<double>::epsilon())
+    return 1;
 
   BetaFunction<double, 2> b_2;
 
   Eigen::Matrix<double, 2, 1> argument2;
 
-  argument1(0) = 0.5;
-  argument1(1) = 0.5;
-  std::cout << "b_2(0.5, 0.5): " << b_2(argument2) << std::endl;
-  argument1(0) = 0.4;
-  argument1(1) = -0.6;
-  std::cout << "b_2(0.4, -0.6): " << b_2(argument2) << std::endl;
+  argument2(0) = 0.5;
+  argument2(1) = 0.5;
+  std::cout << "b_2(0.5, 0.5): " << std::fixed << b_2(argument2) << std::endl;
+  if (fabs(b_2(argument2) -  M_PI) > 1e-6)
+    return 1;
+  argument2(0) = 0.4;
+  argument2(1) = -0.6;
+  std::cout << "b_2(0.4, -0.6): " << std::fixed << b_2(argument2) << std::endl;
 
   return 0;
 }

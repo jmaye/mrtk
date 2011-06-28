@@ -29,15 +29,30 @@ int main(int argc, char** argv) {
 
   Eigen::Matrix<size_t, 2, 1> argument;
 
-  argument(0) = 2;
-  argument(1) = 1;
-  std::cout << "b(2, 1): " << b(argument) << std::endl;
   argument(0) = 10;
-  argument(1) = 2;
-  std::cout << "b(10, 2): " << b(argument) << std::endl;
-  argument(0) = 2;
-  argument(1) = 2;
-  std::cout << "b(2, 2): " << b(argument) << std::endl;
+  argument(1) = 0;
+  std::cout << "b(10, 0): " << b(argument) << std::endl;
+  if (b(argument) != 1)
+    return 1;
+  argument(0) = 10;
+  argument(1) = 1;
+  std::cout << "b(10, 1): " << b(argument) << std::endl;
+  if (b(argument) != 10)
+    return 1;
+  argument(0) = 8;
+  argument(1) = 4;
+  std::cout << "b(8, 4): " << b(argument) << std::endl;
+  if (b(argument) != 70)
+    return 1;
+
+  try {
+    argument(0) = 2;
+    argument(1) = 5;
+    std::cout << "b(2, 5): " << b(argument) << std::endl;
+  }
+  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
 
   return 0;
 }
