@@ -29,8 +29,10 @@
 
 namespace Eigen {
 
-template<> struct NumTraits<size_t>
-{
+/** The NumTraits<size_t> structure defines support for size_t type in Eigen
+    \brief Eigen support for size_t
+  */
+template<> struct NumTraits<size_t> {
   typedef size_t Real;
   typedef double FloatingPoint;
   enum {

@@ -27,8 +27,7 @@
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "exceptions/BadArgumentException.h"
-
-#include <iosfwd>
+#include "base/Serializable.h"
 
 /** The DirichletDistribution class represents a Dirichlet distribution,
     i.e., a continuous distribution that is a conjugate prior to the multinomial
@@ -37,36 +36,16 @@
   */
 template <size_t M> class DirichletDistribution :
   public ContinuousDistribution<double, M>,
-  public SampleDistribution<Eigen::Matrix<double, M, 1> > {
-  template <size_t N>
-  friend std::ostream& operator << (std::ostream& stream,
-    const DirichletDistribution<N>& obj);
-  template <size_t N>
-  friend std::istream& operator >> (std::istream& stream,
-    DirichletDistribution<N>& obj);
-  template <size_t N>
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const DirichletDistribution<N>& obj);
-  template <size_t N>
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    DirichletDistribution<N>& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
+  public SampleDistribution<Eigen::Matrix<double, M, 1> >,
+  public virtual Serializable {
 
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameters
-  DirichletDistribution(const Eigen::Matrix<double, M, 1>& alphaVector);
+  DirichletDistribution(const Eigen::Matrix<double, M, 1>& alpha =
+    Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
   DirichletDistribution(const DirichletDistribution<M>& other);
   //// Assignment operator
@@ -80,7 +59,7 @@ public:
     @{
     */
   /// Sets the number of successes
-  void setAlpha(const Eigen::Matrix<double, M, 1>& alphaVector)
+  void setAlpha(const Eigen::Matrix<double, M, 1>& alpha)
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the number of successes
   const Eigen::Matrix<double, M, 1>& getAlpha() const;
@@ -97,11 +76,21 @@ public:
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  virtual void read(std::istream& stream);
+  virtual void write(std::ostream& stream) const;
+  virtual void read(std::ifstream& stream);
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
   /** \name Protected members
     @{
     */
   /// Pseudo-counts
-  Eigen::Matrix<double, M, 1> mAlphaVector;
+  Eigen::Matrix<double, M, 1> mAlpha;
   /// Normalizer
   double mf64Normalizer;
   /** @}

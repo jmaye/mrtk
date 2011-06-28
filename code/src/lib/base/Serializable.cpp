@@ -16,72 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/LogBetaFunction.h"
-#include "statistics/Randomizer.h"
+#include "base/Serializable.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BetaDistribution::BetaDistribution(double f64Alpha, double f64Beta) :
-  DirichletDistribution<2>() {
-  Eigen::Matrix<double, 2, 1> alpha;
-  alpha(0) = f64Alpha;
-  alpha(1) = f64Beta;
-  DirichletDistribution<2>::setAlpha(alpha);
+Serializable::Serializable() {
 }
 
-BetaDistribution::BetaDistribution(const BetaDistribution& other) :
-  DirichletDistribution<2>(other) {
-}
-
-BetaDistribution& BetaDistribution::operator = (const BetaDistribution& other) {
-  this->DirichletDistribution<2>::operator=(other);
-  return *this;
-}
-
-BetaDistribution::~BetaDistribution() {
+Serializable::~Serializable() {
 }
 
 /******************************************************************************/
-/* Stream operations                                                          */
+/* Methods                                                                    */
 /******************************************************************************/
 
-void BetaDistribution::read(std::istream& stream) {
+std::ostream& operator << (std::ostream& stream, const Serializable& obj) {
+  obj.write(stream);
+  return stream;
 }
 
-void BetaDistribution::write(std::ostream& stream) const {
-  stream << "alpha: " << mAlpha(0) << std::endl << "beta: " << mAlpha(1);
+std::istream& operator >> (std::istream& stream, Serializable& obj) {
+  obj.read(stream);
+  return stream;
 }
 
-void BetaDistribution::read(std::ifstream& stream) {
+std::ofstream& operator << (std::ofstream& stream, const Serializable& obj) {
+  obj.write(stream);
+  return stream;
 }
 
-void BetaDistribution::write(std::ofstream& stream) const {
-}
-
-/******************************************************************************/
-/* Accessors                                                                  */
-/******************************************************************************/
-
-void BetaDistribution::setAlpha(double f64Alpha) {
-  Eigen::Matrix<double, 2, 1> alpha;
-  alpha(0) = f64Alpha;
-  alpha(1) = getBeta();
-  DirichletDistribution<2>::setAlpha(alpha);
-}
-
-double BetaDistribution::getAlpha() const {
-  return mAlpha(0);
-}
-
-void BetaDistribution::setBeta(double f64Beta) {
-  Eigen::Matrix<double, 2, 1> alpha;
-  alpha(0) = getAlpha();
-  alpha(1) = f64Beta;
-  DirichletDistribution<2>::setAlpha(alpha);
-}
-
-double BetaDistribution::getBeta() const {
-  return mAlpha(1);
+std::ifstream& operator >> (std::ifstream& stream, Serializable& obj) {
+  obj.read(stream);
+  return stream;
 }

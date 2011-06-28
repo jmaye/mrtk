@@ -16,53 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DirichletDistribution.cpp
-    \brief This file is a testing binary for the DirichletDistribution class
+/** \file Serializable.h
+    \brief This file defines the Serializable class, which is an interface to
+           serializable types
   */
 
-#include "statistics/DirichletDistribution.h"
+#ifndef SERIALIZABLE_H
+#define SERIALIZABLE_H
 
-int main(int argc, char** argv) {
-  Eigen::Matrix<double, 2, 1> alpha;
-  alpha(0) = 0.1;
-  alpha(1) = 0.9;
-  DirichletDistribution<2> dist(alpha);
-  std::cout << dist << std::endl;
+#include <iostream>
+#include <fstream>
 
-  Eigen::Matrix<double, 2, 1> value;
-  value(0) = 0.9;
-  value(1) = 0.1;
-  std::cout << "pdf(0.9, 0.1): " << std::fixed << dist(value) << std::endl;
-  value(0) = 0.1;
-  value(1) = 0.9;
-  std::cout << "pdf(0.1, 0.9): " << std::fixed << dist(value) << std::endl;
+/** The class Serializable is an interface to serializable types
+    \brief Serializable class
+  */
+class Serializable {
+  friend std::ostream& operator << (std::ostream& stream,
+    const Serializable& obj);
+  friend std::istream& operator >> (std::istream& stream, Serializable& obj);
+  friend std::ofstream& operator << (std::ofstream& stream,
+    const Serializable& obj);
+  friend std::ifstream& operator >> (std::ifstream& stream, Serializable& obj);
 
-  try {
-    alpha(0) = 0.0;
-    alpha(1) = 0.9;
-    dist.setAlpha(alpha);
-  }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  Serializable();
+  /// Copy constructor
+  Serializable(const Serializable& other);
+  //// Assignment operator
+  Serializable& operator = (const Serializable& other);
+  /// Destructor
+  virtual ~Serializable();
+  /** @}
+    */
 
-  try {
-    value(0) = 0.8;
-    value(1) = 0.1;
-    std::cout << "pdf(0.8, 0.1): " << std::fixed << dist(value) << std::endl;
-  }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
+protected:
+  /** \name Stream methods
+    @{
+    */
+  virtual void read(std::istream& stream) = 0;
+  virtual void write(std::ostream& stream) const = 0;
+  virtual void read(std::ifstream& stream) = 0;
+  virtual void write(std::ofstream& stream) const = 0;
+  /** @}
+    */
 
-  try {
-    value(0) = 1.2;
-    value(1) = -0.2;
-    std::cout << "pdf(1.2, -0.2): " << std::fixed << dist(value) << std::endl;
-  }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
+};
 
-  return 0;
-}
+#endif // SERIALIZABLE_H

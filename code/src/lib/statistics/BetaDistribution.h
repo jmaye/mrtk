@@ -44,7 +44,7 @@ public:
   //// Assignment operator
   BetaDistribution& operator = (const BetaDistribution& other);
   /// Destructor
-  ~BetaDistribution();
+  virtual ~BetaDistribution();
   /** @}
     */
 
@@ -52,17 +52,26 @@ public:
     @{
     */
   /// Sets the number of successes
-  void setAlpha(double f64Alpha) throw (OutOfBoundException);
+  void setAlpha(double f64Alpha);
   /// Returns the number of successes
   double getAlpha() const;
   /// Sets the number of failures
-  void setBeta(double f64Beta) throw (OutOfBoundException);
+  void setBeta(double f64Beta);
   /// Returns the number of failures
   double getBeta() const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  virtual void read(std::istream& stream);
+  virtual void write(std::ostream& stream) const;
+  virtual void read(std::ifstream& stream);
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
 
 };
 

@@ -21,8 +21,6 @@
 
 #include <Eigen/Array>
 
-#include <iostream>
-#include <fstream>
 #include <limits>
 
 /******************************************************************************/
@@ -31,20 +29,20 @@
 
 template <size_t M>
 DirichletDistribution<M>::DirichletDistribution(const
-  Eigen::Matrix<double, M, 1>& alphaVector) {
-  setAlpha(alphaVector);
+  Eigen::Matrix<double, M, 1>& alpha) {
+  setAlpha(alpha);
 }
 
 template <size_t M>
 DirichletDistribution<M>::DirichletDistribution::DirichletDistribution(const
   DirichletDistribution<M>& other) :
-  mAlphaVector(other.mAlphaVector) {
+  mAlpha(other.mAlpha) {
 }
 
 template <size_t M>
 DirichletDistribution<M>& DirichletDistribution<M>::operator =
   (const DirichletDistribution<M>& other) {
-  mAlphaVector = other.mAlphaVector;
+  mAlpha = other.mAlpha;
   return *this;
 }
 
@@ -62,7 +60,7 @@ void DirichletDistribution<M>::read(std::istream& stream) {
 
 template <size_t M>
 void DirichletDistribution<M>::write(std::ostream& stream) const {
-  stream << "mAlphaVector: " << std::endl << mAlphaVector;
+  stream << "mAlpha: " << std::endl << mAlpha;
 }
 
 template <size_t M>
@@ -73,53 +71,25 @@ template <size_t M>
 void DirichletDistribution<M>::write(std::ofstream& stream) const {
 }
 
-template <size_t M>
-std::ostream& operator << (std::ostream& stream, const
-  DirichletDistribution<M>& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-template <size_t M>
-std::istream& operator >> (std::istream& stream, DirichletDistribution<M>&
-  obj) {
-  obj.read(stream);
-  return stream;
-}
-
-template <size_t M>
-std::ofstream& operator << (std::ofstream& stream, const
-  DirichletDistribution<M>& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-template <size_t M>
-std::ifstream& operator >> (std::ifstream& stream, DirichletDistribution<M>&
-  obj) {
-  obj.read(stream);
-  return stream;
-}
-
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
 template <size_t M>
 void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
-  alphaVector) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if ((alphaVector.cwise() <= 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alphaVector, "DirichletDistribution<M>::setAlpha(): alphaVector must be strictly positive");
+  alpha) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
+  if ((alpha.cwise() <= 0).any() == true)
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha, "DirichletDistribution<M>::setAlpha(): alpha must be strictly positive");
   if (M < 2)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alphaVector, "DirichletDistribution<M>::setAlpha(): alphaVector must contain at least 2 values");
-  mAlphaVector = alphaVector;
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha, "DirichletDistribution<M>::setAlpha(): alpha must contain at least 2 values");
+  mAlpha = alpha;
   LogBetaFunction<double, M> logBetaFunction;
-  mf64Normalizer = logBetaFunction(mAlphaVector);
+  mf64Normalizer = logBetaFunction(mAlpha);
 }
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>& DirichletDistribution<M>::getAlpha() const {
-  return mAlphaVector;
+  return mAlpha;
 }
 
 template <size_t M>
@@ -142,7 +112,7 @@ double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution::logpdf(): input vector must be strictly positive");
   double f64Return = 0;
   for (size_t i = 0; i < M; i++)
-    f64Return += (mAlphaVector(i) - 1) * log(value(i));
+    f64Return += (mAlpha(i) - 1) * log(value(i));
   return f64Return - mf64Normalizer;
 }
 
@@ -151,7 +121,7 @@ Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
   static Randomizer randomizer;
   Eigen::Matrix<double, M, 1> sampleGammaVector;
   for (size_t i = 0; i < M; i++)
-    sampleGammaVector(i) = randomizer.sampleGamma(mAlphaVector(i), 1);
+    sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1);
   Eigen::Matrix<double, M, 1> sampleDirVector;
   double f64Sum = sampleGammaVector.sum();
   for (size_t i = 0; i < M; i++)
