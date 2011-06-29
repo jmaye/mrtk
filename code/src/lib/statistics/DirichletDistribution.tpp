@@ -102,9 +102,8 @@ template <size_t N, size_t D>
 double DirichletDistribution<M>::Traits<N, D>::pdf(const
   DirichletDistribution<N>& distribution, const
   Eigen::Matrix<double, N - 1, 1>& value) {
-  if (fabs(value.sum() >= 1.0))
-    throw BadArgumentException<Eigen::Matrix<double, N - 1, 1> >(value, "DirichletDistribution::pdf(): input vector must sum to 1");
   Eigen::Matrix<double, M, 1> valueMat;
+  valueMat << value, 1.0 - value.sum();
   return distribution.pdf(valueMat);
 }
 
@@ -112,12 +111,30 @@ template <size_t M>
 template <size_t D>
 double DirichletDistribution<M>::Traits<2, D>::pdf(const
   DirichletDistribution<2>& distribution, const double& value) {
-  if (value >= 1.0)
-    throw BadArgumentException<double>(value, "DirichletDistribution::pdf(): input vector must sum to 1");
   Eigen::Matrix<double, 2, 1> valueMat;
   valueMat(0) = value;
   valueMat(1) = 1.0 - value;
   return distribution.pdf(valueMat);
+}
+
+template <size_t M>
+template <size_t N, size_t D>
+double DirichletDistribution<M>::Traits<N, D>::logpdf(const
+  DirichletDistribution<N>& distribution, const
+  Eigen::Matrix<double, N - 1, 1>& value) {
+  Eigen::Matrix<double, M, 1> valueMat;
+  valueMat << value, 1.0 - value.sum();
+  return distribution.logpdf(valueMat);
+}
+
+template <size_t M>
+template <size_t D>
+double DirichletDistribution<M>::Traits<2, D>::logpdf(const
+  DirichletDistribution<2>& distribution, const double& value) {
+  Eigen::Matrix<double, 2, 1> valueMat;
+  valueMat(0) = value;
+  valueMat(1) = 1.0 - value;
+  return distribution.logpdf(valueMat);
 }
 
 template <size_t M>
@@ -136,13 +153,19 @@ template <size_t M>
 double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
   value) const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution::logpdf(): input vector must sum to 1");
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution<M>::logpdf(): input vector must sum to 1");
   if ((value.cwise() <= 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution::logpdf(): input vector must be strictly positive");
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution<M>::logpdf(): input vector must be strictly positive");
   double f64Return = 0;
   for (size_t i = 0; i < M; i++)
     f64Return += (mAlpha(i) - 1) * log(value(i));
   return f64Return - mf64Normalizer;
+}
+
+template <size_t M>
+double DirichletDistribution<M>::logpdf(const typename
+  ContinuousDistribution<double, M - 1>::Domain& value) const {
+  return Traits<M>::logpdf(*this, value);
 }
 
 template <size_t M>
@@ -151,9 +174,5 @@ Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
   Eigen::Matrix<double, M, 1> sampleGammaVector;
   for (size_t i = 0; i < M; i++)
     sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1);
-  Eigen::Matrix<double, M, 1> sampleDirVector;
-  double f64Sum = sampleGammaVector.sum();
-  for (size_t i = 0; i < M; i++)
-    sampleDirVector(i) = sampleGammaVector(i) / f64Sum;
-  return sampleDirVector;
+  return sampleGammaVector / sampleGammaVector.sum();
 }

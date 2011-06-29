@@ -16,29 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/BernoulliDistribution.h"
-
 #include "statistics/Randomizer.h"
-
-#include <iostream>
-#include <fstream>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BernoulliDistribution::BernoulliDistribution(double f64P) {
-  setP(f64P);
+BernoulliDistribution::BernoulliDistribution(double successProbability) {
+  setSuccessProbability(successProbability);
 }
 
 BernoulliDistribution::BernoulliDistribution(const BernoulliDistribution&
   other) : 
-  mf64P(other.mf64P) {
+  mSuccessProbability(other.mSuccessProbability) {
 }
 
 BernoulliDistribution& BernoulliDistribution::operator =
   (const BernoulliDistribution& other) {
-  mf64P = other.mf64P;
+  mSuccessProbability = other.mSuccessProbability;
   return *this;
 }
 
@@ -53,7 +48,7 @@ void BernoulliDistribution::read(std::istream& stream) {
 }
 
 void BernoulliDistribution::write(std::ostream& stream) const {
-  stream << "mf64P: " << mf64P;
+  stream << "successProbability: " << mSuccessProbability;
 }
 
 void BernoulliDistribution::read(std::ifstream& stream) {
@@ -62,59 +57,36 @@ void BernoulliDistribution::read(std::ifstream& stream) {
 void BernoulliDistribution::write(std::ofstream& stream) const {
 }
 
-std::ostream& operator << (std::ostream& stream,
-  const BernoulliDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, BernoulliDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream,
-  const BernoulliDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream, BernoulliDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BernoulliDistribution::setP(double f64P) throw (OutOfBoundException) {
-  if (f64P < 0.0 || f64P > 1.0)
-    throw OutOfBoundException("BernoulliDistribution::setP(): f64P must be between 0 and 1");
-  mf64P = f64P;
+void BernoulliDistribution::setSuccessProbability(double successProbability)
+  throw (BadArgumentException<double>) {
+  if (successProbability < 0.0 || successProbability > 1.0)
+    throw BadArgumentException<double>(successProbability, "BernoulliDistribution::setSuccessProbability(): success probability must be between 0 and 1");
+  mSuccessProbability = successProbability;
 }
 
-double BernoulliDistribution::getP() const {
-  return mf64P;
+double BernoulliDistribution::getSuccessProbability() const {
+  return mSuccessProbability;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-double BernoulliDistribution::pmf(bool bX) const {
-  if (bX == true)
-    return mf64P;
+double BernoulliDistribution::pmf(const size_t& value) const
+  throw (BadArgumentException<size_t>) {
+  if (value > 1)
+    throw BadArgumentException<size_t>(value, "BernoulliDistribution::pmf(): value must not be larger than 1");
+  if (value == 1)
+    return mSuccessProbability;
   else
-    return 1 - mf64P;
+    return 1.0 - mSuccessProbability;
 }
 
-double BernoulliDistribution::logpmf(bool bX) const
-  throw (InvalidOperationException) {
-  throw InvalidOperationException("BernoulliDistribution::logpmf(): Undefined operation");
-}
-
-bool BernoulliDistribution::sample() const {
+size_t BernoulliDistribution::getSample() const {
   static Randomizer randomizer;
-  return randomizer.sampleBernoulli(mf64P);
+  return randomizer.sampleBernoulli(mSuccessProbability);
 }

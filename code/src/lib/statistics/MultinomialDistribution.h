@@ -24,95 +24,120 @@
 #ifndef MULTINOMIALDISTRIBUTION_H
 #define MULTINOMIALDISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
-
-#include <Eigen/Core>
-
-#include <iosfwd>
-#include <vector>
-
-#include <stdint.h>
+#include "statistics/DiscreteDistribution.h"
+#include "statistics/SampleDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The MultinomialDistribution class represents a multinomial distribution,
     i.e., the discrete distribution of N independent categorical distribution
-    draws
+    draws.
     \brief Multinomial distribution
   */
-class MultinomialDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const MultinomialDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    MultinomialDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const MultinomialDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    MultinomialDistribution& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Events probabilities
-  Eigen::VectorXd mEventProbabilitiesVector;
-  /// Number of trials
-  uint32_t mu32TrialsNbr;
-  /** @}
-    */
-
+template <size_t M> class MultinomialDistribution :
+  public DiscreteDistribution<size_t, M>,
+  public DiscreteDistribution<size_t, M - 1>,
+  public SampleDistribution<Eigen::Matrix<size_t, M, 1> >,
+  public virtual Serializable {
 public:
+  /** \name Traits
+    @{
+    */
+  /// Support for the N - 1 simplex
+  template <size_t N, size_t D = 0> struct Traits {
+  public:
+    /// Returns the probability mass function at a point
+    static double pmf(const MultinomialDistribution<N>& distribution,
+      const Eigen::Matrix<size_t, N - 1, 1>& value);
+    /// Returns the log-probability mass function at a point
+    static double logpmf(const MultinomialDistribution<N>& distribution,
+      const Eigen::Matrix<size_t, N - 1, 1>& value);
+  };
+  /// Support for N = 2
+  template <size_t D> struct Traits<2, D> {
+  public:
+    /// Returns the probability mass function at a point
+    static double pmf(const MultinomialDistribution<2>& distribution,
+      const size_t& value);
+    /// Returns the log-probability mass function at a point
+    static double logpmf(const MultinomialDistribution<2>& distribution,
+      const size_t& value);
+  };
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Constructs the distribution from the parameters
-  MultinomialDistribution(uint32_t u32TrialsNbr,
-    const Eigen::VectorXd& eventProbabilitiesVector);
+  MultinomialDistribution(size_t numTrials = 1, const
+    Eigen::Matrix<double, M, 1>& successProbabilities =
+    Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
   /// Copy constructor
   MultinomialDistribution(const MultinomialDistribution& other);
   //// Assignment operator
   MultinomialDistribution& operator = (const MultinomialDistribution& other);
   /// Destructor
-  ~MultinomialDistribution();
+  virtual ~MultinomialDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the event probabilities
-  void setEventProbabilities(const Eigen::VectorXd& eventProbabilitiesVector)
-    throw (OutOfBoundException);
-  /// Returns the event probabilities
-  const Eigen::VectorXd& getEventProbabilities() const;
+  /// Sets the success probabilities
+  void setSuccessProbabilities(const Eigen::Matrix<double, M, 1>&
+    successProbabilities) throw
+    (BadArgumentException<Eigen::Matrix<double, M, 1> >);
+  /// Returns the success probabilities
+  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
   /// Sets the number of trials
-  void setTrialsNbr(uint32_t u32TrialsNbr) throw (OutOfBoundException);
+  void setNumTrials(size_t numTrials) throw (BadArgumentException<size_t>);
   /// Returns the number of trials
-  uint32_t getTrialsNbr() const;
+  size_t getNumTrials() const;
+  /// Returns the probability mass function at a point
+  virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const;
+  /// Returns the probability mass function at a point
+  virtual double pmf(const typename
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const;
+  /// Returns the log-probability mass function at a point
+  double logpmf(const Eigen::Matrix<size_t, M, 1>& value) const
+    throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);
+  /// Returns the log-probability mass function at a point
+  double logpmf(const typename
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const;
+  /// Access a sample drawn from the distribution
+  virtual Eigen::Matrix<size_t, M, 1> getSample() const;
   /** @}
     */
 
-  /** \name Methods
-    @{
-    */
-  /// Returns the probability mass function at a point
-  double pmf(const Eigen::VectorXi& xVector) const;
-  /// Returns the log-probability mass function at a point
-  double logpmf(const Eigen::VectorXi& xVector) const
-    throw (OutOfBoundException);
-  /// Returns a sample from the distribution
-  const Eigen::VectorXi sample() const;
-  /** @}
-    */
+  using DiscreteDistribution<size_t, M>::operator();
+  using DiscreteDistribution<size_t, M - 1>::operator();
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Success probabilities
+  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  /// Number of trials
+  size_t mNumTrials;
+  /** @}
+    */
 
 };
 

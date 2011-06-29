@@ -16,108 +16,92 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/CategoricalDistribution.h"
-
 #include "statistics/Randomizer.h"
 
-#include <iostream>
-#include <fstream>
+#include <limits>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
-
-CategoricalDistribution::CategoricalDistribution(const Eigen::VectorXd&
-  eventProbabilitiesVector) {
-  setEventProbabilities(eventProbabilitiesVector);
+template <size_t M>
+CategoricalDistribution<M>::CategoricalDistribution(const
+  Eigen::Matrix<double, M, 1>& successProbabilities) {
+  setSuccessProbabilities(successProbabilities);
 }
 
-CategoricalDistribution::CategoricalDistribution(const CategoricalDistribution&
-  other) :
-  mEventProbabilitiesVector(other.mEventProbabilitiesVector) {
+template <size_t M>
+CategoricalDistribution<M>::CategoricalDistribution(const
+  CategoricalDistribution<M>& other) :
+  mSuccessProbabilities(other.mSuccessProbabilities) {
 }
 
-CategoricalDistribution& CategoricalDistribution::operator = (const
-  CategoricalDistribution& other) {
-  mEventProbabilitiesVector = other.mEventProbabilitiesVector;
+template <size_t M>
+CategoricalDistribution<M>& CategoricalDistribution<M>::operator = (const
+  CategoricalDistribution<M>& other) {
+  mSuccessProbabilities = other.mSuccessProbabilities;
   return *this;
 }
 
-CategoricalDistribution::~CategoricalDistribution() {
+template <size_t M>
+CategoricalDistribution<M>::~CategoricalDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void CategoricalDistribution::read(std::istream& stream) {
+template <size_t M>
+void CategoricalDistribution<M>::read(std::istream& stream) {
 }
 
-void CategoricalDistribution::write(std::ostream& stream) const {
-  stream << "mEventProbabilitiesVector: " << std::endl
-    << mEventProbabilitiesVector;
+template <size_t M>
+void CategoricalDistribution<M>::write(std::ostream& stream) const {
+  stream << "success probabilities: " << std::endl
+    << mSuccessProbabilities;
 }
 
-void CategoricalDistribution::read(std::ifstream& stream) {
+template <size_t M>
+void CategoricalDistribution<M>::read(std::ifstream& stream) {
 }
 
-void CategoricalDistribution::write(std::ofstream& stream) const {
-}
-
-std::ostream& operator << (std::ostream& stream, const CategoricalDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, CategoricalDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream, const CategoricalDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream, CategoricalDistribution& obj) {
-  obj.read(stream);
-  return stream;
+template <size_t M>
+void CategoricalDistribution<M>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void CategoricalDistribution::setEventProbabilities(const Eigen::VectorXd&
-  eventProbabilitiesVector) throw (OutOfBoundException) {
-  if (fabs(eventProbabilitiesVector.sum() - 1.0) >
+template <size_t M>
+void CategoricalDistribution<M>::setSuccessProbabilities(const
+  Eigen::Matrix<double, M, 1>& successProbabilities) throw
+  (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
+  if (fabs(successProbabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
-    (eventProbabilitiesVector.cwise() < 0).any() == true)
-    throw OutOfBoundException("CategoricalDistribution::setEventProbabilities(): event probabilities must sum to 1 and probabilities bigger or equal to 0");
-  mEventProbabilitiesVector = eventProbabilitiesVector;
+    (successProbabilities.cwise() < 0).any() == true)
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(successProbabilities,
+    "CategoricalDistribution::setSuccessProbabilities(): success probabilities must sum to 1 and probabilities bigger or equal to 0");
+  mSuccessProbabilities = successProbabilities;
 }
 
-const Eigen::VectorXd& CategoricalDistribution::getEventProbabilities() const {
-  return mEventProbabilitiesVector;
+template <size_t M>
+const Eigen::Matrix<double, M, 1>&
+  CategoricalDistribution<M>::getSuccessProbabilities() const {
+  return mSuccessProbabilities;
 }
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
-double CategoricalDistribution::pmf(uint32_t u32Event) const
-  throw (OutOfBoundException) {
-  if (u32Event > (uint32_t)mEventProbabilitiesVector.rows())
-    throw OutOfBoundException("CategoricalDistribution::pmf(): asked event does not exist");
-  return mEventProbabilitiesVector(u32Event);
+template <size_t M>
+double CategoricalDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
+  const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+  if (value.sum() != 1)
+    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "CategoricalDistribution::pmf(): value must have a 1-K encoding");
+  return mSuccessProbabilities.cwise() * value;
 }
 
-double CategoricalDistribution::logpmf(uint32_t u32Event) const
-  throw (InvalidOperationException) {
-  throw InvalidOperationException("CategoricalDistribution::logpmf(): undefined operation");
-}
-
-uint32_t CategoricalDistribution::sample() const {
+template <size_t M>
+Eigen::Matrix<size_t, M, 1> CategoricalDistribution<M>::getSample() const {
   static Randomizer randomizer;
-  return randomizer.sampleCategorical(mEventProbabilitiesVector);
+  Eigen::Matrix<size_t, M, 1> sample = Eigen::Matrix<size_t, M, 1>::Zeros;
+  sample[randomizer.sampleCategorical(mSuccessProbabilities)]++;
+  return sample;
 }

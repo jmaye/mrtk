@@ -50,12 +50,18 @@ public:
     /// Access the probability density function at the given value
     static double pdf(const DirichletDistribution<N>& distribution,
       const Eigen::Matrix<double, N - 1, 1>& value);
+    /// Access the log-probability density function at the given value
+    static double logpdf(const DirichletDistribution<N>& distribution,
+      const Eigen::Matrix<double, N - 1, 1>& value);
   };
   /// Support for N = 2
   template <size_t D> struct Traits<2, D> {
   public:
     /// Access the probability density function at the given value
     static double pdf(const DirichletDistribution<2>& distribution,
+      const double& value);
+    /// Access the log-probability density function at the given value
+    static double logpdf(const DirichletDistribution<2>& distribution,
       const double& value);
   };
   /** @}
@@ -94,6 +100,9 @@ public:
   /// Access the log-probablity density function at the given value
   double logpdf(const Eigen::Matrix<double, M, 1>& value) const
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
+  /// Access the log-probablity density function at the given value
+  double logpdf(const typename
+    ContinuousDistribution<double, M - 1>::Domain& value) const;
   /// Access a sample drawn from the distribution
   virtual Eigen::Matrix<double, M, 1> getSample() const;
   /** @}

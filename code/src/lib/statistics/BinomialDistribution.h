@@ -24,59 +24,27 @@
 #ifndef BINOMIALDISTRIBUTION_H
 #define BINOMIALDISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
-
-#include <iosfwd>
-
-#include <stdint.h>
+#include "statistics/MultinomialDistribution.h"
 
 /** The BinomialDistribution class represents a binomial distribution, i.e., the
     discrete distribution of the number of successes in N independent Bernoulli
-    draws, each with the same probability of success p
+    draws, each with the same probability of success p.
     \brief Binomial distribution
   */
-class BinomialDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const BinomialDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    BinomialDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const BinomialDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    BinomialDistribution& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Success probability
-  double mf64P;
-  /// Number of trials
-  uint32_t mu32TrialsNbr;
-  /** @}
-    */
-
+class BinomialDistribution :
+  public MultinomialDistribution<2> {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs the distribution from the parameter
-  BinomialDistribution(uint32_t u32TrialsNbr, double f64P);
+  BinomialDistribution(size_t numTrials = 1, double successProbability = 0.5);
   /// Copy constructor
   BinomialDistribution(const BinomialDistribution& other);
   //// Assignment operator
   BinomialDistribution& operator = (const BinomialDistribution& other);
   /// Destructor
-  ~BinomialDistribution();
+  virtual ~BinomialDistribution();
   /** @}
     */
 
@@ -84,29 +52,26 @@ public:
     @{
     */
   /// Sets the success probability
-  void setP(double f64P) throw (OutOfBoundException);
+  void setSuccessProbability(double successProbability);
   /// Returns the success probability
-  double getP() const;
-  /// Sets the number of trials
-  void setTrialsNbr(uint32_t u32TrialsNbr) throw (OutOfBoundException);
-  /// Returns the number of trials
-  uint32_t getTrialsNbr() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Returns the probability mass function at a point
-  double pmf(uint32_t u32SuccNbr) const;
-  /// Returns the log-probability mass at a point
-  double logpmf(uint32_t u32SuccNbr) const throw (OutOfBoundException);
-  /// Returns a sample from the distribution
-  uint32_t sample() const;
+  double getSuccessProbability() const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
 
 };
 

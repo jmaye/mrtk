@@ -28,7 +28,7 @@
 
 /** The BetaDistribution class represents a beta distribution,
     i.e., a continuous distribution that is a conjugate prior to the binomial or
-    Bernoulli distribution
+    Bernoulli distribution.
     \brief Beta distribution
   */
 class BetaDistribution :
@@ -38,7 +38,7 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  BetaDistribution(double f64Alpha, double f64Beta);
+  BetaDistribution(double f64Alpha = 1.0, double f64Beta = 1.0);
   /// Copy constructor
   BetaDistribution(const BetaDistribution& other);
   //// Assignment operator
@@ -66,9 +66,13 @@ protected:
   /** \name Stream methods
     @{
     */
+  /// Reads from standard input
   virtual void read(std::istream& stream);
+  /// Writes to standard output
   virtual void write(std::ostream& stream) const;
+  /// Reads from a file
   virtual void read(std::ifstream& stream);
+  /// Writes to a file
   virtual void write(std::ofstream& stream) const;
   /** @}
     */

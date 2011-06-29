@@ -16,58 +16,50 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BetaDistribution.cpp
-    \brief This file is a testing binary for the BetaDistribution class
+/** \file BernoulliDistribution.cpp
+    \brief This file is a testing binary for the BernoulliDistribution class
   */
 
-#include "statistics/BetaDistribution.h"
+#include "statistics/BernoulliDistribution.h"
 
 int main(int argc, char** argv) {
-  double f64Alpha = 0.1;
-  double f64Beta = 0.9;
-  BetaDistribution dist;
+  BernoulliDistribution dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
-  std::cout << "dist.getAlpha(): " << dist.getAlpha() << std::endl << std::endl;
-  std::cout << "dist.getBeta(): " << dist.getBeta() << std::endl << std::endl;
-  std::cout << "dist.setAlpha(0.1)" << std::endl << std::endl;
-  std::cout << "dist.setBeta(0.9)" << std::endl << std::endl;
-  dist.setAlpha(f64Alpha);
-  dist.setBeta(f64Beta);
-  std::cout << "Distribution new parameters: " << std::endl << dist
+  std::cout << "dist.getSuccessProbability(): " << dist.getSuccessProbability()
     << std::endl << std::endl;
-  std::cout << "dist.getAlpha(): " << dist.getAlpha() << std::endl << std::endl;
-  std::cout << "dist.getBeta(): " << dist.getBeta() << std::endl << std::endl;
+  std::cout << "dist.setSuccessProbability(0.7)" << std::endl << std::endl;
+  dist.setSuccessProbability(0.7);
+  std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
+    << std::endl;
 
-  std::cout << "pdf(0.1): " << std::fixed << dist(0.1) << std::endl
-    << std::endl;
-  if (fabs(dist(0.1) - 0.7896) > 1e-4)
-    return 1;
-  std::cout << "pdf(0.9): " << std::fixed << dist(0.9) << std::endl
-    << std::endl;
-  if (fabs(dist(0.9) - 0.1361) > 1e-4)
+  std::cout << "pmf(0): " << std::fixed << dist(0) << std::endl << std::endl;
+  if (fabs(dist(0) - 0.3) > 1e-4)
     return 1;
 
-  std::cout << "logpdf(0.1): " << std::fixed << dist.logpdf(0.1) << std::endl
-    << std::endl;
-
-  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
-    << std::endl << std::endl;
+  std::cout << "pmf(1): " << std::fixed << dist(1) << std::endl << std::endl;
+  if (fabs(dist(1) - 0.7) > 1e-4)
+    return 1;
 
   try {
-    f64Alpha = 0.0;
-    dist.setAlpha(f64Alpha);
+    std::cout << "dist.setSuccessProbability(1.2)" << std::endl;
+    dist.setSuccessProbability(1.2);
   }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
+  catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
 
   try {
-    std::cout << "pdf(1.2): " << std::fixed << dist(1.2) << std::endl;
+    std::cout << "pmf(2)" << dist(2) << std::endl;
   }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
+  catch (BadArgumentException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
+
+  std::cout << std::endl;
+
+  std::cout << "dist.getSample(): " << dist.getSample() << std::endl
+    << std::endl;
 
   return 0;
 }

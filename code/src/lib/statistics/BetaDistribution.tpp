@@ -16,9 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/LogBetaFunction.h"
-#include "statistics/Randomizer.h"
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/

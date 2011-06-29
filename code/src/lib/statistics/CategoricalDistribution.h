@@ -24,67 +24,45 @@
 #ifndef CATEGORICALDISTRIBUTION_H
 #define CATEGORICALDISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
-#include "exceptions/InvalidOperationException.h"
-
-#include <Eigen/Core>
-
-#include <iosfwd>
-
-#include <stdint.h>
+#include "statistics/DiscreteDistribution.h"
+#include "statistics/SampleDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The CategoricalDistribution class represents a categorical distribution,
     i.e., the discrete distribution of a random event that can take one out of K
-    values
+    values.
     \brief Categorical distribution
   */
-class CategoricalDistribution {
-  friend std::ostream& operator << (std::ostream& stream, const CategoricalDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream, CategoricalDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream, const CategoricalDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream, CategoricalDistribution& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Events probabilities
-  Eigen::VectorXd mEventProbabilitiesVector;
-  /** @}
-    */
-
+template <size_t M> class CategoricalDistribution:
+  public DiscreteDistribution<size_t, M>,
+  public SampleDistribution<Eigen::Matrix<size_t, M, 1> >,
+  public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameters
-  CategoricalDistribution(const Eigen::VectorXd& eventProbabilitiesVector);
+  CategoricalDistribution(const Eigen::Matrix<double, M, 1>&
+    successProbabilities = Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
   /// Copy constructor
   CategoricalDistribution(const CategoricalDistribution& other);
   //// Assignment operator
   CategoricalDistribution& operator = (const CategoricalDistribution& other);
   /// Destructor
-  ~CategoricalDistribution();
+  virtual ~CategoricalDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the event probabilities
-  void setEventProbabilities(const Eigen::VectorXd& eventProbabilitiesVector)
-    throw (OutOfBoundException);
-  /// Returns the event probabilities
-  const Eigen::VectorXd& getEventProbabilities() const;
+  /// Sets the success probabilities
+  void setSuccessProbabilities(const Eigen::Matrix<double, M, 1>&
+    successProbabilities) throw
+    (BadArgumentException<Eigen::Matrix<double, M, 1> >);
+  /// Returns the success probabilities
+  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
   /** @}
     */
 
@@ -92,15 +70,35 @@ public:
     @{
     */
   /// Returns the probability mass function at a point
-  double pmf(uint32_t u32Event) const throw (OutOfBoundException);
-  /// Returns the log-probability mass function at a point
-  double logpmf(uint32_t u32Event) const throw (InvalidOperationException);
-  /// Returns a sample from the distribution
-  uint32_t sample() const;
+  virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const
+    throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);
+  /// Access a sample drawn from the distribution
+  virtual Eigen::Matrix<size_t, M, 1> getSample() const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Success probabilities
+  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  /** @}
+    */
 
 };
 

@@ -16,34 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/BinomialDistribution.h"
-
-#include "functions/LogBinomialFunction.h"
-#include "statistics/Randomizer.h"
-
-#include <iostream>
-#include <fstream>
-
-#include <cmath>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BinomialDistribution::BinomialDistribution(uint32_t u32TrialsNbr, double f64P) {
-  setP(f64P);
-  setTrialsNbr(u32TrialsNbr);
+BinomialDistribution::BinomialDistribution(size_t numTrials, double
+  successProbability) :
+  MultinomialDistribution<2>(numTrials) {
+  Eigen::Matrix<double, 2, 1> successProbabilities;
+  successProbabilities(0) = successProbability;
+  successProbabilities(1) = 1.0 - successProbability;
+  MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
 }
 
 BinomialDistribution::BinomialDistribution(const BinomialDistribution& other) :
-  mf64P(other.mf64P),
-  mu32TrialsNbr(other.mu32TrialsNbr) {
+  MultinomialDistribution<2>(other) {
 }
 
 BinomialDistribution& BinomialDistribution::operator =
   (const BinomialDistribution& other) {
-  mf64P = other.mf64P;
-  mu32TrialsNbr = other.mu32TrialsNbr;
+  this->MultinomialDistribution<2>::operator=(other);
   return *this;
 }
 
@@ -58,8 +50,9 @@ void BinomialDistribution::read(std::istream& stream) {
 }
 
 void BinomialDistribution::write(std::ostream& stream) const {
-  stream << "mf64P: " << mf64P << std::endl
-    << "mu32TrialsNbr: " << mu32TrialsNbr;
+  stream << "success probability: "
+    << mSuccessProbabilities(0) << std::endl
+    << "trials number: " << mNumTrials;
 }
 
 void BinomialDistribution::read(std::ifstream& stream) {
@@ -68,77 +61,17 @@ void BinomialDistribution::read(std::ifstream& stream) {
 void BinomialDistribution::write(std::ofstream& stream) const {
 }
 
-std::ostream& operator << (std::ostream& stream,
-  const BinomialDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, BinomialDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream,
-  const BinomialDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream, BinomialDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BinomialDistribution::setP(double f64P) throw (OutOfBoundException) {
-  if (f64P < 0.0 || f64P > 1.0)
-    throw OutOfBoundException("BinomialDistribution::setP(): f64P must be between 0 and 1");
-  mf64P = f64P;
+void BinomialDistribution::setSuccessProbability(double successProbability) {
+  Eigen::Matrix<double, 2, 1> successProbabilities;
+  successProbabilities(0) = successProbability;
+  successProbabilities(1) = 1.0 - successProbability;
+  MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
 }
 
-double BinomialDistribution::getP() const {
-  return mf64P;
-}
-
-void BinomialDistribution::setTrialsNbr(uint32_t u32TrialsNbr)
-  throw (OutOfBoundException) {
-  if (u32TrialsNbr == 0)
-    throw OutOfBoundException("BinomialDistribution::setTrialsNbr(): u32TrialsNbr must be larger than 0");
-  mu32TrialsNbr = u32TrialsNbr;
-}
-
-uint32_t BinomialDistribution::getTrialsNbr() const {
-  return mu32TrialsNbr;
-}
-
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
-double BinomialDistribution::pmf(uint32_t u32SuccNbr) const {
-  return exp(logpmf(u32SuccNbr));
-}
-
-double BinomialDistribution::logpmf(uint32_t u32SuccNbr) const
-  throw (OutOfBoundException) {
-  if (u32SuccNbr > mu32TrialsNbr)
-    throw OutOfBoundException("BinomialDistribution::logpmf(): u32SuccNbr must be smaller than u32TrialsNbr");
-  LogBinomialFunction logBinomialFunction;
-  Eigen::Matrix<size_t, 2, 1> argument;
-  argument << mu32TrialsNbr, u32SuccNbr;
-  return logBinomialFunction(argument) + u32SuccNbr *
-    log(mf64P) + (mu32TrialsNbr - u32SuccNbr) * log(1 - mf64P);
-}
-
-uint32_t BinomialDistribution::sample() const {
-  static Randomizer randomizer;
-  uint32_t u32SuccNbr = 0;
-  for (uint32_t i = 0; i < mu32TrialsNbr; i++)
-    if (randomizer.sampleBernoulli(mf64P) == true)
-      u32SuccNbr++;
-  return u32SuccNbr;
+double BinomialDistribution::getSuccessProbability() const {
+  return mSuccessProbabilities(0);
 }
