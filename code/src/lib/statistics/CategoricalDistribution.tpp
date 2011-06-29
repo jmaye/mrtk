@@ -107,7 +107,6 @@ template <size_t M>
 Eigen::Matrix<size_t, M, 1> CategoricalDistribution<M>::getSample() const {
   static Randomizer randomizer;
   Eigen::Matrix<size_t, M, 1> sample = Eigen::Matrix<size_t, M, 1>::Zero();
-  std::cout << randomizer.sampleCategorical(mSuccessProbabilities) << std::endl;
   sample[randomizer.sampleCategorical(mSuccessProbabilities)]++;
   return sample;
 }

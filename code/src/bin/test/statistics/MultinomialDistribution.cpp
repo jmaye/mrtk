@@ -74,8 +74,8 @@ int main(int argc, char** argv) {
   std::cout << "logpmf(2): " << std::fixed << dist1.logpmf(2) << std::endl
     << std::endl;
 
-  //std::cout << "dist1.getSample(): " << std::endl << dist1.getSample()
-    //<< std::endl << std::endl;
+  std::cout << "dist1.getSample(): " << std::endl << dist1.getSample()
+    << std::endl << std::endl;
 
   try {
     value1(0) = 2;
@@ -161,8 +161,8 @@ int main(int argc, char** argv) {
   std::cout << "logpmf(0, 4): " << std::fixed << dist2.logpmf(value1)
     << std::endl << std::endl;
 
-  //std::cout << "dist2.getSample(): " << std::endl << dist2.getSample()
-    //<< std::endl << std::endl;
+  std::cout << "dist2.getSample(): " << std::endl << dist2.getSample()
+    << std::endl << std::endl;
 
   return 0;
 }

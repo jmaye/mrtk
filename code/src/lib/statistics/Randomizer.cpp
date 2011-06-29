@@ -180,7 +180,7 @@ uint32_t Randomizer::sampleCategorical(const Eigen::VectorXd&
     Eigen::VectorXd::Zero(eventProbabilitiesVector.rows() + 1);
   double f64Sum = 0.0;
   for (uint32_t i = 1; i < (uint32_t)eventProbabilitiesVector.rows() + 1; i++) {
-    f64Sum += eventProbabilitiesVector(i);
+    f64Sum += eventProbabilitiesVector(i-1);
     cumProbVector(i) += f64Sum;
   }
   double f64U = sampleUniform();

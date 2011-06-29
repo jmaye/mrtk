@@ -52,8 +52,8 @@ int main(int argc, char** argv) {
   std::cout << "logpmf(2): " << std::fixed << dist.logpmf(2) << std::endl
     << std::endl;
 
-  //std::cout << "dist.getSample(): " << std::endl << dist.getSample()
-    //<< std::endl << std::endl;
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
 
   return 0;
 }
