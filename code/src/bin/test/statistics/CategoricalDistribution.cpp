@@ -24,43 +24,51 @@
 
 int main(int argc, char** argv) {
   CategoricalDistribution<2> dist;
-//  BernoulliDistribution dist;
-//  std::cout << "Distribution default parameters: " << std::endl << dist
-//    << std::endl << std::endl;
-//  std::cout << "dist.getSuccessProbability(): " << dist.getSuccessProbability()
-//    << std::endl << std::endl;
-//  std::cout << "dist.setSuccessProbability(0.7)" << std::endl << std::endl;
-//  dist.setSuccessProbability(0.7);
-//  std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
-//    << std::endl;
+  std::cout << "Distribution default parameters: " << std::endl << dist
+    << std::endl << std::endl;
+  std::cout << "dist.getSuccessProbabilities(): " << std::endl
+    << dist.getSuccessProbabilities() << std::endl << std::endl;
+  std::cout << "dist.setSuccessProbability(0.7, 0.3)" << std::endl << std::endl;
+  dist.setSuccessProbabilities(Eigen::Vector2d(0.7, 0.3));
+  std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
+    << std::endl;
 
-//  std::cout << "pmf(0): " << std::fixed << dist(0) << std::endl << std::endl;
-//  if (fabs(dist(0) - 0.3) > 1e-4)
-//    return 1;
+  Eigen::Matrix<size_t, 2, 1> value;
+  value(0) = 1;
+  value(1) = 0;
+  std::cout << "pmf(1, 0): " << std::fixed << dist(value) << std::endl
+    << std::endl;
+  if (fabs(dist(value) - 0.7) > 1e-4)
+    return 1;
 
-//  std::cout << "pmf(1): " << std::fixed << dist(1) << std::endl << std::endl;
-//  if (fabs(dist(1) - 0.7) > 1e-4)
-//    return 1;
+  value(0) = 0;
+  value(1) = 1;
+  std::cout << "pmf(0, 1): " << std::fixed << dist(value) << std::endl
+    << std::endl;
+  if (fabs(dist(value) - 0.3) > 1e-4)
+    return 1;
 
-//  try {
-//    std::cout << "dist.setSuccessProbability(1.2)" << std::endl;
-//    dist.setSuccessProbability(1.2);
-//  }
-//  catch (BadArgumentException<double>& e) {
-//    std::cout << e.what() << std::endl;
-//  }
+  try {
+    std::cout << "dist.setSuccessProbabilities(0.8, 0.9)" << std::endl;
+    dist.setSuccessProbabilities(Eigen::Vector2d(0.8, 0.9));
+  }
+  catch (BadArgumentException<Eigen::Vector2d>& e) {
+    std::cout << e.what() << std::endl;
+  }
 
-//  try {
-//    std::cout << "pmf(2)" << dist(2) << std::endl;
-//  }
-//  catch (BadArgumentException<size_t>& e) {
-//    std::cout << e.what() << std::endl;
-//  }
+  value(0) = 3;
+  value(1) = 4;
+  try {
+    std::cout << "pmf(3, 4)" << dist(value) << std::endl;
+  }
+  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
 
-//  std::cout << std::endl;
+  std::cout << std::endl;
 
-//  std::cout << "dist.getSample(): " << dist.getSample() << std::endl
-//    << std::endl;
+  std::cout << "dist.getSample(): " << std::endl
+    << dist.getSample() << std::endl << std::endl;
 
   return 0;
 }

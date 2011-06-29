@@ -18,6 +18,8 @@
 
 #include "statistics/Randomizer.h"
 
+#include <Eigen/Array>
+
 #include <limits>
 
 /******************************************************************************/
@@ -95,13 +97,17 @@ double CategoricalDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
   const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != 1)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "CategoricalDistribution::pmf(): value must have a 1-K encoding");
-  return mSuccessProbabilities.cwise() * value;
+  double f64Sum = 0;
+  for (size_t i = 0; i < M; i++)
+    f64Sum += mSuccessProbabilities(i) * value(i);
+  return f64Sum;
 }
 
 template <size_t M>
 Eigen::Matrix<size_t, M, 1> CategoricalDistribution<M>::getSample() const {
   static Randomizer randomizer;
-  Eigen::Matrix<size_t, M, 1> sample = Eigen::Matrix<size_t, M, 1>::Zeros;
+  Eigen::Matrix<size_t, M, 1> sample = Eigen::Matrix<size_t, M, 1>::Zero();
+  std::cout << randomizer.sampleCategorical(mSuccessProbabilities) << std::endl;
   sample[randomizer.sampleCategorical(mSuccessProbabilities)]++;
   return sample;
 }
