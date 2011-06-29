@@ -33,9 +33,17 @@ int main(int argc, char** argv) {
   value(0) = 0.9;
   value(1) = 0.1;
   std::cout << "pdf(0.9, 0.1): " << std::fixed << dist(value) << std::endl;
+  if (fabs(dist(value) - 0.1361) > 1e-4)
+    return 1;
+
   value(0) = 0.1;
   value(1) = 0.9;
   std::cout << "pdf(0.1, 0.9): " << std::fixed << dist(value) << std::endl;
+  if (fabs(dist(value) - 0.7896) > 1e-4)
+    return 1;
+
+  std::cout << "pdf(0.1): " << std::fixed << dist(0.1) << std::endl;
+  std::cout << "pdf(0.9): " << std::fixed << dist(0.9) << std::endl;
 
   try {
     alpha(0) = 0.0;

@@ -27,7 +27,7 @@
 #include "functions/DiscreteFunction.h"
 #include "exceptions/BadArgumentException.h"
 
-/** The LogBinomialFunction class represents the binomial function
+/** The LogBinomialFunction class represents the binomial function.
     \brief Binomial function
   */
 class LogBinomialFunction :
@@ -56,6 +56,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function value for the given argument
   virtual double getValue(const Eigen::Matrix<size_t, 2, 1>& argument) const
     throw (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >);
   /** @}

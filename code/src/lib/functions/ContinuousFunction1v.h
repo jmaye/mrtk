@@ -26,11 +26,12 @@
 
 #include "functions/Function.h"
 
+template <typename Y, typename X, size_t M = 1> class ContinuousFunction;
+
 /** The ContinuousFunction1v class represents an interface to the univariate
-    continuous functions
+    continuous functions.
     \brief Univariate continuous function
   */
-template <typename Y, typename X, size_t M = 1> class ContinuousFunction;
 template <typename Y, typename X> class ContinuousFunction<Y, X> :
   public virtual Function<Y, X> {
   /** \name Private constructors

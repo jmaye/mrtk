@@ -26,7 +26,7 @@
 
 #include "functions/ContinuousFunction.h"
 
-/** The BetaFunction class represents the beta function
+/** The BetaFunction class represents the beta function.
     \brief Beta function
   */
 template <typename X, size_t M> class BetaFunction :

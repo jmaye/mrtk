@@ -23,13 +23,11 @@
 #ifndef FUNCTIONPLOT_H
 #define FUNCTIONPLOT_H
 
-#include "functions/Function.h"
-
 #include <Eigen/Core>
 
 #include <string>
 
-/** The FunctionPlot class is an interface for plotting any kind of functions
+/** The FunctionPlot class is an interface for plotting any kind of functions.
     \brief Function plotting interface
   */
 template <typename Y, typename X, size_t M> class FunctionPlot {
@@ -38,8 +36,8 @@ public:
     @{
     */
   /// Constructs plot from parameters
-  FunctionPlot(const std::string& title, const Function<Y, X>& function, const
-    Eigen::Matrix<X, M, 1>& minimum, const Eigen::Matrix<X, M, 1>& maximum);
+  FunctionPlot(const std::string& title, const Eigen::Matrix<X, M, 1>& minimum,
+    const Eigen::Matrix<X, M, 1>& maximum);
   /// Copy constructor
   FunctionPlot(const FunctionPlot<Y, X, M>& other);
   /// Assignment operator
@@ -68,9 +66,17 @@ public:
     */
 
 protected:
+  /** \name Protected members
+    @{
+    */
+  /// Title of the graph
   std::string mTitle;
+  /// Minimum value on the x-axis
   Eigen::Matrix<X, M, 1> mMinimum;
+  /// Maximum value on the x-axis
   Eigen::Matrix<X, M, 1> mMaximum;
+  /** @}
+    */
 
 };
 

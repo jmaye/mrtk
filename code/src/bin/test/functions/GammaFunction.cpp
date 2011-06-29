@@ -27,35 +27,35 @@
 #include <limits>
 
 int main(int argc, char** argv) {
-  GammaFunction<size_t> g_1;
+  GammaFunction<size_t> G_1;
 
-  std::cout << "g_1(1): " << g_1(1) << std::endl;
-  if (g_1(1) != 1)
+  std::cout << "G_1(1): " << G_1(1) << std::endl;
+  if (G_1(1) != 1)
     return 1;
 
-  std::cout << "g_1(2): " << g_1(2) << std::endl;
-  if (g_1(2) != 1)
+  std::cout << "G_1(2): " << G_1(2) << std::endl;
+  if (G_1(2) != 1)
     return 1;
 
   try {
-    std::cout << "g_1(0): " << g_1(0) << std::endl;
+    std::cout << "G_1(0): " << G_1(0) << std::endl;
   }
   catch (BadArgumentException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
 
   FactorialFunction f;
-  if (g_1(10) != f(9))
+  if (G_1(10) != f(9))
     return 1;
 
-  GammaFunction<double> g_2;
+  GammaFunction<double> G_2;
 
-  std::cout << "g_2(0.5): " << g_2(0.5) << std::endl;
-  if (fabs(g_2(0.5) - sqrt(M_PI)) > std::numeric_limits<double>::epsilon())
+  std::cout << "G_2(0.5): " << G_2(0.5) << std::endl;
+  if (fabs(G_2(0.5) - sqrt(M_PI)) > std::numeric_limits<double>::epsilon())
     return 1;
 
-  std::cout << "g_2(1.0): " << g_2(1.0) << std::endl;
-  if (fabs(g_2(1.0) - 1.0) > std::numeric_limits<double>::epsilon())
+  std::cout << "G_2(1.0): " << G_2(1.0) << std::endl;
+  if (fabs(G_2(1.0) - 1.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   return 0;

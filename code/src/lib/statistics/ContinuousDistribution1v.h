@@ -27,11 +27,12 @@
 #include "functions/ContinuousFunction.h"
 #include "statistics/Distribution.h"
 
+template <typename X, size_t M = 1> class ContinuousDistribution;
+
 /** The ContinuousDistribution1v class represents an interface to the univariate
-    continuous distributions
+    continuous distributions.
     \brief Univariate continuous distribution
   */
-template <typename X, size_t M = 1> class ContinuousDistribution;
 template <typename X> class ContinuousDistribution<X> :
   public ContinuousFunction<double, X>,
   public virtual Distribution<X> {
@@ -49,6 +50,7 @@ public:
   /** \name Types
     @{
     */
+  /// Distribution type
   typedef ContinuousDistribution<X> DistributionType;
   /** @}
     */

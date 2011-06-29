@@ -28,7 +28,7 @@
 #include "statistics/Distribution.h"
 
 /** The ContinuousDistributionMv class represents an interface to the
-    multivariate continuous distributions
+    multivariate continuous distributions.
     \brief Multivariate continuous distribution
   */
 template <typename X, size_t M> class ContinuousDistribution :
@@ -49,6 +49,7 @@ public:
   /** \name Types
     @{
     */
+  /// Distribution type
   typedef ContinuousDistribution<X, M> DistributionType;
   /** @}
     */

@@ -26,7 +26,7 @@
 
 #include "functions/ContinuousFunction.h"
 
-/** The ExpFunction class represents the exponential function
+/** The ExpFunction class represents the exponential function.
     \brief Exponential function
   */
 template <typename X = double> class ExpFunction :

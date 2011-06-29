@@ -24,6 +24,7 @@
 #ifndef CONTINUOUSFUNCTIONPLOT1D_H
 #define CONTINUOUSFUNCTIONPLOT1D_H
 
+#include "functions/Function.h"
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
 
@@ -32,11 +33,12 @@
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
 
+template <typename Y, typename X, size_t M = 1> class ContinuousFunctionPlot;
+
 /** The ContinuousFunctionPlot1d class is a plotting tool for 1-dimensional
-    continuous functions
+    continuous functions.
     \brief 1-d continuous function plotting tool
   */
-template <typename Y, typename X, size_t M = 1> class ContinuousFunctionPlot;
 template <typename Y, typename X> class ContinuousFunctionPlot<Y, X> :
   public FunctionPlot<Y, X, 1>,
   public QWidget {
@@ -62,15 +64,29 @@ public:
   /** \name Accessors
     @{
     */
+  /// Sets the plot's resolution
+  void setResolution(const X& resolution);
+  /// Returns the plot's resolution
+  const X& getResolution() const;
   /** @}
     */
 
 protected:
-  QwtPlot* mpPlot;
-  QwtPlotCurve* mpCurve;
+  /** \name Protected members
+    @{
+    */
+  /// Plot object
+  QwtPlot mPlot;
+  /// Curve plotted
+  QwtPlotCurve mCurve;
+  /// Data on the x-axis
   QVector<X> mXData;
+  /// Data on the y-axis
   QVector<Y> mYData;
+  /// Resolution on the x-axis
   X mResolution;
+  /** @}
+    */
 
 };
 

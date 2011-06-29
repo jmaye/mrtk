@@ -27,8 +27,8 @@
 #include "exceptions/BadArgumentException.h"
 #include "functions/ContinuousFunction.h"
 
-/** The LogFunction class represents the exponential function
-    \brief Exponential function
+/** The LogFunction class represents the log function.
+    \brief Log function
   */
 template <typename X = double> class LogFunction :
   public ContinuousFunction<double, X> {

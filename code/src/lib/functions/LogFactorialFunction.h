@@ -26,7 +26,7 @@
 
 #include "functions/DiscreteFunction.h"
 
-/** The LogFactorialFunction class represents the log-factorial function
+/** The LogFactorialFunction class represents the log-factorial function.
     \brief Log-factorial function
   */
 class LogFactorialFunction :

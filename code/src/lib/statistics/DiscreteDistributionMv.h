@@ -28,7 +28,7 @@
 #include "statistics/Distribution.h"
 
 /** The DiscreteDistributionMv class represents an interface to the
-    multivariate discrete distributions
+    multivariate discrete distributions.
     \brief Multivariate discrete distribution
   */
 template <typename X, size_t M> class DiscreteDistribution :
@@ -48,6 +48,7 @@ public:
   /** \name Types
     @{
     */
+  /// Distribution type
   typedef DiscreteDistribution<X, M> DistributionType;
   /** @}
     */

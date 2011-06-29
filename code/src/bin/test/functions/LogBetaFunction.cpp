@@ -25,41 +25,43 @@
 #include <iostream>
 
 int main(int argc, char** argv) {
-  LogBetaFunction<size_t, 2> b_1;
+  LogBetaFunction<size_t, 2> lB_1;
 
   Eigen::Matrix<size_t, 2, 1> argument1;
 
   argument1(0) = 1;
   argument1(1) = 1;
-  std::cout << "b_1(1, 1): " << std::fixed << b_1(argument1) << std::endl;
-  if (fabs(b_1(argument1) -  0.0) > std::numeric_limits<double>::epsilon())
+  std::cout << "lB_1(1, 1): " << std::fixed << lB_1(argument1) << std::endl;
+  if (fabs(lB_1(argument1) -  0.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   argument1(0) = 1;
   argument1(1) = 2;
-  std::cout << "b_1(1, 2): " << std::fixed << b_1(argument1) << std::endl;
-  if (fabs(b_1(argument1) -  log(0.5)) > std::numeric_limits<double>::epsilon())
+  std::cout << "lB_1(1, 2): " << std::fixed << lB_1(argument1) << std::endl;
+  if (fabs(lB_1(argument1) -  log(0.5)) >
+    std::numeric_limits<double>::epsilon())
     return 1;
 
   argument1(0) = 2;
   argument1(1) = 2;
-  std::cout << "b_1(2, 2): " << b_1(argument1) << std::endl;
-  if (fabs(b_1(argument1) -  log(1.0 / 6.0)) >
+  std::cout << "lB_1(2, 2): " << lB_1(argument1) << std::endl;
+  if (fabs(lB_1(argument1) -  log(1.0 / 6.0)) >
     std::numeric_limits<double>::epsilon())
     return 1;
 
-  LogBetaFunction<double, 2> b_2;
+  LogBetaFunction<double, 2> lB_2;
 
   Eigen::Matrix<double, 2, 1> argument2;
 
   argument2(0) = 0.5;
   argument2(1) = 0.5;
-  std::cout << "b_2(0.5, 0.5): " << std::fixed << b_2(argument2) << std::endl;
-  if (fabs(b_2(argument2) -  log(M_PI)) > 1e-6)
+  std::cout << "lB_2(0.5, 0.5): " << std::fixed << lB_2(argument2) << std::endl;
+  if (fabs(lB_2(argument2) -  log(M_PI)) > 1e-6)
     return 1;
   argument2(0) = 0.4;
   argument2(1) = -0.6;
-  std::cout << "b_2(0.4, -0.6): " << std::fixed << b_2(argument2) << std::endl;
+  std::cout << "lB_2(0.4, -0.6): " << std::fixed << lB_2(argument2)
+    << std::endl;
 
   return 0;
 }

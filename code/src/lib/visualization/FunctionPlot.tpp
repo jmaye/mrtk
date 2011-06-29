@@ -22,8 +22,7 @@
 
 template <typename Y, typename X, size_t M>
 FunctionPlot<Y, X, M>::FunctionPlot(const std::string& title, const
-  Function<Y, X>& function, const Eigen::Matrix<X, M, 1>& minimum, const
-  Eigen::Matrix<X, M, 1>& maximum) :
+  Eigen::Matrix<X, M, 1>& minimum, const Eigen::Matrix<X, M, 1>& maximum) :
   mTitle(title),
   mMinimum(minimum),
   mMaximum(maximum) {

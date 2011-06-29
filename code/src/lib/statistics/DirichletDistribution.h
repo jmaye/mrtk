@@ -31,15 +31,36 @@
 
 /** The DirichletDistribution class represents a Dirichlet distribution,
     i.e., a continuous distribution that is a conjugate prior to the multinomial
-    or categorical distribution
+    or categorical distribution.
     \brief Dirichlet distribution
   */
 template <size_t M> class DirichletDistribution :
   public ContinuousDistribution<double, M>,
+  public ContinuousDistribution<double, M - 1>,
   public SampleDistribution<Eigen::Matrix<double, M, 1> >,
   public virtual Serializable {
 
 public:
+  /** \name Traits
+    @{
+    */
+  /// Support for the N - 1 simplex
+  template <size_t N, size_t D = 0> struct Traits {
+  public:
+    /// Access the probability density function at the given value
+    static double pdf(const DirichletDistribution<N>& distribution,
+      const Eigen::Matrix<double, N - 1, 1>& value);
+  };
+  /// Support for N = 2
+  template <size_t D> struct Traits<2, D> {
+  public:
+    /// Access the probability density function at the given value
+    static double pdf(const DirichletDistribution<2>& distribution,
+      const double& value);
+  };
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
@@ -58,15 +79,18 @@ public:
   /** \name Accessors
     @{
     */
-  /// Sets the number of successes
+  /// Sets the alpha parameter
   void setAlpha(const Eigen::Matrix<double, M, 1>& alpha)
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
-  /// Returns the number of successes
+  /// Returns the alpha parameter
   const Eigen::Matrix<double, M, 1>& getAlpha() const;
   /// Returns the normalizer
   double getNormalizer() const;
   /// Access the probability density function at the given value
   virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
+  /// Access the probability density function at the given value
+  virtual double pdf(const typename
+    ContinuousDistribution<double, M - 1>::Domain& value) const;
   /// Access the log-probablity density function at the given value
   double logpdf(const Eigen::Matrix<double, M, 1>& value) const
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
@@ -75,13 +99,20 @@ public:
   /** @}
     */
 
+  using ContinuousDistribution<double, M>::operator();
+  using ContinuousDistribution<double, M - 1>::operator();
+
 protected:
   /** \name Stream methods
     @{
     */
+  /// Reads from standard input
   virtual void read(std::istream& stream);
+  /// Writes to standard output
   virtual void write(std::ostream& stream) const;
+  /// Reads from a file
   virtual void read(std::ifstream& stream);
+  /// Writes to a file
   virtual void write(std::ofstream& stream) const;
   /** @}
     */

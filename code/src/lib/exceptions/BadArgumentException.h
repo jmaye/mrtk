@@ -28,7 +28,7 @@
 #include <string>
 
 /** The class BadArgumentException represents any
-    exceptions occuring when the arguments passed to a function are invalid
+    exceptions occuring when the arguments passed to a function are invalid.
     \brief Bad argument exception
   */
 template <typename X> class BadArgumentException :
@@ -57,7 +57,9 @@ public:
     */
 
 protected:
+  /// Message in the exception
   std::string mMsg;
+  /// Argument that causes the exception
   X mArg;
 
 };

@@ -30,7 +30,7 @@
 #include <Eigen/Core>
 
 /** The DiscreteFunctionMv class is an interface to the multivariate discrete
-    functions
+    functions.
     \brief Multivariate discrete function
   */
 template <typename Y, typename X, size_t M> class DiscreteFunction :

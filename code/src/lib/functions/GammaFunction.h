@@ -28,8 +28,8 @@
 #include "functions/FactorialFunction.h"
 #include "exceptions/BadArgumentException.h"
 
-/** The GammaFunction class represents the gamma function
-    \brief Gamma function
+/** The GammaFunction class represents the gamma function for real numbers.
+    \brief Gamma function for real numbers
   */
 template <typename X = size_t> class GammaFunction :
   public ContinuousFunction<double, X> {
@@ -57,6 +57,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function value for the given argument
   virtual double getValue(const X& argument) const;
   /** @}
     */
@@ -65,6 +66,9 @@ protected:
 
 };
 
+/** The GammaFunction class represents the gamma function for integer numbers.
+    \brief Gamma function for integer numbers
+  */
 template <> class GammaFunction<size_t> :
   public FactorialFunction {
   /** \name Private constructors
@@ -91,6 +95,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function value for the given argument
   virtual size_t getValue(const size_t& argument) const
     throw (BadArgumentException<size_t>);
   /** @}

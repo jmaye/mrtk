@@ -27,7 +27,7 @@
 #include <iostream>
 #include <fstream>
 
-/** The class Serializable is an interface to serializable types
+/** The class Serializable is an interface to serializable types.
     \brief Serializable class
   */
 class Serializable {
@@ -57,9 +57,13 @@ protected:
   /** \name Stream methods
     @{
     */
+  /// Reads from standard input
   virtual void read(std::istream& stream) = 0;
+  /// Writes to standard output
   virtual void write(std::ostream& stream) const = 0;
+  /// Reads from a file
   virtual void read(std::ifstream& stream) = 0;
+  /// Writes to a file
   virtual void write(std::ofstream& stream) const = 0;
   /** @}
     */

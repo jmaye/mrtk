@@ -29,7 +29,7 @@
 
 namespace Eigen {
 
-/** The NumTraits<size_t> structure defines support for size_t type in Eigen
+/** The NumTraits<size_t> structure defines support for size_t type in Eigen.
     \brief Eigen support for size_t
   */
 template<> struct NumTraits<size_t> {

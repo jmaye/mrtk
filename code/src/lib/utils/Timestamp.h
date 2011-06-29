@@ -24,7 +24,7 @@
 #ifndef TIMESTAMP_H
 #define TIMESTAMP_H
 
-/** The class Timestamp implements timestamping facilities
+/** The class Timestamp implements timestamping facilities.
     \brief Timestamping facilities
   */
 class Timestamp {

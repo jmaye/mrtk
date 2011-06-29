@@ -29,7 +29,7 @@
 #include <Eigen/Core>
 
 /** The class ContinuousFunctionMv is an interface to the multivariate
-    continuous functions
+    continuous functions.
     \brief Multivariate continuous function
   */
 template <typename Y, typename X, size_t M> class ContinuousFunction :

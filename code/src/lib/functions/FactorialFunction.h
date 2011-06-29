@@ -26,7 +26,7 @@
 
 #include "functions/DiscreteFunction.h"
 
-/** The FactorialFunction class represents the factorial function
+/** The FactorialFunction class represents the factorial function.
     \brief Factorial function
   */
 class FactorialFunction :

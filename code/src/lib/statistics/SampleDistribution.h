@@ -16,11 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousDistribution.h
+/** \file SampleDistribution.h
     \brief This file defines the class SampleDistribution, which represents an
            interface to sample distributions
   */
-
 
 #ifndef SAMPLEDISTRIBUTION_H
 #define SAMPLEDISTRIBUTION_H

@@ -26,35 +26,36 @@
 #include <limits>
 
 int main(int argc, char** argv) {
-  LogGammaFunction<size_t> g_1;
+  LogGammaFunction<size_t> lG_1;
 
-  std::cout << "g_1(1): " << g_1(1) << std::endl;
-  if (fabs(g_1(1) - 0.0) > std::numeric_limits<double>::epsilon())
+  std::cout << "lG_1(1): " << lG_1(1) << std::endl;
+  if (fabs(lG_1(1) - 0.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
-  std::cout << "g_1(2): " << g_1(2) << std::endl;
-  if (fabs(g_1(2) - 0.0) > std::numeric_limits<double>::epsilon())
+  std::cout << "lG_1(2): " << lG_1(2) << std::endl;
+  if (fabs(lG_1(2) - 0.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   try {
-    std::cout << "g_1(0): " << g_1(0) << std::endl;
+    std::cout << "lG_1(0): " << lG_1(0) << std::endl;
   }
   catch (BadArgumentException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
 
   LogFactorialFunction f;
-  if (g_1(10) != f(9))
+  if (lG_1(10) != f(9))
     return 1;
 
-  LogGammaFunction<double> g_2;
+  LogGammaFunction<double> lG_2;
 
-  std::cout << "g_2(0.5): " << g_2(0.5) << std::endl;
-  if (fabs(g_2(0.5) - log(sqrt(M_PI))) > std::numeric_limits<double>::epsilon())
+  std::cout << "lG_2(0.5): " << lG_2(0.5) << std::endl;
+  if (fabs(lG_2(0.5) - log(sqrt(M_PI))) >
+    std::numeric_limits<double>::epsilon())
     return 1;
 
-  std::cout << "g_2(1.0): " << g_2(1.0) << std::endl;
-  if (fabs(g_2(1.0) - 0.0) > std::numeric_limits<double>::epsilon())
+  std::cout << "lG_2(1.0): " << lG_2(1.0) << std::endl;
+  if (fabs(lG_2(1.0) - 0.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   return 0;

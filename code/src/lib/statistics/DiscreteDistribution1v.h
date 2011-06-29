@@ -27,11 +27,12 @@
 #include "functions/DiscreteFunction.h"
 #include "statistics/Distribution.h"
 
+template <typename X, size_t M = 1> class DiscreteDistribution;
+
 /** The DiscreteDistribution1v class represents an interface to the univariate
-    discrete distributions
+    discrete distributions.
     \brief Univariate discrete distribution
   */
-template <typename X, size_t M = 1> class DiscreteDistribution;
 template <typename X> class DiscreteDistribution<X> :
   public DiscreteFunction<double, X>,
   public virtual Distribution<X> {
@@ -49,6 +50,7 @@ public:
   /** \name Types
     @{
     */
+  /// Distribution type
   typedef DiscreteDistribution<X> DistributionType;
   /** @}
     */

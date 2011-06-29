@@ -26,11 +26,12 @@
 
 #include "functions/Function.h"
 
+template <typename Y, typename X, size_t M = 1> class DiscreteFunction;
+
 /** The class DiscreteFunction1v is an interface to the univariate discrete
-    functions
+    functions.
     \brief Univariate discrete function
   */
-template <typename Y, typename X, size_t M = 1> class DiscreteFunction;
 template <typename Y, typename X> class DiscreteFunction<Y, X> :
   public virtual Function<Y, X> {
   /** \name Private constructors

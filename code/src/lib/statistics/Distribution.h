@@ -25,7 +25,7 @@
 
 #include "functions/Function.h"
 
-/** The Distribution class represents an interface to any kind of distributions
+/** The Distribution class represents an interface to any kind of distributions.
     \brief Distribution
   */
 template <typename X> class Distribution :
@@ -44,6 +44,7 @@ public:
   /** \name Types
     @{
     */
+  /// Variable type
   typedef X VariableType;
   /** @}
     */

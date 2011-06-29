@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <QtCore/QString>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -25,7 +27,8 @@ ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const std::string& title,
   const Function<Y, X>& function, const Eigen::Matrix<X, 1, 1>& minimum, const
   Eigen::Matrix<X, 1, 1>& maximum, const X& resolution) throw
   (BadArgumentException<Eigen::Matrix<X, 1, 1> >, BadArgumentException<X>) :
-  FunctionPlot<Y, X, 1>(title, function, minimum, maximum),
+  FunctionPlot<Y, X, 1>(title, minimum, maximum),
+  mPlot(this),
   mResolution(resolution) {
   if (maximum(0) < minimum(0))
     throw BadArgumentException<Eigen::Matrix<X, 1, 1> >(maximum, "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): maximum must be larger than minimum");
@@ -33,7 +36,7 @@ ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const std::string& title,
     throw BadArgumentException<X>(resolution, "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): resolution must be strictly positive");
   if (resolution > maximum(0) - minimum(0))
     throw BadArgumentException<X>(resolution, "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): resolution must be smaller than the range");
-  mpPlot = new QwtPlot(QwtText(title.c_str()), this);
+  mPlot.setTitle(QString(title.c_str()));
   mXData.resize(round((maximum(0) - minimum(0)) / resolution));
   mYData.resize(round((maximum(0) - minimum(0)) / resolution));
   X xValue = minimum(0);
@@ -42,17 +45,20 @@ ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const std::string& title,
     mYData[i] = function(xValue);
     xValue += resolution;
   }
-  mpCurve = new QwtPlotCurve(title.c_str());
-  mpCurve->setData(mXData, mYData);
-  mpCurve->attach(mpPlot);
-  mpPlot->replot();
-  setFixedSize(mpPlot->sizeHint());
+  mCurve.setData(mXData, mYData);
+  mCurve.attach(&mPlot);
+  mPlot.replot();
+  setFixedSize(mPlot.sizeHint());
 }
 
 template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const
   ContinuousFunctionPlot<Y, X>& other) :
   FunctionPlot<Y, X, 1>(other),
+  mPlot(other.mPlot),
+  mCurve(other.mCurve),
+  mXData(other.mXData),
+  mYData(other.mYData),
   mResolution(other.mResolution) {
 }
 
@@ -60,17 +66,28 @@ template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X>& ContinuousFunctionPlot<Y, X>::operator =
   (const ContinuousFunctionPlot<Y, X>& other) {
   this->FunctionPlot<Y, X, 1>::operator=(other);
+  mPlot = other.mPlot;
+  mCurve = other.mCurve;
+  mXData = other.mXData;
+  mYData = other.mYData;
   mResolution = other.mResolution;
   return *this;
 }
 
 template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X>::~ContinuousFunctionPlot() {
-  delete mpCurve;
-  delete mpPlot;
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
+template <typename Y, typename X>
+void ContinuousFunctionPlot<Y, X>::setResolution(const X& resolution) {
+  mResolution = resolution;
+}
+
+template <typename Y, typename X>
+const X& ContinuousFunctionPlot<Y, X>::getResolution() const {
+  return mResolution;
+}

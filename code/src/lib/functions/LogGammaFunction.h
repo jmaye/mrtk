@@ -28,8 +28,9 @@
 #include "functions/LogFactorialFunction.h"
 #include "exceptions/BadArgumentException.h"
 
-/** The LogGammaFunction class represents the gamma function
-    \brief Log-gamma function
+/** The LogGammaFunction class represents the log-gamma function for real
+    numbers.
+    \brief Log-gamma function for real numbers
   */
 template <typename X = size_t> class LogGammaFunction :
   public ContinuousFunction<double, X> {
@@ -57,6 +58,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function value for the given argument
   virtual double getValue(const X& argument) const;
   /** @}
     */
@@ -65,6 +67,10 @@ protected:
 
 };
 
+/** The LogGammaFunction class represents the log-gamma function for integer
+    numbers
+    \brief Log-gamma function for integer numbers
+  */
 template <> class LogGammaFunction<size_t> :
   public LogFactorialFunction {
   /** \name Private constructors
@@ -91,6 +97,7 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the function value for the given argument
   virtual double getValue(const size_t& argument) const
     throw (BadArgumentException<size_t>);
   /** @}
