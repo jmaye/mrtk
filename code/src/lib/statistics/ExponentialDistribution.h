@@ -24,9 +24,10 @@
 #ifndef EXPONENTIALDISTRIBUTION_H
 #define EXPONENTIALDISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
-
-#include <iosfwd>
+#include "statistics/ContinuousDistribution.h"
+#include "statistics/SampleDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The ExponentialDistribution class represents an exponential distribution,
     i.e., a continuous distribution that models the time between events in a
@@ -34,46 +35,22 @@
     events appear at a constant average rate.
     \brief Exponential distribution
   */
-class ExponentialDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const ExponentialDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    ExponentialDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const ExponentialDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    ExponentialDistribution& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Rate
-  double mf64Lambda;
-  /** @}
-    */
-
+class ExponentialDistribution :
+  public ContinuousDistribution<double>,
+  public SampleDistribution<double>,
+  public Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameter
-  ExponentialDistribution(double f64Lambda);
+  ExponentialDistribution(double rate = 1.0);
   /// Copy constructor
   ExponentialDistribution(const ExponentialDistribution& other);
   //// Assignment operator
   ExponentialDistribution& operator = (const ExponentialDistribution& other);
   /// Destructor
-  ~ExponentialDistribution();
+  virtual ~ExponentialDistribution();
   /** @}
     */
 
@@ -81,29 +58,40 @@ public:
     @{
     */
   /// Sets the event rate
-  void setLambda(double f64Lambda) throw (OutOfBoundException);
+  void setRate(double rate) throw (BadArgumentException<double>);
   /// Returns the event rate
-  double getLambda() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Returns the probability density function at a point
-  double pdf(double f64X) const;
-  /// Returns the log-probability density function at a point
-  double logpdf(double f64X) const throw (OutOfBoundException);
-  /// Returns the cumulative density function at a point
-  double cdf(double f64X) const;
-  /// Returns a sample from the distribution
-  double sample() const;
-  /// Returns the KL-divergence with another distribution
-  double KLDivergence(const ExponentialDistribution& other) const;
+  double getRate() const;
+  /// Access the probablity density function at the given value
+  virtual double pdf(const double& value) const;
+  /// Access the log-probablity density function at the given value
+  double logpdf(const double& value) const throw (BadArgumentException<double>);
+  /// Access a sample drawn from the distribution
+  virtual double getSample() const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Rate
+  double mRate;
+  /** @}
+    */
 
 };
 

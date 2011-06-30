@@ -38,7 +38,7 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  BetaDistribution(double f64Alpha = 1.0, double f64Beta = 1.0);
+  BetaDistribution(double alpha = 1.0, double beta = 1.0);
   /// Copy constructor
   BetaDistribution(const BetaDistribution& other);
   //// Assignment operator
@@ -52,11 +52,11 @@ public:
     @{
     */
   /// Sets the number of successes
-  void setAlpha(double f64Alpha);
+  void setAlpha(double alpha);
   /// Returns the number of successes
   double getAlpha() const;
   /// Sets the number of failures
-  void setBeta(double f64Beta);
+  void setBeta(double beta);
   /// Returns the number of failures
   double getBeta() const;
   /** @}

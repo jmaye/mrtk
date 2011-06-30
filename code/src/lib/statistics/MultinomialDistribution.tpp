@@ -126,8 +126,7 @@ template <size_t D>
 double MultinomialDistribution<M>::Traits<2, D>::pmf(const
   MultinomialDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat(0) = value;
-  valueMat(1) = distribution.mNumTrials - value;
+  valueMat << value, distribution.mNumTrials - value;
   return distribution.pmf(valueMat);
 }
 
@@ -146,8 +145,7 @@ template <size_t D>
 double MultinomialDistribution<M>::Traits<2, D>::logpmf(const
   MultinomialDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat(0) = value;
-  valueMat(1) = distribution.mNumTrials - value;
+  valueMat << value, distribution.mNumTrials - value;
   return distribution.logpmf(valueMat);
 }
 

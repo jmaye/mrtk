@@ -16,34 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/GammaDistribution.h"
-
 #include "statistics/Randomizer.h"
-
-#include <iostream>
-#include <fstream>
-
-#include <cmath>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-GammaDistribution::GammaDistribution(double f64K, double f64Theta) {
-  setK(f64K);
-  setTheta(f64Theta);
+GammaDistribution::GammaDistribution(double shape, double scale) {
+  setShape(shape);
+  setScale(scale);
 }
 
-GammaDistribution::GammaDistribution(const
-  GammaDistribution& other) :
-  mf64K(other.mf64K),
-  mf64Theta(other.mf64Theta) {
+GammaDistribution::GammaDistribution(const GammaDistribution& other) :
+  mShape(other.mShape),
+  mScale(other.mScale) {
 }
 
 GammaDistribution& GammaDistribution::operator =
   (const GammaDistribution& other) {
-  mf64K = other.mf64K;
-  mf64Theta = other.mf64Theta;
+  mShape = other.mShape;
+  mScale = other.mScale;
   return *this;
 }
 
@@ -58,8 +50,8 @@ void GammaDistribution::read(std::istream& stream) {
 }
 
 void GammaDistribution::write(std::ostream& stream) const {
-  stream << "mf64K: " << mf64K << std::endl
-    << "mf64Theta: " << mf64Theta;
+  stream << "shape: " << mShape << std::endl
+    << "scale: " << mScale;
 }
 
 void GammaDistribution::read(std::ifstream& stream) {
@@ -68,77 +60,50 @@ void GammaDistribution::read(std::ifstream& stream) {
 void GammaDistribution::write(std::ofstream& stream) const {
 }
 
-std::ostream& operator << (std::ostream& stream,
-  const GammaDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, GammaDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream,
-  const GammaDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream,
-  GammaDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void GammaDistribution::setK(double f64K)
-  throw (OutOfBoundException) {
-  if (f64K <= 0)
-    throw OutOfBoundException("GammaDistribution::setK(): f64K must be strictly positive");
-  mf64K = f64K;
-  mf64Normalizer = mf64K * log(mf64Theta) + lgamma(mf64K);
+void GammaDistribution::setShape(double shape)
+  throw (BadArgumentException<double>) {
+  if (shape <= 0)
+    throw BadArgumentException<double>(shape, "GammaDistribution::setShape(): shape must be strictly positive");
+  mShape = shape;
+  mNormalizer = mShape * log(mScale) + lgamma(mShape);
 }
 
-double GammaDistribution::getK() const {
-  return mf64K;
+double GammaDistribution::getShape() const {
+  return mShape;
 }
 
-void GammaDistribution::setTheta(double f64Theta)
-  throw (OutOfBoundException) {
-  if (f64Theta <= 0)
-    throw OutOfBoundException("GammaDistribution::setTheta(): f64Beta must be strictly positive");
-  mf64Theta = f64Theta;
-  mf64Normalizer = mf64K * log(mf64Theta) + lgamma(mf64K);
+void GammaDistribution::setScale(double scale)
+  throw (BadArgumentException<double>) {
+  if (scale <= 0)
+    throw BadArgumentException<double>(scale, "GammaDistribution::setScale(): scale must be strictly positive");
+  mScale = scale;
+  mNormalizer = mShape * log(mScale) + lgamma(mShape);
 }
 
-double GammaDistribution::getTheta() const {
-  return mf64Theta;
+double GammaDistribution::getScale() const {
+  return mScale;
 }
 
 double GammaDistribution::getNormalizer() const {
-  return mf64Normalizer;
+  return mNormalizer;
 }
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
-double GammaDistribution::pdf(double f64X) const {
-  return exp(logpdf(f64X));
+double GammaDistribution::pdf(const double& value) const {
+  return exp(logpdf(value));
 }
 
-double GammaDistribution::logpdf(double f64X) const
-  throw (OutOfBoundException) {
-  if (f64X < 0)
-    throw OutOfBoundException("GammaDistribution::logpdf(): f64X must be positive");
-  return (mf64K - 1) * log(f64X) - f64X / mf64Theta - mf64Normalizer;
+double GammaDistribution::logpdf(const double& value) const
+  throw (BadArgumentException<double>) {
+  if (value < 0)
+    throw BadArgumentException<double>(value, "GammaDistribution::logpdf(): value must be positive");
+  return (mShape - 1) * log(value) - value / mScale - mNormalizer;
 }
 
-double GammaDistribution::sample() const {
+double GammaDistribution::getSample() const {
   static Randomizer randomizer;
-  return randomizer.sampleGamma(mf64K, mf64Theta);
+  return randomizer.sampleGamma(mShape, mScale);
 }

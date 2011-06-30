@@ -112,8 +112,7 @@ template <size_t D>
 double DirichletDistribution<M>::Traits<2, D>::pdf(const
   DirichletDistribution<2>& distribution, const double& value) {
   Eigen::Matrix<double, 2, 1> valueMat;
-  valueMat(0) = value;
-  valueMat(1) = 1.0 - value;
+  valueMat << value, 1.0 - value;
   return distribution.pdf(valueMat);
 }
 
@@ -132,8 +131,7 @@ template <size_t D>
 double DirichletDistribution<M>::Traits<2, D>::logpdf(const
   DirichletDistribution<2>& distribution, const double& value) {
   Eigen::Matrix<double, 2, 1> valueMat;
-  valueMat(0) = value;
-  valueMat(1) = 1.0 - value;
+  valueMat << value, 1.0 - value;
   return distribution.logpdf(valueMat);
 }
 

@@ -16,31 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/ExponentialDistribution.h"
-
 #include "statistics/Randomizer.h"
-
-#include <iostream>
-#include <fstream>
-
-#include <cmath>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-ExponentialDistribution::ExponentialDistribution(double f64Lambda) {
-  setLambda(f64Lambda);
+ExponentialDistribution::ExponentialDistribution(double rate) {
+  setRate(rate);
 }
 
 ExponentialDistribution::ExponentialDistribution(const
   ExponentialDistribution& other) :
-  mf64Lambda(other.mf64Lambda){
+  mRate(other.mRate){
 }
 
 ExponentialDistribution& ExponentialDistribution::operator =
   (const ExponentialDistribution& other) {
-  mf64Lambda = other.mf64Lambda;
+  mRate = other.mRate;
   return *this;
 }
 
@@ -55,7 +48,7 @@ void ExponentialDistribution::read(std::istream& stream) {
 }
 
 void ExponentialDistribution::write(std::ostream& stream) const {
-  stream << "mf64Lambda: " << mf64Lambda;
+  stream << "rate: " << mRate;
 }
 
 void ExponentialDistribution::read(std::ifstream& stream) {
@@ -64,70 +57,33 @@ void ExponentialDistribution::read(std::ifstream& stream) {
 void ExponentialDistribution::write(std::ofstream& stream) const {
 }
 
-std::ostream& operator << (std::ostream& stream,
-  const ExponentialDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream, ExponentialDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream,
-  const ExponentialDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream,
-  ExponentialDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void ExponentialDistribution::setLambda(double f64Lambda)
-  throw (OutOfBoundException) {
-  if (f64Lambda <= 0)
-    throw OutOfBoundException("ExponentialDistribution::setLambda(): f64Lambda must be strictly positive");
-  mf64Lambda = f64Lambda;
+void ExponentialDistribution::setRate(double rate)
+  throw (BadArgumentException<double>) {
+  if (rate <= 0)
+    throw BadArgumentException<double>(rate, "ExponentialDistribution::setLambda(): lambda must be strictly positive");
+  mRate = rate;
 }
 
-double ExponentialDistribution::getLambda() const {
-  return mf64Lambda;
+double ExponentialDistribution::getRate() const {
+  return mRate;
 }
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
-double ExponentialDistribution::pdf(double f64X) const {
-  return exp(logpdf(f64X));
+double ExponentialDistribution::pdf(const double& value) const {
+  return exp(logpdf(value));
 }
 
-double ExponentialDistribution::logpdf(double f64X) const
-  throw (OutOfBoundException) {
-  if (f64X < 0)
-    throw OutOfBoundException("ExponentialDistribution::logpdf(): f64X must be strictly positive");
-  return log(mf64Lambda) - mf64Lambda * f64X;
+double ExponentialDistribution::logpdf(const double& value) const
+  throw (BadArgumentException<double>) {
+  if (value < 0)
+    throw BadArgumentException<double>(value, "ExponentialDistribution::logpdf(): value must be positive");
+  return log(mRate) - mRate * value;
 }
 
-double ExponentialDistribution::cdf(double f64X) const {
-  return 1.0 - exp(-mf64Lambda * f64X);
-}
-
-double ExponentialDistribution::sample() const {
+double ExponentialDistribution::getSample() const {
   static Randomizer randomizer;
-  return randomizer.sampleExponential(mf64Lambda);
-}
-
-double ExponentialDistribution::KLDivergence(const ExponentialDistribution&
-  other) const {
-  return log(mf64Lambda) - log(other.mf64Lambda) +
-    other.mf64Lambda / mf64Lambda -1;
+  return randomizer.sampleExponential(mRate);
 }

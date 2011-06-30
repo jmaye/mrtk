@@ -72,10 +72,6 @@ double BernoulliDistribution::getSuccessProbability() const {
   return mSuccessProbability;
 }
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
 double BernoulliDistribution::pmf(const size_t& value) const
   throw (BadArgumentException<size_t>) {
   if (value > 1)

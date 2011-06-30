@@ -24,101 +24,124 @@
 #ifndef HYPERGEOMETRICDISTRIBUTION_H
 #define HYPERGEOMETRICDISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
+#include "statistics/DiscreteDistribution.h"
+#include "statistics/SampleDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
-#include <iosfwd>
-
-#include <stdint.h>
-
-/** The HyperGeometricDistribution class represents an hyper geometric
+/** The HyperGeometricDistribution class represents an hypergeometric
     distribution, i.e., a discrete distribution that models the number of
     successes in a sequence of N draws from a finite population without
-    replacement
+    replacement.
     \brief Hypergeometric distribution
   */
-class HyperGeometricDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const HyperGeometricDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    HyperGeometricDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const HyperGeometricDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    HyperGeometricDistribution& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Number of balls
-  uint32_t mu32N;
-  /// Number of white balls
-  uint32_t mu32m;
-  /// Number of draws
-  uint32_t mu32n;
-  /// Normalizer
-  double mf64Normalizer;
-  /** @}
-    */
-
+template <size_t M> class HyperGeometricDistribution :
+  public DiscreteDistribution<size_t, M>,
+  public DiscreteDistribution<size_t, M - 1>,
+  public SampleDistribution<Eigen::Matrix<size_t, M, 1> >,
+  public virtual Serializable {
 public:
+  /** \name Traits
+    @{
+    */
+  /// Support for the N - 1 simplex
+  template <size_t N, size_t D = 0> struct Traits {
+  public:
+    /// Returns the probability mass function at a point
+    static double pmf(const HyperGeometricDistribution<N>& distribution,
+      const Eigen::Matrix<size_t, N - 1, 1>& value);
+    /// Returns the log-probability mass function at a point
+    static double logpmf(const HyperGeometricDistribution<N>& distribution,
+      const Eigen::Matrix<size_t, N - 1, 1>& value);
+  };
+  /// Support for N = 2
+  template <size_t D> struct Traits<2, D> {
+  public:
+    /// Returns the probability mass function at a point
+    static double pmf(const HyperGeometricDistribution<2>& distribution,
+      const size_t& value);
+    /// Returns the log-probability mass function at a point
+    static double logpmf(const HyperGeometricDistribution<2>& distribution,
+      const size_t& value);
+  };
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameters
-  HyperGeometricDistribution(uint32_t u32N, uint32_t u32m, uint32_t u32n);
+  HyperGeometricDistribution(size_t numTrials = 1, const
+    Eigen::Matrix<size_t, M, 1>&  marbles =
+    Eigen::Matrix<size_t, M, 1>::Constant(1));
   /// Copy constructor
   HyperGeometricDistribution(const HyperGeometricDistribution& other);
   //// Assignment operator
   HyperGeometricDistribution& operator = (const HyperGeometricDistribution&
     other);
   /// Destructor
-  ~HyperGeometricDistribution();
+  virtual ~HyperGeometricDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of balls
-  void setN(uint32_t u32N) throw (OutOfBoundException);
-  /// Returns the number of balls
-  uint32_t getN() const;
-  /// Sets the number of white balls
-  void setm(uint32_t u32m) throw (OutOfBoundException);
-  /// Returns the number of white balls
-  uint32_t getm() const;
-  /// Sets the number of draws
-  void setn(uint32_t u32n) throw (OutOfBoundException);
-  /// Returns the number of draws
-  uint32_t getn() const;
+  /// Sets the number of trials
+  void setNumTrials(size_t numTrials) throw (BadArgumentException<size_t>);
+  /// Returns the number of trials
+  size_t getNumTrials() const;
+  /// Sets the marbles
+  void setMarbles(const Eigen::Matrix<size_t, M, 1>&  marbles);
+  /// Returns the marbles
+  const Eigen::Matrix<size_t, M, 1>& getMarbles() const;
   /// Returns the normalizer
   double getNormalizer() const;
+  /// Returns the probability mass function at a point
+  virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const;
+  /// Returns the probability mass function at a point
+  virtual double pmf(const typename
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const;
+  /// Returns the log-probability mass function at a point
+  double logpmf(const Eigen::Matrix<size_t, M, 1>& value) const
+    throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);
+  /// Returns the log-probability mass function at a point
+  double logpmf(const typename
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const;
+  /// Access a sample drawn from the distribution
+  virtual Eigen::Matrix<size_t, M, 1> getSample() const;
   /** @}
     */
 
-  /** \name Methods
-    @{
-    */
-  /// Returns the probability mass function at a point
-  double pmf(uint32_t u32X) const;
-  /// Returns the log-probability mass function at a point
-  double logpmf(uint32_t u32X) const throw (OutOfBoundException);
-  /// Returns a sample from the distribution
-  uint32_t sample() const;
-  /** @}
-    */
+  using DiscreteDistribution<size_t, M>::operator();
+  using DiscreteDistribution<size_t, M - 1>::operator();
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Marbles
+  Eigen::Matrix<size_t, M, 1> mMarbles;
+  /// Number of trials
+  size_t mNumTrials;
+  /// Normalizer
+  double mNormalizer;
+  /** @}
+    */
 
 };
 

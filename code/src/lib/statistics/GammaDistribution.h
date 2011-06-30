@@ -24,60 +24,33 @@
 #ifndef GAMMADISTRIBUTION_H
 #define GAMMADISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
-
-#include <iosfwd>
+#include "statistics/ContinuousDistribution.h"
+#include "statistics/SampleDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The GammaDistribution class represents a gamma distribution,
     i.e., a continuous distribution that models waiting times, e.g., the
     waiting time until death. It is also a conjugate prior to the
-    Poisson/Exponential/... distributions
+    Poisson/Exponential/... distributions.
     \brief Gamma distribution
   */
-class GammaDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const GammaDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    GammaDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const GammaDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    GammaDistribution& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Shape parameter
-  double mf64K;
-  /// Scale parameter
-  double mf64Theta;
-  /// Normalizer
-  double mf64Normalizer;
-  /** @}
-    */
-
+class GammaDistribution :
+  public ContinuousDistribution<double>,
+  public SampleDistribution<double>,
+  public Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameters
-  GammaDistribution(double f64K, double f64Theta);
+  GammaDistribution(double shape = 1.0, double scale = 1.0);
   /// Copy constructor
   GammaDistribution(const GammaDistribution& other);
   //// Assignment operator
   GammaDistribution& operator = (const GammaDistribution& other);
   /// Destructor
-  ~GammaDistribution();
+  virtual ~GammaDistribution();
   /** @}
     */
 
@@ -85,31 +58,50 @@ public:
     @{
     */
   /// Sets the shape parameter
-  void setK(double f64K) throw (OutOfBoundException);
+  void setShape(double shape) throw (BadArgumentException<double>);
   /// Returns the shape parameter
-  double getK() const;
+  double getShape() const;
   /// Sets the scale parameter
-  void setTheta(double f64Theta) throw (OutOfBoundException);
+  void setScale(double scale) throw (BadArgumentException<double>);
   /// Returns the scale parameter
-  double getTheta() const;
+  double getScale() const;
   /// Returns the normalizer
   double getNormalizer() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Returns the probability density function at a point
-  double pdf(double f64X) const;
-  /// Returns the log-probability density function at a point
-  double logpdf(double f64X) const throw (OutOfBoundException);
-  /// Returns a sample from the distribution
-  double sample() const;
+  /// Access the probablity density function at the given value
+  virtual double pdf(const double& value) const;
+  /// Access the log-probablity density function at the given value
+  double logpdf(const double& value) const throw (BadArgumentException<double>);
+  /// Access a sample drawn from the distribution
+  virtual double getSample() const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Shape parameter
+  double mShape;
+  /// Scale parameter
+  double mScale;
+  /// Normalizer
+  double mNormalizer;
+  /** @}
+    */
 
 };
 

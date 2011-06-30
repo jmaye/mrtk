@@ -16,36 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/NegativeBinomialDistribution.h"
-
-#include "functions/LogBinomialFunction.h"
-#include "statistics/Randomizer.h"
-
-#include <iostream>
-#include <fstream>
-
-#include <cmath>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-NegativeBinomialDistribution::NegativeBinomialDistribution(uint32_t
-  u32FailuresNbr, double f64P) {
-  setP(f64P);
-  setFailuresNbr(u32FailuresNbr);
+NegativeBinomialDistribution::NegativeBinomialDistribution(size_t numTrials,
+  double successProbability) :
+  NegativeMultinomialDistribution<2>(numTrials) {
+  Eigen::Matrix<double, 2, 1> successProbabilities;
+  successProbabilities(0) = successProbability;
+  successProbabilities(1) = 1.0 - successProbability;
+  MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
 }
 
 NegativeBinomialDistribution::NegativeBinomialDistribution(const
   NegativeBinomialDistribution& other) :
-  mf64P(other.mf64P),
-  mu32FailuresNbr(other.mu32FailuresNbr) {
+  NegativeMultinomialDistribution<2>(other) {
 }
 
 NegativeBinomialDistribution& NegativeBinomialDistribution::operator =
   (const NegativeBinomialDistribution& other) {
-  mf64P = other.mf64P;
-  mu32FailuresNbr = other.mu32FailuresNbr;
+  this->NegativeMultinomialDistribution<2>::operator=(other);
   return *this;
 }
 
@@ -60,8 +51,9 @@ void NegativeBinomialDistribution::read(std::istream& stream) {
 }
 
 void NegativeBinomialDistribution::write(std::ostream& stream) const {
-  stream << "mf64P: " << mf64P << std::endl
-    << "mu32FailuresNbr: " << mu32FailuresNbr;
+  stream << "success probability: "
+    << mSuccessProbabilities(0) << std::endl
+    << "trials number: " << mNumTrials;
 }
 
 void NegativeBinomialDistribution::read(std::ifstream& stream) {
@@ -70,72 +62,18 @@ void NegativeBinomialDistribution::read(std::ifstream& stream) {
 void NegativeBinomialDistribution::write(std::ofstream& stream) const {
 }
 
-std::ostream& operator << (std::ostream& stream,
-  const NegativeBinomialDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream,
-  NegativeBinomialDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream,
-  const NegativeBinomialDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream,
-  NegativeBinomialDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void NegativeBinomialDistribution::setP(double f64P)
-  throw (OutOfBoundException) {
-  if (f64P < 0.0 || f64P > 1.0)
-    throw OutOfBoundException("NegativeBinomialDistribution::setP(): f64P must be between 0 and 1");
-  mf64P = f64P;
+void NegativeBinomialDistribution::setSuccessProbability(double
+  successProbability) {
+  Eigen::Matrix<double, 2, 1> successProbabilities;
+  successProbabilities(0) = successProbability;
+  successProbabilities(1) = 1.0 - successProbability;
+  MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
 }
 
-double NegativeBinomialDistribution::getP() const {
-  return mf64P;
-}
-
-void NegativeBinomialDistribution::setFailuresNbr(uint32_t u32FailuresNbr)
-  throw (OutOfBoundException) {
-  if (u32FailuresNbr == 0)
-    throw OutOfBoundException("NegativeBinomialDistribution::setFailuresNbr(): u32FailuresNbr must be larger than 0");
-  mu32FailuresNbr = u32FailuresNbr;
-}
-
-uint32_t NegativeBinomialDistribution::getFailuresNbr() const {
-  return mu32FailuresNbr;
-}
-
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
-double NegativeBinomialDistribution::pmf(uint32_t u32SuccNbr) const {
-  return exp(logpmf(u32SuccNbr));
-}
-
-double NegativeBinomialDistribution::logpmf(uint32_t u32SuccNbr) const {
-  LogBinomialFunction logBinomialFunction;
-  Eigen::Matrix<size_t, 2, 1> argument;
-  argument << u32SuccNbr + mu32FailuresNbr - 1, u32SuccNbr;
-  return logBinomialFunction(argument) +
-    mu32FailuresNbr * log(1 - mf64P) + u32SuccNbr * log(mf64P);
-}
-
-uint32_t NegativeBinomialDistribution::sample() const {
-  return 0.0;
+double NegativeBinomialDistribution::getSuccessProbability() const {
+  return mSuccessProbabilities(0);
 }

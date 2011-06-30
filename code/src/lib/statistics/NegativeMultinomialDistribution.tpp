@@ -16,69 +16,59 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "statistics/Randomizer.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BetaDistribution::BetaDistribution(double alpha, double beta) :
-  DirichletDistribution<2>() {
-  Eigen::Matrix<double, 2, 1> alphaMat;
-  alphaMat(0) = alpha;
-  alphaMat(1) = beta;
-  DirichletDistribution<2>::setAlpha(alphaMat);
+template <size_t M>
+NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(size_t
+  numTrials, const Eigen::Matrix<double, M, 1>& successProbabilities) :
+  MultinomialDistribution<M>(numTrials, successProbabilities) {
 }
 
-BetaDistribution::BetaDistribution(const BetaDistribution& other) :
-  DirichletDistribution<2>(other) {
+template <size_t M>
+NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(const
+  NegativeMultinomialDistribution<M>& other) :
+  MultinomialDistribution<M>(other) {
 }
 
-BetaDistribution& BetaDistribution::operator = (const BetaDistribution& other) {
-  this->DirichletDistribution<2>::operator=(other);
+template <size_t M>
+NegativeMultinomialDistribution<M>&
+  NegativeMultinomialDistribution<M>::operator =
+  (const NegativeMultinomialDistribution<M>& other) {
+  this->MultinomialDistribution<M>::operator=(other);
   return *this;
 }
 
-BetaDistribution::~BetaDistribution() {
-}
-
-/******************************************************************************/
-/* Stream operations                                                          */
-/******************************************************************************/
-
-void BetaDistribution::read(std::istream& stream) {
-}
-
-void BetaDistribution::write(std::ostream& stream) const {
-  stream << "alpha: " << mAlpha(0) << std::endl << "beta: " << mAlpha(1);
-}
-
-void BetaDistribution::read(std::ifstream& stream) {
-}
-
-void BetaDistribution::write(std::ofstream& stream) const {
+template <size_t M>
+NegativeMultinomialDistribution<M>::~NegativeMultinomialDistribution() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BetaDistribution::setAlpha(double alpha) {
-  Eigen::Matrix<double, 2, 1> alphaMat;
-  alphaMat(0) = alpha;
-  alphaMat(1) = getBeta();
-  DirichletDistribution<2>::setAlpha(alphaMat);
+template <size_t M>
+double NegativeMultinomialDistribution<M>::logpmf(const
+  Eigen::Matrix<size_t, M, 1>& value) const
+  throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+  if ((value.cwise() < 0).any() == true ||
+    value.sum() != MultinomialDistribution<M>::mNumTrials)
+    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
+      "NegativeMultinomialDistribution<M>::logpmf(): sum of the input vector must be equal to the number of trials");
+  LogFactorialFunction logFactorialFunction;
+  double f64Sum = logFactorialFunction(MultinomialDistribution<M>::mNumTrials);
+  for (size_t i = 0; i < M; i++)
+    f64Sum += value(i) *
+      log(MultinomialDistribution<M>::mSuccessProbabilities(i)) -
+      logFactorialFunction(value(i));
+  return f64Sum;
 }
 
-double BetaDistribution::getAlpha() const {
-  return mAlpha(0);
-}
-
-void BetaDistribution::setBeta(double beta) {
-  Eigen::Matrix<double, 2, 1> alphaMat;
-  alphaMat(0) = getAlpha();
-  alphaMat(1) = beta;
-  DirichletDistribution<2>::setAlpha(alphaMat);
-}
-
-double BetaDistribution::getBeta() const {
-  return mAlpha(1);
+template <size_t M>
+Eigen::Matrix<size_t, M, 1> NegativeMultinomialDistribution<M>::getSample()
+  const {
+  return Eigen::Matrix<size_t, M, 1>::Zero();
 }

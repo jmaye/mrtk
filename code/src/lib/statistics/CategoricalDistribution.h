@@ -63,12 +63,6 @@ public:
     (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the success probabilities
   const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
   /// Returns the probability mass function at a point
   virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const
     throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);

@@ -24,11 +24,10 @@
 #ifndef GEOMETRICDISTRIBUTION_H
 #define GEOMETRICDISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
-
-#include <iosfwd>
-
-#include <stdint.h>
+#include "statistics/DiscreteDistribution.h"
+#include "statistics/SampleDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The GeometricDistribution class represents a geometric distribution, i.e.,
     a discrete distribution which models the number of Bernoulli trial before
@@ -36,40 +35,16 @@
     process changes state.
     \brief Geometric distribution
   */
-class GeometricDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const GeometricDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    GeometricDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const GeometricDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    GeometricDistribution& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Success probability
-  double mf64P;
-  /** @}
-    */
-
+class GeometricDistribution :
+  public DiscreteDistribution<size_t>,
+  public SampleDistribution<size_t>,
+  public Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameter
-  GeometricDistribution(double f64P);
+  GeometricDistribution(double successProbability = 0.5);
   /// Copy constructor
   GeometricDistribution(const GeometricDistribution& other);
   //// Assignment operator
@@ -83,25 +58,41 @@ public:
     @{
     */
   /// Sets the success probability
-  void setP(double f64P) throw (OutOfBoundException);
+  void setSuccessProbability(double successProbability)
+    throw (BadArgumentException<double>);
   /// Returns the success probability
-  double getP() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
+  double getSuccessProbability() const;
   /// Returns the probability mass function at a point
-  double pmf(uint32_t u32X) const;
-  /// Returns the log-probability mass at a point
-  double logpmf(uint32_t u32X) const throw (OutOfBoundException);
-  /// Returns a sample from the distribution
-  uint32_t sample() const;
+  virtual double pmf(const size_t& value) const;
+  /// Returns the log-probability mass function at a point
+  virtual double logpmf(const size_t& value) const;
+  /// Access a sample drawn from the distribution
+  virtual size_t getSample() const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Success probability
+  double mSuccessProbability;
+  /** @}
+    */
 
 };
 

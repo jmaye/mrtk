@@ -16,160 +16,176 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/HyperGeometricDistribution.h"
-
 #include "statistics/Randomizer.h"
 #include "functions/LogBinomialFunction.h"
-
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-
-#include <cmath>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-HyperGeometricDistribution::HyperGeometricDistribution(uint32_t u32N, uint32_t
-  u32m, uint32_t u32n) {
-  setN(u32N);
-  setm(u32m);
-  setn(u32n);
+template <size_t M>
+HyperGeometricDistribution<M>::HyperGeometricDistribution(size_t numTrials,
+  const Eigen::Matrix<size_t, M, 1>&  marbles) :
+  mMarbles(marbles) {
+  setNumTrials(numTrials);
 }
 
-HyperGeometricDistribution::HyperGeometricDistribution(const
+template <size_t M>
+HyperGeometricDistribution<M>::HyperGeometricDistribution(const
   HyperGeometricDistribution& other) :
-  mu32N(other.mu32N),
-  mu32m(other.mu32m),
-  mu32n(other.mu32n) {
+  mMarbles(other.mMarbles),
+  mNumTrials(other.mNumTrials) {
 }
 
-HyperGeometricDistribution& HyperGeometricDistribution::operator =
-  (const HyperGeometricDistribution& other) {
-  mu32N = other.mu32N;
-  mu32m = other.mu32m;
-  mu32n = other.mu32n;
+template <size_t M>
+HyperGeometricDistribution<M>& HyperGeometricDistribution<M>::operator =
+  (const HyperGeometricDistribution<M>& other) {
+  mMarbles = other.mMarbles;
+  mNumTrials = other.mNumTrials;
   return *this;
 }
 
-HyperGeometricDistribution::~HyperGeometricDistribution() {
+template <size_t M>
+HyperGeometricDistribution<M>::~HyperGeometricDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void HyperGeometricDistribution::read(std::istream& stream) {
+template <size_t M>
+void HyperGeometricDistribution<M>::read(std::istream& stream) {
 }
 
-void HyperGeometricDistribution::write(std::ostream& stream) const {
-  stream << "mu32N: " << mu32N << std::endl
-    << "mu32m: " << mu32m << std::endl
-    << "mu32n: " << mu32n;
+template <size_t M>
+void HyperGeometricDistribution<M>::write(std::ostream& stream) const {
+  stream << "marbles: " << std::endl << mMarbles << std::endl
+    << "trial numbers: " << mNumTrials;
 }
 
-void HyperGeometricDistribution::read(std::ifstream& stream) {
+template <size_t M>
+void HyperGeometricDistribution<M>::read(std::ifstream& stream) {
 }
 
-void HyperGeometricDistribution::write(std::ofstream& stream) const {
-}
-
-std::ostream& operator << (std::ostream& stream,
-  const HyperGeometricDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::istream& operator >> (std::istream& stream,
-  HyperGeometricDistribution& obj) {
-  obj.read(stream);
-  return stream;
-}
-
-std::ofstream& operator << (std::ofstream& stream,
-  const HyperGeometricDistribution& obj) {
-  obj.write(stream);
-  return stream;
-}
-
-std::ifstream& operator >> (std::ifstream& stream,
-  HyperGeometricDistribution& obj) {
-  obj.read(stream);
-  return stream;
+template <size_t M>
+void HyperGeometricDistribution<M>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void HyperGeometricDistribution::setN(uint32_t u32N)
-  throw (OutOfBoundException) {
-  if (u32N == 0)
-    throw OutOfBoundException("HyperGeometricDistribution::setN(): u32N must be strictly positive");
-  mu32N = u32N;
-  LogBinomialFunction logBinomialFunction;
+template <size_t M>
+template <size_t N, size_t D>
+double HyperGeometricDistribution<M>::Traits<N, D>::pmf(const
+  HyperGeometricDistribution<N>& distribution, const
+  Eigen::Matrix<size_t, N - 1, 1>& value) {
+  Eigen::Matrix<size_t, M, 1> valueMat;
+  valueMat << value, distribution.mNumTrials - value.sum();
+  return distribution.pmf(valueMat);
+}
+
+template <size_t M>
+template <size_t D>
+double HyperGeometricDistribution<M>::Traits<2, D>::pmf(const
+  HyperGeometricDistribution<2>& distribution, const size_t& value) {
+  Eigen::Matrix<size_t, 2, 1> valueMat;
+  valueMat << value, distribution.mNumTrials - value;
+  return distribution.pmf(valueMat);
+}
+
+template <size_t M>
+template <size_t N, size_t D>
+double HyperGeometricDistribution<M>::Traits<N, D>::logpmf(const
+  HyperGeometricDistribution<N>& distribution, const
+  Eigen::Matrix<size_t, N - 1, 1>& value) {
+  Eigen::Matrix<size_t, M, 1> valueMat;
+  valueMat << value, distribution.mNumTrials - value.sum();
+  return distribution.logpmf(valueMat);
+}
+
+template <size_t M>
+template <size_t D>
+double HyperGeometricDistribution<M>::Traits<2, D>::logpmf(const
+  HyperGeometricDistribution<2>& distribution, const size_t& value) {
+  Eigen::Matrix<size_t, 2, 1> valueMat;
+  valueMat << value, distribution.mNumTrials - value;
+  return distribution.logpmf(valueMat);
+}
+
+template <size_t M>
+void HyperGeometricDistribution<M>::setNumTrials(size_t numTrials)
+  throw (BadArgumentException<size_t>) {
+  if (numTrials > mMarbles.sum())
+    throw BadArgumentException<size_t>(numTrials, "HyperGeometricDistribution<M>::setNumTrials(): trials number must be smaller than the number of marbles");
+  mNumTrials = numTrials;
   Eigen::Matrix<size_t, 2, 1> argument;
-  argument << mu32N, mu32n;
-  mf64Normalizer = logBinomialFunction(argument);
-}
-
-uint32_t HyperGeometricDistribution::getN() const {
-  return mu32N;
-}
-
-void HyperGeometricDistribution::setm(uint32_t u32m)
-  throw (OutOfBoundException) {
-  if (u32m > mu32N)
-    throw OutOfBoundException("HyperGeometricDistribution::setm(): u32m must be smaller or equal to u32N");
-  mu32m = u32m;
-}
-
-uint32_t HyperGeometricDistribution::getm() const {
-  return mu32m;
-}
-
-void HyperGeometricDistribution::setn(uint32_t u32n)
-  throw (OutOfBoundException) {
-  if (u32n == 0 || u32n > mu32N)
-    throw OutOfBoundException("HyperGeometricDistribution::setn(): u32n must be smaller or equal to u32N and strictly positive");
-  mu32n = u32n;
+  argument << mMarbles.sum(), mNumTrials;
   LogBinomialFunction logBinomialFunction;
+  mNormalizer = logBinomialFunction(argument);
+}
+
+template <size_t M>
+size_t HyperGeometricDistribution<M>::getNumTrials() const {
+  return mNumTrials;
+}
+
+template <size_t M>
+void HyperGeometricDistribution<M>::setMarbles(const
+  Eigen::Matrix<size_t, M, 1>& marbles) {
+  mMarbles = marbles;
   Eigen::Matrix<size_t, 2, 1> argument;
-  argument << mu32N, mu32n;
-  mf64Normalizer = logBinomialFunction(argument);
-}
-
-uint32_t HyperGeometricDistribution::getn() const {
-  return mu32n;
-}
-
-double HyperGeometricDistribution::getNormalizer() const {
-  return mf64Normalizer;
-}
-
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
-double HyperGeometricDistribution::pmf(uint32_t u32X) const {
-  return exp(logpmf(u32X));
-}
-
-double HyperGeometricDistribution::logpmf(uint32_t u32X) const
-  throw (OutOfBoundException) {
-  if (u32X < std::max((uint32_t)0, mu32n + mu32m - mu32N) ||
-    u32X > std::min(mu32m, mu32n))
-    throw OutOfBoundException("HyperGeometricDistribution::logpmf(): u32X has invalid value");
+  argument << marbles.sum(), mNumTrials;
   LogBinomialFunction logBinomialFunction;
-  Eigen::Matrix<size_t, 2, 1> argument1;
-  argument1 << mu32m, u32X;
-  Eigen::Matrix<size_t, 2, 1> argument2;
-  argument2 << mu32N - mu32m, mu32n - u32X;
-  return logBinomialFunction(argument1) +
-    logBinomialFunction(argument2) - mf64Normalizer;
+  mNormalizer = logBinomialFunction(argument);
 }
 
-uint32_t HyperGeometricDistribution::sample() const {
-  return 0.0;
+template <size_t M>
+const Eigen::Matrix<size_t, M, 1>& HyperGeometricDistribution<M>::getMarbles()
+  const {
+  return mMarbles;
+}
+
+template <size_t M>
+double HyperGeometricDistribution<M>::getNormalizer() const {
+  return mNormalizer;
+}
+
+template <size_t M>
+double HyperGeometricDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>&
+  value) const {
+  return exp(logpmf(value));
+}
+
+template <size_t M>
+double HyperGeometricDistribution<M>::pmf(const typename
+  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+  return Traits<M>::pmf(*this, value);
+}
+
+template <size_t M>
+double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
+  value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+  if (value.sum() != mNumTrials)
+    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "HyperGeometricDistribution<M>::logpmf(): value has to sum to the trials number");
+  Eigen::Matrix<size_t, 2, 1> argument;
+  double f64Sum = 0.0;
+  LogBinomialFunction logBinomialFunction;
+  for (size_t i = 0; i < M; i++) {
+    argument(0) = mMarbles(i);
+    argument(1) = value(i);
+    f64Sum += logBinomialFunction(argument);
+  }
+  return f64Sum - mNormalizer;
+}
+
+template <size_t M>
+double HyperGeometricDistribution<M>::logpmf(const typename
+  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+  return Traits<M>::logpmf(*this, value);
+}
+
+template <size_t M>
+Eigen::Matrix<size_t, M, 1> HyperGeometricDistribution<M>::getSample() const {
+  return Eigen::Matrix<size_t, M, 1>::Zero();
 }

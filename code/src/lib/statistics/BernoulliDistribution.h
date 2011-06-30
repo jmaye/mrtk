@@ -61,12 +61,6 @@ public:
     throw (BadArgumentException<double>);
   /// Returns the success probability
   double getSuccessProbability() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
   /// Returns the probability mass function at a point
   virtual double pmf(const size_t& value) const
     throw (BadArgumentException<size_t>);
