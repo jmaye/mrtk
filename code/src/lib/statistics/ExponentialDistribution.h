@@ -38,7 +38,7 @@
 class ExponentialDistribution :
   public ContinuousDistribution<double>,
   public SampleDistribution<double>,
-  public Serializable {
+  public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{

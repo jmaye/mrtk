@@ -23,10 +23,7 @@
 NegativeBinomialDistribution::NegativeBinomialDistribution(size_t numTrials,
   double successProbability) :
   NegativeMultinomialDistribution<2>(numTrials) {
-  Eigen::Matrix<double, 2, 1> successProbabilities;
-  successProbabilities(0) = successProbability;
-  successProbabilities(1) = 1.0 - successProbability;
-  MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
+  setSuccessProbability(successProbability);
 }
 
 NegativeBinomialDistribution::NegativeBinomialDistribution(const
@@ -52,7 +49,7 @@ void NegativeBinomialDistribution::read(std::istream& stream) {
 
 void NegativeBinomialDistribution::write(std::ostream& stream) const {
   stream << "success probability: "
-    << mSuccessProbabilities(0) << std::endl
+    << mSuccessProbabilities(1) << std::endl
     << "trials number: " << mNumTrials;
 }
 
@@ -69,11 +66,11 @@ void NegativeBinomialDistribution::write(std::ofstream& stream) const {
 void NegativeBinomialDistribution::setSuccessProbability(double
   successProbability) {
   Eigen::Matrix<double, 2, 1> successProbabilities;
-  successProbabilities(0) = successProbability;
-  successProbabilities(1) = 1.0 - successProbability;
+  successProbabilities(0) = 1.0 - successProbability;
+  successProbabilities(1) = successProbability;
   MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
 }
 
 double NegativeBinomialDistribution::getSuccessProbability() const {
-  return mSuccessProbabilities(0);
+  return mSuccessProbabilities(1);
 }

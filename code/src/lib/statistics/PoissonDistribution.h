@@ -24,58 +24,33 @@
 #ifndef POISSONDISTRIBUTION_H
 #define POISSONDISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
-
-#include <iosfwd>
-
-#include <stdint.h>
+#include "statistics/DiscreteDistribution.h"
+#include "statistics/SampleDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The PoissonDistribution class represents a Poisson distribution, i.e., a
     discrete distribution that models the probability of a given number of
     events occurring in a fixed interval of time and/or space with a known
-    average rate
+    average rate.
     \brief Poisson distribution
   */
-class PoissonDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const PoissonDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    PoissonDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const PoissonDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    PoissonDistribution& obj);
-
-  /** \name Stream methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Event rate
-  double mf64Lambda;
-  /** @}
-    */
-
+class PoissonDistribution :
+  public DiscreteDistribution<size_t>,
+  public SampleDistribution<size_t>,
+  public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs the distribution from the parameter
-  PoissonDistribution(double f64Lambda);
+  PoissonDistribution(double rate = 1.0);
   /// Copy constructor
   PoissonDistribution(const PoissonDistribution& other);
   //// Assignment operator
   PoissonDistribution& operator = (const PoissonDistribution& other);
   /// Destructor
-  ~PoissonDistribution();
+  virtual ~PoissonDistribution();
   /** @}
     */
 
@@ -83,25 +58,40 @@ public:
     @{
     */
   /// Sets the event rate
-  void setLambda(double f64Lambda) throw (OutOfBoundException);
+  void setRate(double rate) throw (BadArgumentException<double>);
   /// Returns the event rate
-  double getLambda() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
+  double getRate() const;
   /// Returns the probability mass function at a point
-  double pmf(uint32_t u32X) const;
+  virtual double pmf(const size_t& value) const;
   /// Returns the log-probability mass function at a point
-  double logpmf(uint32_t u32X) const;
-  /// Returns a sample from the distribution
-  uint32_t sample() const;
+  virtual double logpmf(const size_t& value) const;
+  /// Access a sample drawn from the distribution
+  virtual size_t getSample() const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Event rate
+  double mRate;
+  /** @}
+    */
 
 };
 

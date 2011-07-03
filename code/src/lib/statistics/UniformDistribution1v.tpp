@@ -16,72 +16,99 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/LogFactorialFunction.h"
-#include "statistics/Randomizer.h"
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-PoissonDistribution::PoissonDistribution(double rate) {
-  setRate(rate);
+template <typename X>
+UniformDistribution<X>::UniformDistribution(const X& minSupport,
+  const X& maxSupport) {
+  setSupport(minSupport, maxSupport);
 }
 
-PoissonDistribution::PoissonDistribution(const PoissonDistribution& other) : 
-  mRate(other.mRate) {
+template <typename X>
+UniformDistribution<X>::UniformDistribution(const UniformDistribution<X>&
+  other) :
+  mMinSupport(other.mMinSupport),
+  mMaxSupport(other.mMaxSupport) {
 }
 
-PoissonDistribution& PoissonDistribution::operator = (const
-  PoissonDistribution& other) {
-  mRate = other.mRate;
+template <typename X>
+UniformDistribution<X>& UniformDistribution<X>::operator =
+  (const UniformDistribution<X>& other) {
+  mMaxSupport = other.mMaxSupport;
+  mMinSupport = other.mMinSupport;
   return *this;
 }
 
-PoissonDistribution::~PoissonDistribution() {
+template <typename X>
+UniformDistribution<X>::~UniformDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void PoissonDistribution::read(std::istream& stream) {
+template <typename X>
+void UniformDistribution<X>::read(std::istream& stream) {
 }
 
-void PoissonDistribution::write(std::ostream& stream) const {
-  stream << "rate: " << mRate;
+template <typename X>
+void UniformDistribution<X>::write(std::ostream& stream) const {
+  stream << "minimum support: " << mMinSupport << std::endl
+    << "maximum support: " << mMaxSupport;
 }
 
-void PoissonDistribution::read(std::ifstream& stream) {
+template <typename X>
+void UniformDistribution<X>::read(std::ifstream& stream) {
 }
 
-void PoissonDistribution::write(std::ofstream& stream) const {
+template <typename X>
+void UniformDistribution<X>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void PoissonDistribution::setRate(double rate)
-  throw (BadArgumentException<double>) {
-  if (rate <= 0)
-    throw BadArgumentException<double>(rate, "PoissonDistribution::setRate(): rate must be strictly positive");
-  mRate = rate;
+template <typename X>
+void UniformDistribution<X>::setSupport(const X& minSupport, const X&
+  maxSupport) throw (BadArgumentException<X>) {
+  if (minSupport >= maxSupport)
+    throw BadArgumentException<X>(minSupport, "UniformDistribution<X>::setSupport(): minimum support must be smaller than maximum support");
+  mMinSupport = minSupport;
+  mMaxSupport = maxSupport;
 }
 
-double PoissonDistribution::getRate() const {
-  return mRate;
+template <typename X>
+void UniformDistribution<X>::setMinSupport(const X& minSupport) {
+  setSupport(minSupport, mMaxSupport);
 }
 
-double PoissonDistribution::pmf(const size_t& value) const {
-  return exp(logpmf(value));
+template <typename X>
+const X& UniformDistribution<X>::getMinSupport() const {
+  return mMinSupport;
 }
 
-double PoissonDistribution::logpmf(const size_t& value) const {
-  LogFactorialFunction lfactorial;
-  return value * log(mRate) - mRate - lfactorial(value);
+template <typename X>
+void UniformDistribution<X>::setMaxSupport(const X& maxSupport) {
+  setSupport(mMinSupport, maxSupport);
 }
 
-size_t PoissonDistribution::getSample() const {
-  static Randomizer randomizer;
-  return randomizer.samplePoisson(mRate);
+template <typename X>
+const X& UniformDistribution<X>::getMaxSupport() const {
+  return mMaxSupport;
+}
+
+template <typename X>
+double UniformDistribution<X>::pdf(const X& value) const {
+  if (value >= mMinSupport && value <= mMaxSupport)
+    return 1.0 / (mMaxSupport - mMinSupport);
+  else
+    return 0.0;
+}
+
+template <typename X>
+X UniformDistribution<X>::getSample() const {
+  return X(0.0);
 }

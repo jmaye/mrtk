@@ -17,6 +17,8 @@
  ******************************************************************************/
 
 #include "statistics/Randomizer.h"
+#include "functions/LogGammaFunction.h"
+#include "functions/LogFactorialFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -51,20 +53,77 @@ NegativeMultinomialDistribution<M>::~NegativeMultinomialDistribution() {
 /******************************************************************************/
 
 template <size_t M>
+template <size_t N, size_t D>
+double NegativeMultinomialDistribution<M>::Traits<N, D>::pmf(const
+  NegativeMultinomialDistribution<N>& distribution, const
+  Eigen::Matrix<size_t, N - 1, 1>& value) {
+  Eigen::Matrix<size_t, M, 1> valueMat;
+  valueMat << distribution.mNumTrials, value;
+  return distribution.pmf(valueMat);
+}
+
+template <size_t M>
+template <size_t D>
+double NegativeMultinomialDistribution<M>::Traits<2, D>::pmf(const
+  NegativeMultinomialDistribution<2>& distribution, const size_t& value) {
+  Eigen::Matrix<size_t, 2, 1> valueMat;
+  valueMat << distribution.mNumTrials, value;
+  return distribution.pmf(valueMat);
+}
+
+template <size_t M>
+template <size_t N, size_t D>
+double NegativeMultinomialDistribution<M>::Traits<N, D>::logpmf(const
+  NegativeMultinomialDistribution<N>& distribution, const
+  Eigen::Matrix<size_t, N - 1, 1>& value) {
+  Eigen::Matrix<size_t, M, 1> valueMat;
+  valueMat << distribution.mNumTrials, value;
+  return distribution.logpmf(valueMat);
+}
+
+template <size_t M>
+template <size_t D>
+double NegativeMultinomialDistribution<M>::Traits<2, D>::logpmf(const
+  NegativeMultinomialDistribution<2>& distribution, const size_t& value) {
+  Eigen::Matrix<size_t, 2, 1> valueMat;
+  valueMat << distribution.mNumTrials, value;
+  return distribution.logpmf(valueMat);
+}
+
+template <size_t M>
+double NegativeMultinomialDistribution<M>::pmf(const
+  Eigen::Matrix<size_t, M, 1>& value) const {
+  return exp(logpmf(value));
+}
+
+template <size_t M>
+double NegativeMultinomialDistribution<M>::pmf(const typename
+  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+  return Traits<M>::pmf(*this, value);
+}
+
+template <size_t M>
 double NegativeMultinomialDistribution<M>::logpmf(const
   Eigen::Matrix<size_t, M, 1>& value) const
   throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
-  if ((value.cwise() < 0).any() == true ||
-    value.sum() != MultinomialDistribution<M>::mNumTrials)
-    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
-      "NegativeMultinomialDistribution<M>::logpmf(): sum of the input vector must be equal to the number of trials");
-  LogFactorialFunction logFactorialFunction;
-  double f64Sum = logFactorialFunction(MultinomialDistribution<M>::mNumTrials);
-  for (size_t i = 0; i < M; i++)
+  if (value(0) != MultinomialDistribution<M>::mNumTrials)
+    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "NegativeMultinomialDistribution<M>::logpmf(): value(0) must contain the trial numbers");
+  LogGammaFunction<size_t> lgamma;
+  double f64Sum = lgamma(value.sum()) + value(0) *
+    log(MultinomialDistribution<M>::mSuccessProbabilities(0)) -
+      lgamma(value(0));
+  LogFactorialFunction lfactorial;
+  for (size_t i = 1; i < M; i++)
     f64Sum += value(i) *
       log(MultinomialDistribution<M>::mSuccessProbabilities(i)) -
-      logFactorialFunction(value(i));
+      lfactorial(value(i));
   return f64Sum;
+}
+
+template <size_t M>
+double NegativeMultinomialDistribution<M>::logpmf(const typename
+  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+  return Traits<M>::logpmf(*this, value);
 }
 
 template <size_t M>

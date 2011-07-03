@@ -24,20 +24,14 @@
 #ifndef BERNOULLIDISTRIBUTION_H
 #define BERNOULLIDISTRIBUTION_H
 
-#include "statistics/DiscreteDistribution.h"
-#include "statistics/SampleDistribution.h"
-#include "base/Serializable.h"
-#include "exceptions/BadArgumentException.h"
-
+#include "statistics/CategoricalDistribution.h"
 
 /** The class BernoulliDistribution represents a Bernoulli distribution, i.e.,
     the discrete distribution of a random event with success or failure.
     \brief Bernoulli distribution
   */
 class BernoulliDistribution :
-  public DiscreteDistribution<size_t>,
-  public SampleDistribution<size_t>,
-  public virtual Serializable {
+  public CategoricalDistribution<2> {
 public:
   /** \name Constructors/destructor
     @{
@@ -57,15 +51,9 @@ public:
     @{
     */
   /// Sets the success probability
-  void setSuccessProbability(double successProbability)
-    throw (BadArgumentException<double>);
+  void setSuccessProbability(double successProbability);
   /// Returns the success probability
   double getSuccessProbability() const;
-  /// Returns the probability mass function at a point
-  virtual double pmf(const size_t& value) const
-    throw (BadArgumentException<size_t>);
-  /// Access a sample drawn from the distribution
-  virtual size_t getSample() const;
   /** @}
     */
 
@@ -81,14 +69,6 @@ protected:
   virtual void read(std::ifstream& stream);
   /// Writes to a file
   virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Success probability
-  double mSuccessProbability;
   /** @}
     */
 

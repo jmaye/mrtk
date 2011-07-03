@@ -93,6 +93,31 @@ const Eigen::Matrix<double, M, 1>&
 }
 
 template <size_t M>
+template <size_t N, size_t D>
+double CategoricalDistribution<M>::Traits<N, D>::pmf(const
+  CategoricalDistribution<N>& distribution, const
+  Eigen::Matrix<size_t, N - 1, 1>& value) {
+  Eigen::Matrix<size_t, M, 1> valueMat;
+  if ((value.cwise() == 1).any() == true)
+    valueMat << value, 0;
+  else
+    valueMat << value, 1;
+  return distribution.pmf(valueMat);
+}
+
+template <size_t M>
+template <size_t D>
+double CategoricalDistribution<M>::Traits<2, D>::pmf(const
+  CategoricalDistribution<2>& distribution, const size_t& value) {
+  Eigen::Matrix<size_t, 2, 1> valueMat;
+  if (value)
+    valueMat << value, 0;
+  else
+    valueMat << value, 1;
+  return distribution.pmf(valueMat);
+}
+
+template <size_t M>
 double CategoricalDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
   const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != 1)
@@ -101,6 +126,12 @@ double CategoricalDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
   for (size_t i = 0; i < M; i++)
     f64Sum += mSuccessProbabilities(i) * value(i);
   return f64Sum;
+}
+
+template <size_t M>
+double CategoricalDistribution<M>::pmf(const typename
+  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+  return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>

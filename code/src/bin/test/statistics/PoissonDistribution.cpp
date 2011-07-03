@@ -16,50 +16,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file NegativeMultinomialDistribution.cpp
-    \brief This file is a testing binary for the NegativeMultinomialDistribution
-           class
+/** \file PoissonDistribution.cpp
+    \brief This file is a testing binary for the PoissonDistribution class
   */
 
-#include "statistics/NegativeMultinomialDistribution.h"
+#include "statistics/PoissonDistribution.h"
 
 int main(int argc, char** argv) {
-  NegativeMultinomialDistribution<3> dist;
- std::cout << "Distribution default parameters: " << std::endl << dist
+  PoissonDistribution dist;
+  std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
-  std::cout << "dist.getNumTrials(): " << dist.getNumTrials() << std::endl
+  std::cout << "dist.getRate(): " << dist.getRate() << std::endl
     << std::endl;
-  std::cout << "dist.getSuccessProbabilities(): " << std::endl
-    << dist.getSuccessProbabilities() << std::endl << std::endl;
-  std::cout << "dist.setNumTrials(5)" << std::endl << std::endl;
-  dist.setNumTrials(5);
-  std::cout << "dist.setSuccessProbabilities(0.5, 0.3, 0.2)" << std::endl
-    << std::endl;
-  dist.setSuccessProbabilities(Eigen::Vector3d(0.5, 0.3, 0.2));
+  std::cout << "dist.setRate(2.5)" << std::endl << std::endl;
+  dist.setRate(2.5);
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
 
-  Eigen::Matrix<size_t, 2, 1> value;
-  value(0) = 2;
-  value(1) = 3;
-  std::cout << "pmf(2, 3): " << std::fixed << dist(value) << std::endl
-    << std::endl;
-  if (fabs(dist(value) - 0.028349) > 1e-4)
+  std::cout << "pmf(2): " << std::fixed << dist(2) << std::endl << std::endl;
+  if (fabs(dist(2) - 0.2565156) > 1e-4)
     return 1;
 
-  value(0) = 5;
-  value(1) = 0;
-  std::cout << "pmf(5, 0): " << std::fixed << dist(value) << std::endl
-    << std::endl;
-  if (fabs(dist(value) - 0.0095681) > 1e-4)
+  std::cout << "pmf(5): " << std::fixed << dist(5) << std::endl << std::endl;
+  if (fabs(dist(5) - 0.06680094) > 1e-4)
     return 1;
 
-  value(0) = 0;
-  value(1) = 5;
-  std::cout << "pmf(0, 5): " << std::fixed << dist(value) << std::endl
-    << std::endl;
-  if (fabs(dist(value) - 0.001259) > 1e-4)
+  std::cout << "pmf(0): " << std::fixed << dist(0) << std::endl << std::endl;
+  if (fabs(dist(0) - 0.082085) > 1e-4)
     return 1;
+
+  std::cout << "logpmf(2): " << std::fixed << dist.logpmf(2) << std::endl
+    << std::endl;
+
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
 
   return 0;
 }

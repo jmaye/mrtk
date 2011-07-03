@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -28,12 +26,12 @@ BernoulliDistribution::BernoulliDistribution(double successProbability) {
 
 BernoulliDistribution::BernoulliDistribution(const BernoulliDistribution&
   other) : 
-  mSuccessProbability(other.mSuccessProbability) {
+  CategoricalDistribution<2>(other) {
 }
 
 BernoulliDistribution& BernoulliDistribution::operator =
   (const BernoulliDistribution& other) {
-  mSuccessProbability = other.mSuccessProbability;
+  this->CategoricalDistribution<2>::operator=(other);
   return *this;
 }
 
@@ -48,7 +46,7 @@ void BernoulliDistribution::read(std::istream& stream) {
 }
 
 void BernoulliDistribution::write(std::ostream& stream) const {
-  stream << "successProbability: " << mSuccessProbability;
+  stream << "success probability: " << mSuccessProbabilities(0);
 }
 
 void BernoulliDistribution::read(std::ifstream& stream) {
@@ -61,28 +59,13 @@ void BernoulliDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BernoulliDistribution::setSuccessProbability(double successProbability)
-  throw (BadArgumentException<double>) {
-  if (successProbability < 0.0 || successProbability > 1.0)
-    throw BadArgumentException<double>(successProbability, "BernoulliDistribution::setSuccessProbability(): success probability must be between 0 and 1");
-  mSuccessProbability = successProbability;
+void BernoulliDistribution::setSuccessProbability(double successProbability) {
+  Eigen::Matrix<double, 2, 1> successProbabilities;
+  successProbabilities(0) = successProbability;
+  successProbabilities(1) = 1.0 - successProbability;
+  CategoricalDistribution<2>::setSuccessProbabilities(successProbabilities);
 }
 
 double BernoulliDistribution::getSuccessProbability() const {
-  return mSuccessProbability;
-}
-
-double BernoulliDistribution::pmf(const size_t& value) const
-  throw (BadArgumentException<size_t>) {
-  if (value > 1)
-    throw BadArgumentException<size_t>(value, "BernoulliDistribution::pmf(): value must not be larger than 1");
-  if (value == 1)
-    return mSuccessProbability;
-  else
-    return 1.0 - mSuccessProbability;
-}
-
-size_t BernoulliDistribution::getSample() const {
-  static Randomizer randomizer;
-  return randomizer.sampleBernoulli(mSuccessProbability);
+  return mSuccessProbabilities(0);
 }

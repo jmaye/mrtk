@@ -38,7 +38,7 @@
 class GeometricDistribution :
   public DiscreteDistribution<size_t>,
   public SampleDistribution<size_t>,
-  public Serializable {
+  public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{

@@ -45,21 +45,21 @@ int main(int argc, char** argv) {
     std::cout << "dist.setSuccessProbability(1.2)" << std::endl;
     dist.setSuccessProbability(1.2);
   }
-  catch (BadArgumentException<double>& e) {
+  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
     std::cout << e.what() << std::endl;
   }
 
   try {
     std::cout << "pmf(2)" << dist(2) << std::endl;
   }
-  catch (BadArgumentException<size_t>& e) {
+  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
     std::cout << e.what() << std::endl;
   }
 
   std::cout << std::endl;
 
-  std::cout << "dist.getSample(): " << dist.getSample() << std::endl
-    << std::endl;
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
 
   return 0;
 }

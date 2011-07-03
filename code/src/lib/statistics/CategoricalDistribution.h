@@ -36,9 +36,36 @@
   */
 template <size_t M> class CategoricalDistribution:
   public DiscreteDistribution<size_t, M>,
+  public DiscreteDistribution<size_t, M - 1>,
   public SampleDistribution<Eigen::Matrix<size_t, M, 1> >,
   public virtual Serializable {
 public:
+  /** \name Traits
+    @{
+    */
+  /// Support for the N - 1 simplex
+  template <size_t N, size_t D = 0> struct Traits {
+  public:
+    /// Returns the probability mass function at a point
+    static double pmf(const CategoricalDistribution<N>& distribution,
+      const Eigen::Matrix<size_t, N - 1, 1>& value);
+    /// Returns the log-probability mass function at a point
+    static double logpmf(const CategoricalDistribution<N>& distribution,
+      const Eigen::Matrix<size_t, N - 1, 1>& value);
+  };
+  /// Support for N = 2
+  template <size_t D> struct Traits<2, D> {
+  public:
+    /// Returns the probability mass function at a point
+    static double pmf(const CategoricalDistribution<2>& distribution,
+      const size_t& value);
+    /// Returns the log-probability mass function at a point
+    static double logpmf(const CategoricalDistribution<2>& distribution,
+      const size_t& value);
+  };
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
@@ -66,10 +93,16 @@ public:
   /// Returns the probability mass function at a point
   virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const
     throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);
+  /// Returns the probability mass function at a point
+  virtual double pmf(const typename
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const;
   /// Access a sample drawn from the distribution
   virtual Eigen::Matrix<size_t, M, 1> getSample() const;
   /** @}
     */
+
+  using DiscreteDistribution<size_t, M>::operator();
+  using DiscreteDistribution<size_t, M - 1>::operator();
 
 protected:
   /** \name Stream methods

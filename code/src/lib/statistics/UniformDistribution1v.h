@@ -16,63 +16,64 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file GammaDistribution.h
-    \brief This file defines the GammaDistribution class, which represents
-           a gamma distribution
+/** \file UniformDistribution1v.h
+    \brief This file contains an interface to the univariate uniform
+           distributions
   */
 
-#ifndef GAMMADISTRIBUTION_H
-#define GAMMADISTRIBUTION_H
+#ifndef UNIFORMDISTRIBUTION1V_H
+#define UNIFORMDISTRIBUTION1V_H
 
 #include "statistics/ContinuousDistribution.h"
+#include "statistics/DiscreteDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-/** The GammaDistribution class represents a gamma distribution,
-    i.e., a continuous distribution that models waiting times, e.g., the
-    waiting time until death. It is also a conjugate prior to the
-    Poisson/Exponential/... distributions.
-    \brief Gamma distribution
+template <typename X, size_t M = 1> class UniformDistribution;
+
+/** The ContinuousDistribution1v class represents an interface to the univariate
+    uniform distributions.
+    \brief Univariate uniform distribution
   */
-class GammaDistribution :
-  public ContinuousDistribution<double>,
-  public SampleDistribution<double>,
+template <typename X> class UniformDistribution<X> :
+  public ContinuousDistribution<X>,
+  public SampleDistribution<X>,
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameters
-  GammaDistribution(double shape = 1.0, double scale = 1.0);
+  UniformDistribution(const X& minSupport = X(0.0), const X&
+    maxSupport = X(1.0));
   /// Copy constructor
-  GammaDistribution(const GammaDistribution& other);
-  //// Assignment operator
-  GammaDistribution& operator = (const GammaDistribution& other);
+  UniformDistribution(const UniformDistribution<X>& other);
+  /// Assignment operator
+  UniformDistribution& operator = (const UniformDistribution<X>& other);
   /// Destructor
-  virtual ~GammaDistribution();
+  virtual ~UniformDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the shape parameter
-  void setShape(double shape) throw (BadArgumentException<double>);
-  /// Returns the shape parameter
-  double getShape() const;
-  /// Sets the scale parameter
-  void setScale(double scale) throw (BadArgumentException<double>);
-  /// Returns the scale parameter
-  double getScale() const;
-  /// Returns the normalizer
-  double getNormalizer() const;
+  /// Sets the support of the distribution
+  void setSupport(const X& minSupport, const X& maxSupport)
+    throw (BadArgumentException<X>);
+  /// Sets the minimum support
+  void setMinSupport(const X& minSupport);
+  /// Returns the minimum support
+  const X& getMinSupport() const;
+  /// Sets the maximum support
+  void setMaxSupport(const X& maxSupport);
+  /// Returns the maximum support
+  const X& getMaxSupport() const;
   /// Access the probablity density function at the given value
-  virtual double pdf(const double& value) const;
-  /// Access the log-probablity density function at the given value
-  double logpdf(const double& value) const throw (BadArgumentException<double>);
+  virtual double pdf(const X& value) const;
   /// Access a sample drawn from the distribution
-  virtual double getSample() const;
+  virtual X getSample() const;
   /** @}
     */
 
@@ -94,17 +95,15 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Shape parameter
-  double mShape;
-  /// Scale parameter
-  double mScale;
-  /// Normalizer
-  double mNormalizer;
+  /// Minimum support of the distribution
+  X mMinSupport;
+  /// Maximum support of the distribution
+  X mMaxSupport;
   /** @}
     */
 
 };
 
-#include "statistics/GammaDistribution.tpp"
+#include "statistics/UniformDistribution1v.tpp"
 
-#endif // GAMMADISTRIBUTION_H
+#endif // UNIFORMDISTRIBUTION1V_H

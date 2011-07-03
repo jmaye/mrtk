@@ -24,6 +24,37 @@
 #include "statistics/NegativeBinomialDistribution.h"
 
 int main(int argc, char** argv) {
+  NegativeBinomialDistribution dist;
+  std::cout << "Distribution default parameters: " << std::endl << dist
+    << std::endl << std::endl;
+  std::cout << "dist.getNumTrials(): " << dist.getNumTrials() << std::endl
+    << std::endl;
+  std::cout << "dist.getSuccessProbability(): " << dist.getSuccessProbability()
+    << std::endl << std::endl;
+  std::cout << "dist.setNumTrials(5)" << std::endl << std::endl;
+  dist.setNumTrials(5);
+  std::cout << "dist.setSuccessProbability(0.7)" << std::endl << std::endl;
+  dist.setSuccessProbability(0.7);
+  std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
+    << std::endl;
+
+  std::cout << "pmf(2): " << std::fixed << dist(2) << std::endl << std::endl;
+  Eigen::Matrix<size_t, 2, 1> value;
+  if (fabs(dist(2) - 0.0178604) > 1e-4)
+    return 1;
+  value << 5, 2;
+  std::cout << "pmf(5, 2): " << std::fixed << dist(value) << std::endl
+    << std::endl;
+  if (fabs(dist(value) - 0.0178604) > 1e-4)
+    return 1;
+
+  try {
+    value << 6, 2;
+    std::cout << "pmf(6, 2): " << std::fixed << dist(value) << std::endl;
+  }
+  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
 
   return 0;
 }

@@ -23,10 +23,7 @@
 BinomialDistribution::BinomialDistribution(size_t numTrials, double
   successProbability) :
   MultinomialDistribution<2>(numTrials) {
-  Eigen::Matrix<double, 2, 1> successProbabilities;
-  successProbabilities(0) = successProbability;
-  successProbabilities(1) = 1.0 - successProbability;
-  MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
+  setSuccessProbability(successProbability);
 }
 
 BinomialDistribution::BinomialDistribution(const BinomialDistribution& other) :
