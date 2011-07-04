@@ -8,8 +8,7 @@ remake_find_file(eigen2/Eigen/Core PACKAGE libeigen2-dev)
 remake_project_header(config.h.remake)
 
 #remake_include(${OpenCV_DIR})
-remake_include(${LIBEIGEN2_DEV_FILE}/eigen2)
-remake_include(${QWT_QT4_HEADERS})
-remake_include(${QWTPLOT3D_QT4_HEADERS})
+remake_include(${LIBEIGEN2_DEV_FILE}/eigen2 ${QWT_QT4_HEADERS}
+  ${QWTPLOT3D_QT4_HEADERS})
 
 remake_add_directories(lib bin)
