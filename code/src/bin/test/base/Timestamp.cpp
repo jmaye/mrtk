@@ -20,7 +20,7 @@
     \brief This file is a testing binary for the Timestamp class
   */
 
-#include "utils/Timestamp.h"
+#include "base/Timestamp.h"
 
 #include <iostream>
 

@@ -16,37 +16,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file IsReal.h
+    \brief This file determines if types are real-valued
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef ISREAL_H
+#define ISREAL_H
 
-#include <stdexcept>
-#include <string>
+#include "utils/Boolean.h"
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The IsReal structure determines if a type is real
+    \brief Real types definitions
   */
-class IOException :
-  public std::runtime_error {
+template <typename T> struct IsReal {
 public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
-
-protected:
-
+  /// Non-real types definition
+  typedef False Result;
 };
 
-#endif // IOEXCEPTION_H
+/** The IsReal structure determines if a type is real
+    \brief Real types definitions
+  */
+template <> struct IsReal<float> {
+public:
+  /// Real type definition
+  typedef True Result;
+};
+
+/** The IsReal structure determines if a type is real
+    \brief Real types definitions
+  */
+template <> struct IsReal<double> {
+public:
+  /// Real type definition
+  typedef True Result;
+};
+
+#endif // ISREAL_H

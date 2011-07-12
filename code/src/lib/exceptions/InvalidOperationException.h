@@ -18,8 +18,7 @@
 
 /** \file InvalidOperationException.h
     \brief This file defines the InvalidOperationException class, which
-           represents any exception occuring when an invalid operation is
-           requested
+           represents invalid operations exceptions
   */
 
 #ifndef INVALIDOPERATIONEXCEPTION_H
@@ -28,23 +27,22 @@
 #include <stdexcept>
 #include <string>
 
-/** The class InvalidOperationException represents any
-    exceptions when the requested method will not be able to perform
-    \brief Invalid operation requested
+/** The class InvalidOperationException represents invalid operations
+    exceptions.
+    \brief Invalid operation exception
   */
-class InvalidOperationException : public std::runtime_error {
-  /// Assignment operator
-  InvalidOperationException& operator =
-    (const InvalidOperationException &other);
-
+class InvalidOperationException :
+  public std::runtime_error {
 public:
-  /** \name Constructors/destructor
+  /** \name Constructors/Destructor
     @{
     */
   /// Constructs exception from message
-  InvalidOperationException(const std::string &msg = "");
+  InvalidOperationException(const std::string& msg = "");
   /// Copy constructor
-  InvalidOperationException(const InvalidOperationException &other);
+  InvalidOperationException(const InvalidOperationException& other) throw ();
+  /// Destructor
+  virtual ~InvalidOperationException() throw ();
   /** @}
     */
 

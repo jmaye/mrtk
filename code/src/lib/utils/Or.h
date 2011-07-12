@@ -16,37 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file Or.h
+    \brief This file defines the or template
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef OR_H
+#define OR_H
 
-#include <stdexcept>
-#include <string>
+#include "utils/Boolean.h"
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The Or structure defines the Or template
+    \brief Or template
   */
-class IOException :
-  public std::runtime_error {
+template <typename A, typename B> struct Or {
 public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
-
-protected:
-
+  /// Defines true
+  typedef True Result;
 };
 
-#endif // IOEXCEPTION_H
+/** The Or structure defines the Or template
+    \brief Or template
+  */
+template <> struct Or<False, False> {
+public:
+  /// Defines false
+  typedef False Result;
+};
+
+#endif // OR_H

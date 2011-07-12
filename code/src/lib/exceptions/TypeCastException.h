@@ -16,32 +16,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file TypeCastException.h
+    \brief This file defines the TypeCastException class, which represents wrong
+           type casts
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef TYPECASTEXCEPTION_H
+#define TYPECASTEXCEPTION_H
 
 #include <stdexcept>
 #include <string>
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The class TypeCastException represents a wrong type cast.
+    \brief Type cast exception
   */
-class IOException :
+class TypeCastException :
   public std::runtime_error {
 public:
   /** \name Constructors/Destructor
     @{
     */
   /// Constructs exception from message
-  IOException(const std::string& msg = "");
+  TypeCastException(const std::string& msg = "");
   /// Copy constructor
-  IOException(const IOException& other) throw ();
+  TypeCastException(const TypeCastException& other) throw ();
   /// Destructor
-  virtual ~IOException() throw ();
+  virtual ~TypeCastException() throw ();
   /** @}
     */
 
@@ -49,4 +49,4 @@ protected:
 
 };
 
-#endif // IOEXCEPTION_H
+#endif // TYPECASTEXCEPTION_H

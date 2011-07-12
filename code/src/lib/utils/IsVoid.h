@@ -16,37 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file IsVoid.h
+    \brief This file determines if a type is void
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef ISVOID_H
+#define ISVOID_H
 
-#include <stdexcept>
-#include <string>
+#include "utils/Boolean.h"
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The IsVoid structure determines if a type is void
+    \brief Void types definitions
   */
-class IOException :
-  public std::runtime_error {
+template <typename T> struct IsVoid {
 public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
-
-protected:
-
+  /// Result for non-void types
+  typedef False Result;
 };
 
-#endif // IOEXCEPTION_H
+/** The IsVoid structure determines if a type is void
+    \brief Void types definitions
+  */
+template <> struct IsVoid<void> {
+public:
+  /// Result for void types
+  typedef True Result;
+};
+
+#endif // ISVOID_H

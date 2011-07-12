@@ -16,37 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Timestamp.h
-    \brief This file defines the Timestamp class, which implements timestamping
-           facilities
+/** \file Not.h
+    \brief This file defines the not template
   */
 
-#ifndef TIMESTAMP_H
-#define TIMESTAMP_H
+#ifndef NOT_H
+#define NOT_H
 
-/** The class Timestamp implements timestamping facilities.
-    \brief Timestamping facilities
+#include "utils/Boolean.h"
+
+/** The Not structure defines the Not template
+    \brief Not template
   */
-class Timestamp {
-  /** \name Private constructors
-    @{
-    */
-  /// Default constructor
-  Timestamp();
-  /** @}
-    */
+template <typename A> struct Not;
 
+/** The Not structure defines the Not template
+    \brief Not template
+  */
+template <> struct Not<False> {
 public:
-  /** \name Methods
-    @{
-    */
-  /// Returns the system time in ms
-  static double now();
-  /** @}
-    */
-
-protected:
-
+  /// Defines not false
+  typedef True Result;
 };
 
-#endif // TIMESTAMP_H
+/** The Not structure defines the Not template
+    \brief Not template
+  */
+template <> struct Not<True> {
+public:
+  /// Defines not true
+  typedef False Result;
+};
+
+#endif // NOT_H

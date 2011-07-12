@@ -16,37 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file IfThenElse.h
+    \brief This file defines the If-Then-Else template
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef IFTHENELSE_H
+#define IFTHENELSE_H
 
-#include <stdexcept>
-#include <string>
+#include "utils/Boolean.h"
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The IfThenElse structure defines the If-Then-Else template
+    \brief If-Then-Else template
   */
-class IOException :
-  public std::runtime_error {
+template <typename C, typename A, typename B> struct IfThenElse;
+
+/** The IfThenElse structure defines the If-Then-Else template
+    \brief If-Then-Else template
+  */
+template <typename A, typename B> struct IfThenElse<True, A, B> {
 public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
-
-protected:
-
+  /// Definition for If selection
+  typedef A Result;
 };
 
-#endif // IOEXCEPTION_H
+/** The IfThenElse structure defines the If-Then-Else template
+    \brief If-Then-Else template
+  */
+template <typename A, typename B> class IfThenElse<False, A, B> {
+public:
+  /// Definition for Else selection
+  typedef B Result;
+};
+
+#endif // IFTHENELSE_H

@@ -23,35 +23,76 @@
 #include "statistics/UniformDistribution.h"
 
 int main(int argc, char** argv) {
-  UniformDistribution<double> dist;
-  std::cout << "Distribution default parameters: " << std::endl << dist
+  std::cout << "Testing continuous uniform distribution" << std::endl;
+  UniformDistribution<double> distCont;
+  std::cout << "Distribution default parameters: " << std::endl << distCont
     << std::endl << std::endl;
-  std::cout << "dist.getMinSupport(): " << dist.getMinSupport() << std::endl
+  std::cout << "dist.getMinSupport(): " << distCont.getMinSupport() << std::endl
     << std::endl;
-  std::cout << "dist.getMaxSupport(): " << dist.getMaxSupport() << std::endl
+  std::cout << "dist.getMaxSupport(): " << distCont.getMaxSupport() << std::endl
     << std::endl;
   std::cout << "dist.setSupport(2, 5)" << std::endl << std::endl;
-  dist.setSupport(2, 5);
-  std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
+  distCont.setSupport(2, 5);
+  std::cout << "Distribution new parameters: " << std::endl << distCont
+    << std::endl << std::endl;
+
+  std::cout << "pdf(2): " << std::fixed << distCont(2) << std::endl
     << std::endl;
-
-  std::cout << "pdf(2): " << std::fixed << dist(2) << std::endl << std::endl;
-  if (fabs(dist(2) - 1.0 / 3.0) > 1e-4)
+  if (fabs(distCont(2) - 1.0 / 3.0) > 1e-4)
     return 1;
 
-  std::cout << "pdf(5): " << std::fixed << dist(5) << std::endl << std::endl;
-  if (fabs(dist(5) -  1.0 / 3.0) > 1e-4)
+  std::cout << "pdf(5): " << std::fixed << distCont(5) << std::endl
+    << std::endl;
+  if (fabs(distCont(5) -  1.0 / 3.0) > 1e-4)
     return 1;
 
-  std::cout << "pdf(3): " << std::fixed << dist(3) << std::endl << std::endl;
-  if (fabs(dist(3) -  1.0 / 3.0) > 1e-4)
+  std::cout << "pdf(3): " << std::fixed << distCont(3) << std::endl
+    << std::endl;
+  if (fabs(distCont(3) -  1.0 / 3.0) > 1e-4)
     return 1;
 
-  std::cout << "pdf(10): " << std::fixed << dist(10) << std::endl << std::endl;
-  if (fabs(dist(10) - 0.0) > 1e-4)
+  std::cout << "pdf(10): " << std::fixed << distCont(10) << std::endl
+    << std::endl;
+  if (fabs(distCont(10) - 0.0) > 1e-4)
     return 1;
 
-  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+  std::cout << "dist.getSample(): " << std::endl << distCont.getSample()
+    << std::endl << std::endl;
+
+  std::cout << "Testing discrete uniform distribution" << std::endl;
+  UniformDistribution<ssize_t> distDisc;
+  std::cout << "Distribution default parameters: " << std::endl << distDisc
+    << std::endl << std::endl;
+  std::cout << "dist.getMinSupport(): " << distDisc.getMinSupport() << std::endl
+    << std::endl;
+  std::cout << "dist.getMaxSupport(): " << distDisc.getMaxSupport() << std::endl
+    << std::endl;
+  std::cout << "dist.setSupport(2, 5)" << std::endl << std::endl;
+  distDisc.setSupport(2, 5);
+  std::cout << "Distribution new parameters: " << std::endl << distDisc
+    << std::endl << std::endl;
+
+  std::cout << "pdf(2): " << std::fixed << distDisc(2) << std::endl
+    << std::endl;
+  if (fabs(distDisc(2) - 1.0 / 3.0) > 1e-4)
+    return 1;
+
+  std::cout << "pdf(5): " << std::fixed << distDisc(5) << std::endl
+    << std::endl;
+  if (fabs(distDisc(5) -  1.0 / 3.0) > 1e-4)
+    return 1;
+
+  std::cout << "pdf(3): " << std::fixed << distDisc(3) << std::endl
+    << std::endl;
+  if (fabs(distDisc(3) -  1.0 / 3.0) > 1e-4)
+    return 1;
+
+  std::cout << "pdf(10): " << std::fixed << distDisc(10) << std::endl
+    << std::endl;
+  if (fabs(distDisc(10) - 0.0) > 1e-4)
+    return 1;
+
+  std::cout << "dist.getSample(): " << std::endl << distDisc.getSample()
     << std::endl << std::endl;
 
   return 0;

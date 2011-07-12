@@ -18,6 +18,18 @@
 
 #include "exceptions/InvalidOperationException.h"
 
-InvalidOperationException::InvalidOperationException(const std::string &msg) :
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
+
+InvalidOperationException::InvalidOperationException(const std::string& msg) :
   std::runtime_error(msg) {
+}
+
+InvalidOperationException::InvalidOperationException(const
+  InvalidOperationException& other) throw () :
+  std::runtime_error(other) {
+}
+
+InvalidOperationException::~InvalidOperationException() throw () {
 }

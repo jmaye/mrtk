@@ -16,19 +16,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "exceptions/IOException.h"
+/******************************************************************************/
+/* Statics                                                                    */
+/******************************************************************************/
+
+template <class C> C* Singleton<C>::instance = 0;
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-IOException::IOException(const std::string& msg) :
-  std::runtime_error(msg) {
+template <class C>
+Singleton<C>::Singleton() throw (InvalidOperationException) {
+  if (instance)
+    throw InvalidOperationException("Singleton<C>::Singleton(): a singleton cannot be instantiated");
+  instance = (C*)this;
 }
 
-IOException::IOException(const IOException& other) throw () :
-  std::runtime_error(other) {
+template <class C>
+Singleton<C>::~Singleton() {
+  instance = 0;
 }
 
-IOException::~IOException() throw () {
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+template <class C>
+C& Singleton<C>::getInstance() {
+  if (!instance)
+    new C();
+
+  return *instance;
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+template <class C>
+bool Singleton<C>::exists() {
+  return (instance != 0);
 }

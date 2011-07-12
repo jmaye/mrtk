@@ -16,37 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
-  */
+#include <sstream>
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include <stdexcept>
-#include <string>
+template <typename X>
+TypeCreationException<X>::TypeCreationException(const X& argument,
+  const std::string& msg) :
+  mMsg(msg),
+  mArg(argument) {
+}
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
-  */
-class IOException :
-  public std::runtime_error {
-public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
+template <typename X>
+TypeCreationException<X>::TypeCreationException(const TypeCreationException<X>&
+  other) throw () :
+  mMsg(other.mMsg),
+  mArg(other.mArg) {
+}
 
-protected:
+template <typename X>
+TypeCreationException<X>& TypeCreationException<X>::operator =
+  (const TypeCreationException<X>& other) throw () {
+  mMsg = other.mMsg;
+  mArg = other.mArg;
+  return *this;
+}
 
-};
+template <typename X>
+TypeCreationException<X>::~TypeCreationException() throw () {
+}
 
-#endif // IOEXCEPTION_H
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+template <typename X>
+const char* TypeCreationException<X>::what() const throw () {
+  std::stringstream stream;
+  stream << mMsg << " [argument = " << mArg << "]";
+  return stream.str().c_str();
+}

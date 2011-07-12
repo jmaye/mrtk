@@ -16,37 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file Boolean.h
+    \brief This file defines the boolean template
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef BOOLEAN_H
+#define BOOLEAN_H
 
-#include <stdexcept>
-#include <string>
-
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The False structure defines the false template
+    \brief False definition
   */
-class IOException :
-  public std::runtime_error {
+struct False {
 public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
-
-protected:
-
+  /// False definition
+  typedef False Result;
 };
 
-#endif // IOEXCEPTION_H
+/** The True structure defines the true template
+    \brief True definition
+  */
+struct True {
+public:
+  /// True definition
+  typedef True Result;
+  /// Numeric definition
+  typedef bool Numeric;
+};
+
+#endif // BOOLEAN_H

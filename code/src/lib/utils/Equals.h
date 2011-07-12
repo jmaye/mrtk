@@ -16,37 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file Equals.h
+    \brief This file defines the equality testing template
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef EQUALS_H
+#define EQUALS_H
 
-#include <stdexcept>
-#include <string>
+#include "utils/Boolean.h"
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The Equals structure defines the equality testing template
+    \brief Equality testing template
   */
-class IOException :
-  public std::runtime_error {
+template <typename A, typename B> struct Equals {
 public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
-
-protected:
-
+  /// Defines the not equal
+  typedef False Result;
 };
 
-#endif // IOEXCEPTION_H
+/** The Equals structure defines the equality testing template
+    \brief Equality testing template
+  */
+template <typename A> struct Equals<A, A> {
+public:
+  /// Defines the equal
+  typedef True Result;
+};
+
+#endif // EQUALS_H

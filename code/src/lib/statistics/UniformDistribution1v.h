@@ -30,11 +30,11 @@
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-template <typename X, size_t M = 1> class UniformDistribution;
+template <typename X = ssize_t, size_t M = 1> class UniformDistribution;
 
 /** The ContinuousDistribution1v class represents an interface to the univariate
-    uniform distributions.
-    \brief Univariate uniform distribution
+    uniform distributions for the real variables.
+    \brief Univariate uniform distribution for real variables
   */
 template <typename X> class UniformDistribution<X> :
   public ContinuousDistribution<X>,
@@ -99,6 +99,78 @@ protected:
   X mMinSupport;
   /// Maximum support of the distribution
   X mMaxSupport;
+  /** @}
+    */
+
+};
+
+/** The ContinuousDistribution1v class represents an interface to the univariate
+    uniform distributions for integer variables.
+    \brief Univariate uniform distribution for integer variables.
+  */
+template <> class UniformDistribution<ssize_t> :
+  public DiscreteDistribution<ssize_t>,
+  public SampleDistribution<ssize_t>,
+  public virtual Serializable {
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Constructs distribution from parameters
+  UniformDistribution(const ssize_t& minSupport = 0, const ssize_t&
+    maxSupport = 1);
+  /// Copy constructor
+  UniformDistribution(const UniformDistribution<ssize_t>& other);
+  /// Assignment operator
+  UniformDistribution& operator = (const UniformDistribution<ssize_t>& other);
+  /// Destructor
+  virtual ~UniformDistribution();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  /// Sets the support of the distribution
+  void setSupport(const ssize_t& minSupport, const ssize_t& maxSupport)
+    throw (BadArgumentException<ssize_t>);
+  /// Sets the minimum support
+  void setMinSupport(const ssize_t& minSupport);
+  /// Returns the minimum support
+  const ssize_t& getMinSupport() const;
+  /// Sets the maximum support
+  void setMaxSupport(const ssize_t& maxSupport);
+  /// Returns the maximum support
+  const ssize_t& getMaxSupport() const;
+  /// Access the probablity mass function at the given value
+  virtual double pmf(const ssize_t& value) const;
+  /// Access a sample drawn from the distribution
+  virtual ssize_t getSample() const;
+  /** @}
+    */
+
+protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Minimum support of the distribution
+  ssize_t mMinSupport;
+  /// Maximum support of the distribution
+  ssize_t mMaxSupport;
   /** @}
     */
 

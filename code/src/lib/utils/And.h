@@ -16,37 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file And.h
+    \brief This file defines the and template
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef AND_H
+#define AND_H
 
-#include <stdexcept>
-#include <string>
+#include "utils/Boolean.h"
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The And structure defines the and template
+    \brief And template
   */
-class IOException :
-  public std::runtime_error {
+template <typename A, typename B> struct And {
 public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
-
-protected:
-
+  /// Defines and resulting to false
+  typedef False Result;
 };
 
-#endif // IOEXCEPTION_H
+/** The And structure defines the and template
+    \brief And template
+  */
+template <> struct And<True, True> {
+public:
+  /// Defines and resulting to true
+  typedef True Result;
+};
+
+#endif // AND_H

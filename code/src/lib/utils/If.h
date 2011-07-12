@@ -16,37 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file IOException.h
-    \brief This file defines the IOException class, which represents I/O
-           exceptions
+/** \file If.h
+    \brief This file defines the if template
   */
 
-#ifndef IOEXCEPTION_H
-#define IOEXCEPTION_H
+#ifndef IF_H
+#define IF_H
 
-#include <stdexcept>
-#include <string>
+#include "utils/Boolean.h"
 
-/** The class IOException represents I/O exceptions.
-    \brief I/O exception
+/** The If structure defines the If template
+    \brief If template
   */
-class IOException :
-  public std::runtime_error {
-public:
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Constructs exception from message
-  IOException(const std::string& msg = "");
-  /// Copy constructor
-  IOException(const IOException& other) throw ();
-  /// Destructor
-  virtual ~IOException() throw ();
-  /** @}
-    */
-
-protected:
-
+template <typename C> struct If {
 };
 
-#endif // IOEXCEPTION_H
+/** The IfThenElse structure defines the If-Then-Else template
+    \brief If template
+  */
+template <> struct If<True> {
+public:
+  /// Definition for true
+  typedef True Result;
+};
+
+#endif // IF_H
