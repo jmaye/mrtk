@@ -82,6 +82,6 @@ double PoissonDistribution::logpmf(const size_t& value) const {
 }
 
 size_t PoissonDistribution::getSample() const {
-  static Randomizer randomizer;
+  static Randomizer<double> randomizer;
   return randomizer.samplePoisson(mRate);
 }

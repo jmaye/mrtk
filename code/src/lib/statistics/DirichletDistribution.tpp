@@ -155,7 +155,7 @@ double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
   if ((value.cwise() <= 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution<M>::logpdf(): input vector must be strictly positive");
   double f64Return = 0;
-  for (size_t i = 0; i < M; i++)
+  for (size_t i = 0; i < M; ++i)
     f64Return += (mAlpha(i) - 1) * log(value(i));
   return f64Return - mf64Normalizer;
 }
@@ -168,9 +168,9 @@ double DirichletDistribution<M>::logpdf(const typename
 
 template <size_t M>
 Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
-  static Randomizer randomizer;
+  static Randomizer<double> randomizer;
   Eigen::Matrix<double, M, 1> sampleGammaVector;
-  for (size_t i = 0; i < M; i++)
+  for (size_t i = 0; i < M; ++i)
     sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1);
   return sampleGammaVector / sampleGammaVector.sum();
 }

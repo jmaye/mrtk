@@ -16,31 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <cmath>
+/** \file UDPConnectionClient.cpp
+    \brief This file is a testing binary for the UDPConnectionClient class
+  */
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+#include "base/UDPConnectionClient.h"
 
-LogFactorialFunction::LogFactorialFunction() {
-}
-
-LogFactorialFunction::~LogFactorialFunction() {
-}
-
-/******************************************************************************/
-/* Accessors                                                                  */
-/******************************************************************************/
-
-double LogFactorialFunction::getValue(const size_t& argument) const {
-  if (argument) {
-    double value = 0.0;
-
-    for (size_t x = 1; x < argument; ++x)
-      value += log(x + 1);
-
-    return value;
-  }
-  else
-    return 0.0;
+int main(int argc, char** argv) {
+  return 0;
 }

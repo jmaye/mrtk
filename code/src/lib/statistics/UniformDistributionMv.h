@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file UniformDistribution1v.h
-    \brief This file contains an interface to the univariate uniform
+/** \file UniformDistributionMv.h
+    \brief This file contains an interface to the multivariate uniform
            distributions
   */
 
-#ifndef UNIFORMDISTRIBUTION1V_H
-#define UNIFORMDISTRIBUTION1V_H
+#ifndef UNIFORMDISTRIBUTIONMV_H
+#define UNIFORMDISTRIBUTIONMV_H
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/DiscreteDistribution.h"
@@ -32,16 +32,14 @@
 #include "utils/IfThenElse.h"
 #include "utils/IsReal.h"
 
-template <typename X, size_t M = 1> class UniformDistribution;
-
-/** The UniformDistribution1v class represents an interface to the univariate
+/** The UniformDistributionMv class represents an interface to the multivariate
     uniform distributions.
-    \brief Univariate uniform distribution
+    \brief Multivariate uniform distribution
   */
-template <typename X> class UniformDistribution<X> :
+template <typename X, size_t M> class UniformDistribution:
   public IfThenElse<typename IsReal<X>::Result,
-    ContinuousDistribution<X>, DiscreteDistribution<X> >::Result,
-  public SampleDistribution<X>,
+    ContinuousDistribution<X, M>, DiscreteDistribution<X, M> >::Result,
+  public SampleDistribution<Eigen::Matrix<X, M, 1> >,
   public virtual Serializable {
 public:
   /** \name Traits
@@ -51,29 +49,29 @@ public:
   template <typename U, size_t D = 0> struct Traits {
   public:
     /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<U>& distribution, U value);
+    static double pdf(const UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>& value);
     /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<U>& distribution, U value);
+    static double pmf(const UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>& value);
   };
   /// Mapping in case one calls the pmf instead of pdf
   template <size_t D> struct Traits<float, D> {
   public:
     /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<float>& distribution,
-      float value);
+    static double pdf(const UniformDistribution<float, M>& distribution,
+      const Eigen::Matrix<float, M, 1>&);
     /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<float>& distribution,
-      float value);
+    static double pmf(const UniformDistribution<float, M>& distribution,
+      const Eigen::Matrix<float, M, 1>&);
   };
   /// Mapping in case one calls the pmf instead of pdf
   template <size_t D> struct Traits<double, D> {
   public:
     /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<double>& distribution,
-      double value);
+    static double pdf(const UniformDistribution<double, M>& distribution,
+      const Eigen::Matrix<double, M, 1>&);
     /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<double>& distribution,
-      double value);
+    static double pmf(const UniformDistribution<double, M>& distribution,
+      const Eigen::Matrix<double, M, 1>&);
   };
   /** @}
     */
@@ -82,11 +80,13 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  UniformDistribution(const X& minSupport = X(0), const X& maxSupport = X(1));
+  UniformDistribution(const Eigen::Matrix<X, M, 1>& minSupport =
+    Eigen::Matrix<X, M, 1>::Zero(), const Eigen::Matrix<X, M, 1>&
+    maxSupport = Eigen::Matrix<X, M, 1>::Ones());
   /// Copy constructor
-  UniformDistribution(const UniformDistribution<X>& other);
+  UniformDistribution(const UniformDistribution<X, M>& other);
   /// Assignment operator
-  UniformDistribution& operator = (const UniformDistribution<X>& other);
+  UniformDistribution& operator = (const UniformDistribution<X, M>& other);
   /// Destructor
   virtual ~UniformDistribution();
   /** @}
@@ -96,22 +96,25 @@ public:
     @{
     */
   /// Sets the support of the distribution
-  void setSupport(const X& minSupport, const X& maxSupport)
-    throw (BadArgumentException<X>);
+  void setSupport(const Eigen::Matrix<X, M, 1>& minSupport, const
+    Eigen::Matrix<X, M, 1>& maxSupport)
+    throw (BadArgumentException<Eigen::Matrix<X, M, 1> >);
   /// Sets the minimum support
-  void setMinSupport(const X& minSupport);
+  void setMinSupport(const Eigen::Matrix<X, M, 1>& minSupport);
   /// Returns the minimum support
-  const X& getMinSupport() const;
+  const Eigen::Matrix<X, M, 1>& getMinSupport() const;
   /// Sets the maximum support
-  void setMaxSupport(const X& maxSupport);
+  void setMaxSupport(const Eigen::Matrix<X, M, 1>& maxSupport);
   /// Returns the maximum support
-  const X& getMaxSupport() const;
+  const Eigen::Matrix<X, M, 1>& getMaxSupport() const;
+  /// Access the multivariate uniform distribution's support area
+  X getSupportArea() const;
   /// Access the probablity density function at the given value
-  virtual double pdf(const X& value) const;
+  virtual double pdf(const Eigen::Matrix<X, M, 1>& value) const;
   /// Access the probablity mass function at the given value
-  virtual double pmf(const X& value) const;
+  virtual double pmf(const Eigen::Matrix<X, M, 1>& value) const;
   /// Access a sample drawn from the distribution
-  virtual X getSample() const;
+  virtual Eigen::Matrix<X, M, 1> getSample() const;
   /** @}
     */
 
@@ -134,14 +137,16 @@ protected:
     @{
     */
   /// Minimum support of the distribution
-  X mMinSupport;
+  Eigen::Matrix<X, M, 1> mMinSupport;
   /// Maximum support of the distribution
-  X mMaxSupport;
+  Eigen::Matrix<X, M, 1> mMaxSupport;
+  /// Support area
+  X mSupportArea;
   /** @}
     */
 
 };
 
-#include "statistics/UniformDistribution1v.tpp"
+#include "statistics/UniformDistributionMv.tpp"
 
-#endif // UNIFORMDISTRIBUTION1V_H
+#endif // UNIFORMDISTRIBUTIONMV_H

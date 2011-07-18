@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "statistics/Randomizer.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -26,20 +28,9 @@ UniformDistribution<X>::UniformDistribution(const X& minSupport,
   setSupport(minSupport, maxSupport);
 }
 
-UniformDistribution<ssize_t>::UniformDistribution(const ssize_t& minSupport,
-  const ssize_t& maxSupport) {
-  setSupport(minSupport, maxSupport);
-}
-
 template <typename X>
 UniformDistribution<X>::UniformDistribution(const UniformDistribution<X>&
   other) :
-  mMinSupport(other.mMinSupport),
-  mMaxSupport(other.mMaxSupport) {
-}
-
-UniformDistribution<ssize_t>::UniformDistribution(const
-  UniformDistribution<ssize_t>& other) :
   mMinSupport(other.mMinSupport),
   mMaxSupport(other.mMaxSupport) {
 }
@@ -52,18 +43,8 @@ UniformDistribution<X>& UniformDistribution<X>::operator =
   return *this;
 }
 
-UniformDistribution<ssize_t>& UniformDistribution<ssize_t>::operator =
-  (const UniformDistribution<ssize_t>& other) {
-  mMaxSupport = other.mMaxSupport;
-  mMinSupport = other.mMinSupport;
-  return *this;
-}
-
 template <typename X>
 UniformDistribution<X>::~UniformDistribution() {
-}
-
-UniformDistribution<ssize_t>::~UniformDistribution() {
 }
 
 /******************************************************************************/
@@ -74,16 +55,8 @@ template <typename X>
 void UniformDistribution<X>::read(std::istream& stream) {
 }
 
-void UniformDistribution<ssize_t>::read(std::istream& stream) {
-}
-
 template <typename X>
 void UniformDistribution<X>::write(std::ostream& stream) const {
-  stream << "minimum support: " << mMinSupport << std::endl
-    << "maximum support: " << mMaxSupport;
-}
-
-void UniformDistribution<ssize_t>::write(std::ostream& stream) const {
   stream << "minimum support: " << mMinSupport << std::endl
     << "maximum support: " << mMaxSupport;
 }
@@ -92,14 +65,8 @@ template <typename X>
 void UniformDistribution<X>::read(std::ifstream& stream) {
 }
 
-void UniformDistribution<ssize_t>::read(std::ifstream& stream) {
-}
-
 template <typename X>
 void UniformDistribution<X>::write(std::ofstream& stream) const {
-}
-
-void UniformDistribution<ssize_t>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -115,20 +82,8 @@ void UniformDistribution<X>::setSupport(const X& minSupport, const X&
   mMaxSupport = maxSupport;
 }
 
-void UniformDistribution<ssize_t>::setSupport(const ssize_t& minSupport, const
-  ssize_t& maxSupport) throw (BadArgumentException<ssize_t>) {
-  if (minSupport >= maxSupport)
-    throw BadArgumentException<ssize_t>(minSupport, "UniformDistribution<ssize_t>::setSupport(): minimum support must be smaller than maximum support");
-  mMinSupport = minSupport;
-  mMaxSupport = maxSupport;
-}
-
 template <typename X>
 void UniformDistribution<X>::setMinSupport(const X& minSupport) {
-  setSupport(minSupport, mMaxSupport);
-}
-
-void UniformDistribution<ssize_t>::setMinSupport(const ssize_t& minSupport) {
   setSupport(minSupport, mMaxSupport);
 }
 
@@ -137,16 +92,8 @@ const X& UniformDistribution<X>::getMinSupport() const {
   return mMinSupport;
 }
 
-const ssize_t& UniformDistribution<ssize_t>::getMinSupport() const {
-  return mMinSupport;
-}
-
 template <typename X>
 void UniformDistribution<X>::setMaxSupport(const X& maxSupport) {
-  setSupport(mMinSupport, maxSupport);
-}
-
-void UniformDistribution<ssize_t>::setMaxSupport(const ssize_t& maxSupport) {
   setSupport(mMinSupport, maxSupport);
 }
 
@@ -155,30 +102,69 @@ const X& UniformDistribution<X>::getMaxSupport() const {
   return mMaxSupport;
 }
 
-const ssize_t& UniformDistribution<ssize_t>::getMaxSupport() const {
-  return mMaxSupport;
+template <typename X>
+template <typename U, size_t D>
+double UniformDistribution<X>::Traits<U, D>::pdf(const UniformDistribution<U>&
+  distribution, U value) {
+  return Traits<U>::pmf(distribution, value);
+}
+
+template <typename X>
+template <typename U, size_t D>
+double UniformDistribution<X>::Traits<U, D>::pmf(const UniformDistribution<U>&
+  distribution, U value) {
+  if (value >= distribution.mMinSupport && value <= distribution.mMaxSupport)
+    return 1.0 / (distribution.mMaxSupport - distribution.mMinSupport + 1);
+  else
+    return 0.0;
+}
+
+template <typename X>
+template <size_t D>
+double UniformDistribution<X>::Traits<float, D>::pdf(const
+  UniformDistribution<float>& distribution, float value) {
+  if (value >= distribution.mMinSupport && value <= distribution.mMaxSupport)
+    return 1.0 / (distribution.mMaxSupport - distribution.mMinSupport);
+  else
+    return 0.0;
+}
+
+template <typename X>
+template <size_t D>
+double UniformDistribution<X>::Traits<float, D>::pmf(const
+  UniformDistribution<float>& distribution, float value) {
+  return Traits<float>::pdf(distribution, value);
+}
+
+template <typename X>
+template <size_t D>
+double UniformDistribution<X>::Traits<double, D>::pdf(const
+  UniformDistribution<double>& distribution, double value) {
+  if (value >= distribution.mMinSupport && value <= distribution.mMaxSupport)
+    return 1.0 / (distribution.mMaxSupport - distribution.mMinSupport);
+  else
+    return 0.0;
+}
+
+template <typename X>
+template <size_t D>
+double UniformDistribution<X>::Traits<double, D>::pmf(const
+  UniformDistribution<double>& distribution, double value) {
+  return Traits<double>::pdf(distribution, value);
 }
 
 template <typename X>
 double UniformDistribution<X>::pdf(const X& value) const {
-  if (value >= mMinSupport && value <= mMaxSupport)
-    return 1.0 / (mMaxSupport - mMinSupport);
-  else
-    return 0.0;
+  return Traits<X>::pdf(*this, value);
 }
 
-double UniformDistribution<ssize_t>::pmf(const ssize_t& value) const {
-  if (value >= mMinSupport && value <= mMaxSupport)
-    return 1.0 / (mMaxSupport - mMinSupport + 1);
-  else
-    return 0.0;
+template <typename X>
+double UniformDistribution<X>::pmf(const X& value) const {
+  return Traits<X>::pmf(*this, value);
 }
 
 template <typename X>
 X UniformDistribution<X>::getSample() const {
-  return X(0.0);
-}
-
-ssize_t UniformDistribution<ssize_t>::getSample() const {
-  return 0.0;
+  static Randomizer<X> randomizer;
+  return randomizer.sampleUniform(mMinSupport, mMaxSupport);
 }

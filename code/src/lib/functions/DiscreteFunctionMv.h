@@ -26,6 +26,7 @@
 
 #include "functions/Function.h"
 #include "utils/SizeTSupport.h"
+#include "utils/SsizeTSupport.h"
 
 #include <Eigen/Core>
 

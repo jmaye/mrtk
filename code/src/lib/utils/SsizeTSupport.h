@@ -16,31 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <cmath>
+/** \file SsizeTSupport.h
+    \brief This file defines the Eigen support for ssize_t type
+  */
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+#ifndef SSIZETSUPPORT_H
+#define SSIZETSUPPORT_H
 
-LogFactorialFunction::LogFactorialFunction() {
+#include <Eigen/Core>
+
+#include <cstdlib>
+
+namespace Eigen {
+
+/** The NumTraits<ssize_t> structure defines support for ssize_t type in Eigen.
+    \brief Eigen support for ssize_t
+  */
+template<> struct NumTraits<ssize_t> {
+  /// Real definition
+  typedef ssize_t Real;
+  /// Floating point definition
+  typedef double FloatingPoint;
+  /// Enum for Eigen
+  enum {
+    /// Is complex
+    IsComplex = 0,
+    /// Has floating point
+    HasFloatingPoint = 0,
+    /// Read cost
+    ReadCost = 1,
+    /// Add cost
+    AddCost = 1,
+    /// Multiplicative cost
+    MulCost = 1,
+  };
+};
+
 }
 
-LogFactorialFunction::~LogFactorialFunction() {
-}
-
-/******************************************************************************/
-/* Accessors                                                                  */
-/******************************************************************************/
-
-double LogFactorialFunction::getValue(const size_t& argument) const {
-  if (argument) {
-    double value = 0.0;
-
-    for (size_t x = 1; x < argument; ++x)
-      value += log(x + 1);
-
-    return value;
-  }
-  else
-    return 0.0;
-}
+#endif // SSIZETSUPPORT_H

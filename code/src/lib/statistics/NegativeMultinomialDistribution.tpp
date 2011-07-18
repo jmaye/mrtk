@@ -113,7 +113,7 @@ double NegativeMultinomialDistribution<M>::logpmf(const
     log(MultinomialDistribution<M>::mSuccessProbabilities(0)) -
       lgamma(value(0));
   LogFactorialFunction lfactorial;
-  for (size_t i = 1; i < M; i++)
+  for (size_t i = 1; i < M; ++i)
     f64Sum += value(i) *
       log(MultinomialDistribution<M>::mSuccessProbabilities(i)) -
       lfactorial(value(i));
@@ -129,5 +129,6 @@ double NegativeMultinomialDistribution<M>::logpmf(const typename
 template <size_t M>
 Eigen::Matrix<size_t, M, 1> NegativeMultinomialDistribution<M>::getSample()
   const {
+  // TODO: NOT IMPLEMENTED!
   return Eigen::Matrix<size_t, M, 1>::Zero();
 }

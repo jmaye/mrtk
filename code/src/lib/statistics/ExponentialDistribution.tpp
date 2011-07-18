@@ -84,6 +84,6 @@ double ExponentialDistribution::logpdf(const double& value) const
 }
 
 double ExponentialDistribution::getSample() const {
-  static Randomizer randomizer;
+  static Randomizer<double> randomizer;
   return randomizer.sampleExponential(mRate);
 }

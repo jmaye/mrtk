@@ -40,7 +40,7 @@ void Factory<T, C>::read(std::istream& stream) {
 template <typename T, typename C>
 void Factory<T, C>::write(std::ostream& stream) const {
   typename std::map<T, const C*>::const_iterator it;
-  for (it = mTypesMap.begin(); it != mTypesMap.end(); it++)
+  for (it = mTypesMap.begin(); it != mTypesMap.end(); ++it)
     stream << it->first << std::endl;
 }
 
@@ -68,7 +68,7 @@ size_t Factory<T, C>::getNumTypes() const {
 template <typename T, typename C>
 void Factory<T, C>::clear() {
   typename std::map<T, const C*>::iterator it;
-  for (it = mTypesMap.begin(); it != mTypesMap.end(); it++)
+  for (it = mTypesMap.begin(); it != mTypesMap.end(); ++it)
     unregisterType(it->first);
 }
 

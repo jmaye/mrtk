@@ -51,5 +51,12 @@ int main(int argc, char** argv) {
   std::cout << "dist.getSample(): " << std::endl << dist.getSample()
     << std::endl << std::endl;
 
+  try {
+    dist.setRate(-1.0);
+  }
+  catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
+
   return 0;
 }

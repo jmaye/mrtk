@@ -171,7 +171,7 @@ double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
   Eigen::Matrix<size_t, 2, 1> argument;
   double f64Sum = 0.0;
   LogBinomialFunction logBinomialFunction;
-  for (size_t i = 0; i < M; i++) {
+  for (size_t i = 0; i < M; ++i) {
     argument(0) = mMarbles(i);
     argument(1) = value(i);
     f64Sum += logBinomialFunction(argument);
@@ -187,5 +187,6 @@ double HyperGeometricDistribution<M>::logpmf(const typename
 
 template <size_t M>
 Eigen::Matrix<size_t, M, 1> HyperGeometricDistribution<M>::getSample() const {
+  // TODO: NOT IMPLEMENTED!
   return Eigen::Matrix<size_t, M, 1>::Zero();
 }

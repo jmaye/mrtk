@@ -30,7 +30,7 @@ SurfacePlot::SurfacePlot(const std::string& sName) {
   setScale(1, 1, 1);
   setShift(0.15, 0, 0);
   setZoom(0.9);
-  for (uint32_t i = 0; i != coordinates()->axes.size(); i++) {
+  for (uint32_t i = 0; i != coordinates()->axes.size(); ++i) {
     coordinates()->axes[i].setMajors(7);
     coordinates()->axes[i].setMinors(4);
   }

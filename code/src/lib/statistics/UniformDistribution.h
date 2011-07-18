@@ -24,6 +24,6 @@
 #define UNIFORMDISTRIBUTION_H
 
 #include "statistics/UniformDistribution1v.h"
-//#include "statistics/UniformDistributionMv.h"
+#include "statistics/UniformDistributionMv.h"
 
 #endif // UNIFORMDISTRIBUTION_H

@@ -104,6 +104,6 @@ double GammaDistribution::logpdf(const double& value) const
 }
 
 double GammaDistribution::getSample() const {
-  static Randomizer randomizer;
+  static Randomizer<double> randomizer;
   return randomizer.sampleGamma(mShape, mScale);
 }

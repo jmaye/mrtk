@@ -17,114 +17,13 @@
  ******************************************************************************/
 
 /** \file NormalDistribution.h
-    \brief This file defines the NormalDistribution class, which represents a
-           normal distribution
+    \brief This file is an interface to the normal distributions
   */
 
 #ifndef NORMALDISTRIBUTION_H
 #define NORMALDISTRIBUTION_H
 
-#include "exceptions/OutOfBoundException.h"
-#include "statistics/ContinuousDistribution.h"
-
-#include <iosfwd>
-
-/** The NormalDistribution class represents a normal distribution
-    \brief Normal distribution
-  */
-class NormalDistribution {
-  friend std::ostream& operator << (std::ostream& stream,
-    const NormalDistribution& obj);
-  friend std::istream& operator >> (std::istream& stream,
-    NormalDistribution& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const NormalDistribution& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream,
-    NormalDistribution& obj);
-
-  /** \name Streaming methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Mean of the normal distribution
-  double mf64Mean;
-  /// Variance of the normal distribution
-  double mf64Variance;
-  /// Precision of the normal distribution
-  double mf64Precision;
-  /// Standard deviation of the normal distribution
-  double mf64StandardDeviation;
-  /// Normalizer of the normal distribution
-  double mf64Normalizer;
-  /** @}
-    */
-
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Constructs a normal distribution from the parameters
-  NormalDistribution(double f64Mean = 0.0, double f64Variance = 1.0);
-  /// Copy constructor
-  NormalDistribution(const NormalDistribution& other);
-  /// Assignment operator
-  NormalDistribution& operator = (const NormalDistribution& other);
-  /// Destructor
-  ~NormalDistribution();
-  /** @}
-    */
-
-  /** \name Accessors
-    @{
-    */
-  /// Sets the mean of the distribution
-  void setMean(double f64Mean);
-  /// Returns the mean of the distribution
-  double getMean() const;
-  /// Sets the variance of the distribution
-  void setVariance(double f64Variance) throw (OutOfBoundException);
-  /// Returns the variance of the distribution
-  double getVariance() const;
-  /// Returns the precision of the distribution
-  double getPrecision() const;
-  /// Returns the standard deviation of the distribution
-  double getStandardDeviation() const;
-  /// Returns the normalizer of the distribution
-  double getNormalizer() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Returns the probability density function at a point
-  double pdf(double f64X) const;
-  /// Returns the log-probability density function at a point
-  double logpdf(double f64X) const;
-  /// Returns the cumulative density function at a point
-  double cdf(double f64X) const;
-  /// Returns a sample of the distribution
-  double sample() const;
-  /// Returns the KL-divergence with another distribution
-  double KLDivergence(const NormalDistribution& other) const;
-  /// Returns the Mahalanobis distance from a point
-  double mahalanobisDistance(double f64Value) const;
-  /** @}
-    */
-
-protected:
-
-};
-
-#include "statistics/NormalDistribution.tpp"
+#include "statistics/NormalDistribution1v.h"
+#include "statistics/NormalDistributionMv.h"
 
 #endif // NORMALDISTRIBUTION_H

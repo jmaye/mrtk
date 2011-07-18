@@ -123,7 +123,7 @@ double CategoricalDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
   if (value.sum() != 1)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "CategoricalDistribution::pmf(): value must have a 1-K encoding");
   double f64Sum = 0;
-  for (size_t i = 0; i < M; i++)
+  for (size_t i = 0; i < M; ++i)
     f64Sum += mSuccessProbabilities(i) * value(i);
   return f64Sum;
 }
@@ -136,8 +136,6 @@ double CategoricalDistribution<M>::pmf(const typename
 
 template <size_t M>
 Eigen::Matrix<size_t, M, 1> CategoricalDistribution<M>::getSample() const {
-  static Randomizer randomizer;
-  Eigen::Matrix<size_t, M, 1> sample = Eigen::Matrix<size_t, M, 1>::Zero();
-  sample[randomizer.sampleCategorical(mSuccessProbabilities)]++;
-  return sample;
+  static Randomizer<double, M> randomizer;
+  return randomizer.sampleCategorical(mSuccessProbabilities);
 }

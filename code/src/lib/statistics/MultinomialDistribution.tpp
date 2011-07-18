@@ -169,7 +169,7 @@ double MultinomialDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "MultinomialDistribution<M>::logpmf(): sum of the input vector must be equal to the number of trials");
   LogFactorialFunction logFactorialFunction;
   double f64Sum = logFactorialFunction(mNumTrials);
-  for (size_t i = 0; i < M; i++)
+  for (size_t i = 0; i < M; ++i)
     f64Sum += value(i) * log(mSuccessProbabilities(i)) -
       logFactorialFunction(value(i));
   return f64Sum;
@@ -183,11 +183,11 @@ double MultinomialDistribution<M>::logpmf(const typename
 
 template <size_t M>
 Eigen::Matrix<size_t, M, 1> MultinomialDistribution<M>::getSample() const {
-  static Randomizer randomizer;
+  static Randomizer<double, M> randomizer;
   Eigen::Matrix<size_t, M, 1> sampleVector =
     Eigen::Matrix<size_t, M, 1>::Zero();
-  for (size_t i = 0; i < mNumTrials; i++) {
-    sampleVector[randomizer.sampleCategorical(mSuccessProbabilities)]++;
+  for (size_t i = 0; i < mNumTrials; ++i) {
+    sampleVector += randomizer.sampleCategorical(mSuccessProbabilities);
   }
   return sampleVector;
 }

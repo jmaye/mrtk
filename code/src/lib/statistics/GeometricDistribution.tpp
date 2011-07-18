@@ -82,6 +82,6 @@ double GeometricDistribution::logpmf(const size_t& value) const {
 }
 
 size_t GeometricDistribution::getSample() const {
-  static Randomizer randomizer;
+  static Randomizer<double> randomizer;
   return randomizer.sampleGeometric(mSuccessProbability);
 }

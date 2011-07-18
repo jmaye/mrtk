@@ -24,56 +24,51 @@
 #ifndef RANDOMIZER_H
 #define RANDOMIZER_H
 
-#include "base/Timestamp.h"
-#include "exceptions/OutOfBoundException.h"
-//#include "statistics/MvNormalDistribution.h"
-
-#include <Eigen/Core>
-
-#include <iosfwd>
-
-#include <stdint.h>
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
+#include "utils/SizeTSupport.h"
 
 /** The Randomizer class implements random sampling from several distributions
     \brief Random sampling from distributions
   */
-class Randomizer {
-  friend std::ostream& operator << (std::ostream& stream,
-    const Randomizer& obj);
-  friend std::istream& operator >> (std::istream& stream, Randomizer& obj);
-  friend std::ofstream& operator << (std::ofstream& stream,
-    const Randomizer& obj);
-  friend std::ifstream& operator >> (std::ifstream& stream, Randomizer& obj);
-
-  /** \name Streaming methods
-    @{
-    */
-  virtual void read(std::istream& stream);
-  virtual void write(std::ostream& stream) const;
-  virtual void read(std::ifstream& stream);
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Private members
-    @{
-    */
-  /// Seed of the random sampling
-  double mf64Seed;
-  /** @}
-    */
-
+template <typename T, size_t M = 1> class Randomizer :
+  public virtual Serializable {
 public:
+  /** \name Traits
+    @{
+    */
+  /// Rounding support for all integer types
+  template <typename U, size_t D = 0> struct Traits {
+  public:
+    /// Round function
+    static U round(double value);
+  };
+  /// Rounding support for float type
+  template <size_t D> struct Traits<float, D> {
+  public:
+    /// Round function
+    static float round(float value);
+  };
+  /// Rounding support for double type
+  template <size_t D> struct Traits<double, D> {
+  public:
+    /// Round function
+    static double round(double value);
+  };
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
-  Randomizer(double f64Seed = Timestamp::now());
+  /// Constructs randomizer from seed
+  Randomizer(const T& seed = getSeed());
   /// Copy constructor
-  Randomizer(const Randomizer& other);
+  Randomizer(const Randomizer<T, M>& other);
   /// Assignment operator
-  Randomizer& operator = (const Randomizer& other);
+  Randomizer<T, M>& operator = (const Randomizer<T, M>& other);
   /// Destructor
-  ~Randomizer();
+  virtual ~Randomizer();
   /** @}
     */
 
@@ -81,53 +76,66 @@ public:
     @{
     */
   /// Sets the seed of the random sampler
-  void setSeed(double f64Seed);
+  void setSeed(const T& seed);
   /// Returns the seed of the random sampler
-  double getSeed() const;
+  static T getSeed();
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Returns a sample from a uniform distribution
-  double sampleUniform(double f64MinSupport = 0.0, double f64MaxSupport = 1.0)
-    const throw (OutOfBoundException);
-  /// Returns a sample from a discrete uniform distribution
-  int32_t sampleUniform(int32_t i32MinSupport, int32_t i32MaxSupport)
-    const throw (OutOfBoundException);
+  /// Returns a sample from a uniform distribution within the specified support
+  T sampleUniform(const T& minSupport = T(0), const T& maxSupport = T(1)) const
+    throw (BadArgumentException<T>);
   /// Returns a sample from a normal distribution
-  double sampleNormal(double f64Mean = 0.0, double f64Variance = 1.0) const
-    throw (OutOfBoundException);
-  /// Returns a sample from a multivariate normal distribution
-  const Eigen::VectorXd sampleNormal(const Eigen::VectorXd& meanVector,
-    const Eigen::MatrixXd& covarianceMatrix) const
-    throw (OutOfBoundException);
-  /// Returns a sample from a multivariate normal distribution
-  //const Eigen::VectorXd sampleNormal(const MvNormalDistribution& dist) const;
-  /// Returns a sample from the Bernoulli distribution
-  bool sampleBernoulli(double f64P) const throw (OutOfBoundException);
-  /// Returns a sample from the categorical distribution
-  uint32_t sampleCategorical(const Eigen::VectorXd& eventProbabilitiesVector)
-    const throw (OutOfBoundException);
-  /// Returns a sample from the Poisson distribution
-  uint32_t samplePoisson(double f64Lambda) const throw (OutOfBoundException);
-  /// Returns a sample from the exponential distribution
-  double sampleExponential(double f64Lambda) const
-    throw (OutOfBoundException);
-  /// Returns a sample from the geometric distribution
-  uint32_t sampleGeometric(double f64P) const throw (OutOfBoundException);
-  /// Returns a sample from the gamma distribution
-  double sampleGamma(double f64K, double f64Theta) const
-    throw (OutOfBoundException);
-  /// Returns a sample from the beta distribution
-  double sampleBeta(double f64Alpha, double f64Beta) const
-    throw (OutOfBoundException);
+  T sampleNormal(const T& mean = T(0), const T& variance = T(1)) const
+    throw (BadArgumentException<T>);
+  /// Returns a sample from a categorical distribution
+  Eigen::Matrix<size_t, M, 1> sampleCategorical(const
+    Eigen::Matrix<double, M, 1>& successProbabilities =
+    Eigen::Matrix<double, M, 1>::Constant(1.0 / M))
+    const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
+  /// Returns a sample from a Poisson distribution
+  size_t samplePoisson(double rate = 1.0) const
+    throw (BadArgumentException<double>);
+  /// Returns a sample from a exponential distribution
+  double sampleExponential(double rate = 1.0) const
+    throw (BadArgumentException<double>);
+  /// Returns a sample from a geometric distribution
+  size_t sampleGeometric(double successProbability = 0.5) const
+    throw (BadArgumentException<double>);
+  /// Returns a sample from a gamma distribution
+  double sampleGamma(double shape = 1.0, double scale = 1.0) const
+    throw (BadArgumentException<double>);
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Seed of the random sampling
+  T mSeed;
+  /** @}
+    */
 
 };
+
+#include "statistics/Randomizer.tpp"
 
 #endif // RANDOMIZER_H
