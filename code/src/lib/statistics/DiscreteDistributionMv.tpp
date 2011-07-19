@@ -20,20 +20,20 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename X, size_t M>
-DiscreteDistribution<X, M>::DiscreteDistribution() {
+template <typename X, size_t M, size_t N>
+DiscreteDistribution<X, M, N>::DiscreteDistribution() {
 }
 
-template <typename X, size_t M>
-DiscreteDistribution<X, M>::~DiscreteDistribution() {
+template <typename X, size_t M, size_t N>
+DiscreteDistribution<X, M, N>::~DiscreteDistribution() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename X, size_t M> 
-double DiscreteDistribution<X, M>::getValue(const Eigen::Matrix<X, M, 1>&
+template <typename X, size_t M, size_t N>
+double DiscreteDistribution<X, M, N>::getValue(const Eigen::Matrix<X, M, N>&
   argument) const {
   return pmf(argument);
 }

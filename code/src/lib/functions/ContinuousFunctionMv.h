@@ -32,15 +32,16 @@
     continuous functions.
     \brief Multivariate continuous function
   */
-template <typename Y, typename X, size_t M> class ContinuousFunction :
-  public virtual Function<Y, Eigen::Matrix<X, M, 1> > {
+template <typename Y, typename X, size_t M, size_t N>
+  class ContinuousFunction :
+  public virtual Function<Y, Eigen::Matrix<X, M, N> > {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  ContinuousFunction(const ContinuousFunction<Y, X, M>& other);
+  ContinuousFunction(const ContinuousFunction<Y, X, M, N>& other);
   /// Assignment operator
-  ContinuousFunction& operator = (const ContinuousFunction<Y, X, M>& other);
+  ContinuousFunction& operator = (const ContinuousFunction<Y, X, M, N>& other);
   /** @}
     */
 

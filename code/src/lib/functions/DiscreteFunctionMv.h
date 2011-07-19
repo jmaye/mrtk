@@ -34,15 +34,15 @@
     functions.
     \brief Multivariate discrete function
   */
-template <typename Y, typename X, size_t M> class DiscreteFunction :
-  public virtual Function<Y, Eigen::Matrix<X, M, 1>  > {
+template <typename Y, typename X, size_t M, size_t N> class DiscreteFunction :
+  public virtual Function<Y, Eigen::Matrix<X, M, N> > {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  DiscreteFunction(const DiscreteFunction<Y, X, M>& other);
+  DiscreteFunction(const DiscreteFunction<Y, X, M, N>& other);
   /// Assignment operator
-  DiscreteFunction& operator = (const DiscreteFunction<Y, X, M>& other);
+  DiscreteFunction& operator = (const DiscreteFunction<Y, X, M, N>& other);
   /** @}
     */
 

@@ -20,20 +20,20 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename X, size_t M>
-ContinuousDistribution<X, M>::ContinuousDistribution() {
+template <typename X, size_t M, size_t N>
+ContinuousDistribution<X, M, N>::ContinuousDistribution() {
 }
 
-template <typename X, size_t M>
-ContinuousDistribution<X, M>::~ContinuousDistribution() {
+template <typename X, size_t M, size_t N>
+ContinuousDistribution<X, M, N>::~ContinuousDistribution() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename X, size_t M>
-double ContinuousDistribution<X, M>::getValue(const Eigen::Matrix<X, M, 1>&
+template <typename X, size_t M, size_t N>
+double ContinuousDistribution<X, M, N>::getValue(const Eigen::Matrix<X, M, N>&
   argument) const {
   return pdf(argument);
 }

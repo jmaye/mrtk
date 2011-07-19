@@ -31,17 +31,17 @@
     multivariate continuous distributions.
     \brief Multivariate continuous distribution
   */
-template <typename X, size_t M> class ContinuousDistribution :
-  public ContinuousFunction<double, X, M>,
-  public virtual Distribution<Eigen::Matrix<X, M, 1> > {
+template <typename X, size_t M, size_t N> class ContinuousDistribution :
+  public ContinuousFunction<double, X, M, N>,
+  public virtual Distribution<Eigen::Matrix<X, M, N> > {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  ContinuousDistribution(const ContinuousDistribution<X, M>& other);
+  ContinuousDistribution(const ContinuousDistribution<X, M, N>& other);
   /// Assignment operator
   ContinuousDistribution& operator =
-    (const ContinuousDistribution<X, M>& other);
+    (const ContinuousDistribution<X, M, N>& other);
   /** @}
     */
 
@@ -50,7 +50,7 @@ public:
     @{
     */
   /// Distribution type
-  typedef ContinuousDistribution<X, M> DistributionType;
+  typedef ContinuousDistribution<X, M, N> DistributionType;
   /** @}
     */
 
@@ -68,9 +68,9 @@ public:
     @{
     */
   /// Access the probablity density function at the given value
-  virtual double pdf(const Eigen::Matrix<X, M, 1>& value) const = 0;
+  virtual double pdf(const Eigen::Matrix<X, M, N>& value) const = 0;
   /// Interface to function
-  virtual double getValue(const Eigen::Matrix<X, M, 1>& argument) const;
+  virtual double getValue(const Eigen::Matrix<X, M, N>& argument) const;
   /** @}
     */
 

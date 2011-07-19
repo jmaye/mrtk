@@ -27,7 +27,7 @@
 #include "functions/DiscreteFunction.h"
 #include "statistics/Distribution.h"
 
-template <typename X, size_t M = 1> class DiscreteDistribution;
+template <typename X, size_t M = 1, size_t N = 1> class DiscreteDistribution;
 
 /** The DiscreteDistribution1v class represents an interface to the univariate
     discrete distributions.

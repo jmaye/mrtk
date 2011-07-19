@@ -16,58 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteFunction1v.h
-    \brief This file defines the class DiscreteFunction1v, which is an interface
-           to the univariate functions
+/** \file WishartDistribution.cpp
+    \brief This file is a testing binary for the WishartDistribution class
   */
 
-#ifndef DISCRETEFUNCTION1V_H
-#define DISCRETEFUNCTION1V_H
+#include "statistics/WishartDistribution.h"
 
-#include "functions/Function.h"
-
-template <typename Y, typename X, size_t M = 1, size_t N = 1>
-  class DiscreteFunction;
-
-/** The class DiscreteFunction1v is an interface to the univariate discrete
-    functions.
-    \brief Univariate discrete function
-  */
-template <typename Y, typename X> class DiscreteFunction<Y, X> :
-  public virtual Function<Y, X> {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  DiscreteFunction(const DiscreteFunction<Y, X>& other);
-  /// Assignment operator
-  DiscreteFunction& operator = (const DiscreteFunction<Y, X>& other);
-  /** @}
-    */
-
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Default constructor
-  DiscreteFunction();
-  /// Destructor
-  virtual ~DiscreteFunction();
-  /** @}
-    */
-
-  /** \name Accessors
-    @{
-    */
-  /// Access the function's number of variables
-  virtual size_t getNumVariables() const;
-  /** @}
-    */
-
-protected:
-
-};
-
-#include "functions/DiscreteFunction1v.tpp"
-
-#endif // DISCRETEFUNCTION1V_H
+int main(int argc, char** argv) {
+  WishartDistribution<2> dist;
+  std::cout << "Distribution default parameters: " << std::endl << dist
+    << std::endl << std::endl;
+  return 0;
+}

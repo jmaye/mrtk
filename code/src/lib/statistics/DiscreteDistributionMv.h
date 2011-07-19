@@ -31,16 +31,16 @@
     multivariate discrete distributions.
     \brief Multivariate discrete distribution
   */
-template <typename X, size_t M> class DiscreteDistribution :
-  public DiscreteFunction<double, X, M>,
-  public virtual Distribution<Eigen::Matrix<X, M, 1> > {
+template <typename X, size_t M, size_t N> class DiscreteDistribution :
+  public DiscreteFunction<double, X, M, N>,
+  public virtual Distribution<Eigen::Matrix<X, M, N> > {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  DiscreteDistribution(const DiscreteDistribution<X, M>& other);
+  DiscreteDistribution(const DiscreteDistribution<X, M, N>& other);
   /// Assignment operator
-  DiscreteDistribution& operator = (const DiscreteDistribution<X, M>& other);
+  DiscreteDistribution& operator = (const DiscreteDistribution<X, M, N>& other);
   /** @}
     */
 
@@ -49,7 +49,7 @@ public:
     @{
     */
   /// Distribution type
-  typedef DiscreteDistribution<X, M> DistributionType;
+  typedef DiscreteDistribution<X, M, N> DistributionType;
   /** @}
     */
 
@@ -67,9 +67,9 @@ public:
     @{
     */
   /// Access the probablity of the variable to take on the given value
-  virtual double pmf(const Eigen::Matrix<X, M, 1>& value) const = 0;
+  virtual double pmf(const Eigen::Matrix<X, M, N>& value) const = 0;
   /// Interface to function
-  virtual double getValue(const Eigen::Matrix<X, M, 1>& argument) const;
+  virtual double getValue(const Eigen::Matrix<X, M, N>& argument) const;
   /** @}
     */
 

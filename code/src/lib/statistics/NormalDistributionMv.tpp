@@ -97,8 +97,6 @@ const Eigen::Matrix<double, M, 1>& NormalDistribution<M>::getMean() const {
 template <size_t M>
 void NormalDistribution<M>::setCovariance(const Eigen::Matrix<double, M, M>&
   covariance) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
-  if (covariance.transpose() != covariance)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance, "NormalDistribution<M>::setCovariance(): covariance must be symmetric");
   mTransformation = covariance.llt();
   if (mTransformation.isPositiveDefinite() == false)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance, "NormalDistribution<M>::setCovariance(): covariance must be positive definite");
