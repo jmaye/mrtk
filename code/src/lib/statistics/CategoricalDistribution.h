@@ -74,7 +74,7 @@ public:
     successProbabilities = Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
   /// Copy constructor
   CategoricalDistribution(const CategoricalDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   CategoricalDistribution& operator = (const CategoricalDistribution& other);
   /// Destructor
   virtual ~CategoricalDistribution();
@@ -91,8 +91,7 @@ public:
   /// Returns the success probabilities
   const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
   /// Returns the probability mass function at a point
-  virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const
-    throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);
+  virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const;
   /// Returns the probability mass function at a point
   virtual double pmf(const typename
     DiscreteDistribution<size_t, M - 1>::Domain& value) const;

@@ -47,7 +47,7 @@ public:
   PoissonDistribution(double rate = 1.0);
   /// Copy constructor
   PoissonDistribution(const PoissonDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   PoissonDistribution& operator = (const PoissonDistribution& other);
   /// Destructor
   virtual ~PoissonDistribution();

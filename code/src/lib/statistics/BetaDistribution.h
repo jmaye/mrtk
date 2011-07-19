@@ -41,7 +41,7 @@ public:
   BetaDistribution(double alpha = 1.0, double beta = 1.0);
   /// Copy constructor
   BetaDistribution(const BetaDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   BetaDistribution& operator = (const BetaDistribution& other);
   /// Destructor
   virtual ~BetaDistribution();

@@ -17,8 +17,7 @@
  ******************************************************************************/
 
 #include "statistics/Randomizer.h"
-
-#include "functions/GammaFunction.h"
+#include "functions/LogGammaFunction.h"
 
 #include <Eigen/LU>
 #include <Eigen/Geometry>
@@ -106,9 +105,9 @@ void WishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale, "WishartDistribution<M>::setScale(): scale must be positive definite");
   mDeterminant = scale.determinant();
   mInverseScale = scale.inverse();
-  //GammaFunction<M> gammaFunction;
-  //mNormalizer = pow(2, mDegrees * M * 0.5) * pow(mDeterminant, mDegrees * 0.5) *
-    //gammaFunction(0.5 * mDegrees);
+  LogGammaFunction<double, M> logGammaFunction;
+  mNormalizer = mDegrees * M * 0.5 * log(2) + mDegrees * 0.5 * log(mDeterminant)
+    + logGammaFunction(0.5 * mDegrees);
   mScale = scale;
 }
 
@@ -141,13 +140,34 @@ const Eigen::LLT<Eigen::Matrix<double, M, M> >&
 
 template <size_t M>
 double WishartDistribution<M>::pdf(const Eigen::Matrix<double, M, M>& value)
+  const {
+  return exp(logpdf(value));
+}
+
+template <size_t M>
+double WishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>& value)
   const throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
   if (value.llt().isPositiveDefinite() == false)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(value, "WishartDistribution<M>::pdf(): value must be positive definite");
-  return 1.0 / mNormalizer * pow(value.determinant(), (mDegrees - M - 1) * 0.5) * exp(-0.5 * (mInverseScale * value).trace());
+  return (mDegrees - M - 1) * 0.5 * log(value.determinant())
+    - 0.5 * (mInverseScale * value).trace() - mNormalizer;
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, M> WishartDistribution<M>::getSample() const {
-  return Eigen::Matrix<double, M, M>::Zero();
+  Eigen::Matrix<double, M, M> A = Eigen::Matrix<double, M, M>::Zero();
+  Randomizer<double> randomizer;
+  // TODO: CHECK THIS
+  for (size_t i = 0; i < M; ++i)
+    for (size_t j = 0; j < M; ++j) {
+    if (i == j) {
+      A(i, j) = randomizer.sampleGamma(0.5 * (mDegrees - i), 2.0);
+      break;
+    }
+    else {
+      A(i, j) = randomizer.sampleNormal();
+    }
+  }
+
+  return A * A.transpose();
 }

@@ -22,30 +22,34 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename X>
-LogGammaFunction<X>::LogGammaFunction() {
+template <typename X, size_t M>
+LogGammaFunction<X, M>::LogGammaFunction() {
 }
 
-LogGammaFunction<size_t>::LogGammaFunction() {
+LogGammaFunction<size_t, 1>::LogGammaFunction() {
 }
 
-template <typename X>
-LogGammaFunction<X>::~LogGammaFunction() {
+template <typename X, size_t M>
+LogGammaFunction<X, M>::~LogGammaFunction() {
 }
 
-LogGammaFunction<size_t>::~LogGammaFunction() {
+LogGammaFunction<size_t, 1>::~LogGammaFunction() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename X>
-double LogGammaFunction<X>::getValue(const X& argument) const {
-  return lgamma(argument);
+template <typename X, size_t M>
+double LogGammaFunction<X, M>::getValue(const X& argument) const {
+  double sum = 0.0;
+  for (size_t i = 0; i < M; ++i) {
+    sum += lgamma(argument - 0.5 * i);
+  }
+  return sum + M * (M - 1) * 0.25 * log(M_PI);
 }
 
-double LogGammaFunction<size_t>::getValue(const size_t& argument) const
+double LogGammaFunction<size_t, 1>::getValue(const size_t& argument) const
   throw (BadArgumentException<size_t>) {
   if (argument)
     return LogFactorialFunction::getValue(argument - 1);

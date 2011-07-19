@@ -16,50 +16,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file CategoricalDistribution.cpp
-    \brief This file is a testing binary for the CategoricalDistribution class
+/** \file ChiSquareDistribution.cpp
+    \brief This file is a testing binary for the ChiSquareDistribution class
   */
 
-#include "statistics/CategoricalDistribution.h"
+#include "statistics/ChiSquareDistribution.h"
 
 int main(int argc, char** argv) {
-  CategoricalDistribution<2> dist;
+  ChiSquareDistribution dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
-  std::cout << "dist.getSuccessProbabilities(): " << std::endl
-    << dist.getSuccessProbabilities() << std::endl << std::endl;
-  std::cout << "dist.setSuccessProbability(0.7, 0.3)" << std::endl << std::endl;
-  dist.setSuccessProbabilities(Eigen::Vector2d(0.7, 0.3));
-  std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
+  std::cout << "dist.getDegrees(): " << dist.getDegrees() << std::endl
     << std::endl;
+  std::cout << "dist.setDegrees(2)" << std::endl << std::endl;
+  dist.setDegrees(2);
 
-  Eigen::Matrix<size_t, 2, 1> value;
-  value(0) = 1;
-  value(1) = 0;
-  std::cout << "pmf(1, 0): " << std::fixed << dist(value) << std::endl
+  std::cout << "Distribution new parameters: " << std::endl << dist
+    << std::endl << std::endl;
+
+  std::cout << "pdf(0.5): " << std::fixed << dist(0.5) << std::endl
     << std::endl;
-  if (fabs(dist(value) - 0.7) > 1e-4)
+  if (fabs(dist(0.5) - 0.3894004 ) > 1e-4)
     return 1;
 
-  value(0) = 0;
-  value(1) = 1;
-  std::cout << "pmf(0, 1): " << std::fixed << dist(value) << std::endl
+  std::cout << "pdf(1.5): " << std::fixed << dist(1.5) << std::endl
     << std::endl;
-  if (fabs(dist(value) - 0.3) > 1e-4)
+  if (fabs(dist(1.5) - 0.2361833) > 1e-4)
     return 1;
+
+  std::cout << "dist.getSample(): " << dist.getSample() << std::endl
+    << std::endl;
 
   try {
-    std::cout << "dist.setSuccessProbabilities(0.8, 0.9)" << std::endl;
-    dist.setSuccessProbabilities(Eigen::Vector2d(0.8, 0.9));
+    dist.setDegrees(0);
   }
-  catch (BadArgumentException<Eigen::Vector2d>& e) {
+  catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
-
-  std::cout << std::endl;
-
-  std::cout << "dist.getSample(): " << std::endl
-    << dist.getSample() << std::endl << std::endl;
 
   return 0;
 }

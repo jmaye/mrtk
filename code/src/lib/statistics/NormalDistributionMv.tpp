@@ -97,6 +97,8 @@ const Eigen::Matrix<double, M, 1>& NormalDistribution<M>::getMean() const {
 template <size_t M>
 void NormalDistribution<M>::setCovariance(const Eigen::Matrix<double, M, M>&
   covariance) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
+  if (covariance.transpose() != covariance)
+    throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance, "NormalDistribution<M>::setCovariance(): covariance must be symmetric");
   mTransformation = covariance.llt();
   if (mTransformation.isPositiveDefinite() == false)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance, "NormalDistribution<M>::setCovariance(): covariance must be positive definite");
@@ -104,7 +106,7 @@ void NormalDistribution<M>::setCovariance(const Eigen::Matrix<double, M, M>&
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance, "NormalDistribution<M>::setCovariance(): variances must be positive");
   mDeterminant = covariance.determinant();
   mPrecision = covariance.inverse();
-  mNormalizer = pow(2.0 * M_PI, 0.5 * M) * sqrt(mDeterminant);
+  mNormalizer = 0.5 * M * log(2.0 * M_PI) + 0.5 * log(mDeterminant);
   mCovariance = covariance;
 }
 
@@ -138,8 +140,14 @@ const Eigen::LLT<Eigen::Matrix<double, M, M> >&
 template <size_t M>
 double NormalDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
   const {
-  return 1 / mNormalizer * exp(-0.5 * ((mMean - value).transpose() * mPrecision
-    * (mMean - value))(0, 0));
+  return exp(logpdf(value));
+}
+
+template <size_t M>
+double NormalDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
+  const {
+  return -0.5 * ((mMean - value).transpose() * mPrecision
+    * (mMean - value))(0, 0) - mNormalizer;
 }
 
 template <size_t M>

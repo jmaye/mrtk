@@ -40,7 +40,7 @@ public:
   BernoulliDistribution(double successProbability = 0.5);
   /// Copy constructor
   BernoulliDistribution(const BernoulliDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   BernoulliDistribution& operator = (const BernoulliDistribution& other);
   /// Destructor
   virtual ~BernoulliDistribution();

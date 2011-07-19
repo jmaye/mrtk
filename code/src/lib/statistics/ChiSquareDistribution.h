@@ -16,45 +16,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BinomialDistribution.h
-    \brief This file defines the BinomialDistribution class, which represents a
-           binomial distribution
+/** \file ChiSquareDistribution.h
+    \brief This file defines the ChiSquareDistribution class, which represents
+           a chi-square distribution
   */
 
-#ifndef BINOMIALDISTRIBUTION_H
-#define BINOMIALDISTRIBUTION_H
+#ifndef CHISQUAREDISTRIBUTION_H
+#define CHISQUAREDISTRIBUTION_H
 
-#include "statistics/MultinomialDistribution.h"
+#include "statistics/GammaDistribution.h"
 
-/** The BinomialDistribution class represents a binomial distribution, i.e., the
-    discrete distribution of the number of successes in N independent Bernoulli
-    draws, each with the same probability of success p.
-    \brief Binomial distribution
+/** The ChiSquareDistribution class represents a chi-square distribution,
+    i.e., a continuous distribution that models the distribution of a sum of
+    the squares of k independent standard normal random variables (k degrees).
+    \brief Chi-Square distribution
   */
-class BinomialDistribution :
-  public MultinomialDistribution<2> {
+class ChiSquareDistribution :
+  public GammaDistribution<> {
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs the distribution from the parameter
-  BinomialDistribution(size_t numTrials = 1, double successProbability = 0.5);
+  /// Constructs distribution from parameters
+  ChiSquareDistribution(size_t degrees = 1);
   /// Copy constructor
-  BinomialDistribution(const BinomialDistribution& other);
+  ChiSquareDistribution(const ChiSquareDistribution& other);
   /// Assignment operator
-  BinomialDistribution& operator = (const BinomialDistribution& other);
+  ChiSquareDistribution& operator = (const ChiSquareDistribution& other);
   /// Destructor
-  virtual ~BinomialDistribution();
+  virtual ~ChiSquareDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the success probability
-  void setSuccessProbability(double successProbability);
-  /// Returns the success probability
-  double getSuccessProbability() const;
+  /// Sets the degrees of freedom of the distribution
+  void setDegrees(size_t degrees);
+  /// Returns the degrees of freedom of the distribution
+  size_t getDegrees() const;
   /** @}
     */
 
@@ -75,6 +75,6 @@ protected:
 
 };
 
-#include "statistics/BinomialDistribution.tpp"
+#include "statistics/ChiSquareDistribution.tpp"
 
-#endif // BINOMIALDISTRIBUTION_H
+#endif // CHISQUAREDISTRIBUTION_H

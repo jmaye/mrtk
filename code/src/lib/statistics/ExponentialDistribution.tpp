@@ -64,7 +64,7 @@ void ExponentialDistribution::write(std::ofstream& stream) const {
 void ExponentialDistribution::setRate(double rate)
   throw (BadArgumentException<double>) {
   if (rate <= 0)
-    throw BadArgumentException<double>(rate, "ExponentialDistribution::setLambda(): lambda must be strictly positive");
+    throw BadArgumentException<double>(rate, "ExponentialDistribution::setRate(): rate must be strictly positive");
   mRate = rate;
 }
 
@@ -73,13 +73,13 @@ double ExponentialDistribution::getRate() const {
 }
 
 double ExponentialDistribution::pdf(const double& value) const {
-  return exp(logpdf(value));
+  if (value < 0)
+    return 0.0;
+  else
+    return exp(logpdf(value));
 }
 
-double ExponentialDistribution::logpdf(const double& value) const
-  throw (BadArgumentException<double>) {
-  if (value < 0)
-    throw BadArgumentException<double>(value, "ExponentialDistribution::logpdf(): value must be positive");
+double ExponentialDistribution::logpdf(const double& value) const {
   return log(mRate) - mRate * value;
 }
 

@@ -75,7 +75,7 @@ public:
     Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
   /// Copy constructor
   MultinomialDistribution(const MultinomialDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   MultinomialDistribution& operator = (const MultinomialDistribution& other);
   /// Destructor
   virtual ~MultinomialDistribution();

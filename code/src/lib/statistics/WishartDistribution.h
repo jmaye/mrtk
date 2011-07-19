@@ -31,7 +31,9 @@
 
 #include <Eigen/Cholesky>
 
-/** The WishartDistribution class represents a Wishart distribution.
+/** The WishartDistribution class represents a Wishart distribution, i.e., a
+    continuous distribution that is a conjugate prior for precision matrix in a
+    multivariate normal distribution.
     \brief Wishart distribution
   */
 template <size_t M> class WishartDistribution :
@@ -43,7 +45,7 @@ public:
     @{
     */
   /// Constructs the distribution from the parameters
-  WishartDistribution(double degrees = 2.0, const Eigen::Matrix<double, M, M>&
+  WishartDistribution(double degrees = M, const Eigen::Matrix<double, M, M>&
     scale = Eigen::Matrix<double, M, M>::Identity());
   /// Copy constructor
   WishartDistribution(const WishartDistribution<M>& other);
@@ -75,7 +77,9 @@ public:
   /// Returns the cholesky decomposition of the scale matrix
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Access the probability density function at the given value
-  virtual double pdf(const Eigen::Matrix<double, M, M>& value) const 
+  virtual double pdf(const Eigen::Matrix<double, M, M>& value) const;
+  /// Access the log-probability density function at the given value
+  double logpdf(const Eigen::Matrix<double, M, M>& value) const 
     throw (BadArgumentException<Eigen::Matrix<double, M, M> >);
   /// Access a sample drawn from the distribution
   virtual Eigen::Matrix<double, M, M> getSample() const;

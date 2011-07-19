@@ -32,15 +32,15 @@
     numbers.
     \brief Log-gamma function for real numbers
   */
-template <typename X = size_t> class LogGammaFunction :
+template <typename X = size_t, size_t M = 1> class LogGammaFunction :
   public ContinuousFunction<double, X> {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  LogGammaFunction(const LogGammaFunction<X>& other);
+  LogGammaFunction(const LogGammaFunction<X, M>& other);
   /// Assignment operator
-  LogGammaFunction& operator = (const LogGammaFunction<X>& other);
+  LogGammaFunction& operator = (const LogGammaFunction<X, M>& other);
   /** @}
     */
 
@@ -71,7 +71,7 @@ protected:
     numbers
     \brief Log-gamma function for integer numbers
   */
-template <> class LogGammaFunction<size_t> :
+template <> class LogGammaFunction<size_t, 1> :
   public LogFactorialFunction {
   /** \name Private constructors
     @{

@@ -78,6 +78,8 @@ public:
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Access the probability density function at the given value
   virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
+  /// Access the log-probability density function at the given value
+  double logpdf(const Eigen::Matrix<double, M, 1>& value) const;
   /// Access a sample drawn from the distribution
   virtual Eigen::Matrix<double, M, 1> getSample() const;
   /// Returns the KL-divergence with another distribution

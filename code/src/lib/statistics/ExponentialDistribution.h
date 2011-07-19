@@ -47,7 +47,7 @@ public:
   ExponentialDistribution(double rate = 1.0);
   /// Copy constructor
   ExponentialDistribution(const ExponentialDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   ExponentialDistribution& operator = (const ExponentialDistribution& other);
   /// Destructor
   virtual ~ExponentialDistribution();
@@ -64,7 +64,7 @@ public:
   /// Access the probablity density function at the given value
   virtual double pdf(const double& value) const;
   /// Access the log-probablity density function at the given value
-  double logpdf(const double& value) const throw (BadArgumentException<double>);
+  double logpdf(const double& value) const;
   /// Access a sample drawn from the distribution
   virtual double getSample() const;
   /** @}

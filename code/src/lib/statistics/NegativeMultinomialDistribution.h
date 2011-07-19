@@ -70,7 +70,7 @@ public:
     Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
   /// Copy constructor
   NegativeMultinomialDistribution(const NegativeMultinomialDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   NegativeMultinomialDistribution& operator =
     (const NegativeMultinomialDistribution& other);
   /// Destructor

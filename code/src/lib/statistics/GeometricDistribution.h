@@ -47,7 +47,7 @@ public:
   GeometricDistribution(double successProbability = 0.5);
   /// Copy constructor
   GeometricDistribution(const GeometricDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   GeometricDistribution& operator = (const GeometricDistribution& other);
   /// Destructor
   ~GeometricDistribution();

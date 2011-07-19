@@ -31,15 +31,15 @@
 /** The GammaFunction class represents the gamma function for real numbers.
     \brief Gamma function for real numbers
   */
-template <typename X = size_t> class GammaFunction :
+template <typename X = size_t, size_t M = 1> class GammaFunction :
   public ContinuousFunction<double, X> {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  GammaFunction(const GammaFunction<X>& other);
+  GammaFunction(const GammaFunction<X, M>& other);
   /// Assignment operator
-  GammaFunction& operator = (const GammaFunction<X>& other);
+  GammaFunction& operator = (const GammaFunction<X, M>& other);
   /** @}
     */
 
@@ -69,7 +69,7 @@ protected:
 /** The GammaFunction class represents the gamma function for integer numbers.
     \brief Gamma function for integer numbers
   */
-template <> class GammaFunction<size_t> :
+template <> class GammaFunction<size_t, 1> :
   public FactorialFunction {
   /** \name Private constructors
     @{

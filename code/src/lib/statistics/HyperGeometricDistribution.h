@@ -76,7 +76,7 @@ public:
     Eigen::Matrix<size_t, M, 1>::Constant(1));
   /// Copy constructor
   HyperGeometricDistribution(const HyperGeometricDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   HyperGeometricDistribution& operator = (const HyperGeometricDistribution&
     other);
   /// Destructor

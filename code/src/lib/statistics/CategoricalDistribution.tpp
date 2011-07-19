@@ -119,13 +119,13 @@ double CategoricalDistribution<M>::Traits<2, D>::pmf(const
 
 template <size_t M>
 double CategoricalDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
-  const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+  const {
   if (value.sum() != 1)
-    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "CategoricalDistribution::pmf(): value must have a 1-K encoding");
-  double f64Sum = 0;
+    return 0.0;
+  double sum = 0;
   for (size_t i = 0; i < M; ++i)
-    f64Sum += mSuccessProbabilities(i) * value(i);
-  return f64Sum;
+    sum += mSuccessProbabilities(i) * value(i);
+  return sum;
 }
 
 template <size_t M>

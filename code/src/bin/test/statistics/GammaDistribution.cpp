@@ -23,7 +23,7 @@
 #include "statistics/GammaDistribution.h"
 
 int main(int argc, char** argv) {
-  GammaDistribution dist;
+  GammaDistribution<double> dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
   std::cout << "dist.getShape(): " << dist.getShape() << std::endl << std::endl;
@@ -66,13 +66,6 @@ int main(int argc, char** argv) {
 
   try {
     dist.setScale(0.0);
-  }
-  catch (BadArgumentException<double>& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  try {
-    std::cout << "pdf(-1.0): " << std::fixed << dist(-1.0) << std::endl;
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;

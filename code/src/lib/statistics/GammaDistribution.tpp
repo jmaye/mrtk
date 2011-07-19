@@ -18,92 +18,112 @@
 
 #include "statistics/Randomizer.h"
 
+#include "functions/LogGammaFunction.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-GammaDistribution::GammaDistribution(double shape, double scale) {
+template <typename T>
+GammaDistribution<T>::GammaDistribution(const T& shape, double scale) {
   setShape(shape);
   setScale(scale);
 }
 
-GammaDistribution::GammaDistribution(const GammaDistribution& other) :
+template <typename T>
+GammaDistribution<T>::GammaDistribution(const GammaDistribution<T>& other) :
   mShape(other.mShape),
   mScale(other.mScale) {
 }
 
-GammaDistribution& GammaDistribution::operator =
-  (const GammaDistribution& other) {
+template <typename T>
+GammaDistribution<T>& GammaDistribution<T>::operator =
+  (const GammaDistribution<T>& other) {
   mShape = other.mShape;
   mScale = other.mScale;
   return *this;
 }
 
-GammaDistribution::~GammaDistribution() {
+template <typename T>
+GammaDistribution<T>::~GammaDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void GammaDistribution::read(std::istream& stream) {
+template <typename T>
+void GammaDistribution<T>::read(std::istream& stream) {
 }
 
-void GammaDistribution::write(std::ostream& stream) const {
+template <typename T>
+void GammaDistribution<T>::write(std::ostream& stream) const {
   stream << "shape: " << mShape << std::endl
     << "scale: " << mScale;
 }
 
-void GammaDistribution::read(std::ifstream& stream) {
+template <typename T>
+void GammaDistribution<T>::read(std::ifstream& stream) {
 }
 
-void GammaDistribution::write(std::ofstream& stream) const {
+template <typename T>
+void GammaDistribution<T>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void GammaDistribution::setShape(double shape)
-  throw (BadArgumentException<double>) {
+template <typename T>
+void GammaDistribution<T>::setShape(const T& shape)
+  throw (BadArgumentException<T>) {
   if (shape <= 0)
-    throw BadArgumentException<double>(shape, "GammaDistribution::setShape(): shape must be strictly positive");
+    throw BadArgumentException<T>(shape, "GammaDistribution::setShape(): shape must be strictly positive");
   mShape = shape;
-  mNormalizer = mShape * log(mScale) + lgamma(mShape);
+  LogGammaFunction<T> logGammaFunction;
+  mNormalizer = mShape * log(mScale) + logGammaFunction(mShape);
 }
 
-double GammaDistribution::getShape() const {
+template <typename T>
+const T& GammaDistribution<T>::getShape() const {
   return mShape;
 }
 
-void GammaDistribution::setScale(double scale)
+template <typename T>
+void GammaDistribution<T>::setScale(double scale)
   throw (BadArgumentException<double>) {
   if (scale <= 0)
     throw BadArgumentException<double>(scale, "GammaDistribution::setScale(): scale must be strictly positive");
   mScale = scale;
-  mNormalizer = mShape * log(mScale) + lgamma(mShape);
+  LogGammaFunction<T> logGammaFunction;
+  mNormalizer = mShape * log(mScale) + logGammaFunction(mShape);
 }
 
-double GammaDistribution::getScale() const {
+template <typename T>
+double GammaDistribution<T>::getScale() const {
   return mScale;
 }
 
-double GammaDistribution::getNormalizer() const {
+template <typename T>
+double GammaDistribution<T>::getNormalizer() const {
   return mNormalizer;
 }
 
-double GammaDistribution::pdf(const double& value) const {
-  return exp(logpdf(value));
+template <typename T>
+double GammaDistribution<T>::pdf(const double& value) const {
+  if (value <= 0)
+    return 0.0;
+  else
+    return exp(logpdf(value));
 }
 
-double GammaDistribution::logpdf(const double& value) const
-  throw (BadArgumentException<double>) {
-  if (value < 0)
-    throw BadArgumentException<double>(value, "GammaDistribution::logpdf(): value must be positive");
+template <typename T>
+double GammaDistribution<T>::logpdf(const double& value) const {
   return (mShape - 1) * log(value) - value / mScale - mNormalizer;
 }
 
-double GammaDistribution::getSample() const {
+template <typename T>
+double GammaDistribution<T>::getSample() const {
   static Randomizer<double> randomizer;
   return randomizer.sampleGamma(mShape, mScale);
 }

@@ -75,7 +75,7 @@ public:
     Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
   DirichletDistribution(const DirichletDistribution<M>& other);
-  //// Assignment operator
+  /// Assignment operator
   DirichletDistribution& operator = (const DirichletDistribution<M>& other);
   /// Destructor
   virtual ~DirichletDistribution();

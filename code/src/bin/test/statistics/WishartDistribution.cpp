@@ -26,5 +26,47 @@ int main(int argc, char** argv) {
   WishartDistribution<2> dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
+  std::cout << "dist.getDegrees(): " << dist.getDegrees() << std::endl;
+  std::cout << "dist.getScale(): " << std::endl << dist.getScale() << std::endl;
+  std::cout << "dist.getInverseScale(): " << std::endl << dist.getInverseScale()
+    << std::endl;
+  std::cout << "dist.getDeterminant(): " << dist.getDeterminant() << std::endl;
+  std::cout << "dist.getNormalizer(): " << dist.getNormalizer() << std::endl;
+  std::cout << "dist.getTransformation(): " << std::endl <<
+    dist.getTransformation().matrixL() << std::endl;
+  std::cout << "dist.setDegrees(3)" << std::endl;
+  dist.setDegrees(3);
+  std::cout << "dist.setScale((1, 0, 0, 1))" << std::endl;
+  dist.setScale((Eigen::Matrix<double, 2, 2>() << 1, 0, 0, 1).finished());
+  std::cout << "Distribution new parameters: " << std::endl << dist
+    << std::endl << std::endl;
+  std::cout << "dist.pdf((1,0,0,1)): "
+    << dist((Eigen::Matrix<double, 2, 2>() << 1, 0, 0, 1).finished())
+    << std::endl;
+  if (fabs(dist((Eigen::Matrix<double, 2, 2>() << 1, 0, 0, 1).finished()) -
+    0.02927492) > 1e-4)
+    return 1;
+  std::cout << "dist.pdf((1,0,0,1)): "
+    << dist((Eigen::Matrix<double, 2, 2>() << 2, 0, 0, 2).finished())
+    << std::endl;
+  if (fabs(dist((Eigen::Matrix<double, 2, 2>() << 2, 0, 0, 2).finished()) -
+    0.01076964) > 1e-4)
+    return 1;
+  try {
+    dist.setDegrees(1);
+  }
+  catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    dist.setScale((Eigen::Matrix<double, 2, 2>() << 10, 10, 10, 10).finished());
+  }
+  catch (BadArgumentException<Eigen::Matrix<double, 2, 2> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
+
   return 0;
 }

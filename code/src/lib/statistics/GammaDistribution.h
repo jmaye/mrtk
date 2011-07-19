@@ -35,7 +35,7 @@
     Poisson/Exponential/... distributions.
     \brief Gamma distribution
   */
-class GammaDistribution :
+template <typename T = double> class GammaDistribution :
   public ContinuousDistribution<double>,
   public SampleDistribution<double>,
   public virtual Serializable {
@@ -44,11 +44,11 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  GammaDistribution(double shape = 1.0, double scale = 1.0);
+  GammaDistribution(const T& shape = T(1), double scale = 1.0);
   /// Copy constructor
-  GammaDistribution(const GammaDistribution& other);
-  //// Assignment operator
-  GammaDistribution& operator = (const GammaDistribution& other);
+  GammaDistribution(const GammaDistribution<T>& other);
+  /// Assignment operator
+  GammaDistribution<T>& operator = (const GammaDistribution<T>& other);
   /// Destructor
   virtual ~GammaDistribution();
   /** @}
@@ -58,9 +58,9 @@ public:
     @{
     */
   /// Sets the shape parameter
-  void setShape(double shape) throw (BadArgumentException<double>);
+  void setShape(const T& shape) throw (BadArgumentException<T>);
   /// Returns the shape parameter
-  double getShape() const;
+  const T& getShape() const;
   /// Sets the scale parameter
   void setScale(double scale) throw (BadArgumentException<double>);
   /// Returns the scale parameter
@@ -70,7 +70,7 @@ public:
   /// Access the probablity density function at the given value
   virtual double pdf(const double& value) const;
   /// Access the log-probablity density function at the given value
-  double logpdf(const double& value) const throw (BadArgumentException<double>);
+  double logpdf(const double& value) const;
   /// Access a sample drawn from the distribution
   virtual double getSample() const;
   /** @}
@@ -95,7 +95,7 @@ protected:
     @{
     */
   /// Shape parameter
-  double mShape;
+  T mShape;
   /// Scale parameter
   double mScale;
   /// Normalizer

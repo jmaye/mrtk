@@ -54,13 +54,6 @@ int main(int argc, char** argv) {
     << std::endl;
 
   try {
-    std::cout << "pdf(-2.5): " << std::fixed << dist(-2.5) << std::endl;
-  }
-  catch (BadArgumentException<double>& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  try {
     dist.setRate(0.0);
   }
   catch (BadArgumentException<double>& e) {

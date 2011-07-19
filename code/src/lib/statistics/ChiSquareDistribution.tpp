@@ -16,42 +16,55 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <cmath>
+#include "statistics/Randomizer.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename X, size_t M>
-GammaFunction<X, M>::GammaFunction() {
+ChiSquareDistribution::ChiSquareDistribution(size_t degrees) :
+  GammaDistribution<>(0.5 * degrees, 2.0) {
 }
 
-GammaFunction<size_t, 1>::GammaFunction() {
+ChiSquareDistribution::ChiSquareDistribution(const ChiSquareDistribution&
+  other) :
+  GammaDistribution<>(other) {
 }
 
-template <typename X, size_t M>
-GammaFunction<X, M>::~GammaFunction() {
+ChiSquareDistribution& ChiSquareDistribution::operator =
+  (const ChiSquareDistribution& other) {
+  this->GammaDistribution<>::operator=(other);
+  return *this;
 }
 
-GammaFunction<size_t, 1>::~GammaFunction() {
+ChiSquareDistribution::~ChiSquareDistribution() {
+}
+
+/******************************************************************************/
+/* Stream operations                                                          */
+/******************************************************************************/
+
+void ChiSquareDistribution::read(std::istream& stream) {
+}
+
+void ChiSquareDistribution::write(std::ostream& stream) const {
+  stream << "degrees: " << getShape() * 2;
+}
+
+void ChiSquareDistribution::read(std::ifstream& stream) {
+}
+
+void ChiSquareDistribution::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename X, size_t M>
-double GammaFunction<X, M>::getValue(const X& argument) const {
-  double prod = 1.0;
-  for (size_t i = 0; i < M; ++i) {
-    prod *= tgamma(argument - 0.5 * i);
-  }
-  return prod * pow(M_PI, M * (M - 1) * 0.25);
+void ChiSquareDistribution::setDegrees(size_t degrees) {
+  setShape(degrees * 0.5);
 }
 
-size_t GammaFunction<size_t, 1>::getValue(const size_t& argument) const
-  throw (BadArgumentException<size_t>) {
-  if (argument)
-    return FactorialFunction::getValue(argument - 1);
-  else throw BadArgumentException<size_t>(argument, "GammaFunction<size_t>::getValue(): argument must be strictly positive");
+size_t ChiSquareDistribution::getDegrees() const {
+  return getShape();
 }

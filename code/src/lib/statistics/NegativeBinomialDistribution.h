@@ -43,7 +43,7 @@ public:
     successProbability = 0.5);
   /// Copy constructor
   NegativeBinomialDistribution(const NegativeBinomialDistribution& other);
-  //// Assignment operator
+  /// Assignment operator
   NegativeBinomialDistribution& operator =
     (const NegativeBinomialDistribution& other);
   /// Destructor
