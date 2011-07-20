@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
   Eigen::Matrix<double, 1, 1> maximum;
   maximum(0) = 10;
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double> plot("ExpFunction",
+  ContinuousFunctionPlot<double, double, 1> plot("ExpFunction",
     ExpFunction<double>(), minimum, maximum, 0.1);
   plot.show();
   return app.exec();

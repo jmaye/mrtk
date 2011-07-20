@@ -41,6 +41,6 @@ double LogFunction<X>::getValue(const X& argument) const
     return log(argument);
   else
     throw BadArgumentException<X>(argument,
-    "LogFunction<X>::getValue(): argument must be strictly positive",
-    __FILE__, __LINE__);
+      "LogFunction<X>::getValue(): argument must be strictly positive",
+      __FILE__, __LINE__);
 }

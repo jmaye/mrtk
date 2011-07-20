@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Fonction.h
+/** \file Function.h
     \brief This file defines the class Fonction, which is an interface for any
            kind of functions
   */

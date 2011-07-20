@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
   Eigen::Matrix<double, 1, 1> maximum;
   maximum(0) = 8;
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double> plot("ChiSquareDistribution",
+  ContinuousFunctionPlot<double, double, 1> plot("ChiSquareDistribution",
     ChiSquareDistribution(), minimum, maximum, 0.1);
   plot.show();
   return app.exec();

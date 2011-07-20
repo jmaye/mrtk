@@ -24,19 +24,25 @@
 /******************************************************************************/
 
 template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const std::string& title,
-  const Function<Y, X>& function, const Eigen::Matrix<X, 1, 1>& minimum, const
-  Eigen::Matrix<X, 1, 1>& maximum, const X& resolution) throw
+ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
+  title, const ContinuousFunction<Y, X>& function, const Eigen::Matrix<X, 1, 1>&
+  minimum, const Eigen::Matrix<X, 1, 1>& maximum, const X& resolution) throw
   (BadArgumentException<Eigen::Matrix<X, 1, 1> >, BadArgumentException<X>) :
   FunctionPlot<Y, X, 1>(title, minimum, maximum),
   mPlot(this),
   mResolution(resolution) {
   if (maximum(0) < minimum(0))
-    throw BadArgumentException<Eigen::Matrix<X, 1, 1> >(maximum, "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): maximum must be larger than minimum");
+    throw BadArgumentException<Eigen::Matrix<X, 1, 1> >(maximum,
+      "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): maximum must be larger than minimum",
+      __FILE__, __LINE__);
   if (resolution <= 0)
-    throw BadArgumentException<X>(resolution, "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): resolution must be strictly positive");
+    throw BadArgumentException<X>(resolution,
+      "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): resolution must be strictly positive",
+      __FILE__, __LINE__);
   if (resolution > maximum(0) - minimum(0))
-    throw BadArgumentException<X>(resolution, "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): resolution must be smaller than the range");
+    throw BadArgumentException<X>(resolution,
+    "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): resolution must be smaller than the range",
+    __FILE__, __LINE__);
   mPlot.setTitle(QString(title.c_str()));
   mXData.resize(round((maximum(0) - minimum(0)) / resolution));
   mYData.resize(round((maximum(0) - minimum(0)) / resolution));
@@ -56,8 +62,8 @@ ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const std::string& title,
 }
 
 template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const
-  ContinuousFunctionPlot<Y, X>& other) :
+ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const
+  ContinuousFunctionPlot<Y, X, 1>& other) :
   FunctionPlot<Y, X, 1>(other),
   mPlot(other.mPlot),
   mCurve(other.mCurve),
@@ -67,8 +73,8 @@ ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const
 }
 
 template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X>& ContinuousFunctionPlot<Y, X>::operator =
-  (const ContinuousFunctionPlot<Y, X>& other) {
+ContinuousFunctionPlot<Y, X, 1>& ContinuousFunctionPlot<Y, X, 1>::operator =
+  (const ContinuousFunctionPlot<Y, X, 1>& other) {
   this->FunctionPlot<Y, X, 1>::operator=(other);
   mPlot = other.mPlot;
   mCurve = other.mCurve;
@@ -79,7 +85,7 @@ ContinuousFunctionPlot<Y, X>& ContinuousFunctionPlot<Y, X>::operator =
 }
 
 template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X>::~ContinuousFunctionPlot() {
+ContinuousFunctionPlot<Y, X, 1>::~ContinuousFunctionPlot() {
 }
 
 /******************************************************************************/
@@ -87,11 +93,11 @@ ContinuousFunctionPlot<Y, X>::~ContinuousFunctionPlot() {
 /******************************************************************************/
 
 template <typename Y, typename X>
-void ContinuousFunctionPlot<Y, X>::setResolution(const X& resolution) {
+void ContinuousFunctionPlot<Y, X, 1>::setResolution(const X& resolution) {
   mResolution = resolution;
 }
 
 template <typename Y, typename X>
-const X& ContinuousFunctionPlot<Y, X>::getResolution() const {
+const X& ContinuousFunctionPlot<Y, X, 1>::getResolution() const {
   return mResolution;
 }

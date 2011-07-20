@@ -16,39 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file SurfacePlot.h
-    \brief SurfacePlot
+/** \file NormalDistribution2vPlot.cpp
+    \brief This file is a testing binary for plotting the bivariate normal
+           distribution pdf
   */
 
-#ifndef SURFACEPLOT_H
-#define SURFACEPLOT_H
+#include "visualization/ContinuousFunctionPlot.h"
+#include "statistics/NormalDistribution.h"
 
-#include "visualization/Function.h"
+#include <QtGui/QApplication>
 
-#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
-
-#include <string>
-
-/** SurfacePlot
-  */
-class SurfacePlot :
-  public Qwt3D::SurfacePlot {
-
-public:
-  /** Constructors
-    */
-  SurfacePlot(const std::string& sName);
-
-  /** Destructor
-    */
-  ~SurfacePlot();
-
-  /** Accessors
-    */
-  void addFunction(Function& function);
-
-protected:
-
-};
-
-#endif // SURFACEPLOT_H
+int main(int argc, char** argv) {
+  Eigen::Matrix<double, 2, 1> minimum(-2, -2);
+  Eigen::Matrix<double, 2, 1> maximum(2, 2);
+  QApplication app(argc, argv);
+  ContinuousFunctionPlot<double, double, 2> plot("NormalDistribution2v",
+    NormalDistribution<2>(), minimum, maximum, 0.05);
+  plot.show();
+  return app.exec();
+}

@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
   Eigen::Matrix<double, 1, 1> maximum;
   maximum(0) = 5;
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double> plot("UniformDistribution1v",
+  ContinuousFunctionPlot<double, double, 1> plot("UniformDistribution1v",
     UniformDistribution<double>(), minimum, maximum, 0.1);
   plot.show();
   return app.exec();

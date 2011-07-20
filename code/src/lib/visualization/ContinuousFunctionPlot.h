@@ -24,6 +24,6 @@
 #define CONTINUOUSFUNCTIONPLOT_H
 
 #include "visualization/ContinuousFunctionPlot1v.h"
-//#include "visualization/ContinuousFunctionPlot2v.h"
+#include "visualization/ContinuousFunctionPlot2v.h"
 
 #endif // CONTINUOUSFUNCTIONPLOT_H

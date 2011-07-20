@@ -54,6 +54,6 @@ double LogGammaFunction<size_t, 1>::getValue(const size_t& argument) const
   if (argument)
     return LogFactorialFunction::getValue(argument - 1);
   else throw BadArgumentException<size_t>(argument,
-  "LogGammaFunction<size_t>::getValue(): argument must be strictly positive",
-  __FILE__, __LINE__);
+    "LogGammaFunction<size_t>::getValue(): argument must be strictly positive",
+    __FILE__, __LINE__);
 }

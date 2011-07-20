@@ -54,6 +54,6 @@ size_t GammaFunction<size_t, 1>::getValue(const size_t& argument) const
   if (argument)
     return FactorialFunction::getValue(argument - 1);
   else throw BadArgumentException<size_t>(argument,
-  "GammaFunction<size_t>::getValue(): argument must be strictly positive",
-  __FILE__, __LINE__);
+    "GammaFunction<size_t>::getValue(): argument must be strictly positive",
+    __FILE__, __LINE__);
 }

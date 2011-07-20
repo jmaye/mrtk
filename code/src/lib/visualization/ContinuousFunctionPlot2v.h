@@ -16,22 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunctionPlot1v.h
-    \brief This file contains a plotting tool for univariate continuous
+/** \file ContinuousFunctionPlot2v.h
+    \brief This file contains a plotting tool for bivariate continuous
            functions
   */
 
-#ifndef CONTINUOUSFUNCTIONPLOT1V_H
-#define CONTINUOUSFUNCTIONPLOT1V_H
+#ifndef CONTINUOUSFUNCTIONPLOT2V_H
+#define CONTINUOUSFUNCTIONPLOT2V_H
 
 #include "functions/ContinuousFunction.h"
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
 
-#include <QtGui/QWidget>
-#include <QtCore/QVector>
-#include <qwt-qt4/qwt_plot.h>
-#include <qwt-qt4/qwt_plot_curve.h>
+#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
+
+#include <vector>
 
 template <typename Y, typename X, size_t M> class ContinuousFunctionPlot;
 
@@ -39,23 +38,23 @@ template <typename Y, typename X, size_t M> class ContinuousFunctionPlot;
     continuous functions.
     \brief 1-v continuous function plotting tool
   */
-template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 1> :
-  public FunctionPlot<Y, X, 1>,
-  public QWidget {
+template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 2> :
+  public FunctionPlot<Y, X, 2>,
+  public Qwt3D::SurfacePlot {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs plot from parameters
   ContinuousFunctionPlot(const std::string& title, const
-    ContinuousFunction<Y, X>& function, const Eigen::Matrix<X, 1, 1>& minimum,
-    const Eigen::Matrix<X, 1, 1>& maximum, const X& resolution) throw
-    (BadArgumentException<Eigen::Matrix<X, 1, 1> >, BadArgumentException<X>);
+    ContinuousFunction<Y, X, 2>& function, const Eigen::Matrix<X, 2, 1>&
+    minimum, const Eigen::Matrix<X, 2, 1>& maximum, const X& resolution) throw
+    (BadArgumentException<Eigen::Matrix<X, 2, 1> >, BadArgumentException<X>);
   /// Copy constructor
-  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 1>& other);
+  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 2>& other);
   /// Assignment operator
-  ContinuousFunctionPlot<Y, X, 1>& operator =
-    (const ContinuousFunctionPlot<Y, X, 1>& other);
+  ContinuousFunctionPlot<Y, X, 2>& operator =
+    (const ContinuousFunctionPlot<Y, X, 2>& other);
   /// Destructor
   virtual ~ContinuousFunctionPlot();
   /** @}
@@ -75,21 +74,15 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Plot object
-  QwtPlot mPlot;
-  /// Curve plotted
-  QwtPlotCurve mCurve;
-  /// Data on the x-axis
-  QVector<X> mXData;
-  /// Data on the y-axis
-  QVector<Y> mYData;
-  /// Resolution on the x-axis
+  /// Data on to be plotted
+  double **mData;
+  /// Resolution on the x/y-axis
   X mResolution;
   /** @}
     */
 
 };
 
-#include "visualization/ContinuousFunctionPlot1v.tpp"
+#include "visualization/ContinuousFunctionPlot2v.tpp"
 
-#endif // CONTINUOUSFUNCTIONPLOT1V_H
+#endif // CONTINUOUSFUNCTIONPLOT2V_H
