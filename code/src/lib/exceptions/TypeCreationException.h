@@ -38,7 +38,8 @@ public:
     @{
     */
   /// Constructs exception from argument and string
-  TypeCreationException(const X& argument, const std::string& msg);
+  TypeCreationException(const X& argument, const std::string& msg, const
+    std::string& filename = " ", size_t line = 0);
   /// Copy constructor
   TypeCreationException(const TypeCreationException& other) throw ();
   /// Assignment operator
@@ -58,10 +59,19 @@ public:
     */
 
 protected:
+  /** \name Protected members
+    @{
+    */
   /// Message in the exception
   std::string mMsg;
   /// Argument that causes the exception
   X mArg;
+  /// Filename where the exception occurs
+  std::string mFilename;
+  /// Line number where the exception occurs
+  size_t mLine;
+  /** @}
+    */
 
 };
 

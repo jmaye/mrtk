@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunctionPlot1d.h
-    \brief This file contains a plotting tool for 1-dimensional continuous
+/** \file ContinuousFunctionPlot1v.h
+    \brief This file contains a plotting tool for univariate continuous
            functions
   */
 
-#ifndef CONTINUOUSFUNCTIONPLOT1D_H
-#define CONTINUOUSFUNCTIONPLOT1D_H
+#ifndef CONTINUOUSFUNCTIONPLOT1V_H
+#define CONTINUOUSFUNCTIONPLOT1V_H
 
 #include "functions/Function.h"
 #include "visualization/FunctionPlot.h"
@@ -35,9 +35,9 @@
 
 template <typename Y, typename X, size_t M = 1> class ContinuousFunctionPlot;
 
-/** The ContinuousFunctionPlot1d class is a plotting tool for 1-dimensional
+/** The ContinuousFunctionPlot1v class is a plotting tool for univariate
     continuous functions.
-    \brief 1-d continuous function plotting tool
+    \brief 1-v continuous function plotting tool
   */
 template <typename Y, typename X> class ContinuousFunctionPlot<Y, X> :
   public FunctionPlot<Y, X, 1>,
@@ -90,6 +90,6 @@ protected:
 
 };
 
-#include "visualization/ContinuousFunctionPlot1d.tpp"
+#include "visualization/ContinuousFunctionPlot1v.tpp"
 
-#endif // CONTINUOUSFUNCTIONPLOT1D_H
+#endif // CONTINUOUSFUNCTIONPLOT1V_H

@@ -24,16 +24,20 @@
 
 template <typename X>
 BadArgumentException<X>::BadArgumentException(const X& argument,
-  const std::string& msg) :
+  const std::string& msg, const std::string& filename, size_t line) :
   mMsg(msg),
-  mArg(argument) {
+  mArg(argument),
+  mFilename(filename),
+  mLine(line) {
 }
 
 template <typename X>
 BadArgumentException<X>::BadArgumentException(const BadArgumentException<X>&
   other) throw() :
   mMsg(other.mMsg),
-  mArg(other.mArg) {
+  mArg(other.mArg),
+  mFilename(other.mFilename),
+  mLine(other.mLine) {
 }
 
 template <typename X>
@@ -41,6 +45,8 @@ BadArgumentException<X>& BadArgumentException<X>::operator =
   (const BadArgumentException<X>& other) throw() {
   mMsg = other.mMsg;
   mArg = other.mArg;
+  mFilename = other.mFilename;
+  mLine = other.mLine;
   return *this;
 }
 
@@ -55,5 +61,7 @@ template <typename X>
 const char* BadArgumentException<X>::what() const throw() {
   std::stringstream stream;
   stream << mMsg << " [argument = " << mArg << "]";
+  if (mFilename != " ")
+    stream << " [file = " << mFilename << "]" << "[line = " << mLine << "]";
   return stream.str().c_str();
 }

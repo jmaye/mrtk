@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 #include <QtCore/QString>
+#include <qwt-qt4/qwt_plot_canvas.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -47,6 +48,9 @@ ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(const std::string& title,
   }
   mCurve.setData(mXData, mYData);
   mCurve.attach(&mPlot);
+  mPlot.canvas()->setLineWidth(2);
+  mPlot.setAxisTitle(QwtPlot::xBottom, QString('x'));
+  mPlot.setAxisTitle(QwtPlot::yLeft, QString('y'));
   mPlot.replot();
   setFixedSize(mPlot.sizeHint());
 }

@@ -16,24 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunctionPlot1d.cpp
-    \brief This file is a testing binary for the ContinuousFunctionPlot1d class
+/** \file GammaFunctionPlot.cpp
+    \brief This file is a testing binary for plotting the gamma function
   */
 
 #include "visualization/ContinuousFunctionPlot.h"
-#include "functions/LogFunction.h"
+#include "functions/GammaFunction.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   Eigen::Matrix<double, 1, 1> minimum;
-  minimum(0) = 0.1;
+  minimum(0) = -5;
   Eigen::Matrix<double, 1, 1> maximum;
-  maximum(0) = 10;
-  LogFunction<double> log;
+  maximum(0) = 5;
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double> plot("LogFunction", log, minimum,
-    maximum, 0.1);
+  ContinuousFunctionPlot<double, double> plot("GammaFunction",
+    GammaFunction<double>(), minimum, maximum, 0.1);
   plot.show();
   return app.exec();
 }

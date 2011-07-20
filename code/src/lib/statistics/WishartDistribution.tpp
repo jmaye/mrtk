@@ -169,5 +169,5 @@ Eigen::Matrix<double, M, M> WishartDistribution<M>::getSample() const {
     }
   }
 
-  return A * A.transpose();
+  return mTransformation.matrixL() * A * A.transpose() * mTransformation.matrixL().transpose();
 }

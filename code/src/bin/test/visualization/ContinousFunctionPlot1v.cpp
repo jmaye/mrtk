@@ -16,14 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunctionPlot.h
-    \brief This file is an interface to a continuous function plot
+/** \file ContinuousFunctionPlot1v.cpp
+    \brief This file is a testing binary for the ContinuousFunctionPlot1v class
   */
 
-#ifndef CONTINUOUSFUNCTIONPLOT_H
-#define CONTINUOUSFUNCTIONPLOT_H
+#include "visualization/ContinuousFunctionPlot.h"
+#include "functions/LogFunction.h"
 
-#include "visualization/ContinuousFunctionPlot1v.h"
-//#include "visualization/ContinuousFunctionPlot2v.h"
+#include <QtGui/QApplication>
 
-#endif // CONTINUOUSFUNCTIONPLOT_H
+int main(int argc, char** argv) {
+  Eigen::Matrix<double, 1, 1> minimum;
+  minimum(0) = 0.1;
+  Eigen::Matrix<double, 1, 1> maximum;
+  maximum(0) = 10;
+  QApplication app(argc, argv);
+  ContinuousFunctionPlot<double, double> plot("LogFunction",
+    LogFunction<double>(), minimum, maximum, 0.1);
+  app.closeAllWindows();
+  return 0;
+}

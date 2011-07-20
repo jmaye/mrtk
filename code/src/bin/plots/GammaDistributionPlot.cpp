@@ -16,14 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunctionPlot.h
-    \brief This file is an interface to a continuous function plot
+/** \file GammaDistributionPlot.cpp
+    \brief This file is a testing binary for plotting the gamma distribution pdf
   */
 
-#ifndef CONTINUOUSFUNCTIONPLOT_H
-#define CONTINUOUSFUNCTIONPLOT_H
+#include "visualization/ContinuousFunctionPlot.h"
+#include "statistics/GammaDistribution.h"
 
-#include "visualization/ContinuousFunctionPlot1v.h"
-//#include "visualization/ContinuousFunctionPlot2v.h"
+#include <QtGui/QApplication>
 
-#endif // CONTINUOUSFUNCTIONPLOT_H
+int main(int argc, char** argv) {
+  Eigen::Matrix<double, 1, 1> minimum;
+  minimum(0) = 0;
+  Eigen::Matrix<double, 1, 1> maximum;
+  maximum(0) = 5;
+  QApplication app(argc, argv);
+  ContinuousFunctionPlot<double, double> plot("GammaDistribution",
+    GammaDistribution<>(), minimum, maximum, 0.1);
+  plot.show();
+  return app.exec();
+}
