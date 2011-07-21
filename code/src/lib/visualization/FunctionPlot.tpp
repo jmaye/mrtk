@@ -20,64 +20,66 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X, size_t M>
-FunctionPlot<Y, X, M>::FunctionPlot(const std::string& title, const
-  Eigen::Matrix<X, M, 1>& minimum, const Eigen::Matrix<X, M, 1>& maximum) :
+template <typename Y, typename X>
+FunctionPlot<Y, X>::FunctionPlot(const std::string& title, const X& minimum,
+  const X& maximum) :
   mTitle(title),
   mMinimum(minimum),
   mMaximum(maximum) {
 }
 
-template <typename Y, typename X, size_t M>
-FunctionPlot<Y, X, M>::FunctionPlot(const FunctionPlot<Y, X, M>& other) :
+template <typename Y, typename X>
+FunctionPlot<Y, X>::FunctionPlot(const FunctionPlot<Y, X>& other) :
   mTitle(other.mTitle),
   mMinimum(other.mMinimum),
   mMaximum(other.mMaximum) {
 }
 
-template <typename Y, typename X, size_t M>
-FunctionPlot<Y, X, M>& FunctionPlot<Y, X, M>::operator =
-  (const FunctionPlot<Y, X, M>& other) {
-  mTitle = other.mTitle;
-  mMinimum = other.mMinimum;
-  mMaximum = other.mMaximum;
+template <typename Y, typename X>
+FunctionPlot<Y, X>& FunctionPlot<Y, X>::operator =
+  (const FunctionPlot<Y, X>& other) {
+  if (this != &other) {
+    mTitle = other.mTitle;
+    mMinimum = other.mMinimum;
+    mMaximum = other.mMaximum;
+  }
   return *this;
 }
 
-template <typename Y, typename X, size_t M>
-FunctionPlot<Y, X, M>::~FunctionPlot() {
+template <typename Y, typename X>
+FunctionPlot<Y, X>::~FunctionPlot() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename Y, typename X, size_t M>
-void FunctionPlot<Y, X, M>::setTitle(const std::string& title) {
+template <typename Y, typename X>
+void FunctionPlot<Y, X>::setTitle(const std::string& title) {
   mTitle = title;
 }
 
-template <typename Y, typename X, size_t M>
-const std::string& FunctionPlot<Y, X, M>::getTitle() const {
+template <typename Y, typename X>
+const std::string& FunctionPlot<Y, X>::getTitle() const {
   return mTitle;
 }
 
-template <typename Y, typename X, size_t M>
-void FunctionPlot<Y, X, M>::setMinimum(const Eigen::Matrix<X, M, 1>& minimum) {
+template <typename Y, typename X>
+void FunctionPlot<Y, X>::setMinimum(const X& minimum) {
   mMinimum = minimum;
 }
 
-template <typename Y, typename X, size_t M>
-const Eigen::Matrix<X, M, 1>& FunctionPlot<Y, X, M>::getMinimum() const {
+template <typename Y, typename X>
+const X& FunctionPlot<Y, X>::getMinimum() const {
   return mMinimum;
 }
 
-template <typename Y, typename X, size_t M>
-void FunctionPlot<Y, X, M>::setMaximum(const Eigen::Matrix<X, M, 1>& maximum) {
+template <typename Y, typename X>
+void FunctionPlot<Y, X>::setMaximum(const X& maximum) {
   mMaximum = maximum;
 }
 
-template <typename Y, typename X, size_t M>
-const Eigen::Matrix<X, M, 1>& FunctionPlot<Y, X, M>::getMaximum() const {
+template <typename Y, typename X>
+const X& FunctionPlot<Y, X>::getMaximum() const {
   return mMaximum;
 }

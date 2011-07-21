@@ -33,7 +33,9 @@ GeometricDistribution::GeometricDistribution(const
 
 GeometricDistribution& GeometricDistribution::operator =
   (const GeometricDistribution& other) {
-  mSuccessProbability = other.mSuccessProbability;
+  if (this != &other) {
+    mSuccessProbability = other.mSuccessProbability;
+  }
   return *this;
 }
 
@@ -65,7 +67,9 @@ void GeometricDistribution::write(std::ofstream& stream) const {
 void GeometricDistribution::setSuccessProbability(double successProbability)
   throw (BadArgumentException<double>) {
   if (successProbability <= 0.0 || successProbability > 1.0)
-    throw BadArgumentException<double>(successProbability, "GeometricDistribution::setSuccessProbability(): success probability must be between 0 and 1");
+    throw BadArgumentException<double>(successProbability,
+      "GeometricDistribution::setSuccessProbability(): success probability must be between 0 and 1",
+      __FILE__, __LINE__);
   mSuccessProbability = successProbability;
 }
 
@@ -78,7 +82,11 @@ double GeometricDistribution::pmf(const size_t& value) const {
 }
 
 double GeometricDistribution::logpmf(const size_t& value) const {
-  return (value) * log(1 - mSuccessProbability) + log(mSuccessProbability);
+  return value * log(1 - mSuccessProbability) + log(mSuccessProbability);
+}
+
+double GeometricDistribution::cdf(const size_t& value) const {
+  return 1 - pow(1 - mSuccessProbability, value + 1);
 }
 
 size_t GeometricDistribution::getSample() const {

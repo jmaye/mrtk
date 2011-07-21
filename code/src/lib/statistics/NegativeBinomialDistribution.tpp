@@ -33,7 +33,9 @@ NegativeBinomialDistribution::NegativeBinomialDistribution(const
 
 NegativeBinomialDistribution& NegativeBinomialDistribution::operator =
   (const NegativeBinomialDistribution& other) {
-  this->NegativeMultinomialDistribution<2>::operator=(other);
+  if (this != &other) {
+    this->NegativeMultinomialDistribution<2>::operator=(other);
+  }
   return *this;
 }
 

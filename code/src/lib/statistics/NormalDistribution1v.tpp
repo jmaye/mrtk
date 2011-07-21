@@ -37,11 +37,13 @@ NormalDistribution<1>::NormalDistribution(const NormalDistribution<1>& other) :
 
 NormalDistribution<1>& NormalDistribution<1>::operator =
   (const NormalDistribution<1>& other) {
-  mMean = other.mMean;
-  mVariance = other.mVariance;
-  mPrecision = other.mPrecision;
-  mStandardDeviation = other.mStandardDeviation;
-  mNormalizer = other.mNormalizer;
+  if (this != &other) {
+    mMean = other.mMean;
+    mVariance = other.mVariance;
+    mPrecision = other.mPrecision;
+    mStandardDeviation = other.mStandardDeviation;
+    mNormalizer = other.mNormalizer;
+  }
   return *this;
 }
 
@@ -109,7 +111,7 @@ double NormalDistribution<1>::pdf(const double& value) const {
 }
 
 double NormalDistribution<1>::logpdf(const double& value) const {
-  return -pow(value - mMean, 2.0) / (2.0 * mVariance) - mNormalizer;
+  return -(value - mMean) * (value -mMean) / (2.0 * mVariance) - mNormalizer;
 }
 
 double NormalDistribution<1>::cdf(const double& value) const {

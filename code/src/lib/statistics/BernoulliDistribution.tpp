@@ -31,7 +31,9 @@ BernoulliDistribution::BernoulliDistribution(const BernoulliDistribution&
 
 BernoulliDistribution& BernoulliDistribution::operator =
   (const BernoulliDistribution& other) {
-  this->CategoricalDistribution<2>::operator=(other);
+  if (this != &other) {
+    this->CategoricalDistribution<2>::operator=(other);
+  }
   return *this;
 }
 

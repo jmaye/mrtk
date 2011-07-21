@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
   maximum(0) = 5;
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("ExponentialDistribution",
-    ExponentialDistribution(), minimum, maximum, 0.1);
+    ExponentialDistribution(), -5, 5, 0.1);
   plot.show();
   return app.exec();
 }

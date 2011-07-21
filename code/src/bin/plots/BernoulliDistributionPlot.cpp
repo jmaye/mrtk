@@ -16,12 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Serializable.cpp
-    \brief This file is a testing binary for the Serializable class
+/** \file BernoulliDistributionPlot.cpp
+    \brief This file is a testing binary for plotting the Bernoulli pmf
   */
 
-#include "base/Serializable.h"
+#include "visualization/DiscreteFunctionPlot.h"
+#include "statistics/BernoulliDistribution.h"
+
+#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
-  return 0;
+  QApplication app(argc, argv);
+  DiscreteFunctionPlot<double, size_t, 1> plot("BernoulliDistribution",
+    BernoulliDistribution(0.1), 0, 10);
+  plot.show();
+  return app.exec();
 }

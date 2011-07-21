@@ -33,7 +33,9 @@ BetaDistribution::BetaDistribution(const BetaDistribution& other) :
 }
 
 BetaDistribution& BetaDistribution::operator = (const BetaDistribution& other) {
-  this->DirichletDistribution<2>::operator=(other);
+  if (this != &other) {
+    this->DirichletDistribution<2>::operator=(other);
+  }
   return *this;
 }
 

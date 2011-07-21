@@ -32,7 +32,9 @@ BinomialDistribution::BinomialDistribution(const BinomialDistribution& other) :
 
 BinomialDistribution& BinomialDistribution::operator =
   (const BinomialDistribution& other) {
-  this->MultinomialDistribution<2>::operator=(other);
+  if (this != &other) {
+    this->MultinomialDistribution<2>::operator=(other);
+  }
   return *this;
 }
 

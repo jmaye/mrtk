@@ -43,10 +43,12 @@ TypeCreationException<X>::TypeCreationException(const TypeCreationException<X>&
 template <typename X>
 TypeCreationException<X>& TypeCreationException<X>::operator =
   (const TypeCreationException<X>& other) throw () {
-  mMsg = other.mMsg;
-  mArg = other.mArg;
-  mFilename = other.mFilename;
-  mLine = other.mLine;
+  if (this != &other) {
+    mMsg = other.mMsg;
+    mArg = other.mArg;
+    mFilename = other.mFilename;
+    mLine = other.mLine;
+  }
   return *this;
 }
 

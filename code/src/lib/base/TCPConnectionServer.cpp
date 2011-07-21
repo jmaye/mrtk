@@ -37,6 +37,8 @@ TCPConnectionServer::TCPConnectionServer(const TCPConnectionServer& other) {
 
 TCPConnectionServer& TCPConnectionServer::operator =
   (const TCPConnectionServer& other) {
+  if (this != &other) {
+  }
   return *this;
 }
 

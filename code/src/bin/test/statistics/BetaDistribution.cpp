@@ -50,6 +50,8 @@ int main(int argc, char** argv) {
 
   std::cout << "logpdf(0.1): " << std::fixed << dist.logpdf(0.1) << std::endl
     << std::endl;
+  if (fabs(dist.logpdf(0.1) + 0.2362263) > 1e-4)
+    return 1;
 
   std::cout << "dist.getSample(): " << std::endl << dist.getSample()
     << std::endl << std::endl;
@@ -57,13 +59,6 @@ int main(int argc, char** argv) {
   try {
     f64Alpha = 0.0;
     dist.setAlpha(f64Alpha);
-  }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  try {
-    std::cout << "pdf(1.2): " << std::fixed << dist(1.2) << std::endl;
   }
   catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
     std::cout << e.what() << std::endl;

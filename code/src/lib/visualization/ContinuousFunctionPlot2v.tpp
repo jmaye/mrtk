@@ -24,21 +24,22 @@ template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(const std::string&
   title, const ContinuousFunction<Y, X, 2>& function, const
   Eigen::Matrix<X, 2, 1>& minimum, const Eigen::Matrix<X, 2, 1>& maximum, const
-  X& resolution) throw (BadArgumentException<Eigen::Matrix<X, 2, 1> >,
-  BadArgumentException<X>) :
-  FunctionPlot<Y, X, 2>(title, minimum, maximum),
-  mResolution(resolution) {
-  if (maximum(0) < minimum(0))
+  Eigen::Matrix<X, 2, 1>& resolution)
+  throw (BadArgumentException<Eigen::Matrix<X, 2, 1> >) :
+  FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >(title, minimum, maximum),
+  Qwt3D::SurfacePlot(0) {
+  if (maximum(0) < minimum(0) || maximum(1) < minimum(1))
     throw BadArgumentException<Eigen::Matrix<X, 2, 1> >(maximum,
-      "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): maximum must be larger than minimum",
+      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): maximum must be larger than minimum",
       __FILE__, __LINE__);
-  if (resolution <= 0)
-    throw BadArgumentException<X>(resolution,
-      "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): resolution must be strictly positive",
+  if (resolution(0) <= 0 || resolution(1) <= 0)
+    throw BadArgumentException<Eigen::Matrix<X, 2, 1> >(resolution,
+      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): resolution must be strictly positive",
       __FILE__, __LINE__);
-  if (resolution > maximum(0) - minimum(0))
-    throw BadArgumentException<X>(resolution,
-      "ContinuousFunctionPlot<Y, X>::ContinuousFunctionPlot(): resolution must be smaller than the range",
+  if (resolution(0) > maximum(0) - minimum(0) ||
+    resolution(1) > maximum(1) - minimum(1))
+    throw BadArgumentException<Eigen::Matrix<X, 2, 1> >(resolution,
+      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): resolution must be smaller than the range",
       __FILE__, __LINE__);
   Qwt3D::SurfacePlot::setTitle(title.c_str());
   setRotation(30, 0, 15);
@@ -55,18 +56,19 @@ ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(const std::string&
   setCoordinateStyle(Qwt3D::FRAME);
   setPlotStyle(Qwt3D::FILLED);
   X xValue = minimum(0);
-  size_t xSize = round((maximum(0) - minimum(0)) / resolution);
-  size_t ySize = round((maximum(1) - minimum(1)) / resolution);
-  mData = new double*[xSize];
+  size_t xSize = round((maximum(0) - minimum(0)) / resolution(0));
+  size_t ySize = round((maximum(1) - minimum(1)) / resolution(1));
+  mData = new Y*[xSize];
   for (size_t i = 0; i < xSize; ++i) {
     Qwt3D::Cell cell;
     X yValue = minimum(1);
-    mData[i] = new double[ySize];
+    mData[i] = new Y[ySize];
     for (size_t j = 0; j < ySize; ++j) {
-      mData[i][j] = function(Eigen::Matrix<X, 2, 1>(xValue, yValue));
-      yValue += resolution;
+      mData[i][j] = function((Eigen::Matrix<X, 2, 1>() << xValue, yValue).
+        finished());
+      yValue += resolution(1);
     }
-    xValue += resolution;
+    xValue += resolution(0);
   }
   loadFromData(mData, xSize, ySize, minimum(0), maximum(0), minimum(1),
     maximum(1));
@@ -75,7 +77,8 @@ ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(const std::string&
 template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(const
   ContinuousFunctionPlot<Y, X, 2>& other) :
-  FunctionPlot<Y, X, 2>(other),
+  FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >(other),
+  Qwt3D::SurfacePlot(other),
   mData(other.mData),
   mResolution(other.mResolution) {
 }
@@ -83,16 +86,19 @@ ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(const
 template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 2>& ContinuousFunctionPlot<Y, X, 2>::operator =
   (const ContinuousFunctionPlot<Y, X, 2>& other) {
-  this->FunctionPlot<Y, X, 2>::operator=(other);
-  mData = other.mData;
-  mResolution = other.mResolution;
+  if (this != &other) {
+    this->FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >::operator=(other);
+    this->Qwt3D::SurfacePlot::operator=(other);
+    mData = other.mData;
+    mResolution = other.mResolution;
+  }
   return *this;
 }
 
 template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 2>::~ContinuousFunctionPlot() {
   size_t xSize = round((this->getMaximum()(0) - this->getMinimum()(0)) /
-    mResolution);
+    this->getResolution()(0));
   for (size_t i = 0; i < xSize; ++i) {
     delete []mData[i];
   }
@@ -103,12 +109,24 @@ ContinuousFunctionPlot<Y, X, 2>::~ContinuousFunctionPlot() {
 /* Accessors                                                                  */
 /******************************************************************************/
 
+
 template <typename Y, typename X>
-void ContinuousFunctionPlot<Y, X, 2>::setResolution(const X& resolution) {
+void ContinuousFunctionPlot<Y, X, 2>::setResolution(const
+  Eigen::Matrix<X, 2, 1>& resolution) {
   mResolution = resolution;
 }
 
 template <typename Y, typename X>
-const X& ContinuousFunctionPlot<Y, X, 2>::getResolution() const {
+const Eigen::Matrix<X, 2, 1>& ContinuousFunctionPlot<Y, X, 2>::getResolution()
+  const {
   return mResolution;
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+template <typename Y, typename X>
+void ContinuousFunctionPlot<Y, X, 2>::show() {
+  QWidget::show();
 }

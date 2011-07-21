@@ -38,7 +38,9 @@ Randomizer<T, M>::Randomizer(const Randomizer<T, M>& other) :
 
 template <typename T, size_t M>
 Randomizer<T, M>& Randomizer<T, M>::operator = (const Randomizer<T, M>& other) {
-  mSeed = other.mSeed;
+  if (this != &other) {
+    mSeed = other.mSeed;
+  }
   return *this;
 }
 

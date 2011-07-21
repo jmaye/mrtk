@@ -27,13 +27,9 @@
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
-  Eigen::Matrix<double, 1, 1> minimum;
-  minimum(0) = 0;
-  Eigen::Matrix<double, 1, 1> maximum;
-  maximum(0) = 8;
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("ChiSquareDistribution",
-    ChiSquareDistribution(), minimum, maximum, 0.1);
+    ChiSquareDistribution(), 0, 8, 0.1);
   plot.show();
   return app.exec();
 }

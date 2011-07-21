@@ -45,12 +45,14 @@ NormalDistribution<M>::NormalDistribution(const NormalDistribution<M>& other) :
 template <size_t M>
 NormalDistribution<M>& NormalDistribution<M>::operator = (const
   NormalDistribution<M>& other) {
-  mMean = other.mMeanVector;
-  mCovariance = other.mCovariance;
-  mPrecision = other.mPrecision;
-  mDeterminant = other.mDeterminant;
-  mNormalizer = other.mNormalizer;
-  mTransformation = other.mTransformation;
+  if (this != &other) {
+    mMean = other.mMeanVector;
+    mCovariance = other.mCovariance;
+    mPrecision = other.mPrecision;
+    mDeterminant = other.mDeterminant;
+    mNormalizer = other.mNormalizer;
+    mTransformation = other.mTransformation;
+  }
   return *this;
 }
 

@@ -46,11 +46,13 @@ WishartDistribution<M>::WishartDistribution(const WishartDistribution<M>&
 template <size_t M>
 WishartDistribution<M>& WishartDistribution<M>::operator = (const
   WishartDistribution<M>& other) {
-  mDegrees = other.mDegrees;
-  mScale = other.mScale;
-  mInverseScale = other.mInverseScale;
-  mDeterminant = other.mDeterminant;
-  mNormalizer = other.mNormalizer;
+  if (this != &other) {
+    mDegrees = other.mDegrees;
+    mScale = other.mScale;
+    mInverseScale = other.mInverseScale;
+    mDeterminant = other.mDeterminant;
+    mNormalizer = other.mNormalizer;
+  }
   return *this;
 }
 
@@ -148,7 +150,9 @@ template <size_t M>
 double WishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>& value)
   const throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
   if (value.llt().isPositiveDefinite() == false)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(value, "WishartDistribution<M>::pdf(): value must be positive definite");
+    throw BadArgumentException<Eigen::Matrix<double, M, M> >(value,
+      "WishartDistribution<M>::pdf(): value must be positive definite",
+      __FILE__, __LINE__);
   return (mDegrees - M - 1) * 0.5 * log(value.determinant())
     - 0.5 * (mInverseScale * value).trace() - mNormalizer;
 }

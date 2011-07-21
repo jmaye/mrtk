@@ -49,15 +49,6 @@ int main(int argc, char** argv) {
     std::cout << e.what() << std::endl;
   }
 
-  try {
-    std::cout << "pmf(2)" << dist(2) << std::endl;
-  }
-  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  std::cout << std::endl;
-
   std::cout << "dist.getSample(): " << std::endl << dist.getSample()
     << std::endl << std::endl;
 

@@ -38,8 +38,10 @@ UniformDistribution<X>::UniformDistribution(const UniformDistribution<X>&
 template <typename X>
 UniformDistribution<X>& UniformDistribution<X>::operator =
   (const UniformDistribution<X>& other) {
-  mMaxSupport = other.mMaxSupport;
-  mMinSupport = other.mMinSupport;
+  if (this != &other) {
+    mMaxSupport = other.mMaxSupport;
+    mMinSupport = other.mMinSupport;
+  }
   return *this;
 }
 

@@ -40,17 +40,16 @@ template <typename Y, typename X, size_t M> class ContinuousFunctionPlot;
     \brief 1-v continuous function plotting tool
   */
 template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 1> :
-  public FunctionPlot<Y, X, 1>,
-  public QWidget {
+  public FunctionPlot<Y, X>,
+  public QwtPlot {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs plot from parameters
   ContinuousFunctionPlot(const std::string& title, const
-    ContinuousFunction<Y, X>& function, const Eigen::Matrix<X, 1, 1>& minimum,
-    const Eigen::Matrix<X, 1, 1>& maximum, const X& resolution) throw
-    (BadArgumentException<Eigen::Matrix<X, 1, 1> >, BadArgumentException<X>);
+    ContinuousFunction<Y, X>& function, const X& minimum, const X& maximum,
+    const X& resolution) throw (BadArgumentException<X>);
   /// Copy constructor
   ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 1>& other);
   /// Assignment operator
@@ -71,19 +70,25 @@ public:
   /** @}
     */
 
+  /** \name Methods
+    @{
+    */
+  /// Show the plot
+  virtual void show();
+  /** @}
+    */
+
 protected:
   /** \name Protected members
     @{
     */
-  /// Plot object
-  QwtPlot mPlot;
   /// Curve plotted
   QwtPlotCurve mCurve;
   /// Data on the x-axis
   QVector<X> mXData;
   /// Data on the y-axis
   QVector<Y> mYData;
-  /// Resolution on the x-axis
+  /// Resolution on the axis
   X mResolution;
   /** @}
     */

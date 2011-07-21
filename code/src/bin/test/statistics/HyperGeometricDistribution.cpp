@@ -77,15 +77,6 @@ int main(int argc, char** argv) {
     << std::endl << std::endl;
 
   try {
-    value1(0) = 2;
-    value1(1) = 2;
-    std::cout << "dist1.pmf(2, 2)" << dist1(value1) << std::endl << std::endl;
-  }
-  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  try {
     dist1.setNumTrials(20);
   }
   catch (BadArgumentException<size_t>& e) {

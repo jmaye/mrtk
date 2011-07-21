@@ -42,7 +42,9 @@ DirichletDistribution<M>::DirichletDistribution(const
 template <size_t M>
 DirichletDistribution<M>& DirichletDistribution<M>::operator =
   (const DirichletDistribution<M>& other) {
-  mAlpha = other.mAlpha;
+  if (this != &other) {
+    mAlpha = other.mAlpha;
+  }
   return *this;
 }
 
@@ -79,9 +81,13 @@ template <size_t M>
 void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
   alpha) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if ((alpha.cwise() <= 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha, "DirichletDistribution<M>::setAlpha(): alpha must be strictly positive");
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
+      "DirichletDistribution<M>::setAlpha(): alpha must be strictly positive",
+      __FILE__, __LINE__);
   if (M < 2)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha, "DirichletDistribution<M>::setAlpha(): alpha must contain at least 2 values");
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
+      "DirichletDistribution<M>::setAlpha(): alpha must contain at least 2 values",
+      __FILE__, __LINE__);
   mAlpha = alpha;
   LogBetaFunction<double, M> logBetaFunction;
   mf64Normalizer = logBetaFunction(mAlpha);
@@ -138,7 +144,12 @@ double DirichletDistribution<M>::Traits<2, D>::logpdf(const
 template <size_t M>
 double DirichletDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
   const {
-  return exp(logpdf(value));
+  if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
+    return 0.0;
+  else if ((value.cwise() <= 0).any() == true)
+    return 0.0;
+  else
+    return exp(logpdf(value));
 }
 
 template <size_t M>
@@ -151,9 +162,13 @@ template <size_t M>
 double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
   value) const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution<M>::logpdf(): input vector must sum to 1");
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value,
+      "DirichletDistribution<M>::logpdf(): input vector must sum to 1",
+      __FILE__, __LINE__);
   if ((value.cwise() <= 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value, "DirichletDistribution<M>::logpdf(): input vector must be strictly positive");
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value,
+      "DirichletDistribution<M>::logpdf(): input vector must be strictly positive",
+      __FILE__, __LINE__);
   double f64Return = 0;
   for (size_t i = 0; i < M; ++i)
     f64Return += (mAlpha(i) - 1) * log(value(i));

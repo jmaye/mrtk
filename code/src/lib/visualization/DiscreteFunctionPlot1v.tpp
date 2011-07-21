@@ -1,0 +1,88 @@
+/******************************************************************************
+ * Copyright (C) 2011 by Jerome Maye                                          *
+ * jerome.maye@gmail.com                                                      *
+ *                                                                            *
+ * This program is free software; you can redistribute it and/or modify       *
+ * it under the terms of the Lesser GNU General Public License as published by*
+ * the Free Software Foundation; either version 3 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * Lesser GNU General Public License for more details.                        *
+ *                                                                            *
+ * You should have received a copy of the Lesser GNU General Public License   *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
+ ******************************************************************************/
+
+#include <QtCore/QString>
+#include <qwt-qt4/qwt_plot_canvas.h>
+
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
+
+template <typename Y, typename X>
+DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
+  const DiscreteFunction<Y, X>& function, const X& minimum, const X& maximum)
+  throw (BadArgumentException<X>) :
+  FunctionPlot<Y, X>(title, minimum, maximum),
+  QwtPlot(0) {
+  if (maximum < minimum)
+    throw BadArgumentException<X>(maximum,
+      "DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(): maximum must be larger than minimum",
+      __FILE__, __LINE__);
+  QwtPlot::setTitle(QString(title.c_str()));
+  mXData.resize(maximum - minimum);
+  mYData.resize(maximum - minimum);
+  X xValue = minimum;
+  for (size_t i = 0; i < (size_t)mXData.size(); ++i) {
+    mXData[i] = xValue;
+    mYData[i] = function(xValue);
+    xValue++;
+  }
+  mCurve.setData(mXData, mYData);
+  mCurve.attach(this);
+  canvas()->setLineWidth(2);
+  setAxisTitle(QwtPlot::xBottom, QString('x'));
+  setAxisTitle(QwtPlot::yLeft, QString('y'));
+  replot();
+  setFixedSize(sizeHint());
+}
+
+template <typename Y, typename X>
+DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const
+  DiscreteFunctionPlot<Y, X, 1>& other) :
+  FunctionPlot<Y, X>(other),
+  QwtPlot(other),
+  mCurve(other.mCurve),
+  mXData(other.mXData),
+  mYData(other.mYData) {
+}
+
+template <typename Y, typename X>
+DiscreteFunctionPlot<Y, X, 1>& DiscreteFunctionPlot<Y, X, 1>::operator =
+  (const DiscreteFunctionPlot<Y, X, 1>& other) {
+  if (this != &other) {
+    this->FunctionPlot<Y, X>::operator=(other);
+    this->QwtPlot::operator=(other);
+    mCurve = other.mCurve;
+    mXData = other.mXData;
+    mYData = other.mYData;
+  }
+  return *this;
+}
+
+template <typename Y, typename X>
+DiscreteFunctionPlot<Y, X, 1>::~DiscreteFunctionPlot() {
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+template <typename Y, typename X>
+void DiscreteFunctionPlot<Y, X, 1>::show() {
+  QWidget::show();
+}

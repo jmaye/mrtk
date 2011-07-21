@@ -27,5 +27,7 @@
 int main(int argc, char** argv) {
   std::cout << "Timestamp::now(): " << std::fixed << Timestamp::now()
     << std::endl;
+  std::cout << "Timestamp::getDate(): " << std::fixed << Timestamp::getDate()
+    << std::endl;
   return 0;
 }

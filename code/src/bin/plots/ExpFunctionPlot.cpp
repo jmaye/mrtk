@@ -26,13 +26,9 @@
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
-  Eigen::Matrix<double, 1, 1> minimum;
-  minimum(0) = -10;
-  Eigen::Matrix<double, 1, 1> maximum;
-  maximum(0) = 10;
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("ExpFunction",
-    ExpFunction<double>(), minimum, maximum, 0.1);
+    ExpFunction<double>(), -10, 10, 0.1);
   plot.show();
   return app.exec();
 }

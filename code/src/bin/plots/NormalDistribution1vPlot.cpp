@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
   maximum(0) = 5;
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("NormalDistribution1v",
-    NormalDistribution<1>(), minimum, maximum, 0.1);
+    NormalDistribution<1>(), -5, 5, 0.1);
   plot.show();
   return app.exec();
 }

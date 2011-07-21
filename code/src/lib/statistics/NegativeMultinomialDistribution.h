@@ -87,11 +87,11 @@ public:
   virtual double pmf(const typename
     DiscreteDistribution<size_t, M - 1>::Domain& value) const;
   /// Returns the log-probability mass function at a point
-  virtual double logpmf(const Eigen::Matrix<size_t, M, 1>& value) const
+  double logpmf(const Eigen::Matrix<size_t, M, 1>& value) const
     throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);
   /// Returns the log-probability mass function at a point
-  virtual double logpmf(const typename
-    DiscreteDistribution<size_t, M - 1>::Domain& value) const;
+  double logpmf(const typename DiscreteDistribution<size_t, M - 1>::Domain&
+    value) const;
   /// Access a sample drawn from the distribution
   virtual Eigen::Matrix<size_t, M, 1> getSample() const;
   /** @}

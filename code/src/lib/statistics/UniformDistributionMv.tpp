@@ -42,9 +42,11 @@ UniformDistribution<X, M>::UniformDistribution(const UniformDistribution<X, M>&
 template <typename X, size_t M>
 UniformDistribution<X, M>& UniformDistribution<X, M>::operator =
   (const UniformDistribution<X, M>& other) {
-  mMaxSupport = other.mMaxSupport;
-  mMinSupport = other.mMinSupport;
-  mSupportArea = other.mSupportArea;
+  if (this != &other) {
+    mMaxSupport = other.mMaxSupport;
+    mMinSupport = other.mMinSupport;
+    mSupportArea = other.mSupportArea;
+  }
   return *this;
 }
 

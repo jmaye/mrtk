@@ -26,13 +26,9 @@
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
-  Eigen::Matrix<double, 1, 1> minimum;
-  minimum(0) = 0.1;
-  Eigen::Matrix<double, 1, 1> maximum;
-  maximum(0) = 10;
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("LogFunction",
-    LogFunction<double>(), minimum, maximum, 0.1);
+    LogFunction<double>(), 0.1, 10, 0.1);
   app.closeAllWindows();
   return 0;
 }

@@ -43,10 +43,12 @@ BadArgumentException<X>::BadArgumentException(const BadArgumentException<X>&
 template <typename X>
 BadArgumentException<X>& BadArgumentException<X>::operator =
   (const BadArgumentException<X>& other) throw() {
-  mMsg = other.mMsg;
-  mArg = other.mArg;
-  mFilename = other.mFilename;
-  mLine = other.mLine;
+  if (this != &other) {
+    mMsg = other.mMsg;
+    mArg = other.mArg;
+    mFilename = other.mFilename;
+    mLine = other.mLine;
+  }
   return *this;
 }
 

@@ -19,6 +19,9 @@
 #include "statistics/Randomizer.h"
 
 #include "functions/LogGammaFunction.h"
+#include "functions/GammaFunction.h"
+
+#include <gsl/gsl_sf_gamma.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -39,8 +42,10 @@ GammaDistribution<T>::GammaDistribution(const GammaDistribution<T>& other) :
 template <typename T>
 GammaDistribution<T>& GammaDistribution<T>::operator =
   (const GammaDistribution<T>& other) {
-  mShape = other.mShape;
-  mScale = other.mScale;
+  if (this != &other) {
+    mShape = other.mShape;
+    mScale = other.mScale;
+  }
   return *this;
 }
 
@@ -78,7 +83,9 @@ template <typename T>
 void GammaDistribution<T>::setShape(const T& shape)
   throw (BadArgumentException<T>) {
   if (shape <= 0)
-    throw BadArgumentException<T>(shape, "GammaDistribution::setShape(): shape must be strictly positive");
+    throw BadArgumentException<T>(shape,
+      "GammaDistribution::setShape(): shape must be strictly positive",
+      __FILE__, __LINE__);
   mShape = shape;
   LogGammaFunction<T> logGammaFunction;
   mNormalizer = mShape * log(mScale) + logGammaFunction(mShape);
@@ -93,7 +100,9 @@ template <typename T>
 void GammaDistribution<T>::setScale(double scale)
   throw (BadArgumentException<double>) {
   if (scale <= 0)
-    throw BadArgumentException<double>(scale, "GammaDistribution::setScale(): scale must be strictly positive");
+    throw BadArgumentException<double>(scale,
+      "GammaDistribution::setScale(): scale must be strictly positive",
+      __FILE__, __LINE__);
   mScale = scale;
   LogGammaFunction<T> logGammaFunction;
   mNormalizer = mShape * log(mScale) + logGammaFunction(mShape);
@@ -120,6 +129,16 @@ double GammaDistribution<T>::pdf(const double& value) const {
 template <typename T>
 double GammaDistribution<T>::logpdf(const double& value) const {
   return (mShape - 1) * log(value) - value / mScale - mNormalizer;
+}
+
+template <typename T>
+double GammaDistribution<T>::cdf(const double& value) const {
+  if (value <= 0)
+    return 0.0;
+  else {
+    GammaFunction<T> gammaFunction;
+    return gsl_sf_gamma_inc(mShape, value / mScale) / gammaFunction(mShape);
+  }
 }
 
 template <typename T>

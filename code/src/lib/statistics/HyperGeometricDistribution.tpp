@@ -40,8 +40,10 @@ HyperGeometricDistribution<M>::HyperGeometricDistribution(const
 template <size_t M>
 HyperGeometricDistribution<M>& HyperGeometricDistribution<M>::operator =
   (const HyperGeometricDistribution<M>& other) {
-  mMarbles = other.mMarbles;
-  mNumTrials = other.mNumTrials;
+  if (this != &other) {
+    mMarbles = other.mMarbles;
+    mNumTrials = other.mNumTrials;
+  }
   return *this;
 }
 
@@ -117,7 +119,9 @@ template <size_t M>
 void HyperGeometricDistribution<M>::setNumTrials(size_t numTrials)
   throw (BadArgumentException<size_t>) {
   if (numTrials > mMarbles.sum())
-    throw BadArgumentException<size_t>(numTrials, "HyperGeometricDistribution<M>::setNumTrials(): trials number must be smaller than the number of marbles");
+    throw BadArgumentException<size_t>(numTrials,
+      "HyperGeometricDistribution<M>::setNumTrials(): trials number must be smaller than the number of marbles",
+      __FILE__, __LINE__);
   mNumTrials = numTrials;
   Eigen::Matrix<size_t, 2, 1> argument;
   argument << mMarbles.sum(), mNumTrials;
@@ -154,7 +158,10 @@ double HyperGeometricDistribution<M>::getNormalizer() const {
 template <size_t M>
 double HyperGeometricDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>&
   value) const {
-  return exp(logpmf(value));
+  if (value.sum() != mNumTrials)
+    return 0.0;
+  else
+    return exp(logpmf(value));
 }
 
 template <size_t M>
@@ -167,7 +174,9 @@ template <size_t M>
 double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
   value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != mNumTrials)
-    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "HyperGeometricDistribution<M>::logpmf(): value has to sum to the trials number");
+    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
+      "HyperGeometricDistribution<M>::logpmf(): value has to sum to the trials number",
+      __FILE__, __LINE__);
   Eigen::Matrix<size_t, 2, 1> argument;
   double f64Sum = 0.0;
   LogBinomialFunction logBinomialFunction;

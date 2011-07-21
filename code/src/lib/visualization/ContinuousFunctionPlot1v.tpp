@@ -25,47 +25,46 @@
 
 template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
-  title, const ContinuousFunction<Y, X>& function, const Eigen::Matrix<X, 1, 1>&
-  minimum, const Eigen::Matrix<X, 1, 1>& maximum, const X& resolution) throw
-  (BadArgumentException<Eigen::Matrix<X, 1, 1> >, BadArgumentException<X>) :
-  FunctionPlot<Y, X, 1>(title, minimum, maximum),
-  mPlot(this),
+  title, const ContinuousFunction<Y, X>& function, const X& minimum, const X&
+  maximum, const X& resolution) throw (BadArgumentException<X>) :
+  FunctionPlot<Y, X>(title, minimum, maximum),
+  QwtPlot(0),
   mResolution(resolution) {
-  if (maximum(0) < minimum(0))
-    throw BadArgumentException<Eigen::Matrix<X, 1, 1> >(maximum,
+  if (maximum < minimum)
+    throw BadArgumentException<X>(maximum,
       "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): maximum must be larger than minimum",
       __FILE__, __LINE__);
   if (resolution <= 0)
     throw BadArgumentException<X>(resolution,
       "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): resolution must be strictly positive",
       __FILE__, __LINE__);
-  if (resolution > maximum(0) - minimum(0))
+  if (resolution > maximum - minimum)
     throw BadArgumentException<X>(resolution,
     "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): resolution must be smaller than the range",
     __FILE__, __LINE__);
-  mPlot.setTitle(QString(title.c_str()));
-  mXData.resize(round((maximum(0) - minimum(0)) / resolution));
-  mYData.resize(round((maximum(0) - minimum(0)) / resolution));
-  X xValue = minimum(0);
+  QwtPlot::setTitle(QString(title.c_str()));
+  mXData.resize(round((maximum - minimum) / resolution));
+  mYData.resize(round((maximum - minimum) / resolution));
+  X xValue = minimum;
   for (size_t i = 0; i < (size_t)mXData.size(); ++i) {
     mXData[i] = xValue;
     mYData[i] = function(xValue);
     xValue += resolution;
   }
   mCurve.setData(mXData, mYData);
-  mCurve.attach(&mPlot);
-  mPlot.canvas()->setLineWidth(2);
-  mPlot.setAxisTitle(QwtPlot::xBottom, QString('x'));
-  mPlot.setAxisTitle(QwtPlot::yLeft, QString('y'));
-  mPlot.replot();
-  setFixedSize(mPlot.sizeHint());
+  mCurve.attach(this);
+  canvas()->setLineWidth(2);
+  setAxisTitle(QwtPlot::xBottom, QString('x'));
+  setAxisTitle(QwtPlot::yLeft, QString('y'));
+  replot();
+  setFixedSize(sizeHint());
 }
 
 template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const
   ContinuousFunctionPlot<Y, X, 1>& other) :
-  FunctionPlot<Y, X, 1>(other),
-  mPlot(other.mPlot),
+  FunctionPlot<Y, X>(other),
+  QwtPlot(other),
   mCurve(other.mCurve),
   mXData(other.mXData),
   mYData(other.mYData),
@@ -75,12 +74,14 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const
 template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 1>& ContinuousFunctionPlot<Y, X, 1>::operator =
   (const ContinuousFunctionPlot<Y, X, 1>& other) {
-  this->FunctionPlot<Y, X, 1>::operator=(other);
-  mPlot = other.mPlot;
-  mCurve = other.mCurve;
-  mXData = other.mXData;
-  mYData = other.mYData;
-  mResolution = other.mResolution;
+  if (this != &other) {
+    this->FunctionPlot<Y, X>::operator=(other);
+    this->QwtPlot::operator=(other);
+    mCurve = other.mCurve;
+    mXData = other.mXData;
+    mYData = other.mYData;
+    mResolution = other.mResolution;
+  }
   return *this;
 }
 
@@ -92,6 +93,7 @@ ContinuousFunctionPlot<Y, X, 1>::~ContinuousFunctionPlot() {
 /* Accessors                                                                  */
 /******************************************************************************/
 
+
 template <typename Y, typename X>
 void ContinuousFunctionPlot<Y, X, 1>::setResolution(const X& resolution) {
   mResolution = resolution;
@@ -100,4 +102,13 @@ void ContinuousFunctionPlot<Y, X, 1>::setResolution(const X& resolution) {
 template <typename Y, typename X>
 const X& ContinuousFunctionPlot<Y, X, 1>::getResolution() const {
   return mResolution;
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+template <typename Y, typename X>
+void ContinuousFunctionPlot<Y, X, 1>::show() {
+  QWidget::show();
 }

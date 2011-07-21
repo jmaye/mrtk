@@ -99,8 +99,10 @@ public:
   double operator - (const Timestamp& timestamp) const;
   /// Substract seconds
   double operator - (double seconds) const;
-  /// Returns the system time in ms
+  /// Returns the system time in s
   static double now();
+  /// Returns the date of the system in string
+  static std::string getDate();
   /** @}
     */
 

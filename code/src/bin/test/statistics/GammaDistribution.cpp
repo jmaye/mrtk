@@ -53,6 +53,13 @@ int main(int argc, char** argv) {
 
   std::cout << "logpdf(1.5): " << std::fixed << dist.logpdf(1.5) << std::endl
     << std::endl;
+  if (fabs(dist.logpdf(1.5) + 1.636764) > 1e-4)
+    return 1;
+
+  std::cout << "cdf(1.5): " << std::fixed << dist.cdf(1.5) << std::endl
+    << std::endl;
+  if (fabs(dist.cdf(1.5) - 0.1116102) > 1e-4)
+    return 1;
 
   std::cout << "dist.getSample(): " << dist.getSample() << std::endl
     << std::endl;

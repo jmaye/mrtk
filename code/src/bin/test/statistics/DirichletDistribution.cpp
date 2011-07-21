@@ -80,33 +80,6 @@ int main(int argc, char** argv) {
     std::cout << e.what() << std::endl;
   }
 
-  try {
-    value1(0) = 0.8;
-    value1(1) = 0.1;
-    std::cout << "pdf(0.8, 0.1): " << std::fixed << dist1(value1) << std::endl;
-  }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  try {
-    value1(0) = 1.2;
-    value1(1) = -0.2;
-    std::cout << "pdf(1.2, -0.2): " << std::fixed << dist1(value1) << std::endl;
-  }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  try {
-    std::cout << "pdf(1.2): " << std::fixed << dist1(1.2) << std::endl;
-  }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  std::cout << std::endl;
-
   std::cout << "Testing DirichletDistribution<3>" << std::endl << std::endl;
 
   Eigen::Matrix<double, 3, 1> alpha2;

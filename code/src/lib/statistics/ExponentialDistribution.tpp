@@ -33,7 +33,9 @@ ExponentialDistribution::ExponentialDistribution(const
 
 ExponentialDistribution& ExponentialDistribution::operator =
   (const ExponentialDistribution& other) {
-  mRate = other.mRate;
+  if (this != &other) {
+    mRate = other.mRate;
+  }
   return *this;
 }
 
@@ -64,7 +66,9 @@ void ExponentialDistribution::write(std::ofstream& stream) const {
 void ExponentialDistribution::setRate(double rate)
   throw (BadArgumentException<double>) {
   if (rate <= 0)
-    throw BadArgumentException<double>(rate, "ExponentialDistribution::setRate(): rate must be strictly positive");
+    throw BadArgumentException<double>(rate,
+      "ExponentialDistribution::setRate(): rate must be strictly positive",
+      __FILE__, __LINE__);
   mRate = rate;
 }
 
@@ -81,6 +85,13 @@ double ExponentialDistribution::pdf(const double& value) const {
 
 double ExponentialDistribution::logpdf(const double& value) const {
   return log(mRate) - mRate * value;
+}
+
+double ExponentialDistribution::cdf(const double& value) const {
+  if (value < 0)
+    return 0.0;
+  else
+    return 1 - exp(-mRate * value);
 }
 
 double ExponentialDistribution::getSample() const {

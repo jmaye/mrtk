@@ -37,6 +37,8 @@ UDPConnectionServer::UDPConnectionServer(const UDPConnectionServer& other) {
 
 UDPConnectionServer& UDPConnectionServer::operator =
   (const UDPConnectionServer& other) {
+  if (this != &other) {
+  }
   return *this;
 }
 

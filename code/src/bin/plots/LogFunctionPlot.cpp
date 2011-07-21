@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
   maximum(0) = 10;
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("LogFunction",
-    LogFunction<double>(), minimum, maximum, 0.1);
+    LogFunction<double>(), 0.1, 10, 0.1);
   plot.show();
   return app.exec();
 }

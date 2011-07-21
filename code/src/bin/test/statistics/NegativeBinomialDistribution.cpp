@@ -48,13 +48,5 @@ int main(int argc, char** argv) {
   if (fabs(dist(value) - 0.0178604) > 1e-4)
     return 1;
 
-  try {
-    value << 6, 2;
-    std::cout << "pmf(6, 2): " << std::fixed << dist(value) << std::endl;
-  }
-  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
-    std::cout << e.what() << std::endl;
-  }
-
   return 0;
 }

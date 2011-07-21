@@ -23,25 +23,22 @@
 #ifndef FUNCTIONPLOT_H
 #define FUNCTIONPLOT_H
 
-#include <Eigen/Core>
-
 #include <string>
 
 /** The FunctionPlot class is an interface for plotting any kind of functions.
     \brief Function plotting interface
   */
-template <typename Y, typename X, size_t M> class FunctionPlot {
+template <typename Y, typename X> class FunctionPlot {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs plot from parameters
-  FunctionPlot(const std::string& title, const Eigen::Matrix<X, M, 1>& minimum,
-    const Eigen::Matrix<X, M, 1>& maximum);
+  FunctionPlot(const std::string& title, const X& minimum, const X& maximum);
   /// Copy constructor
-  FunctionPlot(const FunctionPlot<Y, X, M>& other);
+  FunctionPlot(const FunctionPlot<Y, X>& other);
   /// Assignment operator
-  FunctionPlot<Y, X, M>& operator = (const FunctionPlot<Y, X, M>& other);
+  FunctionPlot<Y, X>& operator = (const FunctionPlot<Y, X>& other);
   /// Destructor
   virtual ~FunctionPlot();
   /** @}
@@ -55,13 +52,21 @@ public:
   /// Returns the plot's title
   const std::string& getTitle() const;
   /// Sets the plot's minimum
-  void setMinimum(const Eigen::Matrix<X, M, 1>& minimum);
+  void setMinimum(const X& minimum);
   /// Returns the plot's minimum
-  const Eigen::Matrix<X, M, 1>& getMinimum() const;
+  const X& getMinimum() const;
   /// Sets the plot's maximum
-  void setMaximum(const Eigen::Matrix<X, M, 1>& maximum);
+  void setMaximum(const X& maximum);
   /// Returns the plot's maximum
-  const Eigen::Matrix<X, M, 1>& getMaximum() const;
+  const X& getMaximum() const;
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Show the plot
+  virtual void show() = 0;
   /** @}
     */
 
@@ -72,9 +77,9 @@ protected:
   /// Title of the graph
   std::string mTitle;
   /// Minimum value on the x-axis
-  Eigen::Matrix<X, M, 1> mMinimum;
+  X mMinimum;
   /// Maximum value on the x-axis
-  Eigen::Matrix<X, M, 1> mMaximum;
+  X mMaximum;
   /** @}
     */
 

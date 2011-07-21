@@ -39,6 +39,8 @@ TCPConnectionClient::TCPConnectionClient(const TCPConnectionClient& other) {
 
 TCPConnectionClient& TCPConnectionClient::operator =
   (const TCPConnectionClient& other) {
+  if (this != &other) {
+  }
   return *this;
 }
 

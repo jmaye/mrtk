@@ -42,6 +42,13 @@ int main(int argc, char** argv) {
 
   std::cout << "logpmf(1): " << std::fixed << dist.logpmf(1) << std::endl
     << std::endl;
+  if (fabs(dist.logpmf(1) + 1.560648) > 1e-4)
+    return 1;
+
+  std::cout << "cdf(1): " << std::fixed << dist.cdf(1) << std::endl
+    << std::endl;
+  if (fabs(dist.cdf(1) - 0.91) > 1e-4)
+    return 1;
 
   std::cout << "dist.getSample(): " << dist.getSample() << std::endl
     << std::endl;

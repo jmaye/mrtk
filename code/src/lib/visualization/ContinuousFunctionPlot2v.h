@@ -30,16 +30,14 @@
 
 #include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
 
-#include <vector>
-
 template <typename Y, typename X, size_t M> class ContinuousFunctionPlot;
 
-/** The ContinuousFunctionPlot1v class is a plotting tool for univariate
+/** The ContinuousFunctionPlot1v class is a plotting tool for bivariate
     continuous functions.
-    \brief 1-v continuous function plotting tool
+    \brief 2-v continuous function plotting tool
   */
 template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 2> :
-  public FunctionPlot<Y, X, 2>,
+  public FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >,
   public Qwt3D::SurfacePlot {
 public:
   /** \name Constructors/destructor
@@ -48,8 +46,9 @@ public:
   /// Constructs plot from parameters
   ContinuousFunctionPlot(const std::string& title, const
     ContinuousFunction<Y, X, 2>& function, const Eigen::Matrix<X, 2, 1>&
-    minimum, const Eigen::Matrix<X, 2, 1>& maximum, const X& resolution) throw
-    (BadArgumentException<Eigen::Matrix<X, 2, 1> >, BadArgumentException<X>);
+    minimum, const Eigen::Matrix<X, 2, 1>& maximum, const
+    Eigen::Matrix<X, 2, 1>& resolution) throw
+    (BadArgumentException<Eigen::Matrix<X, 2, 1> >);
   /// Copy constructor
   ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 2>& other);
   /// Assignment operator
@@ -64,9 +63,17 @@ public:
     @{
     */
   /// Sets the plot's resolution
-  void setResolution(const X& resolution);
+  void setResolution(const Eigen::Matrix<X, 2, 1>& resolution);
   /// Returns the plot's resolution
-  const X& getResolution() const;
+  const Eigen::Matrix<X, 2, 1>& getResolution() const;
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Show the plot
+  virtual void show();
   /** @}
     */
 
@@ -75,9 +82,9 @@ protected:
     @{
     */
   /// Data on to be plotted
-  double **mData;
-  /// Resolution on the x/y-axis
-  X mResolution;
+  Y** mData;
+  /// Resolution on the axis
+  Eigen::Matrix<X, 2, 1> mResolution;
   /** @}
     */
 

@@ -44,8 +44,10 @@ MultinomialDistribution<M>::MultinomialDistribution(const
 template <size_t M>
 MultinomialDistribution<M>& MultinomialDistribution<M>::operator =
   (const MultinomialDistribution<M>& other) {
-  mSuccessProbabilities = other.mSuccessProbabilities;
-  mNumTrials = other.mNumTrials;
+  if (this != &other) {
+    mSuccessProbabilities = other.mSuccessProbabilities;
+    mNumTrials = other.mNumTrials;
+  }
   return *this;
 }
 
@@ -88,7 +90,8 @@ void MultinomialDistribution<M>::setSuccessProbabilities(const
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(successProbabilities,
-      "MultinomialDistribution<M>::setSuccessProbabilities(): success probabilities must sum to 1 and have probabilities bigger or equal to 0");
+      "MultinomialDistribution<M>::setSuccessProbabilities(): success probabilities must sum to 1 and have probabilities bigger or equal to 0",
+      __FILE__, __LINE__);
   mSuccessProbabilities = successProbabilities;
 }
 
@@ -102,7 +105,9 @@ template <size_t M>
 void MultinomialDistribution<M>::setNumTrials(size_t numTrials)
   throw (BadArgumentException<size_t>) {
   if (numTrials == 0)
-    throw BadArgumentException<size_t>(numTrials, "MultinomialDistribution<M>::setNumTrials(): number of trials must be strictly positive");
+    throw BadArgumentException<size_t>(numTrials,
+      "MultinomialDistribution<M>::setNumTrials(): number of trials must be strictly positive",
+      __FILE__, __LINE__);
   mNumTrials = numTrials;
 }
 
@@ -116,6 +121,8 @@ template <size_t N, size_t D>
 double MultinomialDistribution<M>::Traits<N, D>::pmf(const
   MultinomialDistribution<N>& distribution, const
   Eigen::Matrix<size_t, N - 1, 1>& value) {
+  if (value.sum() > distribution.mNumTrials)
+    return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.pmf(valueMat);
@@ -125,6 +132,8 @@ template <size_t M>
 template <size_t D>
 double MultinomialDistribution<M>::Traits<2, D>::pmf(const
   MultinomialDistribution<2>& distribution, const size_t& value) {
+  if (value > distribution.mNumTrials)
+    return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value;
   return distribution.pmf(valueMat);
@@ -135,6 +144,8 @@ template <size_t N, size_t D>
 double MultinomialDistribution<M>::Traits<N, D>::logpmf(const
   MultinomialDistribution<N>& distribution, const
   Eigen::Matrix<size_t, N - 1, 1>& value) {
+  if (value.sum() > distribution.mNumTrials)
+    return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.logpmf(valueMat);
@@ -144,6 +155,8 @@ template <size_t M>
 template <size_t D>
 double MultinomialDistribution<M>::Traits<2, D>::logpmf(const
   MultinomialDistribution<2>& distribution, const size_t& value) {
+  if (value > distribution.mNumTrials)
+    return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value;
   return distribution.logpmf(valueMat);
@@ -152,7 +165,10 @@ double MultinomialDistribution<M>::Traits<2, D>::logpmf(const
 template <size_t M>
 double MultinomialDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
   const {
-  return exp(logpmf(value));
+  if (value.sum() != mNumTrials)
+    return 0.0;
+  else
+    return exp(logpmf(value));
 }
 
 template <size_t M>
@@ -164,9 +180,10 @@ double MultinomialDistribution<M>::pmf(const typename
 template <size_t M>
 double MultinomialDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
   value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
-  if ((value.cwise() < 0).any() == true ||
-    value.sum() != mNumTrials)
-    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value, "MultinomialDistribution<M>::logpmf(): sum of the input vector must be equal to the number of trials");
+  if (value.sum() != mNumTrials)
+    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
+      "MultinomialDistribution<M>::logpmf(): sum of the input vector must be equal to the number of trials",
+      __FILE__, __LINE__);
   LogFactorialFunction logFactorialFunction;
   double f64Sum = logFactorialFunction(mNumTrials);
   for (size_t i = 0; i < M; ++i)

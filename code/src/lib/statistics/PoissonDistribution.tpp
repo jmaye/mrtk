@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 #include "functions/LogFactorialFunction.h"
+#include "functions/FactorialFunction.h"
 #include "statistics/Randomizer.h"
 
 /******************************************************************************/
@@ -33,7 +34,9 @@ PoissonDistribution::PoissonDistribution(const PoissonDistribution& other) :
 
 PoissonDistribution& PoissonDistribution::operator = (const
   PoissonDistribution& other) {
-  mRate = other.mRate;
+  if (this != &other) {
+    mRate = other.mRate;
+  }
   return *this;
 }
 
@@ -64,7 +67,9 @@ void PoissonDistribution::write(std::ofstream& stream) const {
 void PoissonDistribution::setRate(double rate)
   throw (BadArgumentException<double>) {
   if (rate <= 0)
-    throw BadArgumentException<double>(rate, "PoissonDistribution::setRate(): rate must be strictly positive");
+    throw BadArgumentException<double>(rate,
+      "PoissonDistribution::setRate(): rate must be strictly positive",
+      __FILE__, __LINE__);
   mRate = rate;
 }
 
@@ -79,6 +84,15 @@ double PoissonDistribution::pmf(const size_t& value) const {
 double PoissonDistribution::logpmf(const size_t& value) const {
   LogFactorialFunction lfactorial;
   return value * log(mRate) - mRate - lfactorial(value);
+}
+
+double PoissonDistribution::cdf(const size_t& value) const {
+  FactorialFunction factorial;
+  double sum = 0.0;
+  for (size_t i = 0; i <= value; ++i) {
+    sum += pow(mRate, i) / factorial(i);
+  }
+  return exp(-mRate) * sum;
 }
 
 size_t PoissonDistribution::getSample() const {

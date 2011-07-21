@@ -33,7 +33,9 @@ ChiSquareDistribution::ChiSquareDistribution(const ChiSquareDistribution&
 
 ChiSquareDistribution& ChiSquareDistribution::operator =
   (const ChiSquareDistribution& other) {
-  this->GammaDistribution<>::operator=(other);
+  if (this != &other) {
+    this->GammaDistribution<>::operator=(other);
+  }
   return *this;
 }
 

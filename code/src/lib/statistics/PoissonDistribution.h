@@ -64,7 +64,9 @@ public:
   /// Returns the probability mass function at a point
   virtual double pmf(const size_t& value) const;
   /// Returns the log-probability mass function at a point
-  virtual double logpmf(const size_t& value) const;
+  double logpmf(const size_t& value) const;
+  /// Returns the cumulative mass function at a point
+  double cdf(const size_t& value) const;
   /// Access a sample drawn from the distribution
   virtual size_t getSample() const;
   /** @}

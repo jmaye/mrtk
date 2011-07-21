@@ -43,6 +43,8 @@ UDPConnectionClient::UDPConnectionClient(const UDPConnectionClient& other) {
 
 UDPConnectionClient& UDPConnectionClient::operator =
   (const UDPConnectionClient& other) {
+  if (this != &other) {
+  }
   return *this;
 }
 

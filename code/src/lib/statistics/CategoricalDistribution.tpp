@@ -40,7 +40,9 @@ CategoricalDistribution<M>::CategoricalDistribution(const
 template <size_t M>
 CategoricalDistribution<M>& CategoricalDistribution<M>::operator = (const
   CategoricalDistribution<M>& other) {
-  mSuccessProbabilities = other.mSuccessProbabilities;
+  if (this != &other) {
+    mSuccessProbabilities = other.mSuccessProbabilities;
+  }
   return *this;
 }
 
@@ -82,7 +84,8 @@ void CategoricalDistribution<M>::setSuccessProbabilities(const
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(successProbabilities,
-    "CategoricalDistribution::setSuccessProbabilities(): success probabilities must sum to 1 and probabilities bigger or equal to 0");
+      "CategoricalDistribution::setSuccessProbabilities(): success probabilities must sum to 1 and probabilities bigger or equal to 0",
+      __FILE__, __LINE__);
   mSuccessProbabilities = successProbabilities;
 }
 
