@@ -18,7 +18,7 @@
 
 /** \file OutOfBoundException.h
     \brief This file defines the OutOfBoundException class, which represents any
-           exceptions where the input variables are out of bounds
+           exceptions occuring when trying to access unallocated memory
   */
 
 #ifndef OUTOFBOUNDEXCEPTION_H
@@ -27,27 +27,53 @@
 #include <stdexcept>
 #include <string>
 
-/** The class OutOfBoundException represents any
-    exceptions where the input variables are out of bounds
-    \brief Out of bounds exception for input variables
+/** The class OutOfBoundException represents any exceptions occuring when trying
+    to access unallocated memory.
+    \brief Out of bounds exception
   */
-class OutOfBoundException : public std::range_error {
-  /// Assignment operator
-  OutOfBoundException& operator = (const OutOfBoundException &other);
-
+template <typename X> class OutOfBoundException :
+  public std::exception {
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs exception from message
-  OutOfBoundException(const std::string &msg = "");
+  /// Constructs exception from argument and string
+  OutOfBoundException(const X& argument, const std::string& msg, const
+    std::string& filename = " ", size_t line = 0);
   /// Copy constructor
-  OutOfBoundException(const OutOfBoundException &other);
+  OutOfBoundException(const OutOfBoundException& other) throw();
+  /// Assignment operator
+  OutOfBoundException& operator = (const OutOfBoundException& other) throw();
+  /// Destructor
+  virtual ~OutOfBoundException() throw();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  /// Access the exception string
+  virtual const char* what() const throw();
   /** @}
     */
 
 protected:
+  /** \name Protected members
+    @{
+    */
+  /// Message in the exception
+  std::string mMsg;
+  /// Argument that causes the exception
+  X mArg;
+  /// Filename where the exception occurs
+  std::string mFilename;
+  /// Line number where the exception occurs
+  size_t mLine;
+  /** @}
+    */
 
 };
+
+#include "exceptions/OutOfBoundException.tpp"
 
 #endif // OUTOFBOUNDEXCEPTION_H

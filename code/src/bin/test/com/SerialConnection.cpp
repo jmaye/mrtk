@@ -16,15 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "visualization/MainWindow.h"
+/** \file SerialConnection.cpp
+    \brief This file is a testing binary for the SerialConnection class
+  */
 
-#include <QtGui/QApplication>
+#include "com/SerialConnection.h"
 
 int main(int argc, char** argv) {
-  QApplication application(argc, argv);
-  MainWindow mainWindow;
-
-  mainWindow.show();
-
-  return application.exec();
+  return 0;
 }

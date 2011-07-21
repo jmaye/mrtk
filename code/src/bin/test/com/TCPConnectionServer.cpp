@@ -16,8 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "exceptions/OutOfBoundException.h"
+/** \file TCPConnectionServer.cpp
+    \brief This file is a testing binary for the TCPConnectionServer class
+  */
 
-OutOfBoundException::OutOfBoundException(const std::string &msg) :
-  std::range_error(msg) {
+#include "com/TCPConnectionServer.h"
+
+int main(int argc, char** argv) {
+  return 0;
 }

@@ -16,35 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "base/TCPConnectionClient.h"
+#include "com/UDPConnectionServer.h"
 
+#include <arpa/inet.h>
 #include <cstring>
 #include <cmath>
-#include <arpa/inet.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-TCPConnectionClient::TCPConnectionClient(const std::string& serverIP, uint16_t
-  port, double timeout) :
-  mServerIP(serverIP),
+UDPConnectionServer::UDPConnectionServer(uint16_t port, double timeout) :
   mPort(port),
   mTimeout(timeout),
   mSocket(0) {
 }
 
-TCPConnectionClient::TCPConnectionClient(const TCPConnectionClient& other) {
+UDPConnectionServer::UDPConnectionServer(const UDPConnectionServer& other) {
 }
 
-TCPConnectionClient& TCPConnectionClient::operator =
-  (const TCPConnectionClient& other) {
+UDPConnectionServer& UDPConnectionServer::operator =
+  (const UDPConnectionServer& other) {
   if (this != &other) {
   }
   return *this;
 }
 
-TCPConnectionClient::~TCPConnectionClient() {
+
+UDPConnectionServer::~UDPConnectionServer() {
   close();
 }
 
@@ -52,38 +51,33 @@ TCPConnectionClient::~TCPConnectionClient() {
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void TCPConnectionClient::read(std::istream& stream) {
+void UDPConnectionServer::read(std::istream& stream) {
 }
 
-void TCPConnectionClient::write(std::ostream& stream) const {
-  stream << "server IP: " << mServerIP << std::endl
-    << "port: " << mPort << std::endl
+void UDPConnectionServer::write(std::ostream& stream) const {
+  stream << "port: " << mPort << std::endl
     << "timeout: " << mTimeout;
 }
 
-void TCPConnectionClient::read(std::ifstream& stream) {
+void UDPConnectionServer::read(std::ifstream& stream) {
 }
 
-void TCPConnectionClient::write(std::ofstream& stream) const {
+void UDPConnectionServer::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-uint16_t TCPConnectionClient::getPort() const {
+uint16_t UDPConnectionServer::getPort() const {
   return mPort;
 }
 
-const std::string& TCPConnectionClient::getServerIP() const {
-  return mServerIP;
-}
-
-void TCPConnectionClient::setTimeout(double timeout) {
+void UDPConnectionServer::setTimeout(double timeout) {
   mTimeout = timeout;
 }
 
-double TCPConnectionClient::getTimeout() const {
+double UDPConnectionServer::getTimeout() const {
   return mTimeout;
 }
 
@@ -91,64 +85,64 @@ double TCPConnectionClient::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void TCPConnectionClient::open() throw (IOException) {
-  mSocket = socket(AF_INET, SOCK_STREAM, 0);
+void UDPConnectionServer::open() throw (IOException) {
+  mSocket = socket(AF_INET, SOCK_DGRAM, 0);
   if (mSocket < 0)
-    throw IOException("TCPConnectionClient::open(): socket creation failed");
+    throw IOException("UDPConnectionServer::open(): socket creation failed");
 
   struct sockaddr_in server;
-  memset(&server, 0, sizeof(struct sockaddr_in));
   server.sin_family = AF_INET;
-  server.sin_addr.s_addr = inet_addr(mServerIP.c_str());
+  server.sin_addr.s_addr = INADDR_ANY;
   server.sin_port = htons(mPort);
-  if (connect(mSocket, (const struct sockaddr*)&server, sizeof(server)) == -1)
-    throw IOException("TCPConnectionClient::open(): socket connection failed");
+  if (bind(mSocket, (struct sockaddr*)&server, sizeof(struct sockaddr_in)) ==
+    -1)
+    throw IOException("UDPConnectionServer::open(): binding failed");
 }
 
-void TCPConnectionClient::close() throw (IOException) {
+void UDPConnectionServer::close() throw (IOException) {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
-      throw IOException("TCPConnectionClient::close(): socket closing failed");
+      throw IOException("UDPConnectionServer::close(): socket closing failed");
   }
   mSocket = 0;
 }
 
-bool TCPConnectionClient::isOpen() const {
+bool UDPConnectionServer::isOpen() const {
   return (mSocket != 0);
 }
 
-void TCPConnectionClient::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
+ssize_t UDPConnectionServer::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();
-  ssize_t bytesRead = 0;
-  while (bytesRead != nbBytes) {
-    double intPart;
-    double fracPart = modf(mTimeout, &intPart);
-    struct timeval waitd;
-    waitd.tv_sec = intPart;
-    waitd.tv_usec = fracPart * 1e6;
-    fd_set readFlags;
-    FD_ZERO(&readFlags);
-    FD_SET(mSocket, &readFlags);
-    ssize_t res = select(mSocket + 1, &readFlags, (fd_set*)0, (fd_set*)0,
-      &waitd);
-    if(res < 0)
-      throw IOException("TCPConnectionClient::readBuffer(): read select failed");
-    if (FD_ISSET(mSocket, &readFlags)) {
-      FD_CLR(mSocket, &readFlags);
-      res = ::read(mSocket, &au8Buffer[bytesRead], nbBytes - bytesRead);
-      if (res < 0)
-        throw IOException("TCPConnectionClient::readBuffer(): read failed");
-      bytesRead += res;
-    }
-    else
-      throw IOException("TCPConnectionClient::readBuffer(): read timeout");
+  double intPart;
+  double fracPart = modf(mTimeout, &intPart);
+  struct timeval waitd;
+  waitd.tv_sec = intPart;
+  waitd.tv_usec = fracPart * 1e6;
+  fd_set readFlags;
+  FD_ZERO(&readFlags);
+  FD_SET(mSocket, &readFlags);
+  ssize_t res = select(mSocket + 1, &readFlags, (fd_set*)0, (fd_set*)0, &waitd);
+  if(res < 0)
+    throw IOException("UDPConnectionServer::readBuffer(): read select failed");
+  if (FD_ISSET(mSocket, &readFlags)) {
+    FD_CLR(mSocket, &readFlags);
+    struct sockaddr_in client;
+    socklen_t size;
+    res = recvfrom(mSocket, au8Buffer, nbBytes, 0, (struct sockaddr*)&client,
+      &size);
+    if (res < 0)
+        throw IOException("UDPConnectionServer::readBuffer(): read failed");
+    return res;
   }
+  else
+    throw IOException("UDPConnectionServer::readBuffer(): read timeout");
+  return 0;
 }
 
-void TCPConnectionClient::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
+void UDPConnectionServer::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();
@@ -165,15 +159,18 @@ void TCPConnectionClient::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
     ssize_t res = select(mSocket + 1, (fd_set*)0, &writeFlags, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("TCPConnectionClient::writeBuffer(): write select failed");
+      throw IOException("UDPConnectionServer::writeBuffer(): write select failed");
     if (FD_ISSET(mSocket, &writeFlags)) {
       FD_CLR(mSocket, &writeFlags);
-      res = ::write(mSocket, &au8Buffer[bytesWritten], nbBytes - bytesWritten);
+      //TODO: MODIFY THIS PART
+      struct sockaddr_in client;
+      res = sendto(mSocket, &au8Buffer[bytesWritten], nbBytes - bytesWritten, 0,
+        (const struct sockaddr*)&client, sizeof(struct sockaddr_in));
       if (res < 0)
-        throw IOException("TCPConnectionClient::writeBuffer(): write failed");
+        throw IOException("UDPConnectionServer::writeBuffer(): write failed");
       bytesWritten += res;
     }
     else
-      throw IOException("TCPConnectionClient::writeBuffer(): write timeout");
+      throw IOException("UDPConnectionServer::writeBuffer(): write timeout");
   }
 }

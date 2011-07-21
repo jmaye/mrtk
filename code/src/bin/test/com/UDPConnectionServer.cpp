@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file TCPConnectionClient.cpp
-    \brief This file is a testing binary for the TCPConnectionClient class
+/** \file UDPConnectionServer.cpp
+    \brief This file is a testing binary for the UDPConnectionServer class
   */
 
-#include "base/TCPConnectionClient.h"
+#include "com/UDPConnectionServer.h"
 
 int main(int argc, char** argv) {
   return 0;
