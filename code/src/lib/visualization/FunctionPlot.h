@@ -47,16 +47,10 @@ public:
   /** \name Accessors
     @{
     */
-  /// Sets the plot's title
-  void setTitle(const std::string& title);
   /// Returns the plot's title
   const std::string& getTitle() const;
-  /// Sets the plot's minimum
-  void setMinimum(const X& minimum);
   /// Returns the plot's minimum
   const X& getMinimum() const;
-  /// Sets the plot's maximum
-  void setMaximum(const X& maximum);
   /// Returns the plot's maximum
   const X& getMaximum() const;
   /** @}

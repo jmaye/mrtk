@@ -20,42 +20,42 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X>
-Histogram<Y, X, 2>::Histogram() {
+template <typename T>
+Histogram<T, 2>::Histogram() {
 }
 
-template <typename Y, typename X>
-Histogram<Y, X, 2>::Histogram(const Histogram<Y, X, 2>& other) {
+template <typename T>
+Histogram<T, 2>::Histogram(const Histogram<T, 2>& other) {
 }
 
-template <typename Y, typename X>
-Histogram<Y, X, 2>& Histogram<Y, X, 2>::operator =
-  (const Histogram<Y, X, 2>& other) {
+template <typename T>
+Histogram<T, 2>& Histogram<T, 2>::operator =
+  (const Histogram<T, 2>& other) {
   if (this != &other) {
   }
   return *this;
 }
 
-template <typename Y, typename X>
-Histogram<Y, X, 2>::~Histogram() {
+template <typename T>
+Histogram<T, 2>::~Histogram() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void Histogram<Y, X, 2>::read(std::istream& stream) {
+template <typename T>
+void Histogram<T, 2>::read(std::istream& stream) {
 }
 
-template <typename Y, typename X>
-void Histogram<Y, X, 2>::write(std::ostream& stream) const {
+template <typename T>
+void Histogram<T, 2>::write(std::ostream& stream) const {
 }
 
-template <typename Y, typename X>
-void Histogram<Y, X, 2>::read(std::ifstream& stream) {
+template <typename T>
+void Histogram<T, 2>::read(std::ifstream& stream) {
 }
 
-template <typename Y, typename X>
-void Histogram<Y, X, 2>::write(std::ofstream& stream) const {
+template <typename T>
+void Histogram<T, 2>::write(std::ofstream& stream) const {
 }

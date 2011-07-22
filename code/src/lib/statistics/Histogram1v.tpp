@@ -16,55 +16,290 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "statistics/Randomizer.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X>
-Histogram<Y, X, 1>::Histogram() {
+template <typename T>
+Histogram<T, 1>::Histogram(T minValue, T maxValue, T binWidth)
+  throw (BadArgumentException<T>) :
+  mMinValue(minValue),
+  mMaxValue(maxValue),
+  mBinWidth(binWidth),
+  mNormFactor(1.0) {
+  if (minValue >= maxValue)
+    throw BadArgumentException<T>(minValue,
+      "Histogram<T, 1>::Histogram(): maximum value must be strictly larger than minimum value",
+      __FILE__, __LINE__);
+  if (binWidth > maxValue - minValue)
+    throw BadArgumentException<T>(binWidth,
+      "Histogram<T, 1>::Histogram(): bin width must be strictly smaller than the considered interval",
+    __FILE__, __LINE__);
+  mNumBins = Traits<T>::computeNumBins(*this);
+  mBins.resize(mNumBins);
 }
 
-template <typename Y, typename X>
-Histogram<Y, X, 1>::Histogram(const Histogram<Y, X, 1>& other) {
+template <typename T>
+Histogram<T, 1>::Histogram(const Histogram<T, 1>& other) :
+  mMinValue(other.mMinValue),
+  mMaxValue(other.mMaxValue),
+  mBinWidth(other.mBinWidth),
+  mNumBins(other.mNumBins),
+  mBins(other.mBins),
+  mNormFactor(other.mNormFactor) {
 }
 
-template <typename Y, typename X>
-Histogram<Y, X, 1>& Histogram<Y, X, 1>::operator =
-  (const Histogram<Y, X, 1>& other) {
+template <typename T>
+Histogram<T, 1>& Histogram<T, 1>::operator =
+  (const Histogram<T, 1>& other) {
   if (this != &other) {
+    mMinValue = other.mMinValue;
+    mMaxValue = other.mMaxValue;
+    mBinWidth = other.mBinWidth;
+    mNumBins = other.mNumBins;
+    mBins = other.mBins;
+    mNormFactor = other.mNormFactor;
   }
   return *this;
 }
 
-template <typename Y, typename X>
-Histogram<Y, X, 1>::~Histogram() {
+template <typename T>
+Histogram<T, 1>::~Histogram() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void Histogram<Y, X, 1>::read(std::istream& stream) {
+template <typename T>
+void Histogram<T, 1>::read(std::istream& stream) {
 }
 
-template <typename Y, typename X>
-void Histogram<Y, X, 1>::write(std::ostream& stream) const {
+template <typename T>
+void Histogram<T, 1>::write(std::ostream& stream) const {
+  stream << "minimum value: " << mMinValue << std::endl
+    << "maximum value: " << mMaxValue << std::endl
+    << "bin width: " << mBinWidth << std::endl
+    << "number of bins: " << mNumBins << std::endl
+    << "bin content: " << std::endl << mBins << std::endl
+    << "normalization factor: " << mNormFactor;
 }
 
-template <typename Y, typename X>
-void Histogram<Y, X, 1>::read(std::ifstream& stream) {
+template <typename T>
+void Histogram<T, 1>::read(std::ifstream& stream) {
 }
 
-template <typename Y, typename X>
-void Histogram<Y, X, 1>::write(std::ofstream& stream) const {
+template <typename T>
+void Histogram<T, 1>::write(std::ofstream& stream) const {
+}
+
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+template <typename T>
+T Histogram<T, 1>::getMinValue() const {
+  return mMinValue;
+}
+
+template <typename T>
+T Histogram<T, 1>::getMaxValue() const {
+  return mMaxValue;
+}
+
+template <typename T>
+T Histogram<T, 1>::getBinWidth() const {
+ return mBinWidth;
+}
+
+template <typename T>
+size_t Histogram<T, 1>::getNumBins() const {
+  return mNumBins;
+}
+
+template <typename T>
+const Eigen::Matrix<double, Eigen::Dynamic, 1>& Histogram<T, 1>::getBins()
+  const {
+  return mBins;
+}
+
+template <typename T>
+void Histogram<T, 1>::setBinContent(size_t bin, double value)
+  throw (OutOfBoundException<size_t>) {
+  if (bin >= (size_t)mBins.size())
+    throw OutOfBoundException<size_t>(bin,
+      "Histogram<T, 1>::setBinContent(): wrong bin number",
+      __FILE__, __LINE__);
+  mBins(bin) = value;
+}
+
+template <typename T>
+double Histogram<T, 1>::getBinContent(size_t bin) const 
+  throw (OutOfBoundException<size_t>) {
+  if (bin >= (size_t)mBins.size())
+    throw OutOfBoundException<size_t>(bin,
+      "Histogram<T, 1>::getBinContent(): wrong bin number",
+      __FILE__, __LINE__);
+  return mBins(bin);
+}
+
+template <typename T>
+void Histogram<T, 1>::addBinContent(size_t bin)
+  throw (OutOfBoundException<size_t>) {
+  if (bin >= (size_t)mBins.size())
+    throw OutOfBoundException<size_t>(bin,
+      "Histogram<T, 1>::addBinContent(): wrong bin number",
+      __FILE__, __LINE__);
+  mBins(bin)++;
+}
+
+template <typename T>
+double Histogram<T, 1>::getNormFactor() const {
+  return mNormFactor;
+}
+
+template <typename T>
+double Histogram<T, 1>::getBinsSum() const {
+  return mBins.sum();
+}
+
+template <typename T>
+double Histogram<T, 1>::getMaximumBinCount() const {
+  return mBins.maxCoeff();
+}
+
+template <typename T>
+size_t Histogram<T, 1>::getMaximumBin() const {
+  double max = mBins.maxCoeff();
+  for (size_t i = 0; i < (size_t)mBins.size(); ++i)
+    if (mBins(i) == max)
+      return i;
+  return 0;
+}
+
+template <typename T>
+double Histogram<T, 1>::getMinimumBinCount() const {
+  return mBins.minCoeff();
+}
+
+template <typename T>
+size_t Histogram<T, 1>::getMinimumBin() const {
+  double min = mBins.minCoeff();
+  for (size_t i = 0; i < (size_t)mBins.size(); ++i)
+    if (mBins(i) == min)
+      return i;
+  return 0;
+}
+
+template <typename T>
+T Histogram<T, 1>::getSample() const {
+  Histogram<T, 1> normHist(*this);
+  normHist.normalize();
+  Eigen::Matrix<double, Eigen::Dynamic, 1> cumProbabilities =
+    Eigen::Matrix<double, Eigen::Dynamic, 1>::Zero(mBins.size() + 1);
+  double sum = 0.0;
+  for (size_t i = 1; i < (size_t)mBins.size() + 1; ++i) {
+    sum += normHist.mBins(i - 1);
+    cumProbabilities(i) += sum;
+  }
+  Randomizer<double> randomizer;
+  double u = randomizer.sampleUniform();
+  for (size_t i = 1; i < (size_t)mBins.size() + 1; ++i) {
+    if (u > cumProbabilities(i - 1) && u <= cumProbabilities(i)) {
+      return i - 1;
+    }
+  }
+  return mBins.size() - 1;
+}
+
+template <typename T>
+double Histogram<T, 1>::getMeanCount() const {
+  return mBins.sum() / (double)mBins.size();
+}
+
+template <typename T>
+double Histogram<T, 1>::getMeanValue() const {
+  Histogram<T, 1> normHist(*this);
+  normHist.normalize();
+  double xValue = mMinValue;
+  double mean = 0;
+  for (size_t i = 0; i < (size_t)mBins.size(); ++i) {
+    mean += normHist.mBins(i) * xValue;
+    xValue += mBinWidth;
+  }
+  return mean;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void Histogram<Y, X, 1>::normalize() {
-  mBins.normalize();
+template <typename T>
+template <typename U, size_t D>
+size_t Histogram<T, 1>::Traits<U, D>::computeNumBins(const Histogram<U, 1>&
+  hist) {
+  return (size_t)floor((hist.mMaxValue - hist.mMinValue) /
+    (double)hist.mBinWidth) + 1;
+}
+
+template <typename T>
+template <size_t D>
+size_t Histogram<T, 1>::Traits<float, D>::computeNumBins(const
+  Histogram<float, 1>& hist) {
+  return (size_t)ceil((hist.mMaxValue - hist.mMinValue) / hist.mBinWidth);
+}
+
+template <typename T>
+template <size_t D>
+size_t Histogram<T, 1>::Traits<double, D>::computeNumBins(const
+  Histogram<double, 1>& hist) {
+  return (size_t)ceil((hist.mMaxValue - hist.mMinValue) / hist.mBinWidth);
+}
+
+template <typename T>
+template <typename U, size_t D>
+void Histogram<T, 1>::Traits<U, D>::addSample(Histogram<U, 1>& hist, U sample) {
+  if (sample >= hist.mMinValue && sample <= hist.mMaxValue)
+    hist.mBins((size_t)floor((sample - hist.mMinValue) /
+      (double)hist.mBinWidth))++;
+}
+
+template <typename T>
+template <size_t D>
+void Histogram<T, 1>::Traits<float, D>::addSample(Histogram<float, 1>& hist,
+  float sample) {
+  if (sample >= hist.mMinValue && sample < hist.mMaxValue)
+    hist.mBins((size_t)floor((sample - hist.mMinValue) / hist.mBinWidth))++;
+}
+
+template <typename T>
+template <size_t D>
+void Histogram<T, 1>::Traits<double, D>::addSample(Histogram<double, 1>& hist,
+  double sample) {
+  if (sample >= hist.mMinValue && sample < hist.mMaxValue)
+    hist.mBins((size_t)floor((sample - hist.mMinValue) / hist.mBinWidth))++;
+}
+
+template <typename T>
+void Histogram<T, 1>::addSample(T sample) {
+  Traits<T>::addSample(*this, sample);
+}
+
+template <typename T>
+void Histogram<T, 1>::normalize(double norm) {
+  mNormFactor = norm;
+  if (mBins.sum() != 0)
+    scale(norm / mBins.sum());
+}
+
+template <typename T>
+void Histogram<T, 1>::scale(double scale) {
+  mBins *= scale;
+}
+
+template <typename T>
+void Histogram<T, 1>::add(const Histogram& other) {
+  mBins += other.mBins;
 }

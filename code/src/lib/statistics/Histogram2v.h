@@ -25,12 +25,12 @@
 
 #include "base/Serializable.h"
 
-template <typename Y, typename X, size_t M> class Histogram;
+template <typename T, size_t M> class Histogram;
 
 /** The Histogram2v class defines bivariate histograms
     \brief 2-v histogram
   */
-template <typename Y, typename X> class Histogram<Y, X, 2> :
+template <typename T> class Histogram<T, 2> :
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
@@ -39,9 +39,9 @@ public:
   /// Constructs histogram from parameters
   Histogram();
   /// Copy constructor
-  Histogram(const Histogram<Y, X, 2>& other);
+  Histogram(const Histogram<T, 2>& other);
   /// Assignment operator
-  Histogram<Y, X, 2>& operator = (const Histogram<Y, X, 2>& other);
+  Histogram<T, 2>& operator = (const Histogram<T, 2>& other);
   /// Destructor
   virtual ~Histogram();
   /** @}

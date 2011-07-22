@@ -29,6 +29,27 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("LogFunction",
     LogFunction<double>(), 0.1, 10, 0.1);
+  try {
+    ContinuousFunctionPlot<double, double, 1> plotWrong1("LogFunction",
+      LogFunction<double>(), 10, 0.1, 0.1);
+  }
+  catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    ContinuousFunctionPlot<double, double, 1> plotWrong2("LogFunction",
+      LogFunction<double>(), 0.1, 10, 20);
+  }
+  catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    ContinuousFunctionPlot<double, double, 1> plotWrong3("LogFunction",
+      LogFunction<double>(), 0.1, 10, -0.1);
+  }
+  catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
   app.closeAllWindows();
   return 0;
 }

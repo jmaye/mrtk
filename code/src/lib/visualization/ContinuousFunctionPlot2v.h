@@ -62,8 +62,6 @@ public:
   /** \name Accessors
     @{
     */
-  /// Sets the plot's resolution
-  void setResolution(const Eigen::Matrix<X, 2, 1>& resolution);
   /// Returns the plot's resolution
   const Eigen::Matrix<X, 2, 1>& getResolution() const;
   /** @}

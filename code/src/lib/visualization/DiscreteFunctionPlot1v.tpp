@@ -43,6 +43,7 @@ DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
     xValue++;
   }
   mCurve.setData(mXData, mYData);
+  mCurve.setStyle(QwtPlotCurve::Steps);
   mCurve.attach(this);
   canvas()->setLineWidth(2);
   setAxisTitle(QwtPlot::xBottom, QString('x'));

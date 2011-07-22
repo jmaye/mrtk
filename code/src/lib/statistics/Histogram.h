@@ -25,6 +25,5 @@
 
 #include "statistics/Histogram1v.h"
 #include "statistics/Histogram2v.h"
-#include "statistics/Histogram3v.h"
 
 #endif // HISTOGRAM_H

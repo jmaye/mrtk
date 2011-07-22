@@ -93,12 +93,6 @@ ContinuousFunctionPlot<Y, X, 1>::~ContinuousFunctionPlot() {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-
-template <typename Y, typename X>
-void ContinuousFunctionPlot<Y, X, 1>::setResolution(const X& resolution) {
-  mResolution = resolution;
-}
-
 template <typename Y, typename X>
 const X& ContinuousFunctionPlot<Y, X, 1>::getResolution() const {
   return mResolution;

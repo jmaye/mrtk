@@ -55,28 +55,13 @@ FunctionPlot<Y, X>::~FunctionPlot() {
 /******************************************************************************/
 
 template <typename Y, typename X>
-void FunctionPlot<Y, X>::setTitle(const std::string& title) {
-  mTitle = title;
-}
-
-template <typename Y, typename X>
 const std::string& FunctionPlot<Y, X>::getTitle() const {
   return mTitle;
 }
 
 template <typename Y, typename X>
-void FunctionPlot<Y, X>::setMinimum(const X& minimum) {
-  mMinimum = minimum;
-}
-
-template <typename Y, typename X>
 const X& FunctionPlot<Y, X>::getMinimum() const {
   return mMinimum;
-}
-
-template <typename Y, typename X>
-void FunctionPlot<Y, X>::setMaximum(const X& maximum) {
-  mMaximum = maximum;
 }
 
 template <typename Y, typename X>

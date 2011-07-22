@@ -63,8 +63,6 @@ public:
   /** \name Accessors
     @{
     */
-  /// Sets the plot's resolution
-  void setResolution(const X& resolution);
   /// Returns the plot's resolution
   const X& getResolution() const;
   /** @}

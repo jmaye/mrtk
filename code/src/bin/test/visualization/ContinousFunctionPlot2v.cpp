@@ -32,6 +32,31 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 2> plot("NormalDistribution2v",
     NormalDistribution<2>(), minimum, maximum, resolution);
+  try {
+    minimum(0) = 4;
+    ContinuousFunctionPlot<double, double, 2> plotWrong1("NormalDistribution2v",
+      NormalDistribution<2>(), minimum, maximum, resolution);
+  }
+  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    minimum(0) = -2;
+    resolution(0) = 10;
+    ContinuousFunctionPlot<double, double, 2> plotWrong2("NormalDistribution2v",
+      NormalDistribution<2>(), minimum, maximum, resolution);
+  }
+  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    resolution(0) = -0.05;
+    ContinuousFunctionPlot<double, double, 2> plotWrong3("NormalDistribution2v",
+      NormalDistribution<2>(), minimum, maximum, resolution);
+  }
+  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
   app.closeAllWindows();
   return 0;
 }

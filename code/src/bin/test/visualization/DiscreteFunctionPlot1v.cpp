@@ -29,6 +29,13 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
   DiscreteFunctionPlot<size_t, size_t, 1> plot("FactorialFunction",
     FactorialFunction(), 0, 10);
+  try {
+    DiscreteFunctionPlot<size_t, size_t, 1> plotWrong1("FactorialFunction",
+      FactorialFunction(), 10, 0);
+  }
+  catch (BadArgumentException<size_t>& e) {
+    std::cout << e.what() << std::endl;
+  }
   app.closeAllWindows();
   return 0;
 }
