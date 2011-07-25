@@ -39,6 +39,7 @@ Histogram<T, 1>::Histogram(T minValue, T maxValue, T binWidth)
     __FILE__, __LINE__);
   mNumBins = Traits<T>::computeNumBins(*this);
   mBins.resize(mNumBins);
+  mBins.setConstant(0);
 }
 
 template <typename T>
@@ -208,28 +209,48 @@ T Histogram<T, 1>::getSample() const {
   double u = randomizer.sampleUniform();
   for (size_t i = 1; i < (size_t)mBins.size() + 1; ++i) {
     if (u > cumProbabilities(i - 1) && u <= cumProbabilities(i)) {
-      return i - 1;
+      return getValue(i - 1);
     }
   }
-  return mBins.size() - 1;
-}
-
-template <typename T>
-double Histogram<T, 1>::getMeanCount() const {
-  return mBins.sum() / (double)mBins.size();
+  return getValue(mBins.size() - 1);
 }
 
 template <typename T>
 double Histogram<T, 1>::getMeanValue() const {
-  Histogram<T, 1> normHist(*this);
-  normHist.normalize();
-  double xValue = mMinValue;
-  double mean = 0;
+  T xValue = mMinValue;
+  double mean = 0.0;
   for (size_t i = 0; i < (size_t)mBins.size(); ++i) {
-    mean += normHist.mBins(i) * xValue;
+    mean += mBins(i) * xValue;
     xValue += mBinWidth;
   }
-  return mean;
+  return mean / mBins.sum();
+}
+
+template <typename T>
+void Histogram<T, 1>::clear() {
+  mBins.setConstant(0);
+}
+
+template <typename T>
+T Histogram<T, 1>::getValue(size_t bin) const
+  throw (OutOfBoundException<size_t>) {
+  if (bin >= (size_t)mBins.size())
+    throw OutOfBoundException<size_t>(bin,
+      "Histogram<T, 1>::getValue(): wrong bin number",
+      __FILE__, __LINE__);
+  return mMinValue + bin * mBinWidth;
+}
+
+template <typename T>
+double Histogram<T, 1>::getVariance() const {
+  T xValue = mMinValue;
+  double mean = getMeanValue();
+  double variance = 0.0;
+  for (size_t i = 0; i < (size_t)mBins.size(); ++i) {
+    variance += mBins(i) * (mean - xValue) * (mean - xValue);
+    xValue += mBinWidth;
+  }
+  return variance / mBins.sum();
 }
 
 /******************************************************************************/
@@ -300,6 +321,6 @@ void Histogram<T, 1>::scale(double scale) {
 }
 
 template <typename T>
-void Histogram<T, 1>::add(const Histogram& other) {
+void Histogram<T, 1>::add(const Histogram<T, 1>& other) {
   mBins += other.mBins;
 }

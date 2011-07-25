@@ -23,7 +23,7 @@
 #include "statistics/Histogram.h"
 
 int main(int argc, char** argv) {
-  std::cout << "Testing discrete histograms" << std::endl;
+  std::cout << "Testing discrete histograms 1-D" << std::endl;
   Histogram<size_t, 1> hist1DiscDefault;
   std::cout << "Histogram default parameters: " << std::endl << hist1DiscDefault
     << std::endl << std::endl;
@@ -35,6 +35,8 @@ int main(int argc, char** argv) {
     getBinWidth() << std::endl << std::endl;
   std::cout << "hist.getNumBins(): " << std::endl << hist1DiscDefault.
     getNumBins() << std::endl << std::endl;
+  std::cout << "hist.getBins(): " << std::endl << hist1DiscDefault.
+    getBins() << std::endl << std::endl;
   std::cout << "hist.addBinContent(0)" << std::endl;
   std::cout << "hist.addBinContent(1)" << std::endl;
   hist1DiscDefault.addBinContent(0);
@@ -75,10 +77,14 @@ int main(int argc, char** argv) {
     getMinimumBin() << std::endl << std::endl;
   std::cout << "hist.getSample(): " << std::endl << hist1DiscDefault.
     getSample() << std::endl << std::endl;
-  std::cout << "hist.getMeanCount(): " << std::endl << hist1DiscDefault.
-    getMeanCount() << std::endl << std::endl;
   std::cout << "hist.getMeanValue(): " << std::endl << hist1DiscDefault.
     getMeanValue() << std::endl << std::endl;
+  std::cout << "hist.getVariance(): " << std::endl << hist1DiscDefault.
+    getVariance() << std::endl << std::endl;
+  std::cout << "hist.getValue(0): " << std::endl << hist1DiscDefault.
+    getValue(0) << std::endl << std::endl;
+  std::cout << "hist.getValue(1): " << std::endl << hist1DiscDefault.
+    getValue(1) << std::endl << std::endl;
   std::cout << "hist.normalize()" << std::endl;
   hist1DiscDefault.normalize();
   std::cout << "hist.getBinContent(0): " << std::endl << hist1DiscDefault.
@@ -89,6 +95,10 @@ int main(int argc, char** argv) {
     getBinContent(1) << std::endl << std::endl;
   if (fabs(hist1DiscDefault.getBinContent(1) - 11.0 / 12) > 1e-6)
     return 1;
+  std::cout << "hist.clear()" << std::endl;
+  hist1DiscDefault.clear();
+  std::cout << "hist.getBins(): " << std::endl << hist1DiscDefault.
+    getBins() << std::endl << std::endl;
   try {
     hist1DiscDefault.setBinContent(2, 10);
   }
@@ -120,7 +130,7 @@ int main(int argc, char** argv) {
     std::cout << e.what() << std::endl;
   }
   Histogram<double, 1> hist1ContDefault;
-  std::cout << "Testing continuous histograms" << std::endl;
+  std::cout << "Testing continuous histograms 1-D" << std::endl;
   std::cout << "Histogram default parameters: " << std::endl << hist1ContDefault
     << std::endl << std::endl;
   std::cout << "hist.getMinValue(): " << std::endl << hist1ContDefault.
@@ -151,6 +161,36 @@ int main(int argc, char** argv) {
     getBinContent(0) << std::endl << std::endl;
   if (fabs(hist1ContDefault.getBinContent(0) - 11.0) > 1e-6)
     return 1;
+  std::cout << "hist.getNormFactor(): " << std::endl << hist1ContDefault.
+    getNormFactor() << std::endl << std::endl;
+  std::cout << "hist.getBinsSum(): " << std::endl << hist1ContDefault.
+    getBinsSum() << std::endl << std::endl;
+  std::cout << "hist.getMaximumBinCount(): " << std::endl << hist1ContDefault.
+    getMaximumBinCount() << std::endl << std::endl;
+  std::cout << "hist.getMaximumBin(): " << std::endl << hist1ContDefault.
+    getMaximumBin() << std::endl << std::endl;
+  std::cout << "hist.getMinimumBinCount(): " << std::endl << hist1ContDefault.
+    getMinimumBinCount() << std::endl << std::endl;
+  std::cout << "hist.getMinimumBin(): " << std::endl << hist1ContDefault.
+    getMinimumBin() << std::endl << std::endl;
+  std::cout << "hist.getSample(): " << std::endl << hist1ContDefault.
+    getSample() << std::endl << std::endl;
+  std::cout << "hist.getMeanValue(): " << std::endl << hist1ContDefault.
+    getMeanValue() << std::endl << std::endl;
+  std::cout << "hist.getVariance(): " << std::endl << hist1ContDefault.
+    getVariance() << std::endl << std::endl;
+  std::cout << "hist.getValue(0): " << std::endl << hist1ContDefault.
+    getValue(0) << std::endl << std::endl;
+  std::cout << "hist.normalize()" << std::endl;
+  hist1ContDefault.normalize();
+  std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
+    getBinContent(0) << std::endl << std::endl;
+  if (fabs(hist1ContDefault.getBinContent(0) - 1.0) > 1e-6)
+    return 1;
+  std::cout << "hist.clear()" << std::endl;
+  hist1ContDefault.clear();
+  std::cout << "hist.getBins(): " << std::endl << hist1ContDefault.
+    getBins() << std::endl << std::endl;
   try {
     hist1ContDefault.setBinContent(2, 10);
   }
@@ -179,6 +219,220 @@ int main(int argc, char** argv) {
     Histogram<double, 1> hist1ContWrong2(0, 5, 10);
   }
   catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
+  std::cout << "Testing discrete histograms 2-D" << std::endl;
+  Histogram<size_t, 2> hist2DiscDefault;
+  std::cout << "Histogram default parameters: " << std::endl << hist2DiscDefault
+    << std::endl << std::endl;
+  std::cout << "hist.getMinValue(): " << std::endl << hist2DiscDefault.
+    getMinValue() << std::endl << std::endl;
+  std::cout << "hist.getMaxValue(): " << std::endl << hist2DiscDefault.
+    getMaxValue() << std::endl << std::endl;
+  std::cout << "hist.getBinWidth(): " << std::endl << hist2DiscDefault.
+    getBinWidth() << std::endl << std::endl;
+  std::cout << "hist.getNumBins(): " << std::endl << hist2DiscDefault.
+    getNumBins() << std::endl << std::endl;
+  std::cout << "hist.getBins(): " << std::endl << hist2DiscDefault.
+    getBins() << std::endl << std::endl;
+  std::cout << "hist.addBinContent(0, 0)" << std::endl;
+  std::cout << "hist.addBinContent(0, 1)" << std::endl;
+  hist2DiscDefault.addBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0));
+  hist2DiscDefault.addBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1));
+  std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2DiscDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
+    1.0) > 1e-6)
+    return 1;
+  std::cout << "hist.getBinContent(0, 1): " << std::endl << hist2DiscDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
+  if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) -
+    1.0) > 1e-6)
+    return 1;
+  std::cout << "hist.setBinContent((0, 1), 10)" << std::endl;
+  hist2DiscDefault.setBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1), 10);
+  std::cout << "hist.getBinContent(0, 1): " << std::endl << hist2DiscDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
+  if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) -
+    10.0) > 1e-6)
+    return 1;
+  std::cout << "hist.addSample(0, 1)" << std::endl;
+  hist2DiscDefault.addSample(Eigen::Matrix<size_t, 2, 1>(0, 1));
+  std::cout << "hist.addSample(0, 2)" << std::endl;
+  hist2DiscDefault.addSample(Eigen::Matrix<size_t, 2, 1>(0, 2));
+  std::cout << "hist.getBinContent(0, 1): " << std::endl << hist2DiscDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
+  if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) -
+    11.0) > 1e-6)
+    return 1;
+  std::cout << "hist.getNormFactor(): " << std::endl << hist2DiscDefault.
+    getNormFactor() << std::endl << std::endl;
+  std::cout << "hist.getBinsSum(): " << std::endl << hist2DiscDefault.
+    getBinsSum() << std::endl << std::endl;
+  std::cout << "hist.getMaximumBinCount(): " << std::endl << hist2DiscDefault.
+    getMaximumBinCount() << std::endl << std::endl;
+  std::cout << "hist.getMaximumBin(): " << std::endl << hist2DiscDefault.
+    getMaximumBin() << std::endl << std::endl;
+  std::cout << "hist.getMinimumBinCount(): " << std::endl << hist2DiscDefault.
+    getMinimumBinCount() << std::endl << std::endl;
+  std::cout << "hist.getMinimumBin(): " << std::endl << hist2DiscDefault.
+    getMinimumBin() << std::endl << std::endl;
+  std::cout << "hist.getSample(): " << std::endl << hist2DiscDefault.
+    getSample() << std::endl << std::endl;
+  std::cout << "hist.getMeanValue(): " << std::endl << hist2DiscDefault.
+    getMeanValue() << std::endl << std::endl;
+  std::cout << "hist.getCovariance(): " << std::endl << hist2DiscDefault.
+    getCovariance() << std::endl << std::endl;
+  std::cout << "hist.getValue(0, 0): " << std::endl << hist2DiscDefault.
+    getValue(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  std::cout << "hist.getValue(0, 1): " << std::endl << hist2DiscDefault.
+    getValue(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
+  std::cout << "hist.normalize()" << std::endl;
+  hist2DiscDefault.normalize();
+  std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2DiscDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
+    1.0 / 12) > 1e-6)
+    return 1;
+  std::cout << "hist.getBinContent(0, 1): " << std::endl << hist2DiscDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
+  if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) -
+    11.0 / 12) > 1e-6)
+    return 1;
+  std::cout << "hist.clear()" << std::endl;
+  hist2DiscDefault.clear();
+  std::cout << "hist.getBins(): " << std::endl << hist2DiscDefault.
+    getBins() << std::endl << std::endl;
+  try {
+    hist2DiscDefault.setBinContent(Eigen::Matrix<size_t, 2, 1>(0, 2), 10);
+  }
+  catch (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 2));
+  }
+  catch (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    hist2DiscDefault.addBinContent(Eigen::Matrix<size_t, 2, 1>(0, 2));
+  }
+  catch (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    Histogram<size_t, 2> hist2discWrong1(Eigen::Matrix<size_t, 2, 1>(10, 1),
+      Eigen::Matrix<size_t, 2, 1>(0, 9), Eigen::Matrix<size_t, 2, 1>(2, 2));
+  }
+  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    Histogram<size_t, 2> hist2discWrong2(Eigen::Matrix<size_t, 2, 1>(0, 1),
+      Eigen::Matrix<size_t, 2, 1>(10, 9), Eigen::Matrix<size_t, 2, 1>(10, 10));
+  }
+  catch (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  std::cout << "Testing continuous histograms 2-D" << std::endl;
+  Histogram<double, 2> hist2ContDefault;
+  std::cout << "Histogram default parameters: " << std::endl << hist2ContDefault
+    << std::endl << std::endl;
+  std::cout << "hist.getMinValue(): " << std::endl << hist2ContDefault.
+    getMinValue() << std::endl << std::endl;
+  std::cout << "hist.getMaxValue(): " << std::endl << hist2ContDefault.
+    getMaxValue() << std::endl << std::endl;
+  std::cout << "hist.getBinWidth(): " << std::endl << hist2ContDefault.
+    getBinWidth() << std::endl << std::endl;
+  std::cout << "hist.getNumBins(): " << std::endl << hist2ContDefault.
+    getNumBins() << std::endl << std::endl;
+  std::cout << "hist.getBins(): " << std::endl << hist2ContDefault.
+    getBins() << std::endl << std::endl;
+  std::cout << "hist.addBinContent(0, 0)" << std::endl;
+  hist2ContDefault.addBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0));
+  std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  if (fabs(hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
+    1.0) > 1e-6)
+    return 1;
+  std::cout << "hist.setBinContent((0, 0), 10)" << std::endl;
+  hist2ContDefault.setBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0), 10);
+  std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  if (fabs(hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
+    10.0) > 1e-6)
+    return 1;
+  std::cout << "hist.addSample(0.5, 0.5)" << std::endl;
+  hist2ContDefault.addSample(Eigen::Matrix<double, 2, 1>(0.5, 0.5));
+  std::cout << "hist.addSample(0, 2)" << std::endl;
+  hist2ContDefault.addSample(Eigen::Matrix<double, 2, 1>(0, 2));
+  std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  if (fabs(hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
+    11.0) > 1e-6)
+    return 1;
+  std::cout << "hist.getNormFactor(): " << std::endl << hist2ContDefault.
+    getNormFactor() << std::endl << std::endl;
+  std::cout << "hist.getBinsSum(): " << std::endl << hist2ContDefault.
+    getBinsSum() << std::endl << std::endl;
+  std::cout << "hist.getMaximumBinCount(): " << std::endl << hist2ContDefault.
+    getMaximumBinCount() << std::endl << std::endl;
+  std::cout << "hist.getMaximumBin(): " << std::endl << hist2ContDefault.
+    getMaximumBin() << std::endl << std::endl;
+  std::cout << "hist.getMinimumBinCount(): " << std::endl << hist2ContDefault.
+    getMinimumBinCount() << std::endl << std::endl;
+  std::cout << "hist.getMinimumBin(): " << std::endl << hist2ContDefault.
+    getMinimumBin() << std::endl << std::endl;
+  std::cout << "hist.getSample(): " << std::endl << hist2ContDefault.
+    getSample() << std::endl << std::endl;
+  std::cout << "hist.getMeanValue(): " << std::endl << hist2ContDefault.
+    getMeanValue() << std::endl << std::endl;
+  std::cout << "hist.getCovariance(): " << std::endl << hist2ContDefault.
+    getCovariance() << std::endl << std::endl;
+  std::cout << "hist.getValue(0, 0): " << std::endl << hist2ContDefault.
+    getValue(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  std::cout << "hist.normalize()" << std::endl;
+  hist2ContDefault.normalize();
+  std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.
+    getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  if (fabs(hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
+    1.0) > 1e-6)
+    return 1;
+  std::cout << "hist.clear()" << std::endl;
+  hist2ContDefault.clear();
+  std::cout << "hist.getBins(): " << std::endl << hist2ContDefault.
+    getBins() << std::endl << std::endl;
+  try {
+    hist2ContDefault.setBinContent(Eigen::Matrix<size_t, 2, 1>(0, 2), 10);
+  }
+  catch (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 2));
+  }
+  catch (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    hist2ContDefault.addBinContent(Eigen::Matrix<size_t, 2, 1>(0, 2));
+  }
+  catch (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    Histogram<double, 2> hist2discWrong1(Eigen::Matrix<double, 2, 1>(10, 1),
+      Eigen::Matrix<double, 2, 1>(0, 9), Eigen::Matrix<double, 2, 1>(2, 2));
+  }
+  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
+    std::cout << e.what() << std::endl;
+  }
+  try {
+    Histogram<double, 2> hist2discWrong2(Eigen::Matrix<double, 2, 1>(0, 1),
+      Eigen::Matrix<double, 2, 1>(10, 9), Eigen::Matrix<double, 2, 1>(10, 10));
+  }
+  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
     std::cout << e.what() << std::endl;
   }
   return 0;

@@ -116,10 +116,14 @@ public:
   size_t getMinimumBin() const;
   /// Returns a sample from the histogram
   T getSample() const;
-  /// Returns the mean count of the histogram
-  double getMeanCount() const;
   /// Returns the mean value of the histogram
   double getMeanValue() const;
+  /// Returns the variance of the histogram
+  double getVariance() const;
+  /// Clears the histogram
+  void clear();
+  /// Gets the x value at the center of a bin
+  T getValue(size_t bin) const throw (OutOfBoundException<size_t>);
   /** @}
     */
 
@@ -133,7 +137,7 @@ public:
   /// Scale the histogram
   void scale(double scale);
   /// Add another histogram
-  void add(const Histogram& other);
+  void add(const Histogram<T, 1>& other);
   /** @}
     */
 

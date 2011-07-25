@@ -24,6 +24,10 @@
 #define HISTOGRAM2V_H
 
 #include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
+#include "exceptions/OutOfBoundException.h"
+
+#include <utils/SizeTSupport.h>
 
 template <typename T, size_t M> class Histogram;
 
@@ -33,11 +37,51 @@ template <typename T, size_t M> class Histogram;
 template <typename T> class Histogram<T, 2> :
   public virtual Serializable {
 public:
+  /** \name Traits
+    @{
+    */
+  /// Computing bin numbers for all integer types
+  template <typename U, size_t D = 0> struct Traits {
+  public:
+    /// Bin computing function
+    static Eigen::Matrix<size_t, 2, 1> computeNumBins(const Histogram<U, 2>&
+      hist);
+    /// Add sample to the histogram
+    static void addSample(Histogram<U, 2>& hist, const Eigen::Matrix<U, 2, 1>&
+      sample);
+  };
+  /// Computing bin numbers for float type
+  template <size_t D> struct Traits<float, D> {
+  public:
+    /// Bin computing function
+    static Eigen::Matrix<size_t, 2, 1> computeNumBins(const Histogram<float, 2>&
+      hist);
+    /// Add sample to the histogram
+    static void addSample(Histogram<float, 2>& hist, const
+      Eigen::Matrix<float, 2, 1>& sample);
+  };
+  /// Computing bin numbers for double type
+  template <size_t D> struct Traits<double, D> {
+  public:
+    /// Bin computing function
+    static Eigen::Matrix<size_t, 2, 1> computeNumBins(const
+      Histogram<double, 2>& hist);
+    /// Add sample to the histogram
+    static void addSample(Histogram<double, 2>& hist,
+      const Eigen::Matrix<double, 2, 1>& sample);
+  };
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Constructs histogram from parameters
-  Histogram();
+  Histogram(const Eigen::Matrix<T, 2, 1>& minValue =
+    Eigen::Matrix<T, 2, 1>::Zero(), const Eigen::Matrix<T, 2, 1>& maxValue =
+    Eigen::Matrix<T, 2, 1>::Ones(), const Eigen::Matrix<T, 2, 1>& binWidth =
+    Eigen::Matrix<T, 2, 1>::Ones())
+    throw (BadArgumentException<Eigen::Matrix<T, 2, 1> >);
   /// Copy constructor
   Histogram(const Histogram<T, 2>& other);
   /// Assignment operator
@@ -50,6 +94,62 @@ public:
   /** \name Accessors
     @{
     */
+  /// Returns the minimum value of the histogram
+  const Eigen::Matrix<T, 2, 1>& getMinValue() const;
+  /// Returns the maximum value of the histogram
+  const Eigen::Matrix<T, 2, 1>& getMaxValue() const;
+  /// Returns the bin width of the histogram
+  const Eigen::Matrix<T, 2, 1>& getBinWidth() const;
+  /// Returns the number of bins of the histogram
+  const Eigen::Matrix<size_t, 2, 1>& getNumBins() const;
+  /// Returns the bins of the histogram
+  const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& getBins() const;
+  /// Sets a bin content
+  void setBinContent(const Eigen::Matrix<size_t, 2, 1>& bin, double value)
+    throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >);
+  /// Returns a bin content
+  double getBinContent(const Eigen::Matrix<size_t, 2, 1>& bin) const
+    throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >);
+  /// Increment a bin
+  void addBinContent(const Eigen::Matrix<size_t, 2, 1>& bin)
+    throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >);
+  /// Returns the normalization factor
+  double getNormFactor() const;
+  /// Returns the bins sum
+  double getBinsSum() const;
+  /// Returns the maximum bin count of the histogram
+  double getMaximumBinCount() const;
+  /// Returns the maximum bin of the histogram
+  Eigen::Matrix<size_t, 2, 1> getMaximumBin() const;
+  /// Returns the minimum bin count of the histogram
+  double getMinimumBinCount() const;
+  /// Returns the minimum bin of the histogram
+  Eigen::Matrix<size_t, 2, 1> getMinimumBin() const;
+  /// Returns a sample from the histogram
+  Eigen::Matrix<T, 2, 1> getSample() const;
+  /// Returns the mean value of the histogram
+  Eigen::Matrix<double, 2, 1> getMeanValue() const;
+  /// Returns the covariance of the histogram
+  Eigen::Matrix<double, 2, 2> getCovariance() const;
+  /// Clears the histogram
+  void clear();
+  /// Gets the value at the center of a bin
+  Eigen::Matrix<T, 2, 1> getValue(const Eigen::Matrix<size_t, 2, 1>& bin)
+    const throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >);
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Add a sample to the histogram
+  void addSample(const Eigen::Matrix<T, 2, 1>& sample);
+  /// Normalize the histogram
+  void normalize(double norm = 1.0);
+  /// Scale the histogram
+  void scale(double scale);
+  /// Add another histogram
+  void add(const Histogram<T, 2>& other);
   /** @}
     */
 
@@ -71,6 +171,18 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Minimum value to be stored
+  Eigen::Matrix<T, 2, 1> mMinValue;
+  /// Maximum value to be stored
+  Eigen::Matrix<T, 2, 1> mMaxValue;
+  /// Bin width
+  Eigen::Matrix<T, 2, 1> mBinWidth;
+  /// Number of bins
+  Eigen::Matrix<size_t, 2, 1> mNumBins;
+  /// Contains the bin values
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> mBins;
+  /// Normalization factor
+  double mNormFactor;
   /** @}
     */
 
