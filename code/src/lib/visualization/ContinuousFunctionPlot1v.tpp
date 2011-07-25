@@ -30,6 +30,8 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
   maximum, const X& resolution) throw (BadArgumentException<X>) :
   FunctionPlot<Y, X>(title, minimum, maximum),
   QwtPlot(0),
+  mPanner(canvas()),
+  mMagnifier(canvas()),
   mResolution(resolution) {
   if (maximum < minimum)
     throw BadArgumentException<X>(maximum,
@@ -68,7 +70,7 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
   mGrid.attach(this);
   canvas()->setLineWidth(2);
   QPalette palette = canvas()->palette();
-  palette.setColor(backgroundRole(), QColor(255, 255, 255));
+  palette.setColor(backgroundRole(), Qt::white);
   canvas()->setPalette(palette);
   canvas()->setAutoFillBackground(true);
   setAxisTitle(QwtPlot::xBottom, QString('x'));

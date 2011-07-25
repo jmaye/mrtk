@@ -29,7 +29,9 @@ DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
   const DiscreteFunction<Y, X>& function, const X& minimum, const X& maximum)
   throw (BadArgumentException<X>) :
   FunctionPlot<Y, X>(title, minimum, maximum),
-  QwtPlot(0) {
+  QwtPlot(0),
+  mPanner(canvas()),
+  mMagnifier(canvas()) {
   if (maximum < minimum)
     throw BadArgumentException<X>(maximum,
       "DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(): maximum must be larger than minimum",
@@ -58,7 +60,7 @@ DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
   mGrid.attach(this);
   canvas()->setLineWidth(2);
   QPalette palette = canvas()->palette();
-  palette.setColor(backgroundRole(), QColor(255, 255, 255));
+  palette.setColor(backgroundRole(), Qt::white);
   canvas()->setPalette(palette);
   canvas()->setAutoFillBackground(true);
   setAxisTitle(QwtPlot::xBottom, QString('x'));

@@ -33,6 +33,8 @@
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_grid.h>
+#include <qwt-qt4/qwt_plot_panner.h>
+#include <qwt-qt4/qwt_plot_magnifier.h>
 
 template <typename Y, typename X, size_t M> class DiscreteFunctionPlot;
 
@@ -77,6 +79,10 @@ protected:
   QwtPlotCurve mCurve;
   /// Grid
   QwtPlotGrid mGrid;
+  /// Panner
+  QwtPlotPanner mPanner;
+  /// Magnifier
+  QwtPlotMagnifier mMagnifier;
   /// Data on the x-axis
   QVector<double> mXData; // TODO:SHITTY BECAUSE OF THE PLOTTING ENGINE
   /// Data on the y-axis
