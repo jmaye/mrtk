@@ -16,17 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunctionPlot1v.h
-    \brief This file contains a plotting tool for univariate continuous
-           functions
+/** \file HistogramPlot1v.h
+    \brief This file contains a plotting tool for univariate histograms
   */
 
-#ifndef CONTINUOUSFUNCTIONPLOT1V_H
-#define CONTINUOUSFUNCTIONPLOT1V_H
-
-#include "functions/ContinuousFunction.h"
-#include "visualization/FunctionPlot.h"
-#include "exceptions/BadArgumentException.h"
+#ifndef HISTOGRAMPLOT1V_H
+#define HISTOGRAMPLOT1V_H
 
 #include <QtGui/QWidget>
 #include <QtCore/QVector>
@@ -34,38 +29,31 @@
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_grid.h>
 
-template <typename Y, typename X, size_t M> class ContinuousFunctionPlot;
+template <typename Y, typename X, size_t M> class HistogramPlot;
 
-/** The ContinuousFunctionPlot1v class is a plotting tool for univariate
-    continuous functions.
-    \brief 1-v continuous function plotting tool
+/** The HistogramPlot1v class is a plotting tool for univariate histograms.
+    \brief 1-v histogram plot
   */
-template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 1> :
-  public FunctionPlot<Y, X>,
+template <typename Y, typename X> class HistogramPlot<Y, X, 1> :
   public QwtPlot {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs plot from parameters
-  ContinuousFunctionPlot(const std::string& title, const
-    ContinuousFunction<Y, X>& function, const X& minimum, const X& maximum,
-    const X& resolution) throw (BadArgumentException<X>);
+  HistogramPlot(const std::string& title);
   /// Copy constructor
-  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 1>& other);
+  HistogramPlot(const HistogramPlot<Y, X, 1>& other);
   /// Assignment operator
-  ContinuousFunctionPlot<Y, X, 1>& operator =
-    (const ContinuousFunctionPlot<Y, X, 1>& other);
+  HistogramPlot<Y, X, 1>& operator = (const HistogramPlot<Y, X, 1>& other);
   /// Destructor
-  virtual ~ContinuousFunctionPlot();
+  virtual ~HistogramPlot();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Returns the plot's resolution
-  const X& getResolution() const;
   /** @}
     */
 
@@ -89,13 +77,11 @@ protected:
   QVector<X> mXData;
   /// Data on the y-axis
   QVector<Y> mYData;
-  /// Resolution on the axis
-  X mResolution;
   /** @}
     */
 
 };
 
-#include "visualization/ContinuousFunctionPlot1v.tpp"
+#include "visualization/HistogramPlot1v.tpp"
 
-#endif // CONTINUOUSFUNCTIONPLOT1V_H
+#endif // HISTOGRAMPLOT1V_H

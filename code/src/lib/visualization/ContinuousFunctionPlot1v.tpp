@@ -18,6 +18,7 @@
 
 #include <QtCore/QString>
 #include <qwt-qt4/qwt_plot_canvas.h>
+#include <qwt-qt4/qwt_symbol.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -52,12 +53,28 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
     xValue += resolution;
   }
   mCurve.setData(mXData, mYData);
+  mCurve.setPen(QPen(QColor(Qt::blue)));
+  //mCurve.setCurveAttribute(QwtPlotCurve::Fitted, true);
+  //mCurve.setBrush(QBrush(QColor(Qt::blue)));
+  //mCurve.setSymbol(QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+    //QPen(Qt::black), QSize(5, 5)));
+  mCurve.setStyle(QwtPlotCurve::Lines);
   mCurve.attach(this);
+  mGrid.enableX(true);
+  mGrid.enableY(true);
+  mGrid.enableXMin(false);
+  mGrid.enableYMin(false);
+  mGrid.setMajPen(QPen(Qt::black, 0, Qt::DotLine));
+  mGrid.attach(this);
   canvas()->setLineWidth(2);
+  QPalette palette = canvas()->palette();
+  palette.setColor(backgroundRole(), QColor(255, 255, 255));
+  canvas()->setPalette(palette);
+  canvas()->setAutoFillBackground(true);
   setAxisTitle(QwtPlot::xBottom, QString('x'));
   setAxisTitle(QwtPlot::yLeft, QString('y'));
   replot();
-  setFixedSize(sizeHint());
+  //setFixedSize(sizeHint());
 }
 
 template <typename Y, typename X>
@@ -66,6 +83,7 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const
   FunctionPlot<Y, X>(other),
   QwtPlot(other),
   mCurve(other.mCurve),
+  mGrid(other.mGrid),
   mXData(other.mXData),
   mYData(other.mYData),
   mResolution(other.mResolution) {
@@ -78,6 +96,7 @@ ContinuousFunctionPlot<Y, X, 1>& ContinuousFunctionPlot<Y, X, 1>::operator =
     this->FunctionPlot<Y, X>::operator=(other);
     this->QwtPlot::operator=(other);
     mCurve = other.mCurve;
+    mGrid = other.mGrid;
     mXData = other.mXData;
     mYData = other.mYData;
     mResolution = other.mResolution;

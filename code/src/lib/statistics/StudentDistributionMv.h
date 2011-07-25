@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file NormalDistributionMv.h
-    \brief This file defines the NormalDistributionMv class, which represents a
-           multivariate normal distribution
+/** \file StudentDistributionMv.h
+    \brief This file defines the StudentDistributionMv class, which represents a
+           multivariate Student distribution
   */
 
-#ifndef NORMALDISTRIBUTIONMV_H
-#define NORMALDISTRIBUTIONMV_H
+#ifndef STUDENTDISTRIBUTIONMV_H
+#define STUDENTDISTRIBUTIONMV_H
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
@@ -31,11 +31,11 @@
 
 #include <Eigen/Cholesky>
 
-/** The NormalDistributionMv class represents a multivariate normal
+/** The StudentDistributionMv class represents a multivariate Student
     distribution.
-    \brief Multivariate normal distribution
+    \brief Multivariate Student distribution
   */
-template <size_t M> class NormalDistribution :
+template <size_t M> class StudentDistribution :
   public ContinuousDistribution<double, M>,
   public SampleDistribution<Eigen::Matrix<double, M, 1> >,
   public virtual Serializable {
@@ -44,37 +44,41 @@ public:
     @{
     */
   /// Constructs the distribution from the parameters
-  NormalDistribution(const Eigen::Matrix<double, M, 1>& mean =
+  StudentDistribution(const Eigen::Matrix<double, M, 1>& location =
     Eigen::Matrix<double, M, 1>::Zero(), const Eigen::Matrix<double, M, M>&
-    covariance = Eigen::Matrix<double, M, M>::Identity());
+    scale = Eigen::Matrix<double, M, M>::Identity(), double degrees = 1.0);
   /// Copy constructor
-  NormalDistribution(const NormalDistribution<M>& other);
+  StudentDistribution(const StudentDistribution<M>& other);
   /// Assignment operator
-  NormalDistribution<M>& operator = (const NormalDistribution<M>& other);
+  StudentDistribution<M>& operator = (const StudentDistribution<M>& other);
   /// Destructor
-  virtual ~NormalDistribution();
+  virtual ~StudentDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the mean of the distribution
-  void setMean(const Eigen::Matrix<double, M, 1>& mean);
-  /// Returns the mean of the distribution
-  const Eigen::Matrix<double, M, 1>& getMean() const;
-  /// Sets the covariance matrix of the distribution
-  void setCovariance(const Eigen::Matrix<double, M, M>& covariance)
+  /// Sets the location of the distribution
+  void setLocation(const Eigen::Matrix<double, M, 1>& scale);
+  /// Returns the location of the distribution
+  const Eigen::Matrix<double, M, 1>& getLocation() const;
+  /// Sets the scale matrix of the distribution
+  void setScale(const Eigen::Matrix<double, M, M>& scale)
     throw (BadArgumentException<Eigen::Matrix<double, M, M> >);
-  /// Returns the covariance matrix of the distribution
-  const Eigen::Matrix<double, M, M>& getCovariance() const;
-  /// Returns the precision matrix of the distribution
-  const Eigen::Matrix<double, M, M>& getPrecision() const;
-  /// Returns the determinant of the covariance matrix
+  /// Returns the scale matrix of the distribution
+  const Eigen::Matrix<double, M, M>& getScale() const;
+  /// Sets the degrees of freedom of the distribution
+  void setDegrees(double degrees) throw (BadArgumentException<double>);
+  /// Returns the degrees of freedom of the distribution
+  double getDegrees() const;
+  /// Returns the inverse scale matrix of the distribution
+  const Eigen::Matrix<double, M, M>& getInverseScale() const;
+  /// Returns the determinant of the scale matrix
   double getDeterminant() const;
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
-  /// Returns the cholesky decomposition of the covariance matrix
+  /// Returns the cholesky decomposition of the scale matrix
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Access the probability density function at the given value
   virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
@@ -82,8 +86,6 @@ public:
   double logpdf(const Eigen::Matrix<double, M, 1>& value) const;
   /// Access a sample drawn from the distribution
   virtual Eigen::Matrix<double, M, 1> getSample() const;
-  /// Returns the KL-divergence with another distribution
-  double KLDivergence(const NormalDistribution<M>& other) const;
   /// Returns the squared Mahalanobis distance from a point
   double mahalanobisDistance(const Eigen::Matrix<double, M, 1>& value) const;
   /** @}
@@ -107,23 +109,25 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Mean of the normal distribution
-  Eigen::Matrix<double, M, 1> mMean;
-  /// Covariance matrix of the normal distribution
-  Eigen::Matrix<double, M, M> mCovariance;
-  /// Precision matrix of the normal distribution
-  Eigen::Matrix<double, M, M> mPrecision;
-  /// Determinant of the covariance matrix
+  /// Location of the distribution
+  Eigen::Matrix<double, M, 1> mLocation;
+  /// Scale of the distribution
+  Eigen::Matrix<double, M, M> mScale;
+  /// Degrees of freedom of the distribution
+  double mDegrees;
+  /// Inverse scale of the distribution
+  Eigen::Matrix<double, M, M> mInverseScale;
+  /// Determinant of the scale matrix
   double mDeterminant;
   /// Normalizer of the distribution
   double mNormalizer;
-  /// Cholesky decomposition of the covariance matrix
+  /// Cholesky decomposition of the scale matrix
   Eigen::LLT<Eigen::Matrix<double, M, M> > mTransformation;
   /** @}
     */
 
 };
 
-#include "statistics/NormalDistributionMv.tpp"
+#include "statistics/StudentDistributionMv.tpp"
 
-#endif // NORMALDISTRIBUTIONMV_H
+#endif // STUDENTDISTRIBUTIONMV_H

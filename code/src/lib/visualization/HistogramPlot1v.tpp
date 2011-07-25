@@ -25,67 +25,56 @@
 /******************************************************************************/
 
 template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
-  const DiscreteFunction<Y, X>& function, const X& minimum, const X& maximum)
-  throw (BadArgumentException<X>) :
-  FunctionPlot<Y, X>(title, minimum, maximum),
+HistogramPlot<Y, X, 1>::HistogramPlot(const std::string& title) :
   QwtPlot(0) {
-  if (maximum < minimum)
-    throw BadArgumentException<X>(maximum,
-      "DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(): maximum must be larger than minimum",
-      __FILE__, __LINE__);
-  QwtPlot::setTitle(QString(title.c_str()));
-  mXData.resize(maximum - minimum);
-  mYData.resize(maximum - minimum);
-  X xValue = minimum;
-  for (size_t i = 0; i < (size_t)mXData.size(); ++i) {
-    mXData[i] = xValue;
-    mYData[i] = function(xValue);
-    xValue++;
-  }
-  mCurve.setData(mXData, mYData);
-  mCurve.setStyle(QwtPlotCurve::Steps);
-  mCurve.setPen(QPen(QColor(Qt::blue)));
-  //mCurve.setBrush(QBrush(QColor(Qt::blue)));
-  //mCurve.setSymbol(QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-    //QPen(Qt::black), QSize(5, 5)));
-  mCurve.attach(this);
-  mGrid.enableX(true);
-  mGrid.enableY(true);
-  mGrid.enableXMin(false);
-  mGrid.enableYMin(false);
-  mGrid.setMajPen(QPen(Qt::black, 0, Qt::DotLine));
-  mGrid.attach(this);
-  canvas()->setLineWidth(2);
-  QPalette palette = canvas()->palette();
-  palette.setColor(backgroundRole(), QColor(255, 255, 255));
-  canvas()->setPalette(palette);
-  canvas()->setAutoFillBackground(true);
-  setAxisTitle(QwtPlot::xBottom, QString('x'));
-  setAxisTitle(QwtPlot::yLeft, QString('y'));
-  replot();
-  //setFixedSize(sizeHint());
+//  QwtPlot::setTitle(QString(title.c_str()));
+//  mXData.resize(round((maximum - minimum) / resolution));
+//  mYData.resize(round((maximum - minimum) / resolution));
+//  X xValue = minimum;
+//  for (size_t i = 0; i < (size_t)mXData.size(); ++i) {
+//    mXData[i] = xValue;
+//    mYData[i] = function(xValue);
+//    xValue += resolution;
+//  }
+//  mCurve.setData(mXData, mYData);
+//  mCurve.setPen(QPen(QColor(Qt::blue)));
+//  //mCurve.setCurveAttribute(QwtPlotCurve::Fitted, true);
+//  //mCurve.setBrush(QBrush(QColor(Qt::blue)));
+//  //mCurve.setSymbol(QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+//    //QPen(Qt::black), QSize(5, 5)));
+//  mCurve.setStyle(QwtPlotCurve::Lines);
+//  mCurve.attach(this);
+//  mGrid.enableX(true);
+//  mGrid.enableY(true);
+//  mGrid.enableXMin(false);
+//  mGrid.enableYMin(false);
+//  mGrid.setMajPen(QPen(Qt::black, 0, Qt::DotLine));
+//  mGrid.attach(this);
+//  canvas()->setLineWidth(2);
+//  QPalette palette = canvas()->palette();
+//  palette.setColor(backgroundRole(), QColor(255, 255, 255));
+//  canvas()->setPalette(palette);
+//  canvas()->setAutoFillBackground(true);
+//  setAxisTitle(QwtPlot::xBottom, QString('x'));
+//  setAxisTitle(QwtPlot::yLeft, QString('y'));
+//  replot();
+//  //setFixedSize(sizeHint());
 }
 
 template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const
-  DiscreteFunctionPlot<Y, X, 1>& other) :
-  FunctionPlot<Y, X>(other),
+HistogramPlot<Y, X, 1>::HistogramPlot(const HistogramPlot<Y, X, 1>& other) :
   QwtPlot(other),
   mCurve(other.mCurve),
-  mGrid(other.mGrid),
   mXData(other.mXData),
   mYData(other.mYData) {
 }
 
 template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 1>& DiscreteFunctionPlot<Y, X, 1>::operator =
-  (const DiscreteFunctionPlot<Y, X, 1>& other) {
+HistogramPlot<Y, X, 1>& HistogramPlot<Y, X, 1>::operator =
+  (const HistogramPlot<Y, X, 1>& other) {
   if (this != &other) {
-    this->FunctionPlot<Y, X>::operator=(other);
     this->QwtPlot::operator=(other);
     mCurve = other.mCurve;
-    mGrid = other.mGrid;
     mXData = other.mXData;
     mYData = other.mYData;
   }
@@ -93,14 +82,18 @@ DiscreteFunctionPlot<Y, X, 1>& DiscreteFunctionPlot<Y, X, 1>::operator =
 }
 
 template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 1>::~DiscreteFunctionPlot() {
+HistogramPlot<Y, X, 1>::~HistogramPlot() {
 }
+
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
 template <typename Y, typename X>
-void DiscreteFunctionPlot<Y, X, 1>::show() {
+void HistogramPlot<Y, X, 1>::show() {
   QWidget::show();
 }

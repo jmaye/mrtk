@@ -32,6 +32,7 @@
 #include <QtCore/QVector>
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
+#include <qwt-qt4/qwt_plot_grid.h>
 
 template <typename Y, typename X, size_t M> class DiscreteFunctionPlot;
 
@@ -74,6 +75,8 @@ protected:
     */
   /// Curve plotted
   QwtPlotCurve mCurve;
+  /// Grid
+  QwtPlotGrid mGrid;
   /// Data on the x-axis
   QVector<double> mXData; // TODO:SHITTY BECAUSE OF THE PLOTTING ENGINE
   /// Data on the y-axis

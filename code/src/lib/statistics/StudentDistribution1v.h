@@ -16,24 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file NormalDistribution1v.h
-    \brief This file defines the univariate normal distribution
+/** \file StudentDistribution1v.h
+    \brief This file defines the univariate Student distribution
   */
 
-#ifndef NORMALDISTRIBUTION1V_H
-#define NORMALDISTRIBUTION1V_H
+#ifndef STUDENTDISTRIBUTION1V_H
+#define STUDENTDISTRIBUTION1V_H
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-template <size_t M> class NormalDistribution;
+template <size_t M> class StudentDistribution;
 
-/** The NormalDistribution1v class represents a univariate normal distribution.
-    \brief Univariate normal distribution
+/** The StudentDistribution1v class represents a univariate Student
+    distribution.
+    \brief Univariate Student distribution
   */
-template <> class NormalDistribution<1> :
+template <> class StudentDistribution<1> :
   public ContinuousDistribution<double>,
   public SampleDistribution<double>,
   public virtual Serializable {
@@ -41,32 +42,35 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs a normal distribution from the parameters
-  NormalDistribution(double mean = 0.0, double variance = 1.0);
+  /// Constructs the distribution from the parameters
+  StudentDistribution(double location = 0.0, double scale = 1.0, double
+    degrees = 1.0);
   /// Copy constructor
-  NormalDistribution(const NormalDistribution<1>& other);
+  StudentDistribution(const StudentDistribution<1>& other);
   /// Assignment operator
-  NormalDistribution& operator = (const NormalDistribution<1>& other);
+  StudentDistribution& operator = (const StudentDistribution<1>& other);
   /// Destructor
-  virtual ~NormalDistribution();
+  virtual ~StudentDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the mean of the distribution
-  void setMean(double mean);
-  /// Returns the mean of the distribution
-  double getMean() const;
-  /// Sets the variance of the distribution
-  void setVariance(double variance) throw (BadArgumentException<double>);
-  /// Returns the variance of the distribution
-  double getVariance() const;
-  /// Returns the precision of the distribution
-  double getPrecision() const;
-  /// Returns the standard deviation of the distribution
-  double getStandardDeviation() const;
+  /// Sets the location of the distribution
+  void setLocation(double scale);
+  /// Returns the location of the distribution
+  double getLocation() const;
+  /// Sets the scale of the distribution
+  void setScale(double scale) throw (BadArgumentException<double>);
+  /// Returns the scale of the distribution
+  double getScale() const;
+  /// Sets the degrees of freedom of the distribution
+  void setDegrees(double degrees) throw (BadArgumentException<double>);
+  /// Returns the degrees of freedom of the distribution
+  double getDegrees() const;
+  /// Returns the inverse scale of the distribution
+  double getInverseScale() const;
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
   /// Access the probability density function at the given value
@@ -77,8 +81,6 @@ public:
   double cdf(const double& value) const;
   /// Access a sample drawn from the distribution
   virtual double getSample() const;
-  /// Returns the KL-divergence with another distribution
-  double KLDivergence(const NormalDistribution<1>& other) const;
   /// Returns the squared Mahalanobis distance from a given value
   double mahalanobisDistance(const double& value) const;
   /** @}
@@ -102,21 +104,21 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Mean of the normal distribution
-  double mMean;
-  /// Variance of the normal distribution
-  double mVariance;
-  /// Precision of the normal distribution
-  double mPrecision;
-  /// Standard deviation of the normal distribution
-  double mStandardDeviation;
-  /// Normalizer of the normal distribution
+  /// Location of the distribution
+  double mLocation;
+  /// Scale of the distribution
+  double mScale;
+  /// Degrees of freedom of the distribution
+  double mDegrees;
+  /// Inverse scale of the distribution
+  double mInverseScale;
+  /// Normalizer of the distribution
   double mNormalizer;
   /** @}
     */
 
 };
 
-#include "statistics/NormalDistribution1v.tpp"
+#include "statistics/StudentDistribution1v.tpp"
 
-#endif // NORMALDISTRIBUTION1V_H
+#endif // STUDENTDISTRIBUTION1V_H

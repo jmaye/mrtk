@@ -84,7 +84,9 @@ void NormalDistribution<1>::setVariance(double variance)
   throw (BadArgumentException<double>) {
   mVariance = variance;
   if (mVariance <= 0.0)
-    throw BadArgumentException<double>(variance, "NormalDistribution::setVariance(): variance must be strictly bigger than 0");
+    throw BadArgumentException<double>(variance,
+      "NormalDistribution::setVariance(): variance must be strictly bigger than 0",
+      __FILE__, __LINE__);
   mPrecision = 1.0 / variance;
   mStandardDeviation = sqrt(variance);
   mNormalizer = 0.5 * log(2.0 * M_PI * mVariance);
@@ -111,11 +113,11 @@ double NormalDistribution<1>::pdf(const double& value) const {
 }
 
 double NormalDistribution<1>::logpdf(const double& value) const {
-  return -(value - mMean) * (value -mMean) / (2.0 * mVariance) - mNormalizer;
+  return -0.5 * mahalanobisDistance(value) - mNormalizer;
 }
 
 double NormalDistribution<1>::cdf(const double& value) const {
-  return 0.5 * (1.0 + erf((value - mMean) / mNormalizer));
+  return 0.5 * (1.0 + erf((value - mMean) / sqrt(2 * mVariance)));
 }
 
 double NormalDistribution<1>::getSample() const {
@@ -131,5 +133,5 @@ double NormalDistribution<1>::KLDivergence(const NormalDistribution<1>& other)
 }
 
 double NormalDistribution<1>::mahalanobisDistance(const double& value) const {
-  return sqrt((value - mMean) * mPrecision * (value - mMean));
+  return (value - mMean) * mPrecision * (value - mMean);
 }

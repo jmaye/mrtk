@@ -148,8 +148,7 @@ double NormalDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
 template <size_t M>
 double NormalDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
   const {
-  return -0.5 * ((mMean - value).transpose() * mPrecision
-    * (mMean - value))(0, 0) - mNormalizer;
+  return -0.5 * mahalanobisDistance(value) - mNormalizer;
 }
 
 template <size_t M>
@@ -173,5 +172,6 @@ double NormalDistribution<M>::KLDivergence(const NormalDistribution<M>& other)
 template <size_t M>
 double NormalDistribution<M>::mahalanobisDistance(const
   Eigen::Matrix<double, M, 1>& value) const {
-  return sqrt(((value - mMean) * mPrecision * (value - mMean))(0, 0));
+  return ((value - mMean).transpose() * mPrecision *
+    (value - mMean))(0, 0);
 }

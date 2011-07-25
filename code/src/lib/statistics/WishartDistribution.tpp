@@ -90,7 +90,9 @@ template <size_t M>
 void WishartDistribution<M>::setDegrees(double degrees)
   throw (BadArgumentException<double>) {
   if (degrees <= M - 1)
-    throw BadArgumentException<double>(degrees, "WishartDistribution<M>::setDegrees(): degrees must be strictly bigger than the dimension - 1");
+    throw BadArgumentException<double>(degrees,
+      "WishartDistribution<M>::setDegrees(): degrees must be strictly bigger than the dimension - 1",
+      __FILE__, __LINE__);
   mDegrees = degrees;
 }
 
@@ -104,7 +106,9 @@ void WishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
   scale) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
   mTransformation = scale.llt();
   if (mTransformation.isPositiveDefinite() == false)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale, "WishartDistribution<M>::setScale(): scale must be positive definite");
+    throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
+      "WishartDistribution<M>::setScale(): scale must be positive definite",
+      __FILE__, __LINE__);
   mDeterminant = scale.determinant();
   mInverseScale = scale.inverse();
   LogGammaFunction<double, M> logGammaFunction;
