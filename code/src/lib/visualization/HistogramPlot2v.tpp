@@ -20,8 +20,8 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X>
-HistogramPlot<Y, X, 2>::HistogramPlot(const std::string& title) :
+template <typename T>
+HistogramPlot<T, 2>::HistogramPlot(const std::string& title) :
   Qwt3D::SurfacePlot(0) {
   Qwt3D::SurfacePlot::setTitle(title.c_str());
   setRotation(30, 0, 15);
@@ -56,8 +56,8 @@ HistogramPlot<Y, X, 2>::HistogramPlot(const std::string& title) :
 //    maximum(1));
 }
 
-template <typename Y, typename X>
-HistogramPlot<Y, X, 2>::~HistogramPlot() {
+template <typename T>
+HistogramPlot<T, 2>::~HistogramPlot() {
 //  size_t xSize = round((this->getMaximum()(0) - this->getMinimum()(0)) /
 //    this->getResolution()(0));
 //  for (size_t i = 0; i < xSize; ++i) {
@@ -75,7 +75,7 @@ HistogramPlot<Y, X, 2>::~HistogramPlot() {
 /* Methods                                                                    */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void HistogramPlot<Y, X, 2>::show() {
+template <typename T>
+void HistogramPlot<T, 2>::show() {
   QWidget::show();
 }

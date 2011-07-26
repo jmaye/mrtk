@@ -23,26 +23,30 @@
 #ifndef HISTOGRAMPLOT1V_H
 #define HISTOGRAMPLOT1V_H
 
-#include <QtGui/QWidget>
+#include "statistics/Histogram.h"
+
 #include <QtCore/QVector>
+
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_grid.h>
+#include <qwt-qt4/qwt_plot_panner.h>
+#include <qwt-qt4/qwt_plot_magnifier.h>
 
-template <typename Y, typename X, size_t M> class HistogramPlot;
+template <typename T, size_t M> class HistogramPlot;
 
 /** The HistogramPlot1v class is a plotting tool for univariate histograms.
     \brief 1-v histogram plot
   */
-template <typename Y, typename X> class HistogramPlot<Y, X, 1> :
+template <typename T> class HistogramPlot<T, 1> :
   public QwtPlot {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  HistogramPlot(const HistogramPlot<Y, X, 1>& other);
+  HistogramPlot(const HistogramPlot<T, 1>& other);
   /// Assignment operator
-  HistogramPlot<Y, X, 1>& operator = (const HistogramPlot<Y, X, 1>& other);
+  HistogramPlot<T, 1>& operator = (const HistogramPlot<T, 1>& other);
   /** @}
     */
 public:
@@ -50,7 +54,7 @@ public:
     @{
     */
   /// Constructs plot from parameters
-  HistogramPlot(const std::string& title);
+  HistogramPlot(const std::string& title, const Histogram<T, 1>& histogram);
   /// Destructor
   virtual ~HistogramPlot();
   /** @}
@@ -74,14 +78,18 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Curve plotted
-  QwtPlotCurve mCurve;
+  /// Histogram plotted
+  QwtPlotCurve mHistogram;
   /// Grid
   QwtPlotGrid mGrid;
+  /// Panner
+  QwtPlotPanner mPanner;
+  /// Magnifier
+  QwtPlotMagnifier mMagnifier;
   /// Data on the x-axis
-  QVector<X> mXData;
+  QVector<double> mXData;
   /// Data on the y-axis
-  QVector<Y> mYData;
+  QVector<double> mYData;
   /** @}
     */
 

@@ -24,45 +24,41 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X>
-HistogramPlot<Y, X, 1>::HistogramPlot(const std::string& title) :
-  QwtPlot(0) {
-//  QwtPlot::setTitle(QString(title.c_str()));
-//  mXData.resize(round((maximum - minimum) / resolution));
-//  mYData.resize(round((maximum - minimum) / resolution));
-//  X xValue = minimum;
-//  for (size_t i = 0; i < (size_t)mXData.size(); ++i) {
-//    mXData[i] = xValue;
-//    mYData[i] = function(xValue);
-//    xValue += resolution;
-//  }
-//  mCurve.setData(mXData, mYData);
-//  mCurve.setPen(QPen(QColor(Qt::blue)));
-//  //mCurve.setCurveAttribute(QwtPlotCurve::Fitted, true);
-//  //mCurve.setBrush(QBrush(QColor(Qt::blue)));
-//  //mCurve.setSymbol(QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-//    //QPen(Qt::black), QSize(5, 5)));
-//  mCurve.setStyle(QwtPlotCurve::Lines);
-//  mCurve.attach(this);
-//  mGrid.enableX(true);
-//  mGrid.enableY(true);
-//  mGrid.enableXMin(false);
-//  mGrid.enableYMin(false);
-//  mGrid.setMajPen(QPen(Qt::black, 0, Qt::DotLine));
-//  mGrid.attach(this);
-//  canvas()->setLineWidth(2);
-//  QPalette palette = canvas()->palette();
-//  palette.setColor(backgroundRole(), Qt::white);
-//  canvas()->setPalette(palette);
-//  canvas()->setAutoFillBackground(true);
-//  setAxisTitle(QwtPlot::xBottom, QString('x'));
-//  setAxisTitle(QwtPlot::yLeft, QString('y'));
-//  replot();
-//  //setFixedSize(sizeHint());
+template <typename T>
+HistogramPlot<T, 1>::HistogramPlot(const std::string& title, const
+  Histogram<T, 1>& histogram) :
+  QwtPlot(0),
+  mPanner(canvas()),
+  mMagnifier(canvas()) {
+  QwtPlot::setTitle(QString(title.c_str()));
+  mXData.resize(histogram.getNumBins());
+  mYData.resize(histogram.getNumBins());
+  for (size_t i = 0; i < histogram.getNumBins(); ++i) {
+    mXData[i] = histogram.getValue(i);
+    mYData[i] = histogram.getBinContent(i);
+  }
+  mHistogram.setData(mXData, mYData);
+  mHistogram.setPen(QPen(QColor(Qt::blue)));
+  mHistogram.setStyle(QwtPlotCurve::Sticks);
+  mHistogram.attach(this);
+  mGrid.enableX(true);
+  mGrid.enableY(true);
+  mGrid.enableXMin(false);
+  mGrid.enableYMin(false);
+  mGrid.setMajPen(QPen(Qt::black, 0, Qt::DotLine));
+  mGrid.attach(this);
+  canvas()->setLineWidth(2);
+  QPalette palette = canvas()->palette();
+  palette.setColor(backgroundRole(), Qt::white);
+  canvas()->setPalette(palette);
+  canvas()->setAutoFillBackground(true);
+  setAxisTitle(QwtPlot::xBottom, QString('x'));
+  setAxisTitle(QwtPlot::yLeft, QString('y'));
+  replot();
 }
 
-template <typename Y, typename X>
-HistogramPlot<Y, X, 1>::~HistogramPlot() {
+template <typename T>
+HistogramPlot<T, 1>::~HistogramPlot() {
 }
 
 /******************************************************************************/
@@ -73,7 +69,7 @@ HistogramPlot<Y, X, 1>::~HistogramPlot() {
 /* Methods                                                                    */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void HistogramPlot<Y, X, 1>::show() {
+template <typename T>
+void HistogramPlot<T, 1>::show() {
   QWidget::show();
 }

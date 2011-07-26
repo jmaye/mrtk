@@ -25,20 +25,20 @@
 
 #include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
 
-template <typename Y, typename X, size_t M> class HistogramPlot;
+template <typename T, size_t M> class HistogramPlot;
 
 /** The HistogramPlot2v class is a plotting tool for bivariate histogram plots.
     \brief 2-v histogram plot
   */
-template <typename Y, typename X> class HistogramPlot<Y, X, 2> :
+template <typename T> class HistogramPlot<T, 2> :
   public Qwt3D::SurfacePlot {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  HistogramPlot(const HistogramPlot<Y, X, 2>& other);
+  HistogramPlot(const HistogramPlot<T, 2>& other);
   /// Assignment operator
-  HistogramPlot<Y, X, 2>& operator = (const HistogramPlot<Y, X, 2>& other);
+  HistogramPlot<T, 2>& operator = (const HistogramPlot<T, 2>& other);
   /** @}
     */
 public:
@@ -71,7 +71,7 @@ protected:
     @{
     */
   /// Data on to be plotted
-  Y** mData;
+  double** mData;
   /** @}
     */
 
