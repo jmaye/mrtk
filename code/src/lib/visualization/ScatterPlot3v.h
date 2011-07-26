@@ -25,23 +25,28 @@
 
 #include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
 
-template <typename Y, typename X, size_t M> class ScatterPlot;
+template <size_t M> class ScatterPlot;
 
 /** The ScatterPlot3v class is a plotting tool for trivariate scatter plots.
     \brief 3-v scatter plot
   */
-template <typename Y, typename X> class ScatterPlot<Y, X, 3> :
+template <> class ScatterPlot<3> :
   public Qwt3D::SurfacePlot {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ScatterPlot(const ScatterPlot<3>& other);
+  /// Assignment operator
+  ScatterPlot<3>& operator = (const ScatterPlot<3>& other);
+  /** @}
+    */
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs plot from parameters
   ScatterPlot(const std::string& title);
-  /// Copy constructor
-  ScatterPlot(const ScatterPlot<Y, X, 3>& other);
-  /// Assignment operator
-  ScatterPlot<Y, X, 3>& operator = (const ScatterPlot<Y, X, 3>& other);
   /// Destructor
   virtual ~ScatterPlot();
   /** @}
@@ -66,7 +71,7 @@ protected:
     @{
     */
   /// Data on to be plotted
-  Y** mData;
+  double** mData;
   /** @}
     */
 

@@ -80,33 +80,6 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
 }
 
 template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const
-  ContinuousFunctionPlot<Y, X, 1>& other) :
-  FunctionPlot<Y, X>(other),
-  QwtPlot(other),
-  mCurve(other.mCurve),
-  mGrid(other.mGrid),
-  mXData(other.mXData),
-  mYData(other.mYData),
-  mResolution(other.mResolution) {
-}
-
-template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X, 1>& ContinuousFunctionPlot<Y, X, 1>::operator =
-  (const ContinuousFunctionPlot<Y, X, 1>& other) {
-  if (this != &other) {
-    this->FunctionPlot<Y, X>::operator=(other);
-    this->QwtPlot::operator=(other);
-    mCurve = other.mCurve;
-    mGrid = other.mGrid;
-    mXData = other.mXData;
-    mYData = other.mYData;
-    mResolution = other.mResolution;
-  }
-  return *this;
-}
-
-template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 1>::~ContinuousFunctionPlot() {
 }
 

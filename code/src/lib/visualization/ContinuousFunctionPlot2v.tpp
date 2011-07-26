@@ -75,43 +75,6 @@ ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(const std::string&
 }
 
 template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(const
-  ContinuousFunctionPlot<Y, X, 2>& other) :
-  FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >(other),
-  Qwt3D::SurfacePlot(other),
-  mResolution(other.mResolution) {
-  size_t xSize = round((other.getMaximum()(0) - other.getMinimum()(0)) /
-    other.getResolution()(0));
-  size_t ySize = round((other.getMaximum()(1) - other.getMinimum()(1)) /
-    other.getResolution()(1));
-  mData = new Y*[xSize];
-  for (size_t i = 0; i < xSize; ++i) {
-    mData[i] = new Y[ySize];
-    memcpy(&mData[i], &other.mData[i], ySize * sizeof(Y));
-  }
-}
-
-template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X, 2>& ContinuousFunctionPlot<Y, X, 2>::operator =
-  (const ContinuousFunctionPlot<Y, X, 2>& other) {
-  if (this != &other) {
-    this->FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >::operator=(other);
-    this->Qwt3D::SurfacePlot::operator=(other);
-    size_t xSize = round((other.getMaximum()(0) - other.getMinimum()(0)) /
-      other.getResolution()(0));
-    size_t ySize = round((other.getMaximum()(1) - other.getMinimum()(1)) /
-      other.getResolution()(1));
-    mData = new Y*[xSize];
-    for (size_t i = 0; i < xSize; ++i) {
-      mData[i] = new Y[ySize];
-      memcpy(&mData[i], &other.mData[i], ySize * sizeof(Y));
-    }
-    mResolution = other.mResolution;
-  }
-  return *this;
-}
-
-template <typename Y, typename X>
 ContinuousFunctionPlot<Y, X, 2>::~ContinuousFunctionPlot() {
   size_t xSize = round((this->getMaximum()(0) - this->getMinimum()(0)) /
     this->getResolution()(0));

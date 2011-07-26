@@ -31,7 +31,7 @@
 /** The Randomizer class implements random sampling from several distributions
     \brief Random sampling from distributions
   */
-template <typename T, size_t M = 1> class Randomizer :
+template <typename T = double, size_t M = 1> class Randomizer :
   public virtual Serializable {
 public:
   /** \name Traits

@@ -28,8 +28,8 @@
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
 
-#include <QtGui/QWidget>
 #include <QtCore/QVector>
+
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_grid.h>
@@ -45,6 +45,16 @@ template <typename Y, typename X, size_t M> class ContinuousFunctionPlot;
 template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 1> :
   public FunctionPlot<Y, X>,
   public QwtPlot {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 1>& other);
+  /// Assignment operator
+  ContinuousFunctionPlot<Y, X, 1>& operator =
+    (const ContinuousFunctionPlot<Y, X, 1>& other);
+  /** @}
+    */
 public:
   /** \name Constructors/destructor
     @{
@@ -53,11 +63,6 @@ public:
   ContinuousFunctionPlot(const std::string& title, const
     ContinuousFunction<Y, X>& function, const X& minimum, const X& maximum,
     const X& resolution) throw (BadArgumentException<X>);
-  /// Copy constructor
-  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 1>& other);
-  /// Assignment operator
-  ContinuousFunctionPlot<Y, X, 1>& operator =
-    (const ContinuousFunctionPlot<Y, X, 1>& other);
   /// Destructor
   virtual ~ContinuousFunctionPlot();
   /** @}
@@ -92,9 +97,9 @@ protected:
   /// Magnifier
   QwtPlotMagnifier mMagnifier;
   /// Data on the x-axis
-  QVector<X> mXData;
+  QVector<double> mXData;
   /// Data on the y-axis
-  QVector<Y> mYData;
+  QVector<double> mYData;
   /// Resolution on the axis
   X mResolution;
   /** @}

@@ -18,71 +18,44 @@
 
 #include <QtCore/QString>
 #include <qwt-qt4/qwt_plot_canvas.h>
-#include <qwt-qt4/qwt_symbol.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X>
-ScatterPlot<Y, X, 2>::ScatterPlot(const std::string& title) :
-  QwtPlot(0) {
-//  QwtPlot::setTitle(QString(title.c_str()));
-//  mXData.resize(round((maximum - minimum) / resolution));
-//  mYData.resize(round((maximum - minimum) / resolution));
-//  X xValue = minimum;
-//  for (size_t i = 0; i < (size_t)mXData.size(); ++i) {
-//    mXData[i] = xValue;
-//    mYData[i] = function(xValue);
-//    xValue += resolution;
-//  }
-//  mCurve.setData(mXData, mYData);
-//  mCurve.setPen(QPen(QColor(Qt::blue)));
-//  //mCurve.setCurveAttribute(QwtPlotCurve::Fitted, true);
-//  //mCurve.setBrush(QBrush(QColor(Qt::blue)));
-//  //mCurve.setSymbol(QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-//    //QPen(Qt::black), QSize(5, 5)));
-//  mCurve.setStyle(QwtPlotCurve::Lines);
-//  mCurve.attach(this);
-//  mGrid.enableX(true);
-//  mGrid.enableY(true);
-//  mGrid.enableXMin(false);
-//  mGrid.enableYMin(false);
-//  mGrid.setMajPen(QPen(Qt::black, 0, Qt::DotLine));
-//  mGrid.attach(this);
-//  canvas()->setLineWidth(2);
-//  QPalette palette = canvas()->palette();
-//  palette.setColor(backgroundRole(), QColor(255, 255, 255));
-//  canvas()->setPalette(palette);
-//  canvas()->setAutoFillBackground(true);
-//  setAxisTitle(QwtPlot::xBottom, QString('x'));
-//  setAxisTitle(QwtPlot::yLeft, QString('y'));
-//  replot();
-//  //setFixedSize(sizeHint());
-}
-
-template <typename Y, typename X>
-ScatterPlot<Y, X, 2>::ScatterPlot(const ScatterPlot<Y, X, 2>& other) :
-  QwtPlot(other),
-  mCurve(other.mCurve),
-  mXData(other.mXData),
-  mYData(other.mYData) {
-}
-
-template <typename Y, typename X>
-ScatterPlot<Y, X, 2>& ScatterPlot<Y, X, 2>::operator =
-  (const ScatterPlot<Y, X, 2>& other) {
-  if (this != &other) {
-    this->QwtPlot::operator=(other);
-    mCurve = other.mCurve;
-    mXData = other.mXData;
-    mYData = other.mYData;
+ScatterPlot<2>::ScatterPlot(const std::string& title, const
+  std::vector<Eigen::Matrix<double, 2, 1> >& data) :
+  QwtPlot(0),
+  mPanner(canvas()),
+  mMagnifier(canvas()) {
+  QwtPlot::setTitle(QString(title.c_str()));
+  mXData.resize(data.size());
+  mYData.resize(data.size());
+  for (size_t i = 0; i < data.size(); ++i) {
+    mXData[i] = data[i](0);
+    mYData[i] = data[i](1);
   }
-  return *this;
+  mCurve.setData(mXData, mYData);
+  mCurve.setPen(QPen(QColor(Qt::blue)));
+  mCurve.setStyle(QwtPlotCurve::Dots);
+  mCurve.attach(this);
+  mGrid.enableX(true);
+  mGrid.enableY(true);
+  mGrid.enableXMin(false);
+  mGrid.enableYMin(false);
+  mGrid.setMajPen(QPen(Qt::black, 0, Qt::DotLine));
+  mGrid.attach(this);
+  canvas()->setLineWidth(2);
+  QPalette palette = canvas()->palette();
+  palette.setColor(backgroundRole(), Qt::white);
+  canvas()->setPalette(palette);
+  canvas()->setAutoFillBackground(true);
+  setAxisTitle(QwtPlot::xBottom, QString('x'));
+  setAxisTitle(QwtPlot::yLeft, QString('y'));
+  replot();
 }
 
-template <typename Y, typename X>
-ScatterPlot<Y, X, 2>::~ScatterPlot() {
+ScatterPlot<2>::~ScatterPlot() {
 }
 
 /******************************************************************************/
@@ -93,7 +66,6 @@ ScatterPlot<Y, X, 2>::~ScatterPlot() {
 /* Methods                                                                    */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void ScatterPlot<Y, X, 2>::show() {
+void ScatterPlot<2>::show() {
   QWidget::show();
 }

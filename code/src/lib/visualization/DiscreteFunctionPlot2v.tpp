@@ -64,39 +64,6 @@ DiscreteFunctionPlot<Y, X, 2>::DiscreteFunctionPlot(const std::string& title,
 }
 
 template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 2>::DiscreteFunctionPlot(const
-  DiscreteFunctionPlot<Y, X, 2>& other) :
-  FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >(other) {
-  size_t xSize = round((other.getMaximum()(0) - other.getMinimum()(0)) /
-    other.getResolution()(0));
-  size_t ySize = round((other.getMaximum()(1) - other.getMinimum()(1)) /
-    other.getResolution()(1));
-  mData = new Y*[xSize];
-  for (size_t i = 0; i < xSize; ++i) {
-    mData[i] = new Y[ySize];
-    memcpy(&mData[i], &other.mData[i], ySize * sizeof(Y));
-  }
-}
-
-template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 2>& DiscreteFunctionPlot<Y, X, 2>::operator =
-  (const DiscreteFunctionPlot<Y, X, 2>& other) {
-  if (this != &other) {
-    this->FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >::operator=(other);
-    size_t xSize = round((other.getMaximum()(0) - other.getMinimum()(0)) /
-      other.getResolution()(0));
-    size_t ySize = round((other.getMaximum()(1) - other.getMinimum()(1)) /
-      other.getResolution()(1));
-    mData = new Y*[xSize];
-    for (size_t i = 0; i < xSize; ++i) {
-      mData[i] = new Y[ySize];
-      memcpy(&mData[i], &other.mData[i], ySize * sizeof(Y));
-    }
-  }
-  return *this;
-}
-
-template <typename Y, typename X>
 DiscreteFunctionPlot<Y, X, 2>::~DiscreteFunctionPlot() {
   size_t xSize = this->getMaximum()(0) - this->getMinimum()(0);
   for (size_t i = 0; i < xSize; ++i) {

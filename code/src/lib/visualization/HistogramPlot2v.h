@@ -32,16 +32,21 @@ template <typename Y, typename X, size_t M> class HistogramPlot;
   */
 template <typename Y, typename X> class HistogramPlot<Y, X, 2> :
   public Qwt3D::SurfacePlot {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  HistogramPlot(const HistogramPlot<Y, X, 2>& other);
+  /// Assignment operator
+  HistogramPlot<Y, X, 2>& operator = (const HistogramPlot<Y, X, 2>& other);
+  /** @}
+    */
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs plot from parameters
   HistogramPlot(const std::string& title);
-  /// Copy constructor
-  HistogramPlot(const HistogramPlot<Y, X, 2>& other);
-  /// Assignment operator
-  HistogramPlot<Y, X, 2>& operator = (const HistogramPlot<Y, X, 2>& other);
   /// Destructor
   virtual ~HistogramPlot();
   /** @}

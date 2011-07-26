@@ -39,6 +39,16 @@ template <typename Y, typename X, size_t M> class DiscreteFunctionPlot;
 template <typename Y, typename X> class DiscreteFunctionPlot<Y, X, 2> :
   public FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >,
   public Qwt3D::SurfacePlot {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  DiscreteFunctionPlot(const DiscreteFunctionPlot<Y, X, 2>& other);
+  /// Assignment operator
+  DiscreteFunctionPlot<Y, X, 2>& operator =
+    (const DiscreteFunctionPlot<Y, X, 2>& other);
+  /** @}
+    */
 public:
   /** \name Constructors/destructor
     @{
@@ -48,11 +58,6 @@ public:
     DiscreteFunction<Y, X, 2>& function, const Eigen::Matrix<X, 2, 1>& minimum,
     const Eigen::Matrix<X, 2, 1>& maximum)
     throw (BadArgumentException<Eigen::Matrix<X, 2, 1> >);
-  /// Copy constructor
-  DiscreteFunctionPlot(const DiscreteFunctionPlot<Y, X, 2>& other);
-  /// Assignment operator
-  DiscreteFunctionPlot<Y, X, 2>& operator =
-    (const DiscreteFunctionPlot<Y, X, 2>& other);
   /// Destructor
   virtual ~DiscreteFunctionPlot();
   /** @}
@@ -71,7 +76,7 @@ protected:
     @{
     */
   /// Data on to be plotted
-  Y** mData;
+  double** mData;
   /** @}
     */
 

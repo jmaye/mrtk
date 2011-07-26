@@ -70,31 +70,6 @@ DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
 }
 
 template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const
-  DiscreteFunctionPlot<Y, X, 1>& other) :
-  FunctionPlot<Y, X>(other),
-  QwtPlot(other),
-  mCurve(other.mCurve),
-  mGrid(other.mGrid),
-  mXData(other.mXData),
-  mYData(other.mYData) {
-}
-
-template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 1>& DiscreteFunctionPlot<Y, X, 1>::operator =
-  (const DiscreteFunctionPlot<Y, X, 1>& other) {
-  if (this != &other) {
-    this->FunctionPlot<Y, X>::operator=(other);
-    this->QwtPlot::operator=(other);
-    mCurve = other.mCurve;
-    mGrid = other.mGrid;
-    mXData = other.mXData;
-    mYData = other.mYData;
-  }
-  return *this;
-}
-
-template <typename Y, typename X>
 DiscreteFunctionPlot<Y, X, 1>::~DiscreteFunctionPlot() {
 }
 

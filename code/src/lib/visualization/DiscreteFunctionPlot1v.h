@@ -28,8 +28,8 @@
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
 
-#include <QtGui/QWidget>
 #include <QtCore/QVector>
+
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_grid.h>
@@ -45,6 +45,16 @@ template <typename Y, typename X, size_t M> class DiscreteFunctionPlot;
 template <typename Y, typename X> class DiscreteFunctionPlot<Y, X, 1> :
   public FunctionPlot<Y, X>,
   public QwtPlot {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  DiscreteFunctionPlot(const DiscreteFunctionPlot<Y, X, 1>& other);
+  /// Assignment operator
+  DiscreteFunctionPlot<Y, X, 1>& operator =
+    (const DiscreteFunctionPlot<Y, X, 1>& other);
+  /** @}
+    */
 public:
   /** \name Constructors/destructor
     @{
@@ -53,11 +63,6 @@ public:
   DiscreteFunctionPlot(const std::string& title, const DiscreteFunction<Y, X>&
     function, const X& minimum, const X& maximum)
     throw (BadArgumentException<X>);
-  /// Copy constructor
-  DiscreteFunctionPlot(const DiscreteFunctionPlot<Y, X, 1>& other);
-  /// Assignment operator
-  DiscreteFunctionPlot<Y, X, 1>& operator =
-    (const DiscreteFunctionPlot<Y, X, 1>& other);
   /// Destructor
   virtual ~DiscreteFunctionPlot();
   /** @}
@@ -84,9 +89,9 @@ protected:
   /// Magnifier
   QwtPlotMagnifier mMagnifier;
   /// Data on the x-axis
-  QVector<double> mXData; // TODO:SHITTY BECAUSE OF THE PLOTTING ENGINE
+  QVector<double> mXData;
   /// Data on the y-axis
-  QVector<double> mYData; // TODO:SHITTY BECAUSE OF THE PLOTTING ENGINE
+  QVector<double> mYData;
   /** @}
     */
 

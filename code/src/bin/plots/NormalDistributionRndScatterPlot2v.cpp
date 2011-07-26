@@ -16,29 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file StudentDistribution1vPlotSave.cpp
-    \brief This file is a testing binary for plotting the univariate Student
-           distribution pdf and saving it to pdf
+/** \file NormalDistributionRndScatterPlot2v.cpp
+    \brief This file is a testing binary for plotting random samples of the 
+           NormalDistribution2v class
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/StudentDistribution.h"
+#include "visualization/ScatterPlot.h"
+#include "statistics/NormalDistribution.h"
 
 #include <QtGui/QApplication>
-#include <QtGui/QPrinter>
 
 int main(int argc, char** argv) {
-  Eigen::Matrix<double, 1, 1> minimum;
-  minimum(0) = -5;
-  Eigen::Matrix<double, 1, 1> maximum;
-  maximum(0) = 5;
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("StudentDistribution1v",
-    StudentDistribution<1>(), -5, 5, 0.1);
+  std::vector<Eigen::Matrix<double, 2, 1> > data;
+  NormalDistribution<2> dist;
+  for (size_t i = 0; i < 100000; ++i)
+    data.push_back(dist.getSample());
+  ScatterPlot<2> plot("NormalDistributionRndScatterPlot2v", data);
   plot.show();
-  QPrinter printer(QPrinter::HighResolution);
-  printer.setOutputFormat(QPrinter::PdfFormat);
-  printer.setOutputFileName("test.pdf");
-  plot.print(printer);
   return app.exec();
 }

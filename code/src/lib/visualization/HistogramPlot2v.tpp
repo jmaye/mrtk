@@ -57,39 +57,6 @@ HistogramPlot<Y, X, 2>::HistogramPlot(const std::string& title) :
 }
 
 template <typename Y, typename X>
-HistogramPlot<Y, X, 2>::HistogramPlot(const HistogramPlot<Y, X, 2>& other) :
-  Qwt3D::SurfacePlot(other) {
-//  size_t xSize = round((other.getMaximum()(0) - other.getMinimum()(0)) /
-//    other.getResolution()(0));
-//  size_t ySize = round((other.getMaximum()(1) - other.getMinimum()(1)) /
-//    other.getResolution()(1));
-//  mData = new Y*[xSize];
-//  for (size_t i = 0; i < xSize; ++i) {
-//    mData[i] = new Y[ySize];
-//    memcpy(&mData[i], &other.mData[i], ySize * sizeof(Y));
-//  }
-}
-
-template <typename Y, typename X>
-HistogramPlot<Y, X, 2>& HistogramPlot<Y, X, 2>::operator =
-  (const HistogramPlot<Y, X, 2>& other) {
-  if (this != &other) {
-    this->Qwt3D::SurfacePlot::operator=(other);
-//    size_t xSize = round((other.getMaximum()(0) - other.getMinimum()(0)) /
-//      other.getResolution()(0));
-//    size_t ySize = round((other.getMaximum()(1) - other.getMinimum()(1)) /
-//      other.getResolution()(1));
-//    mData = new Y*[xSize];
-//    for (size_t i = 0; i < xSize; ++i) {
-//      mData[i] = new Y[ySize];
-//      memcpy(&mData[i], &other.mData[i], ySize * sizeof(Y));
-//    }
-//    mResolution = other.mResolution;
-  }
-  return *this;
-}
-
-template <typename Y, typename X>
 HistogramPlot<Y, X, 2>::~HistogramPlot() {
 //  size_t xSize = round((this->getMaximum()(0) - this->getMinimum()(0)) /
 //    this->getResolution()(0));

@@ -20,8 +20,7 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X>
-ScatterPlot<Y, X, 3>::ScatterPlot(const std::string& title) :
+ScatterPlot<3>::ScatterPlot(const std::string& title) :
   Qwt3D::SurfacePlot(0) {
   Qwt3D::SurfacePlot::setTitle(title.c_str());
   setRotation(30, 0, 15);
@@ -56,41 +55,7 @@ ScatterPlot<Y, X, 3>::ScatterPlot(const std::string& title) :
 //    maximum(1));
 }
 
-template <typename Y, typename X>
-ScatterPlot<Y, X, 3>::ScatterPlot(const ScatterPlot<Y, X, 3>& other) :
-  Qwt3D::SurfacePlot(other) {
-//  size_t xSize = round((other.getMaximum()(0) - other.getMinimum()(0)) /
-//    other.getResolution()(0));
-//  size_t ySize = round((other.getMaximum()(1) - other.getMinimum()(1)) /
-//    other.getResolution()(1));
-//  mData = new Y*[xSize];
-//  for (size_t i = 0; i < xSize; ++i) {
-//    mData[i] = new Y[ySize];
-//    memcpy(&mData[i], &other.mData[i], ySize * sizeof(Y));
-//  }
-}
-
-template <typename Y, typename X>
-ScatterPlot<Y, X, 3>& ScatterPlot<Y, X, 3>::operator =
-  (const ScatterPlot<Y, X, 3>& other) {
-  if (this != &other) {
-    this->Qwt3D::SurfacePlot::operator=(other);
-//    size_t xSize = round((other.getMaximum()(0) - other.getMinimum()(0)) /
-//      other.getResolution()(0));
-//    size_t ySize = round((other.getMaximum()(1) - other.getMinimum()(1)) /
-//      other.getResolution()(1));
-//    mData = new Y*[xSize];
-//    for (size_t i = 0; i < xSize; ++i) {
-//      mData[i] = new Y[ySize];
-//      memcpy(&mData[i], &other.mData[i], ySize * sizeof(Y));
-//    }
-//    mResolution = other.mResolution;
-  }
-  return *this;
-}
-
-template <typename Y, typename X>
-ScatterPlot<Y, X, 3>::~ScatterPlot() {
+ScatterPlot<3>::~ScatterPlot() {
 //  size_t xSize = round((this->getMaximum()(0) - this->getMinimum()(0)) /
 //    this->getResolution()(0));
 //  for (size_t i = 0; i < xSize; ++i) {
@@ -108,7 +73,6 @@ ScatterPlot<Y, X, 3>::~ScatterPlot() {
 /* Methods                                                                    */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void ScatterPlot<Y, X, 3>::show() {
+void ScatterPlot<3>::show() {
   QWidget::show();
 }

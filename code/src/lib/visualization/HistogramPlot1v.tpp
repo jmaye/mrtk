@@ -52,33 +52,13 @@ HistogramPlot<Y, X, 1>::HistogramPlot(const std::string& title) :
 //  mGrid.attach(this);
 //  canvas()->setLineWidth(2);
 //  QPalette palette = canvas()->palette();
-//  palette.setColor(backgroundRole(), QColor(255, 255, 255));
+//  palette.setColor(backgroundRole(), Qt::white);
 //  canvas()->setPalette(palette);
 //  canvas()->setAutoFillBackground(true);
 //  setAxisTitle(QwtPlot::xBottom, QString('x'));
 //  setAxisTitle(QwtPlot::yLeft, QString('y'));
 //  replot();
 //  //setFixedSize(sizeHint());
-}
-
-template <typename Y, typename X>
-HistogramPlot<Y, X, 1>::HistogramPlot(const HistogramPlot<Y, X, 1>& other) :
-  QwtPlot(other),
-  mCurve(other.mCurve),
-  mXData(other.mXData),
-  mYData(other.mYData) {
-}
-
-template <typename Y, typename X>
-HistogramPlot<Y, X, 1>& HistogramPlot<Y, X, 1>::operator =
-  (const HistogramPlot<Y, X, 1>& other) {
-  if (this != &other) {
-    this->QwtPlot::operator=(other);
-    mCurve = other.mCurve;
-    mXData = other.mXData;
-    mYData = other.mYData;
-  }
-  return *this;
 }
 
 template <typename Y, typename X>

@@ -23,29 +23,41 @@
 #ifndef SCATTERPLOT2V_H
 #define SCATTERPLOT2V_H
 
-#include <QtGui/QWidget>
 #include <QtCore/QVector>
+
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_grid.h>
+#include <qwt-qt4/qwt_plot_panner.h>
+#include <qwt-qt4/qwt_plot_magnifier.h>
 
-template <typename Y, typename X, size_t M> class ScatterPlot;
+#include <Eigen/Core>
+
+#include <vector>
+
+template <size_t M> class ScatterPlot;
 
 /** The ScatterPlot2v class is a plotting tool for bivariate scatter plots.
     \brief 2-v scatter plot
   */
-template <typename Y, typename X> class ScatterPlot<Y, X, 2> :
+template <> class ScatterPlot<2> :
   public QwtPlot {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ScatterPlot(const ScatterPlot<2>& other);
+  /// Assignment operator
+  ScatterPlot<2>& operator = (const ScatterPlot<2>& other);
+  /** @}
+    */
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs plot from parameters
-  ScatterPlot(const std::string& title);
-  /// Copy constructor
-  ScatterPlot(const ScatterPlot<Y, X, 2>& other);
-  /// Assignment operator
-  ScatterPlot<Y, X, 2>& operator = (const ScatterPlot<Y, X, 2>& other);
+  ScatterPlot(const std::string& title, const
+    std::vector<Eigen::Matrix<double, 2, 1> >& data);
   /// Destructor
   virtual ~ScatterPlot();
   /** @}
@@ -73,10 +85,14 @@ protected:
   QwtPlotCurve mCurve;
   /// Grid
   QwtPlotGrid mGrid;
+  /// Panner
+  QwtPlotPanner mPanner;
+  /// Magnifier
+  QwtPlotMagnifier mMagnifier;
   /// Data on the x-axis
-  QVector<X> mXData;
+  QVector<double> mXData;
   /// Data on the y-axis
-  QVector<Y> mYData;
+  QVector<double> mYData;
   /** @}
     */
 

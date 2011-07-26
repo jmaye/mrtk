@@ -39,6 +39,16 @@ template <typename Y, typename X, size_t M> class ContinuousFunctionPlot;
 template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 2> :
   public FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >,
   public Qwt3D::SurfacePlot {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 2>& other);
+  /// Assignment operator
+  ContinuousFunctionPlot<Y, X, 2>& operator =
+    (const ContinuousFunctionPlot<Y, X, 2>& other);
+  /** @}
+    */
 public:
   /** \name Constructors/destructor
     @{
@@ -49,11 +59,6 @@ public:
     minimum, const Eigen::Matrix<X, 2, 1>& maximum, const
     Eigen::Matrix<X, 2, 1>& resolution) throw
     (BadArgumentException<Eigen::Matrix<X, 2, 1> >);
-  /// Copy constructor
-  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 2>& other);
-  /// Assignment operator
-  ContinuousFunctionPlot<Y, X, 2>& operator =
-    (const ContinuousFunctionPlot<Y, X, 2>& other);
   /// Destructor
   virtual ~ContinuousFunctionPlot();
   /** @}
@@ -80,7 +85,7 @@ protected:
     @{
     */
   /// Data on to be plotted
-  Y** mData;
+  double** mData;
   /// Resolution on the axis
   Eigen::Matrix<X, 2, 1> mResolution;
   /** @}
