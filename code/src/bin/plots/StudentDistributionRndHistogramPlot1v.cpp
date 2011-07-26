@@ -16,20 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file StudentDistribution1vPlot.cpp
-    \brief This file is a testing binary for plotting the univariate Student
-           distribution pdf
+/** \file StudentDistributionRndHistogramPlot1v.cpp
+    \brief This file is a testing binary for plotting random samples of the
+           StudentDistribution1v
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
+#include "visualization/HistogramPlot.h"
 #include "statistics/StudentDistribution.h"
 
 #include <QtGui/QApplication>
-
+//TODO: ERROR HERE DUE TO CHI-SQUARE
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("StudentDistribution1v",
-    StudentDistribution<1>(), -5, 5, 0.1);
+  Histogram<double, 1> histogram(-5, 5, 0.05);
+  StudentDistribution<1> dist;
+  for (size_t i = 0; i < 100000; ++i)
+    histogram.addSample(dist.getSample());
+  std::cout << histogram.getMeanValue() << std::endl;
+  std::cout << histogram.getVariance() << std::endl;
+  histogram.normalize();
+  HistogramPlot<double, 1> plot("StudentDistributionRndHistogramPlot1v",
+    histogram);
   plot.show();
   return app.exec();
 }

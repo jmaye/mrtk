@@ -217,7 +217,7 @@ T Histogram<T, 1>::getSample() const {
 
 template <typename T>
 double Histogram<T, 1>::getMeanValue() const {
-  T xValue = mMinValue;
+  double xValue = mMinValue + mBinWidth / 2.0;
   double mean = 0.0;
   for (size_t i = 0; i < (size_t)mBins.size(); ++i) {
     mean += mBins(i) * xValue;
@@ -243,7 +243,7 @@ T Histogram<T, 1>::getValue(size_t bin) const
 
 template <typename T>
 double Histogram<T, 1>::getVariance() const {
-  T xValue = mMinValue;
+  double xValue = mMinValue + mBinWidth / 2.0;
   double mean = getMeanValue();
   double variance = 0.0;
   for (size_t i = 0; i < (size_t)mBins.size(); ++i) {
@@ -312,7 +312,7 @@ template <typename T>
 void Histogram<T, 1>::normalize(double norm) {
   mNormFactor = norm;
   if (mBins.sum() != 0)
-    scale(norm / mBins.sum());
+    scale(norm / (mBins.sum() * mBinWidth));
 }
 
 template <typename T>

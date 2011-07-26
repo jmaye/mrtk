@@ -16,20 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file StudentDistribution1vPlot.cpp
-    \brief This file is a testing binary for plotting the univariate Student
-           distribution pdf
+/** \file BetaDistributionRndHistogramPlot.cpp
+    \brief This file is a testing binary for plotting random samples of the
+           BetaDistribution class
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/StudentDistribution.h"
+#include "visualization/HistogramPlot.h"
+#include "statistics/BetaDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("StudentDistribution1v",
-    StudentDistribution<1>(), -5, 5, 0.1);
+  Histogram<double, 1> histogram(-2, 2, 0.05);
+  BetaDistribution dist(0.5, 0.5);
+  for (size_t i = 0; i < 100000; ++i)
+    histogram.addSample(dist.getSample()(0));
+  histogram.normalize();
+  HistogramPlot<double, 1> plot("BetaDistributionRndHistogramPlot", histogram);
   plot.show();
   return app.exec();
 }

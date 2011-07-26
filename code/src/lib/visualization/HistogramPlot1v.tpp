@@ -31,15 +31,18 @@ HistogramPlot<T, 1>::HistogramPlot(const std::string& title, const
   mPanner(canvas()),
   mMagnifier(canvas()) {
   QwtPlot::setTitle(QString(title.c_str()));
-  mXData.resize(histogram.getNumBins());
-  mYData.resize(histogram.getNumBins());
+  mXData.resize(histogram.getNumBins() + 1);
+  mYData.resize(histogram.getNumBins() + 1);
+  mXData[0] = histogram.getValue(0);
+  mYData[0] = histogram.getBinContent(0);
   for (size_t i = 0; i < histogram.getNumBins(); ++i) {
-    mXData[i] = histogram.getValue(i);
-    mYData[i] = histogram.getBinContent(i);
+    mXData[i+1] = histogram.getValue(i) + histogram.getBinWidth();
+    mYData[i+1] = histogram.getBinContent(i);
   }
   mHistogram.setData(mXData, mYData);
+  mHistogram.setBrush(QBrush(QColor(Qt::blue)));
   mHistogram.setPen(QPen(QColor(Qt::blue)));
-  mHistogram.setStyle(QwtPlotCurve::Sticks);
+  mHistogram.setStyle(QwtPlotCurve::Steps);
   mHistogram.attach(this);
   mGrid.enableX(true);
   mGrid.enableY(true);

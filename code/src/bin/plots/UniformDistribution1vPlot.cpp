@@ -27,10 +27,6 @@
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
-  Eigen::Matrix<double, 1, 1> minimum;
-  minimum(0) = -5;
-  Eigen::Matrix<double, 1, 1> maximum;
-  maximum(0) = 5;
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("UniformDistribution1v",
     UniformDistribution<double>(), -5, 5, 0.1);
