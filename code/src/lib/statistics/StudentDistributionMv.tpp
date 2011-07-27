@@ -200,3 +200,26 @@ double StudentDistribution<M>::mahalanobisDistance(const
   return ((value - mLocation).transpose() * mInverseScale *
     (value - mLocation))(0, 0);
 }
+
+template <size_t M>
+const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMean() const {
+  return getLocation();
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMedian() const {
+  return getLocation();
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMode() const {
+  return getLocation();
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M, M>& StudentDistribution<M>::getCovariance()
+  const {
+  if (mDegrees > 2)
+    return mDegrees / (mDegrees - 2) * mScale;
+  return 0;
+}

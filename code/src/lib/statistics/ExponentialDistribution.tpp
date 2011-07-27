@@ -98,3 +98,19 @@ double ExponentialDistribution::getSample() const {
   static Randomizer<double> randomizer;
   return randomizer.sampleExponential(mRate);
 }
+
+double ExponentialDistribution::getMean() const {
+  return 1.0 / mRate;
+}
+
+double ExponentialDistribution::getMedian() const {
+  return getMean() * log(2);
+}
+
+double ExponentialDistribution::getMode() const {
+  return 0;
+}
+
+double ExponentialDistribution::getVariance() const {
+  return getMean() * getMean();
+}

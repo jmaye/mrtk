@@ -64,9 +64,9 @@ int main(int argc, char** argv) {
   if (fabs(dist1(value1) - 0.5905) > 1e-4)
     return 1;
 
-  std::cout << "pmf(2): " << std::fixed << dist1(2) << std::endl
+  std::cout << "pmf(3): " << std::fixed << dist1(3) << std::endl
     << std::endl;
-  if (fabs(dist1(2) - 0.0729) > 1e-4)
+  if (fabs(dist1(3) - 0.0729) > 1e-4)
     return 1;
 
   std::cout << "logpmf(0, 5): " << std::fixed << dist1.logpmf(value1)
@@ -140,9 +140,9 @@ int main(int argc, char** argv) {
   if (fabs(dist2(value2) - 0.2401) > 1e-4)
     return 1;
 
-  value1(0) = 0;
-  value1(1) = 4;
-  std::cout << "pmf(0, 4): " << std::fixed << dist2(value1) << std::endl
+  value1(0) = 4;
+  value1(1) = 1;
+  std::cout << "pmf(4, 1): " << std::fixed << dist2(value1) << std::endl
     << std::endl;
   if (fabs(dist2(value1) - 0.2401) > 1e-4)
     return 1;

@@ -135,3 +135,11 @@ double NormalDistribution<1>::KLDivergence(const NormalDistribution<1>& other)
 double NormalDistribution<1>::mahalanobisDistance(const double& value) const {
   return (value - mMean) * mPrecision * (value - mMean);
 }
+
+double NormalDistribution<1>::getMedian() const {
+  return getMean();
+}
+
+double NormalDistribution<1>::getMode() const {
+  return getMean();
+}

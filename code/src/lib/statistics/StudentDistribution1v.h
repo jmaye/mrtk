@@ -73,6 +73,14 @@ public:
   double getInverseScale() const;
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
+  /// Returns the mean of the distribution
+  double getMean() const;
+  /// Returns the median of the distribution
+  double getMedian() const;
+  /// Returns the mode of the distribution
+  double getMode() const;
+  /// Returns the variance of the distribution
+  double getVariance() const;
   /// Access the probability density function at the given value
   virtual double pdf(const double& value) const;
   /// Access the log-probability density function at the given value

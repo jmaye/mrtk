@@ -54,6 +54,12 @@ public:
   void setSuccessProbability(double successProbability);
   /// Returns the success probability
   double getSuccessProbability() const;
+  /// Returns the mean of the distribution
+  double getMean() const;
+  /// Returns the mode of the distribution
+  double getMode() const;
+  /// Returns the variance of the distribution
+  double getVariance() const;
   /** @}
     */
 

@@ -36,8 +36,8 @@ HistogramPlot<T, 1>::HistogramPlot(const std::string& title, const
   mXData[0] = histogram.getValue(0);
   mYData[0] = histogram.getBinContent(0);
   for (size_t i = 0; i < histogram.getNumBins(); ++i) {
-    mXData[i+1] = histogram.getValue(i) + histogram.getBinWidth();
-    mYData[i+1] = histogram.getBinContent(i);
+    mXData[i + 1] = histogram.getValue(i) + histogram.getBinWidth();
+    mYData[i + 1] = histogram.getBinContent(i);
   }
   mHistogram.setData(mXData, mYData);
   mHistogram.setBrush(QBrush(QColor(Qt::blue)));

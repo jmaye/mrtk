@@ -155,3 +155,21 @@ double StudentDistribution<1>::getSample() const {
 double StudentDistribution<1>::mahalanobisDistance(const double& value) const {
   return (value - mLocation) * mInverseScale * (value - mLocation);
 }
+
+double StudentDistribution<1>::getMean() const {
+  return getLocation();
+}
+
+double StudentDistribution<1>::getMedian() const {
+  return getLocation();
+}
+
+double StudentDistribution<1>::getMode() const {
+  return getLocation();
+}
+
+double StudentDistribution<1>::getVariance() const {
+  if (mDegrees > 2)
+    return mDegrees / (mDegrees - 2) * mScale;
+  return 0;
+}

@@ -61,6 +61,14 @@ public:
   void setRate(double rate) throw (BadArgumentException<double>);
   /// Returns the event rate
   double getRate() const;
+  /// Returns the mean of the distribution
+  double getMean() const;
+  /// Returns the median of the distribution
+  double getMedian() const;
+  /// Returns the mode of the distribution
+  double getMode() const;
+  /// Returns the variance of the distribution
+  double getVariance() const;
   /// Returns the probability mass function at a point
   virtual double pmf(const size_t& value) const;
   /// Returns the log-probability mass function at a point

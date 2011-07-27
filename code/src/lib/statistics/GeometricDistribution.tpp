@@ -93,3 +93,16 @@ size_t GeometricDistribution::getSample() const {
   static Randomizer<double> randomizer;
   return randomizer.sampleGeometric(mSuccessProbability);
 }
+
+double GeometricDistribution::getMean() const {
+  return (1.0 - mSuccessProbability) / mSuccessProbability;
+}
+
+double GeometricDistribution::getMode() const {
+  return 0;
+}
+
+double GeometricDistribution::getVariance() const {
+  return (1.0 - mSuccessProbability) / (mSuccessProbability *
+    mSuccessProbability);
+}

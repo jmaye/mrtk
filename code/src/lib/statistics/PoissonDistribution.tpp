@@ -99,3 +99,19 @@ size_t PoissonDistribution::getSample() const {
   static Randomizer<double> randomizer;
   return randomizer.samplePoisson(mRate);
 }
+
+double PoissonDistribution::getMean() const {
+  return mRate;
+}
+
+double PoissonDistribution::getMedian() const {
+return floor(mRate + 1.0/ 3.0 - 0.02 / mRate);
+}
+
+double PoissonDistribution::getMode() const {
+  return ceil(mRate) - 1.0;
+}
+
+double PoissonDistribution::getVariance() const {
+  return mRate;
+}

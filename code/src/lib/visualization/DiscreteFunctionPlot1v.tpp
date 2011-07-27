@@ -37,8 +37,8 @@ DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
       "DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(): maximum must be larger than minimum",
       __FILE__, __LINE__);
   QwtPlot::setTitle(QString(title.c_str()));
-  mXData.resize(maximum - minimum);
-  mYData.resize(maximum - minimum);
+  mXData.resize(maximum - minimum + 1);
+  mYData.resize(maximum - minimum + 1);
   X xValue = minimum;
   for (size_t i = 0; i < (size_t)mXData.size(); ++i) {
     mXData[i] = xValue;
@@ -46,11 +46,11 @@ DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
     xValue++;
   }
   mCurve.setData(mXData, mYData);
-  mCurve.setStyle(QwtPlotCurve::Steps);
-  mCurve.setPen(QPen(QColor(Qt::blue)));
+  mCurve.setStyle(QwtPlotCurve::Lines);
+  mCurve.setPen(QPen(QBrush(QColor(Qt::blue)), 1, Qt::DotLine));
   //mCurve.setBrush(QBrush(QColor(Qt::blue)));
-  //mCurve.setSymbol(QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-    //QPen(Qt::black), QSize(5, 5)));
+  mCurve.setSymbol(QwtSymbol(QwtSymbol::Star1, Qt::NoBrush,
+    QPen(Qt::black), QSize(10, 10)));
   mCurve.attach(this);
   mGrid.enableX(true);
   mGrid.enableY(true);

@@ -50,7 +50,7 @@ void BinomialDistribution::read(std::istream& stream) {
 
 void BinomialDistribution::write(std::ostream& stream) const {
   stream << "success probability: "
-    << mSuccessProbabilities(0) << std::endl
+    << mSuccessProbabilities(1) << std::endl
     << "trials number: " << mNumTrials;
 }
 
@@ -66,11 +66,27 @@ void BinomialDistribution::write(std::ofstream& stream) const {
 
 void BinomialDistribution::setSuccessProbability(double successProbability) {
   Eigen::Matrix<double, 2, 1> successProbabilities;
-  successProbabilities(0) = successProbability;
-  successProbabilities(1) = 1.0 - successProbability;
+  successProbabilities(0) = 1.0 - successProbability;
+  successProbabilities(1) = successProbability;
   MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
 }
 
 double BinomialDistribution::getSuccessProbability() const {
-  return mSuccessProbabilities(0);
+  return mSuccessProbabilities(1);
+}
+
+double BinomialDistribution::getMean() const {
+  return mNumTrials * mSuccessProbabilities(1);
+}
+
+double BinomialDistribution::getMedian() const {
+  return floor(mNumTrials * mSuccessProbabilities(1));
+}
+
+double BinomialDistribution::getMode() const {
+  return floor((mNumTrials + 1) * mSuccessProbabilities(1));
+}
+
+double BinomialDistribution::getVariance() const {
+  return mNumTrials * mSuccessProbabilities(1) * mSuccessProbabilities(0);
 }

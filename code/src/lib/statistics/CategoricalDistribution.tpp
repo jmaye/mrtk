@@ -102,9 +102,9 @@ double CategoricalDistribution<M>::Traits<N, D>::pmf(const
   Eigen::Matrix<size_t, N - 1, 1>& value) {
   Eigen::Matrix<size_t, M, 1> valueMat;
   if ((value.cwise() == 1).any() == true)
-    valueMat << value, 0;
+    valueMat << 0, value;
   else
-    valueMat << value, 1;
+    valueMat << 1, value;
   return distribution.pmf(valueMat);
 }
 
@@ -114,9 +114,9 @@ double CategoricalDistribution<M>::Traits<2, D>::pmf(const
   CategoricalDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
   if (value)
-    valueMat << value, 0;
+    valueMat << 0, value;
   else
-    valueMat << value, 1;
+    valueMat << 1, value;
   return distribution.pmf(valueMat);
 }
 

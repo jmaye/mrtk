@@ -69,6 +69,10 @@ public:
   double getStandardDeviation() const;
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
+  /// Returns the median of the distribution
+  double getMedian() const;
+  /// Returns the mode of the distribution
+  double getMode() const;
   /// Access the probability density function at the given value
   virtual double pdf(const double& value) const;
   /// Access the log-probability density function at the given value

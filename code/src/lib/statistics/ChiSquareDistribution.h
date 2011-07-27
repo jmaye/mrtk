@@ -55,6 +55,10 @@ public:
   void setDegrees(size_t degrees);
   /// Returns the degrees of freedom of the distribution
   size_t getDegrees() const;
+  /// Returns the mode of the distribution
+  virtual double getMode() const;
+  /// Returns the median of the distribution
+  double getMedian() const;
   /** @}
     */
 

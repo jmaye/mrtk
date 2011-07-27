@@ -18,6 +18,8 @@
 
 #include "statistics/Randomizer.h"
 
+#include <algorithm>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -68,5 +70,13 @@ void ChiSquareDistribution::setDegrees(size_t degrees) {
 }
 
 size_t ChiSquareDistribution::getDegrees() const {
-  return getShape();
+  return getShape() * 2;
+}
+
+double ChiSquareDistribution::getMode() const {
+  return std::max(getDegrees() - 2.0, 0.0);
+}
+
+double ChiSquareDistribution::getMedian() const {
+  return getDegrees() * pow(1.0 - 2.0 / (9 * getDegrees()), 3);
 }

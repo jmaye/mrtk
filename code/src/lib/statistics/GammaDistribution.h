@@ -67,6 +67,12 @@ public:
   double getScale() const;
   /// Returns the normalizer
   double getNormalizer() const;
+  /// Returns the mean of the distribution
+  double getMean() const;
+  /// Returns the mode of the distribution
+  virtual double getMode() const;
+  /// Returns the variance of the distribution
+  double getVariance() const;
   /// Access the probablity density function at the given value
   virtual double pdf(const double& value) const;
   /// Access the log-probablity density function at the given value

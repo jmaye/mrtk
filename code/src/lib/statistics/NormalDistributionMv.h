@@ -74,6 +74,10 @@ public:
   double getDeterminant() const;
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
+  /// Returns the median of the distribution
+  const Eigen::Matrix<double, M, 1>& getMedian() const;
+  /// Returns the mode of the distribution
+  const Eigen::Matrix<double, M, 1>& getMode() const;
   /// Returns the cholesky decomposition of the covariance matrix
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Access the probability density function at the given value

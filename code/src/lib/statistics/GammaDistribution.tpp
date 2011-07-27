@@ -146,3 +146,20 @@ double GammaDistribution<T>::getSample() const {
   static Randomizer<double> randomizer;
   return randomizer.sampleGamma(mShape, mScale);
 }
+
+template <typename T>
+double GammaDistribution<T>::getMean() const {
+  return mShape * mScale;
+}
+
+template <typename T>
+double GammaDistribution<T>::getMode() const {
+  if (mShape >= 1)
+    return (mShape - 1) * mScale;
+  return 0;
+}
+
+template <typename T>
+double GammaDistribution<T>::getVariance() const {
+  return mShape * mScale * mScale;
+}
