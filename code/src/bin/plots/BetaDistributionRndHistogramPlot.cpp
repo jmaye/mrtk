@@ -28,12 +28,19 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<double, 1> histogram(-2, 2, 0.05);
-  BetaDistribution dist(0.5, 0.5);
+  Histogram<double, 1> hist(-2, 2, 0.05);
+  BetaDistribution dist(1.5, 1.5);
   for (size_t i = 0; i < 100000; ++i)
-    histogram.addSample(dist.getSample()(0));
-  histogram.normalize();
-  HistogramPlot<double, 1> plot("BetaDistributionRndHistogramPlot", histogram);
+    hist.addSample(dist.getSample()(0));
+  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
+  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
+    << std::endl;
+  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
+  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  hist.normalize();
+  HistogramPlot<double, 1> plot("BetaDistributionRndHistogramPlot", hist);
   plot.show();
   return app.exec();
 }

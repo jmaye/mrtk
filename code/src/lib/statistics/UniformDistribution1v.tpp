@@ -124,6 +124,14 @@ double UniformDistribution<X>::Traits<U, D>::pmf(const UniformDistribution<U>&
 }
 
 template <typename X>
+template <typename U, size_t D>
+double UniformDistribution<X>::Traits<U, D>::getVariance(const
+  UniformDistribution<U>& distribution) {
+  return ((distribution.mMaxSupport - distribution.mMinSupport + 1) *
+    (distribution.mMaxSupport - distribution.mMinSupport + 1) - 1) / 12.0 - 1.0;
+}
+
+template <typename X>
 template <size_t D>
 double UniformDistribution<X>::Traits<float, D>::pdf(const
   UniformDistribution<float>& distribution, float value) {
@@ -138,6 +146,14 @@ template <size_t D>
 double UniformDistribution<X>::Traits<float, D>::pmf(const
   UniformDistribution<float>& distribution, float value) {
   return Traits<float>::pdf(distribution, value);
+}
+
+template <typename X>
+template <size_t D>
+double UniformDistribution<X>::Traits<float, D>::getVariance(const
+  UniformDistribution<float>& distribution) {
+  return ((distribution.mMaxSupport - distribution.mMinSupport) *
+    (distribution.mMaxSupport - distribution.mMinSupport)) / 12.0;
 }
 
 template <typename X>
@@ -158,6 +174,14 @@ double UniformDistribution<X>::Traits<double, D>::pmf(const
 }
 
 template <typename X>
+template <size_t D>
+double UniformDistribution<X>::Traits<double, D>::getVariance(const
+  UniformDistribution<double>& distribution) {
+  return ((distribution.mMaxSupport - distribution.mMinSupport) *
+    (distribution.mMaxSupport - distribution.mMinSupport)) / 12.0;
+}
+
+template <typename X>
 double UniformDistribution<X>::pdf(const X& value) const {
   return Traits<X>::pdf(*this, value);
 }
@@ -171,4 +195,24 @@ template <typename X>
 X UniformDistribution<X>::getSample() const {
   static Randomizer<X> randomizer;
   return randomizer.sampleUniform(mMinSupport, mMaxSupport);
+}
+
+template <typename X>
+double UniformDistribution<X>::getMean() const {
+  return 0.5 * (mMaxSupport - mMinSupport);
+}
+
+template <typename X>
+double UniformDistribution<X>::getMedian() const {
+  return 0.5 * (mMaxSupport - mMinSupport);
+}
+
+template <typename X>
+double UniformDistribution<X>::getMode() const {
+  return mMinSupport;
+}
+
+template <typename X>
+double UniformDistribution<X>::getVariance() const {
+  return Traits<X>::getVariance(*this);
 }

@@ -59,6 +59,12 @@ public:
   void setBeta(double beta);
   /// Returns the number of failures
   double getBeta() const;
+  /// Returns the mean of the distribution
+  double getMean() const;
+  /// Returns the mode of the distribution
+  double getMode() const;
+  /// Returns the variance of the distribution
+  double getVariance() const;
   /** @}
     */
 

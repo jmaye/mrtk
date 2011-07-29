@@ -209,19 +209,17 @@ T Histogram<T, 1>::getSample() const {
   double u = randomizer.sampleUniform();
   for (size_t i = 1; i < (size_t)mBins.size() + 1; ++i) {
     if (u > cumProbabilities(i - 1) && u <= cumProbabilities(i)) {
-      return getValue(i - 1);
+      return getBinCenter(i - 1);
     }
   }
-  return getValue(mBins.size() - 1);
+  return getBinCenter(mBins.size() - 1);
 }
 
 template <typename T>
-double Histogram<T, 1>::getMeanValue() const {
-  double xValue = mMinValue + mBinWidth / 2.0;
+double Histogram<T, 1>::getSampleMean() const {
   double mean = 0.0;
   for (size_t i = 0; i < (size_t)mBins.size(); ++i) {
-    mean += mBins(i) * xValue;
-    xValue += mBinWidth;
+    mean += mBins(i) * getBinCenter(i);
   }
   return mean / mBins.sum();
 }
@@ -232,25 +230,68 @@ void Histogram<T, 1>::clear() {
 }
 
 template <typename T>
-T Histogram<T, 1>::getValue(size_t bin) const
+template <typename U, size_t D>
+double Histogram<T, 1>::Traits<U, D>::getBinCenter(const Histogram<U, 1>& hist,
+  size_t bin) {
+  if (hist.mBinWidth == 1)
+    return hist.getBinStart(bin);
+  else
+    return hist.getBinStart(bin) + hist.mBinWidth / 2.0;
+}
+
+template <typename T>
+template <size_t D>
+double Histogram<T, 1>::Traits<float, D>::getBinCenter(const
+  Histogram<float, 1>& hist, size_t bin) {
+  return hist.getBinStart(bin) + hist.mBinWidth / 2.0;
+}
+
+template <typename T>
+template <size_t D>
+double Histogram<T, 1>::Traits<double, D>::getBinCenter(const
+  Histogram<double, 1>& hist, size_t bin) {
+  return hist.getBinStart(bin) + hist.mBinWidth / 2.0;
+}
+
+template <typename T>
+double Histogram<T, 1>::getBinCenter(size_t bin) const
   throw (OutOfBoundException<size_t>) {
   if (bin >= (size_t)mBins.size())
     throw OutOfBoundException<size_t>(bin,
-      "Histogram<T, 1>::getValue(): wrong bin number",
+      "Histogram<T, 1>::getBinCenter(): wrong bin number",
+      __FILE__, __LINE__);
+  return Traits<T>::getBinCenter(*this, bin);
+}
+
+template <typename T>
+T Histogram<T, 1>::getBinStart(size_t bin) const
+  throw (OutOfBoundException<size_t>) {
+  if (bin >= (size_t)mBins.size())
+    throw OutOfBoundException<size_t>(bin,
+      "Histogram<T, 1>::getBinStart(): wrong bin number",
       __FILE__, __LINE__);
   return mMinValue + bin * mBinWidth;
 }
 
 template <typename T>
-double Histogram<T, 1>::getVariance() const {
-  double xValue = mMinValue + mBinWidth / 2.0;
-  double mean = getMeanValue();
+double Histogram<T, 1>::getSampleVariance() const {
+  double mean = getSampleMean();
   double variance = 0.0;
   for (size_t i = 0; i < (size_t)mBins.size(); ++i) {
-    variance += mBins(i) * (mean - xValue) * (mean - xValue);
-    xValue += mBinWidth;
+    variance += mBins(i) * (mean - getBinCenter(i)) * (mean - getBinCenter(i));
   }
   return variance / mBins.sum();
+}
+
+template <typename T>
+double Histogram<T, 1>::getSampleMedian() const {
+  double binsSum = 0.0;
+  for (size_t i = 0; i < (size_t)mBins.size(); ++i) {
+    binsSum += mBins(i);
+    if (binsSum > mBins.sum() / 2.0)
+      return getBinCenter(i);
+  }
+  return 0;
 }
 
 /******************************************************************************/

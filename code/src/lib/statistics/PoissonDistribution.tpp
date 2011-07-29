@@ -115,3 +115,8 @@ double PoissonDistribution::getMode() const {
 double PoissonDistribution::getVariance() const {
   return mRate;
 }
+
+double PoissonDistribution::KLDivergence(const PoissonDistribution& other)
+  const {
+  return mRate - other.mRate + other.mRate * log(other.mRate / mRate);
+}

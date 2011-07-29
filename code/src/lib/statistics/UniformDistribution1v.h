@@ -54,6 +54,8 @@ public:
     static double pdf(const UniformDistribution<U>& distribution, U value);
     /// Access the probablity mass function at the given value
     static double pmf(const UniformDistribution<U>& distribution, U value);
+    /// Returns the variance of the distribution
+    static double getVariance(const UniformDistribution<U>& distribution);
   };
   /// Mapping in case one calls the pmf instead of pdf
   template <size_t D> struct Traits<float, D> {
@@ -64,6 +66,8 @@ public:
     /// Access the probablity mass function at the given value
     static double pmf(const UniformDistribution<float>& distribution,
       float value);
+    /// Returns the variance of the distribution
+    static double getVariance(const UniformDistribution<float>& distribution);
   };
   /// Mapping in case one calls the pmf instead of pdf
   template <size_t D> struct Traits<double, D> {
@@ -74,6 +78,8 @@ public:
     /// Access the probablity mass function at the given value
     static double pmf(const UniformDistribution<double>& distribution,
       double value);
+    /// Returns the variance of the distribution
+    static double getVariance(const UniformDistribution<double>& distribution);
   };
   /** @}
     */
@@ -106,6 +112,14 @@ public:
   void setMaxSupport(const X& maxSupport);
   /// Returns the maximum support
   const X& getMaxSupport() const;
+  /// Returns the mean of the distribution
+  double getMean() const;
+  /// Returns the median of the distribution
+  double getMedian() const;
+  /// Returns the mode of the distribution
+  double getMode() const;
+  /// Returns the variance of the distribution
+  double getVariance() const;
   /// Access the probablity density function at the given value
   virtual double pdf(const X& value) const;
   /// Access the probablity mass function at the given value

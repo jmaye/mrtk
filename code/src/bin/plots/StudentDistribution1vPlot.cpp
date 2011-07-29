@@ -29,7 +29,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("StudentDistribution1v",
-    StudentDistribution<1>(), -5, 5, 0.1);
+    StudentDistribution<1>(0, 1, 3), -5, 5, 0.1);
   plot.show();
   return app.exec();
 }

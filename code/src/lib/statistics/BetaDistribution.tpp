@@ -84,3 +84,19 @@ void BetaDistribution::setBeta(double beta) {
 double BetaDistribution::getBeta() const {
   return mAlpha(1);
 }
+
+double BetaDistribution::getMean() const {
+  return mAlpha(0) / (mAlpha(0) + mAlpha(1));
+}
+
+double BetaDistribution::getMode() const {
+  if (mAlpha(0) > 1 && mAlpha(1) > 1)
+    return (mAlpha(0) - 1) / (mAlpha(0) + mAlpha(1) - 2);
+  else
+    return 0;
+}
+
+double BetaDistribution::getVariance() const {
+  return mAlpha(0) * mAlpha(1) / ((mAlpha(0) + mAlpha(1)) * (mAlpha(0) +
+    mAlpha(1)) * (mAlpha(0) + mAlpha(1) + 1));
+}

@@ -47,6 +47,8 @@ public:
     static size_t computeNumBins(const Histogram<U, 1>& hist);
     /// Add sample to the histogram
     static void addSample(Histogram<U, 1>& hist, U sample);
+    /// Returns the value at the center of a bin
+    static double getBinCenter(const Histogram<U, 1>& hist, size_t bin);
   };
   /// Computing bin numbers for float type
   template <size_t D> struct Traits<float, D> {
@@ -55,6 +57,8 @@ public:
     static size_t computeNumBins(const Histogram<float, 1>& hist);
     /// Add sample to the histogram
     static void addSample(Histogram<float, 1>& hist, float sample);
+    /// Returns the value at the center of a bin
+    static double getBinCenter(const Histogram<float, 1>& hist, size_t bin);
   };
   /// Computing bin numbers for double type
   template <size_t D> struct Traits<double, D> {
@@ -63,6 +67,8 @@ public:
     static size_t computeNumBins(const Histogram<double, 1>& hist);
     /// Add sample to the histogram
     static void addSample(Histogram<double, 1>& hist, double sample);
+    /// Returns the value at the center of a bin
+    static double getBinCenter(const Histogram<double, 1>& hist, size_t bin);
   };
   /** @}
     */
@@ -117,13 +123,17 @@ public:
   /// Returns a sample from the histogram
   T getSample() const;
   /// Returns the mean value of the histogram
-  double getMeanValue() const;
+  double getSampleMean() const;
   /// Returns the variance of the histogram
-  double getVariance() const;
+  double getSampleVariance() const;
+  /// Returns the median of the histogram
+  double getSampleMedian() const;
   /// Clears the histogram
   void clear();
   /// Gets the x value at the center of a bin
-  T getValue(size_t bin) const throw (OutOfBoundException<size_t>);
+  double getBinCenter(size_t bin) const throw (OutOfBoundException<size_t>);
+  /// Gets the x value at the start of a bin
+  T getBinStart(size_t bin) const throw (OutOfBoundException<size_t>);
   /** @}
     */
 

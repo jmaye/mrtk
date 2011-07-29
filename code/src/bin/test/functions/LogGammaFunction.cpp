@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BetaFunction.cpp
+/** \file LogGammaFunction.cpp
     \brief This file is a testing binary for the LogGammaFunction class
   */
 

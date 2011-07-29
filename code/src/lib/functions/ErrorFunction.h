@@ -9,36 +9,61 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MultinomialDistributionRndHistogramPlot.cpp
-    \brief This file is a testing binary for plotting random samples of the
-           MultinomialDistribution class
+/** \file ErrorFunction.h
+    \brief This file defines the ErrorFunction class, which represents the
+           error function
   */
 
-#include "visualization/HistogramPlot.h"
-#include "statistics/MultinomialDistribution.h"
+#ifndef ERRORFUNCTION_H
+#define ERRORFUNCTION_H
 
-#include <QtGui/QApplication>
+#include "functions/ContinuousFunction.h"
 
-int main(int argc, char** argv) {
-  QApplication app(argc, argv);
-  Histogram<size_t, 1> histogram(0, 10, 1);
-  MultinomialDistribution<5> dist(20, (Eigen::Matrix<double, 5, 1>()
-    << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
-  for (size_t i = 0; i < 100000; ++i) {
-    Eigen::Matrix<size_t, 5, 1> sample = dist.getSample();
-    for (size_t j = 0; j < 5; ++j)
-      histogram.setBinContent(j, histogram.getBinContent(j) + sample(j));
-  }
-  histogram.normalize();
-  HistogramPlot<size_t, 1> plot("MultinomialDistributionRndHistogramPlot",
-    histogram);
-  plot.show();
-  return app.exec();
-}
+/** The ErrorFunction class represents the error function.
+    \brief Error function
+  */
+template <typename X = double> class ErrorFunction :
+  public ContinuousFunction<double, X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  ErrorFunction(const ErrorFunction<X>& other);
+  /// Assignment operator
+  ErrorFunction& operator = (const ErrorFunction<X>& other);
+  /** @}
+    */
+
+public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
+  ErrorFunction();
+  /// Destructor
+  virtual ~ErrorFunction();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  /// Access the function value for the given argument
+  virtual double getValue(const X& argument) const;
+  /** @}
+    */
+
+protected:
+
+};
+
+#include "functions/ErrorFunction.tpp"
+
+#endif // ERRORFUNCTION_H

@@ -77,14 +77,14 @@ int main(int argc, char** argv) {
     getMinimumBin() << std::endl << std::endl;
   std::cout << "hist.getSample(): " << std::endl << hist1DiscDefault.
     getSample() << std::endl << std::endl;
-  std::cout << "hist.getMeanValue(): " << std::endl << hist1DiscDefault.
-    getMeanValue() << std::endl << std::endl;
-  std::cout << "hist.getVariance(): " << std::endl << hist1DiscDefault.
-    getVariance() << std::endl << std::endl;
-  std::cout << "hist.getValue(0): " << std::endl << hist1DiscDefault.
-    getValue(0) << std::endl << std::endl;
-  std::cout << "hist.getValue(1): " << std::endl << hist1DiscDefault.
-    getValue(1) << std::endl << std::endl;
+  std::cout << "hist.getSampleMean(): " << std::endl << hist1DiscDefault.
+    getSampleMean() << std::endl << std::endl;
+  std::cout << "hist.getSampleVariance(): " << std::endl << hist1DiscDefault.
+    getSampleVariance() << std::endl << std::endl;
+  std::cout << "hist.getBinCenter(0): " << std::endl << hist1DiscDefault.
+    getBinCenter(0) << std::endl << std::endl;
+  std::cout << "hist.getBinCenter(1): " << std::endl << hist1DiscDefault.
+    getBinCenter(1) << std::endl << std::endl;
   std::cout << "hist.normalize()" << std::endl;
   hist1DiscDefault.normalize();
   std::cout << "hist.getBinContent(0): " << std::endl << hist1DiscDefault.
@@ -175,12 +175,12 @@ int main(int argc, char** argv) {
     getMinimumBin() << std::endl << std::endl;
   std::cout << "hist.getSample(): " << std::endl << hist1ContDefault.
     getSample() << std::endl << std::endl;
-  std::cout << "hist.getMeanValue(): " << std::endl << hist1ContDefault.
-    getMeanValue() << std::endl << std::endl;
-  std::cout << "hist.getVariance(): " << std::endl << hist1ContDefault.
-    getVariance() << std::endl << std::endl;
-  std::cout << "hist.getValue(0): " << std::endl << hist1ContDefault.
-    getValue(0) << std::endl << std::endl;
+  std::cout << "hist.getSampleMean(): " << std::endl << hist1ContDefault.
+    getSampleMean() << std::endl << std::endl;
+  std::cout << "hist.getSampleVariance(): " << std::endl << hist1ContDefault.
+    getSampleVariance() << std::endl << std::endl;
+  std::cout << "hist.getBinCenter(0): " << std::endl << hist1ContDefault.
+    getBinCenter(0) << std::endl << std::endl;
   std::cout << "hist.normalize()" << std::endl;
   hist1ContDefault.normalize();
   std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.

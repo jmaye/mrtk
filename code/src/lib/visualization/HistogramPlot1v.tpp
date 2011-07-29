@@ -33,10 +33,10 @@ HistogramPlot<T, 1>::HistogramPlot(const std::string& title, const
   QwtPlot::setTitle(QString(title.c_str()));
   mXData.resize(histogram.getNumBins() + 1);
   mYData.resize(histogram.getNumBins() + 1);
-  mXData[0] = histogram.getValue(0);
+  mXData[0] = histogram.getBinStart(0);
   mYData[0] = histogram.getBinContent(0);
   for (size_t i = 0; i < histogram.getNumBins(); ++i) {
-    mXData[i + 1] = histogram.getValue(i) + histogram.getBinWidth();
+    mXData[i + 1] = histogram.getBinStart(i) + histogram.getBinWidth();
     mYData[i + 1] = histogram.getBinContent(i);
   }
   mHistogram.setData(mXData, mYData);

@@ -16,29 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MultinomialDistributionRndHistogramPlot.cpp
+/** \file UniformDistributionRndHistogramPlot1v.cpp
     \brief This file is a testing binary for plotting random samples of the
-           MultinomialDistribution class
+           UniformDistribution1v
   */
 
 #include "visualization/HistogramPlot.h"
-#include "statistics/MultinomialDistribution.h"
+#include "statistics/UniformDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> histogram(0, 10, 1);
-  MultinomialDistribution<5> dist(20, (Eigen::Matrix<double, 5, 1>()
-    << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
-  for (size_t i = 0; i < 100000; ++i) {
-    Eigen::Matrix<size_t, 5, 1> sample = dist.getSample();
-    for (size_t j = 0; j < 5; ++j)
-      histogram.setBinContent(j, histogram.getBinContent(j) + sample(j));
-  }
-  histogram.normalize();
-  HistogramPlot<size_t, 1> plot("MultinomialDistributionRndHistogramPlot",
-    histogram);
+  Histogram<double, 1> hist(-5, 5, 0.05);
+  UniformDistribution<double> dist;
+  for (size_t i = 0; i < 100000; ++i)
+    hist.addSample(dist.getSample());
+  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
+  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
+  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
+    << std::endl;
+  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. median: " << dist.getMedian() << std::endl;
+  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
+  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  hist.normalize();
+  HistogramPlot<double, 1> plot("UniformDistributionRndHistogramPlot1v", hist);
   plot.show();
   return app.exec();
 }

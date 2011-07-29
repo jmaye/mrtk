@@ -114,3 +114,8 @@ double ExponentialDistribution::getMode() const {
 double ExponentialDistribution::getVariance() const {
   return getMean() * getMean();
 }
+
+double ExponentialDistribution::KLDivergence(const ExponentialDistribution&
+  other) const {
+  return log(mRate) - log(other.mRate) + other.mRate / mRate - 1.0;
+}

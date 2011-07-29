@@ -9,33 +9,29 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ExponentialDistribution.h
-    \brief This file defines the ExponentialDistribution class, which represents
-           an exponential distribution
+/** \file LogisticDistribution.h
+    \brief This file defines the logistic distribution
   */
 
-#ifndef EXPONENTIALDISTRIBUTION_H
-#define EXPONENTIALDISTRIBUTION_H
+#ifndef LOGISTICDISTRIBUTION_H
+#define LOGISTICDISTRIBUTION_H
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-/** The ExponentialDistribution class represents an exponential distribution,
-    i.e., a continuous distribution that models the time between events in a
-    Poisson process, or the time for a continuous process to change state. The
-    events appear at a constant average rate.
-    \brief Exponential distribution
+/** The LogisticDistribution class represents a logistic distribution.
+    \brief Logistic distribution
   */
-class ExponentialDistribution :
+class LogisticDistribution :
   public ContinuousDistribution<double>,
   public SampleDistribution<double>,
   public virtual Serializable {
@@ -43,24 +39,30 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs distribution from parameter
-  ExponentialDistribution(double rate = 1.0);
+  /// Constructs the distribution from the parameters
+  LogisticDistribution(double location = 0.0, double scale = 1.0);
   /// Copy constructor
-  ExponentialDistribution(const ExponentialDistribution& other);
+  LogisticDistribution(const LogisticDistribution& other);
   /// Assignment operator
-  ExponentialDistribution& operator = (const ExponentialDistribution& other);
+  LogisticDistribution& operator = (const LogisticDistribution& other);
   /// Destructor
-  virtual ~ExponentialDistribution();
+  virtual ~LogisticDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the event rate
-  void setRate(double rate) throw (BadArgumentException<double>);
-  /// Returns the event rate
-  double getRate() const;
+  /// Sets the location of the distribution
+  void setLocation(double scale);
+  /// Returns the location of the distribution
+  double getLocation() const;
+  /// Sets the scale of the distribution
+  void setScale(double scale) throw (BadArgumentException<double>);
+  /// Returns the scale of the distribution
+  double getScale() const;
+  /// Returns the inverse scale of the distribution
+  double getInverseScale() const;
   /// Returns the mean of the distribution
   double getMean() const;
   /// Returns the median of the distribution
@@ -69,16 +71,14 @@ public:
   double getMode() const;
   /// Returns the variance of the distribution
   double getVariance() const;
-  /// Access the probablity density function at the given value
+  /// Access the probability density function at the given value
   virtual double pdf(const double& value) const;
-  /// Access the log-probablity density function at the given value
+  /// Access the log-probability density function at the given value
   double logpdf(const double& value) const;
   /// Access the cumulative density function at the given value
   double cdf(const double& value) const;
   /// Access a sample drawn from the distribution
   virtual double getSample() const;
-  /// Returns the KL-divergence with another distribution
-  double KLDivergence(const ExponentialDistribution& other) const;
   /** @}
     */
 
@@ -100,13 +100,17 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Rate
-  double mRate;
+  /// Location of the distribution
+  double mLocation;
+  /// Scale of the distribution
+  double mScale;
+  /// Inverse scale of the distribution
+  double mInverseScale;
   /** @}
     */
 
 };
 
-#include "statistics/ExponentialDistribution.tpp"
+#include "statistics/LogisticDistribution.tpp"
 
-#endif // EXPONENTIALDISTRIBUTION_H
+#endif // LOGISTICDISTRIBUTION_H

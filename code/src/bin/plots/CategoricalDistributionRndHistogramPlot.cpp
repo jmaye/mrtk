@@ -28,19 +28,17 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> histogram(0, 10, 1);
+  Histogram<size_t, 1> hist(0, 10, 1);
   CategoricalDistribution<5> dist((Eigen::Matrix<double, 5, 1>()
     << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
   for (size_t i = 0; i < 100000; ++i) {
     Eigen::Matrix<size_t, 5, 1> sample = dist.getSample();
     for (size_t j = 0; j < 5; ++j)
-      histogram.setBinContent(j, histogram.getBinContent(j) + sample(j));
+      hist.setBinContent(j, hist.getBinContent(j) + sample(j));
   }
-  std::cout << histogram.getMeanValue() << std::endl;
-  std::cout << histogram.getVariance() << std::endl;
-  histogram.normalize();
+  hist.normalize();
   HistogramPlot<size_t, 1> plot("CategoricalDistributionRndHistogramPlot",
-    histogram);
+    hist);
   plot.show();
   return app.exec();
 }

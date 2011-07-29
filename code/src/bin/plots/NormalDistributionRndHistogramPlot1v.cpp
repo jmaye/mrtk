@@ -28,13 +28,21 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<double, 1> histogram(-5, 5, 0.05);
+  Histogram<double, 1> hist(-10, 10, 0.05);
   NormalDistribution<1> dist;
   for (size_t i = 0; i < 100000; ++i)
-    histogram.addSample(dist.getSample());
-  histogram.normalize();
-  HistogramPlot<double, 1> plot("NormalDistributionRndHistogramPlot1v",
-    histogram);
+    hist.addSample(dist.getSample());
+  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
+  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
+  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
+    << std::endl;
+  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. median: " << dist.getMedian() << std::endl;
+  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
+  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  hist.normalize();
+  HistogramPlot<double, 1> plot("NormalDistributionRndHistogramPlot1v", hist);
   plot.show();
   return app.exec();
 }

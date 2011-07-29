@@ -16,29 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MultinomialDistributionRndHistogramPlot.cpp
-    \brief This file is a testing binary for plotting random samples of the
-           MultinomialDistribution class
+/** \file TanHFunctionPlot.cpp
+    \brief This file is a testing binary for plotting the tanh function
   */
 
-#include "visualization/HistogramPlot.h"
-#include "statistics/MultinomialDistribution.h"
+#include "visualization/ContinuousFunctionPlot.h"
+#include "functions/TanHFunction.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> histogram(0, 10, 1);
-  MultinomialDistribution<5> dist(20, (Eigen::Matrix<double, 5, 1>()
-    << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
-  for (size_t i = 0; i < 100000; ++i) {
-    Eigen::Matrix<size_t, 5, 1> sample = dist.getSample();
-    for (size_t j = 0; j < 5; ++j)
-      histogram.setBinContent(j, histogram.getBinContent(j) + sample(j));
-  }
-  histogram.normalize();
-  HistogramPlot<size_t, 1> plot("MultinomialDistributionRndHistogramPlot",
-    histogram);
+  ContinuousFunctionPlot<double, double, 1> plot("TanHFunction",
+    TanHFunction<double>(), -6, 6, 0.1);
   plot.show();
   return app.exec();
 }

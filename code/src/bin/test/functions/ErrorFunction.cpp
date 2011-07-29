@@ -9,36 +9,28 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MultinomialDistributionRndHistogramPlot.cpp
-    \brief This file is a testing binary for plotting random samples of the
-           MultinomialDistribution class
+/** \file ErrorFunction.cpp
+    \brief This file is a testing binary for the ErrorFunction class
   */
 
-#include "visualization/HistogramPlot.h"
-#include "statistics/MultinomialDistribution.h"
+#include "functions/ErrorFunction.h"
 
-#include <QtGui/QApplication>
+#include <iostream>
+#include <limits>
 
 int main(int argc, char** argv) {
-  QApplication app(argc, argv);
-  Histogram<size_t, 1> histogram(0, 10, 1);
-  MultinomialDistribution<5> dist(20, (Eigen::Matrix<double, 5, 1>()
-    << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
-  for (size_t i = 0; i < 100000; ++i) {
-    Eigen::Matrix<size_t, 5, 1> sample = dist.getSample();
-    for (size_t j = 0; j < 5; ++j)
-      histogram.setBinContent(j, histogram.getBinContent(j) + sample(j));
-  }
-  histogram.normalize();
-  HistogramPlot<size_t, 1> plot("MultinomialDistributionRndHistogramPlot",
-    histogram);
-  plot.show();
-  return app.exec();
+  ErrorFunction<double> l;
+
+  std::cout << "l(0): " << std::fixed << l(0) << std::endl;
+  if (fabs(l(0) - 0.0) > std::numeric_limits<double>::epsilon())
+    return 1;
+
+  return 0;
 }

@@ -77,6 +77,8 @@ public:
   double cdf(const size_t& value) const;
   /// Access a sample drawn from the distribution
   virtual size_t getSample() const;
+  /// Returns the KL-divergence with another distribution
+  double KLDivergence(const PoissonDistribution& other) const;
   /** @}
     */
 

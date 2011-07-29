@@ -28,7 +28,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("BetaDistribution",
-    BetaDistribution(0.5, 0.5), 0.01, 1, 0.01);
+    BetaDistribution(1.5, 1.5), 0.01, 1, 0.01);
   plot.show();
   return app.exec();
 }

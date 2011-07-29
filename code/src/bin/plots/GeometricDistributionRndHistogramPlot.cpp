@@ -28,15 +28,19 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> histogram(0, 20, 1);
+  Histogram<size_t, 1> hist(0, 20, 1);
   GeometricDistribution dist;
   for (size_t i = 0; i < 100000; ++i)
-    histogram.addSample(dist.getSample());
-  std::cout << histogram.getMeanValue() << std::endl;
-  std::cout << histogram.getVariance() << std::endl;
-  histogram.normalize();
-  HistogramPlot<size_t, 1> plot("GeometricDistributionRndHistogramPlot",
-    histogram);
+    hist.addSample(dist.getSample());
+  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
+  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
+    << std::endl;
+  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
+  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  hist.normalize();
+  HistogramPlot<size_t, 1> plot("GeometricDistributionRndHistogramPlot", hist);
   plot.show();
   return app.exec();
 }

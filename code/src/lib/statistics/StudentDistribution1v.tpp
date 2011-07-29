@@ -66,8 +66,8 @@ void StudentDistribution<1>::read(std::istream& stream) {
 }
 
 void StudentDistribution<1>::write(std::ostream& stream) const {
-  stream << "location: " << std::endl << mLocation << std::endl
-    << "scale: " << std::endl << mScale << std::endl
+  stream << "location: " << mLocation << std::endl
+    << "scale: " << mScale << std::endl
     << "degrees: " << mDegrees;
 }
 

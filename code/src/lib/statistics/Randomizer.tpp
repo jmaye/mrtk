@@ -193,6 +193,7 @@ size_t Randomizer<T, M>::sampleGeometric(double successProbability) const
   while (u == 0);
   return floor(log(u) / log(1 - successProbability));
 }
+
 template <typename T, size_t M>
 double Randomizer<T, M>::sampleGamma(double shape, double scale) const
   throw (BadArgumentException<double>) {
@@ -204,7 +205,7 @@ double Randomizer<T, M>::sampleGamma(double shape, double scale) const
   double fractionalPart = shape - integralPart;
   double y = 0;
   for (size_t i = 0; i < integralPart; ++i)
-    y += sampleExponential(scale);
+    y += sampleExponential(1.0);
   double b = (M_E + fractionalPart) / M_E;
   double z = 0;
   if (fabs(fractionalPart - 0) > std::numeric_limits<double>::epsilon())
@@ -225,7 +226,7 @@ double Randomizer<T, M>::sampleGamma(double shape, double scale) const
           break;
       }
     }
-  return y + z / scale;
+  return (y + z) * scale;
 }
 
 template <typename T, size_t M>

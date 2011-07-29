@@ -28,15 +28,21 @@
 //TODO: ERROR HERE DUE TO CHI-SQUARE
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<double, 1> histogram(-5, 5, 0.05);
-  StudentDistribution<1> dist;
+  Histogram<double, 1> hist(-100, 100, 0.05);
+  StudentDistribution<1> dist(0, 1, 3);
   for (size_t i = 0; i < 100000; ++i)
-    histogram.addSample(dist.getSample());
-  std::cout << histogram.getMeanValue() << std::endl;
-  std::cout << histogram.getVariance() << std::endl;
-  histogram.normalize();
-  HistogramPlot<double, 1> plot("StudentDistributionRndHistogramPlot1v",
-    histogram);
+    hist.addSample(dist.getSample());
+  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
+  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
+  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
+    << std::endl;
+  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. median: " << dist.getMedian() << std::endl;
+  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
+  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  hist.normalize();
+  HistogramPlot<double, 1> plot("StudentDistributionRndHistogramPlot1v", hist);
   plot.show();
   return app.exec();
 }
