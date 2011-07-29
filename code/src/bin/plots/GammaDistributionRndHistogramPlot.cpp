@@ -28,7 +28,7 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<double, 1> hist(0, 8, 0.05);
+  Histogram<double, 1> hist(0, 100, 0.05);
   GammaDistribution<> dist;
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample());

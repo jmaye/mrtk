@@ -200,7 +200,7 @@ Eigen::Matrix<size_t, 2, 1> Histogram<T, 2>::getMinimumBin() const {
 }
 
 template <typename T>
-Eigen::Matrix<T, 2, 1> Histogram<T, 2>::getSample() const {
+Eigen::Matrix<double, 2, 1> Histogram<T, 2>::getSample() const {
   Histogram<T, 2> normHist(*this);
   normHist.normalize();
   Eigen::Matrix<double, Eigen::Dynamic, 1> cumProbabilities =
@@ -217,26 +217,24 @@ Eigen::Matrix<T, 2, 1> Histogram<T, 2>::getSample() const {
   double u = randomizer.sampleUniform();
   for (size_t i = 1; i < (size_t)cumProbabilities.size(); ++i) {
     if (u > cumProbabilities(i - 1) && u <= cumProbabilities(i)) {
-      return getValue((Eigen::Matrix<size_t, 2, 1>() << floor((i - 1) /
+      return getBinCenter((Eigen::Matrix<size_t, 2, 1>() << floor((i - 1) /
         (double)mBins.cols()), (i - 1) % mBins.cols()).finished());
     }
   }
-  return getValue((Eigen::Matrix<size_t, 2, 1>() << mBins.rows() - 1,
+  return getBinCenter((Eigen::Matrix<size_t, 2, 1>() << mBins.rows() - 1,
     mBins.cols() - 1).finished());
 }
 
 template <typename T>
-Eigen::Matrix<double, 2, 1> Histogram<T, 2>::getMeanValue() const {
-  Eigen::Matrix<T, 2, 1> value = mMinValue;
+Eigen::Matrix<double, 2, 1> Histogram<T, 2>::getSampleMean() const {
   Eigen::Matrix<double, 2, 1> mean = Eigen::Matrix<double, 2, 1>::Zero();
   for (size_t i = 0; i < (size_t)mBins.rows(); ++i) {
-    value(1) = mMinValue(1);
     for (size_t j = 0; j < (size_t)mBins.cols(); ++j) {
-      mean(0) += mBins(i, j) * value(0);
-      mean(1) += mBins(i, j) * value(1);
-      value(1) += mBinWidth(1);
+      mean(0) += mBins(i, j) *
+        getBinCenter((Eigen::Matrix<size_t, 2, 1>() << i, j).finished())(0);
+      mean(1) += mBins(i, j) *
+        getBinCenter((Eigen::Matrix<size_t, 2, 1>() << i, j).finished())(1);
     }
-    value(0) += mBinWidth(0);
   }
   return mean / mBins.sum();
 }
@@ -247,12 +245,59 @@ void Histogram<T, 2>::clear() {
 }
 
 template <typename T>
-Eigen::Matrix<T, 2, 1> Histogram<T, 2>::getValue(const
+template <typename U, size_t D>
+Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<U, D>::getBinCenter(const
+  Histogram<U, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
+  Eigen::Matrix<double, 2, 1> returnValue;
+  if (hist.mBinWidth(0) == 1 && hist.mBinWidth(1) == 1) {
+    returnValue(0) = hist.getBinStart(bin)(0);
+    returnValue(1) = hist.getBinStart(bin)(1);
+  }
+  else {
+    returnValue(0) = hist.getBinStart(bin)(0) + hist.mBinWidth(0) / 2.0;
+    returnValue(1) = hist.getBinStart(bin)(1) + hist.mBinWidth(1) / 2.0;
+  }
+  return returnValue;
+}
+
+template <typename T>
+template <size_t D>
+Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<float, D>::getBinCenter(
+  const Histogram<float, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
+  Eigen::Matrix<double, 2, 1> returnValue;
+  returnValue(0) = hist.getBinStart(bin)(0) + hist.mBinWidth(0) / 2.0;
+  returnValue(1) = hist.getBinStart(bin)(1) + hist.mBinWidth(1) / 2.0;
+  return returnValue;
+}
+
+template <typename T>
+template <size_t D>
+Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<double, D>::getBinCenter(
+  const Histogram<double, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
+  Eigen::Matrix<double, 2, 1> returnValue;
+  returnValue(0) = hist.getBinStart(bin)(0) + hist.mBinWidth(0) / 2.0;
+  returnValue(1) = hist.getBinStart(bin)(1) + hist.mBinWidth(1) / 2.0;
+  return returnValue;
+}
+
+template <typename T>
+Eigen::Matrix<double, 2, 1> Histogram<T, 2>::getBinCenter(const
   Eigen::Matrix<size_t, 2, 1>& bin) const
   throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
   if (bin(0) >= (size_t)mBins.rows() || bin(1) >= (size_t)mBins.cols())
     throw OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >(bin,
-      "Histogram<T, 2>::getValue(): wrong bin number",
+      "Histogram<T, 2>::getBinCenter(): wrong bin number",
+      __FILE__, __LINE__);
+  return Traits<T>::getBinCenter(*this, bin);
+}
+
+template <typename T>
+Eigen::Matrix<T, 2, 1> Histogram<T, 2>::getBinStart(const
+  Eigen::Matrix<size_t, 2, 1>& bin) const
+  throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
+  if (bin(0) >= (size_t)mBins.rows() || bin(1) >= (size_t)mBins.cols())
+    throw OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >(bin,
+      "Histogram<T, 2>::getBinStart(): wrong bin number",
       __FILE__, __LINE__);
   Eigen::Matrix<T, 2, 1> returnValue;
   returnValue(0) = mMinValue(0) + bin(0) * mBinWidth(0);
@@ -261,9 +306,9 @@ Eigen::Matrix<T, 2, 1> Histogram<T, 2>::getValue(const
 }
 
 template <typename T>
-Eigen::Matrix<double, 2, 2> Histogram<T, 2>::getCovariance() const {
+Eigen::Matrix<double, 2, 2> Histogram<T, 2>::getSampleCovariance() const {
   Eigen::Matrix<T, 2, 1> value = mMinValue;
-  Eigen::Matrix<double, 2, 1> mean = getMeanValue();
+  Eigen::Matrix<double, 2, 1> mean = getSampleMean();
   Eigen::Matrix<double, 2, 2> covariance = Eigen::Matrix<double, 2, 2>::Zero();
   for (size_t i = 0; i < (size_t)mBins.rows(); ++i) {
     value(1) = mMinValue(1);
@@ -357,7 +402,7 @@ template <typename T>
 void Histogram<T, 2>::normalize(double norm) {
   mNormFactor = norm;
   if (mBins.sum() != 0)
-    scale(norm / mBins.sum());
+    scale(norm / (mBins.sum() * mBinWidth(0) * mBinWidth(1)));
 }
 
 template <typename T>

@@ -16,24 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file StudentDistributionRndScatterPlot2v.cpp
+/** \file UniformDistributionRndHistogramPlot2v.cpp
     \brief This file is a testing binary for plotting random samples of the 
-           StudentDistribution2v class
+           UniformDistribution2v class
   */
 
-#include "visualization/ScatterPlot.h"
-#include "statistics/StudentDistribution.h"
+#include "visualization/HistogramPlot.h"
+#include "statistics/UniformDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  std::vector<Eigen::Matrix<double, 2, 1> > data;
-  StudentDistribution<2> dist(Eigen::Matrix<double, 2, 1>::Zero(),
-    Eigen::Matrix<double, 2, 2>::Identity(), 3.0);
+  Histogram<double, 2> hist(Eigen::Matrix<double, 2, 1>(-10, -10),
+    Eigen::Matrix<double, 2, 1>(10, 10),
+    Eigen::Matrix<double, 2, 1>(0.05, 0.05));
+  UniformDistribution<double, 2> dist;
   for (size_t i = 0; i < 100000; ++i)
-    data.push_back(dist.getSample());
-  ScatterPlot<2> plot("StudentDistributionRndScatterPlot2v", data);
-  plot.show();
+    hist.addSample(dist.getSample());
+  std::cout << "Sample mean: " << std::endl << hist.getSampleMean()
+    << std::endl;
+  std::cout << "Sample mode: " << std::endl
+    << hist.getBinCenter(hist.getMaximumBin()) << std::endl;
+  std::cout << "Sample covariance: " << std::endl << hist.getSampleCovariance()
+    << std::endl;
+  hist.normalize();
   return app.exec();
 }

@@ -177,11 +177,6 @@ double NormalDistribution<M>::mahalanobisDistance(const
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& NormalDistribution<M>::getMedian() const {
-  return getMean();
-}
-
-template <size_t M>
 const Eigen::Matrix<double, M, 1>& NormalDistribution<M>::getMode() const {
   return getMean();
 }

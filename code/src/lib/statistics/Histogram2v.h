@@ -49,6 +49,9 @@ public:
     /// Add sample to the histogram
     static void addSample(Histogram<U, 2>& hist, const Eigen::Matrix<U, 2, 1>&
       sample);
+    /// Returns the value at the center of a bin
+    static Eigen::Matrix<double, 2, 1> getBinCenter(const Histogram<U, 2>&
+      hist, const Eigen::Matrix<size_t, 2, 1>& bin);
   };
   /// Computing bin numbers for float type
   template <size_t D> struct Traits<float, D> {
@@ -59,6 +62,9 @@ public:
     /// Add sample to the histogram
     static void addSample(Histogram<float, 2>& hist, const
       Eigen::Matrix<float, 2, 1>& sample);
+    /// Returns the value at the center of a bin
+    static Eigen::Matrix<double, 2, 1> getBinCenter(const Histogram<float, 2>&
+      hist, const Eigen::Matrix<size_t, 2, 1>& bin);
   };
   /// Computing bin numbers for double type
   template <size_t D> struct Traits<double, D> {
@@ -69,6 +75,9 @@ public:
     /// Add sample to the histogram
     static void addSample(Histogram<double, 2>& hist,
       const Eigen::Matrix<double, 2, 1>& sample);
+    /// Returns the value at the center of a bin
+    static Eigen::Matrix<double, 2, 1> getBinCenter(const Histogram<double, 2>&
+      hist, const Eigen::Matrix<size_t, 2, 1>& bin);
   };
   /** @}
     */
@@ -126,15 +135,18 @@ public:
   /// Returns the minimum bin of the histogram
   Eigen::Matrix<size_t, 2, 1> getMinimumBin() const;
   /// Returns a sample from the histogram
-  Eigen::Matrix<T, 2, 1> getSample() const;
+  Eigen::Matrix<double, 2, 1> getSample() const;
   /// Returns the mean value of the histogram
-  Eigen::Matrix<double, 2, 1> getMeanValue() const;
+  Eigen::Matrix<double, 2, 1> getSampleMean() const;
   /// Returns the covariance of the histogram
-  Eigen::Matrix<double, 2, 2> getCovariance() const;
+  Eigen::Matrix<double, 2, 2> getSampleCovariance() const;
   /// Clears the histogram
   void clear();
   /// Gets the value at the center of a bin
-  Eigen::Matrix<T, 2, 1> getValue(const Eigen::Matrix<size_t, 2, 1>& bin)
+  Eigen::Matrix<double, 2, 1> getBinCenter(const Eigen::Matrix<size_t, 2, 1>&
+    bin) const throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >);
+  /// Gets the value at the start of a bin
+  Eigen::Matrix<T, 2, 1> getBinStart(const Eigen::Matrix<size_t, 2, 1>& bin)
     const throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >);
   /** @}
     */

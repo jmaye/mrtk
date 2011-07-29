@@ -279,14 +279,14 @@ int main(int argc, char** argv) {
     getMinimumBin() << std::endl << std::endl;
   std::cout << "hist.getSample(): " << std::endl << hist2DiscDefault.
     getSample() << std::endl << std::endl;
-  std::cout << "hist.getMeanValue(): " << std::endl << hist2DiscDefault.
-    getMeanValue() << std::endl << std::endl;
-  std::cout << "hist.getCovariance(): " << std::endl << hist2DiscDefault.
-    getCovariance() << std::endl << std::endl;
-  std::cout << "hist.getValue(0, 0): " << std::endl << hist2DiscDefault.
-    getValue(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
-  std::cout << "hist.getValue(0, 1): " << std::endl << hist2DiscDefault.
-    getValue(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
+  std::cout << "hist.getSampleMean(): " << std::endl << hist2DiscDefault.
+    getSampleMean() << std::endl << std::endl;
+  std::cout << "hist.getSampleCovariance(): " << std::endl << hist2DiscDefault.
+    getSampleCovariance() << std::endl << std::endl;
+  std::cout << "hist.getBinCenter(0, 0): " << std::endl << hist2DiscDefault.
+    getBinCenter(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  std::cout << "hist.getBinCenter(0, 1): " << std::endl << hist2DiscDefault.
+    getBinCenter(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
   std::cout << "hist.normalize()" << std::endl;
   hist2DiscDefault.normalize();
   std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2DiscDefault.
@@ -386,12 +386,12 @@ int main(int argc, char** argv) {
     getMinimumBin() << std::endl << std::endl;
   std::cout << "hist.getSample(): " << std::endl << hist2ContDefault.
     getSample() << std::endl << std::endl;
-  std::cout << "hist.getMeanValue(): " << std::endl << hist2ContDefault.
-    getMeanValue() << std::endl << std::endl;
-  std::cout << "hist.getCovariance(): " << std::endl << hist2ContDefault.
-    getCovariance() << std::endl << std::endl;
-  std::cout << "hist.getValue(0, 0): " << std::endl << hist2ContDefault.
-    getValue(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
+  std::cout << "hist.getSampleMean(): " << std::endl << hist2ContDefault.
+    getSampleMean() << std::endl << std::endl;
+  std::cout << "hist.getSampleCovariance(): " << std::endl << hist2ContDefault.
+    getSampleCovariance() << std::endl << std::endl;
+  std::cout << "hist.getBinCenter(0, 0): " << std::endl << hist2ContDefault.
+    getBinCenter(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
   std::cout << "hist.normalize()" << std::endl;
   hist2ContDefault.normalize();
   std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.

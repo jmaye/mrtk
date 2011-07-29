@@ -82,12 +82,10 @@ public:
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Returns the mean of the distribution
   const Eigen::Matrix<double, M, 1>& getMean() const;
-  /// Returns the median of the distribution
-  const Eigen::Matrix<double, M, 1>& getMedian() const;
   /// Returns the mode of the distribution
   const Eigen::Matrix<double, M, 1>& getMode() const;
   /// Returns the variance of the distribution
-  const Eigen::Matrix<double, M, M>& getCovariance() const;
+  Eigen::Matrix<double, M, M> getCovariance() const;
   /// Access the probability density function at the given value
   virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
   /// Access the log-probability density function at the given value

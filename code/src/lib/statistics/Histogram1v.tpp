@@ -195,7 +195,7 @@ size_t Histogram<T, 1>::getMinimumBin() const {
 }
 
 template <typename T>
-T Histogram<T, 1>::getSample() const {
+double Histogram<T, 1>::getSample() const {
   Histogram<T, 1> normHist(*this);
   normHist.normalize();
   Eigen::Matrix<double, Eigen::Dynamic, 1> cumProbabilities =

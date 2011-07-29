@@ -28,7 +28,7 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> hist(0, 10, 1);
+  Histogram<size_t, 1> hist(0, 100, 1);
   PoissonDistribution dist;
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample());

@@ -207,19 +207,14 @@ const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMean() const {
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMedian() const {
-  return getLocation();
-}
-
-template <size_t M>
 const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMode() const {
   return getLocation();
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, M>& StudentDistribution<M>::getCovariance()
+Eigen::Matrix<double, M, M> StudentDistribution<M>::getCovariance()
   const {
   if (mDegrees > 2)
     return mDegrees / (mDegrees - 2) * mScale;
-  return 0;
+  return Eigen::Matrix<double, M, M>::Identity();
 }

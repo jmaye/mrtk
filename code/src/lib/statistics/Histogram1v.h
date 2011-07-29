@@ -121,7 +121,7 @@ public:
   /// Returns the minimum bin of the histogram
   size_t getMinimumBin() const;
   /// Returns a sample from the histogram
-  T getSample() const;
+  double getSample() const;
   /// Returns the mean value of the histogram
   double getSampleMean() const;
   /// Returns the variance of the histogram
