@@ -40,7 +40,7 @@ public:
   /** \name Traits
     @{
     */
-  /// Computing bin numbers for all integer types
+  /// Computing for all integer types
   template <typename U, size_t D = 0> struct Traits {
   public:
     /// Bin computing function
@@ -50,7 +50,7 @@ public:
     /// Returns the value at the center of a bin
     static double getBinCenter(const Histogram<U, 1>& hist, size_t bin);
   };
-  /// Computing bin numbers for float type
+  /// Computing for float type
   template <size_t D> struct Traits<float, D> {
   public:
     /// Bin computing function
@@ -60,7 +60,7 @@ public:
     /// Returns the value at the center of a bin
     static double getBinCenter(const Histogram<float, 1>& hist, size_t bin);
   };
-  /// Computing bin numbers for double type
+  /// Computing for double type
   template <size_t D> struct Traits<double, D> {
   public:
     /// Bin computing function

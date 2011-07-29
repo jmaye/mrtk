@@ -40,7 +40,7 @@ public:
   /** \name Traits
     @{
     */
-  /// Computing bin numbers for all integer types
+  /// Computing for all integer types
   template <typename U, size_t D = 0> struct Traits {
   public:
     /// Bin computing function
@@ -53,7 +53,7 @@ public:
     static Eigen::Matrix<double, 2, 1> getBinCenter(const Histogram<U, 2>&
       hist, const Eigen::Matrix<size_t, 2, 1>& bin);
   };
-  /// Computing bin numbers for float type
+  /// Computing for float type
   template <size_t D> struct Traits<float, D> {
   public:
     /// Bin computing function
@@ -66,7 +66,7 @@ public:
     static Eigen::Matrix<double, 2, 1> getBinCenter(const Histogram<float, 2>&
       hist, const Eigen::Matrix<size_t, 2, 1>& bin);
   };
-  /// Computing bin numbers for double type
+  /// Computing for double type
   template <size_t D> struct Traits<double, D> {
   public:
     /// Bin computing function

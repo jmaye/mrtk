@@ -35,7 +35,7 @@ public:
 };
 
 /** The IsNumeric structure determines if a type is numeric
-    \brief Real types definitions
+    \brief Numeric types definitions
   */
 template <> struct IsNumeric<float> {
 public:
@@ -44,7 +44,7 @@ public:
 };
 
 /** The IsNumeric structure determines if a type is numeric
-    \brief Real types definitions
+    \brief Numeric types definitions
   */
 template <> struct IsNumeric<double> {
 public:
@@ -53,7 +53,7 @@ public:
 };
 
 /** The IsNumeric structure determines if a type is numeric
-    \brief Real types definitions
+    \brief Numeric types definitions
   */
 template <> struct IsNumeric<int> {
 public:
@@ -62,7 +62,7 @@ public:
 };
 
 /** The IsNumeric structure determines if a type is numeric
-    \brief Real types definitions
+    \brief Numeric types definitions
   */
 template <> struct IsNumeric<unsigned int> {
 public:
@@ -71,7 +71,7 @@ public:
 };
 
 /** The IsNumeric structure determines if a type is numeric
-    \brief Real types definitions
+    \brief Numeric types definitions
   */
 template <> struct IsNumeric<long> {
 public:
@@ -80,7 +80,7 @@ public:
 };
 
 /** The IsNumeric structure determines if a type is numeric
-    \brief Real types definitions
+    \brief Numeric types definitions
   */
 template <> struct IsNumeric<unsigned long> {
 public:
