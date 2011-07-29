@@ -60,6 +60,16 @@ enum FlowControl {
   */
 class SerialConnection :
   public virtual Serializable {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  SerialConnection(const SerialConnection& other);
+  /// Assignment operator
+  SerialConnection& operator = (const SerialConnection& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
@@ -124,16 +134,6 @@ public:
     */
 
 protected:
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  SerialConnection(const SerialConnection& other);
-  /// Assignment operator
-  SerialConnection& operator = (const SerialConnection& other);
-  /** @}
-    */
-
   /** \name Stream methods
     @{
     */

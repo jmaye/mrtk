@@ -25,6 +25,17 @@ Factory<T, C>::Factory() {
 }
 
 template <typename T, typename C>
+Factory<T, C>::Factory(const Factory<T, C>& other) {
+}
+
+template <typename T, typename C>
+Factory<T, C>& Factory<T, C>::operator = (const Factory<T, C>& other) {
+  if (this != &other) {
+  }
+  return *this;
+}
+
+template <typename T, typename C>
 Factory<T, C>::~Factory() {
   clear();
 }

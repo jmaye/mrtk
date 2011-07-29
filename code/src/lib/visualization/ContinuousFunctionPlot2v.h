@@ -49,6 +49,7 @@ template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 2> :
     (const ContinuousFunctionPlot<Y, X, 2>& other);
   /** @}
     */
+
 public:
   /** \name Constructors/destructor
     @{

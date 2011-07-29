@@ -25,6 +25,15 @@
 Serializable::Serializable() {
 }
 
+Serializable::Serializable(const Serializable& other) {
+}
+
+Serializable& Serializable::operator = (const Serializable& other) {
+  if (this != &other) {
+  }
+  return *this;
+}
+
 Serializable::~Serializable() {
 }
 

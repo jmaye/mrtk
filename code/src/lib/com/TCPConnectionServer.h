@@ -37,6 +37,16 @@
   */
 class TCPConnectionServer :
   public virtual Serializable {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  TCPConnectionServer(const TCPConnectionServer& other);
+  /// Assignment operator
+  TCPConnectionServer& operator = (const TCPConnectionServer& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
@@ -78,16 +88,6 @@ public:
     */
 
 protected:
-  /** \name Protected constructors
-    @{
-    */
-  /// Copy constructor
-  TCPConnectionServer(const TCPConnectionServer& other);
-  /// Assignment operator
-  TCPConnectionServer& operator = (const TCPConnectionServer& other);
-  /** @}
-    */
-
   /** \name Stream methods
     @{
     */

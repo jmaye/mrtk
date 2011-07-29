@@ -39,6 +39,16 @@ class Factory :
   public virtual Serializable {
 /// Lets the access for Singleton class
 friend class Singleton<Factory<T, C> >;
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Factory(const Factory<T, C>& other);
+  /// Assignment operator
+  Factory& operator = (const Factory<T, C>& other);
+  /** @}
+    */
+
 public:
   /** \name Accessors
     @{

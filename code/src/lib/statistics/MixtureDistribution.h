@@ -16,68 +16,69 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Singleton.h
-    \brief This file defines the Singleton class, which implements the singleton
-           design pattern
+/** \file MixtureDistribution.h
+    \brief This file contains an interface to any kind of mixture distributions
   */
 
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#ifndef MIXTUREDISTRIBUTION_H
+#define MIXTUREDISTRIBUTION_H
 
-#include "exceptions/InvalidOperationException.h"
+#include "statistics/Distribution.h"
+#include "statistics/CategoricalDistribution.h"
 
-/** The class Singleton implements the singleton design pattern.
-    \brief Singleton design pattern
+#include <vector>
+
+/** The MixtureDistribution class represents an interface to any kind of mixture
+    distributions.
+    \brief Mixture distribution
   */
-template <class C> class Singleton {
+template <typename D, size_t M> class MixtureDistribution :
+  public D::DistributionType {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  Singleton(const Singleton<C>& other);
+  MixtureDistribution(const MixtureDistribution& other);
   /// Assignment operator
-  Singleton& operator = (const Singleton<C>& other);
+  MixtureDistribution& operator = (const MixtureDistribution& other);
   /** @}
     */
 
 public:
-  /** \name Accessors
+  /** \name Types
     @{
     */
-  /// Access the static instance
-  static C& getInstance();
+  /// Variable type
+  typedef typename D::VariableType VariableType;
   /** @}
     */
 
-  /** \name Methods
+  /** \name Constructors/destructor
     @{
     */
-  /// Check if the object exists
-  static bool exists();
+  /// Default constructor
+  MixtureDistribution();
+  /// Destructor
+  virtual ~MixtureDistribution();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  /// Returns the probability density function at the given value
+  virtual double pdf(const VariableType& value) const;
+  /// Returns the probability mass function at the given value
+  virtual double pmf(const VariableType& value) const;
   /** @}
     */
 
 protected:
-  /** \name Protected constructors/destructor
-    @{
-    */
-  /// Default constructor
-  Singleton() throw (InvalidOperationException);
-  /// Destructor
-  virtual ~Singleton();
-  /** @}
-    */
-
-  /** \name Protected members
-    @{
-    */
-  /// Instance of the object
-  static C* instance;
-  /** @}
-    */
+  std::vector<D> mDistributions;
+  CategoricalDistribution<M> mWeights;
 
 };
 
-#include "Singleton.tpp"
+#include "statistics/MixtureDistribution.tpp"
 
-#endif
+#endif // MIXTUREDISTRIBUTION_H

@@ -41,6 +41,7 @@ template <typename T> class HistogramPlot<T, 2> :
   HistogramPlot<T, 2>& operator = (const HistogramPlot<T, 2>& other);
   /** @}
     */
+
 public:
   /** \name Constructors/destructor
     @{

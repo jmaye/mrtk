@@ -38,6 +38,16 @@
   */
 class UDPConnectionClient :
   public virtual Serializable {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  UDPConnectionClient(const UDPConnectionClient& other);
+  /// Assignment operator
+  UDPConnectionClient& operator = (const UDPConnectionClient& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
@@ -82,16 +92,6 @@ public:
     */
 
 protected:
-  /** \name Protected constructors
-    @{
-    */
-  /// Copy constructor
-  UDPConnectionClient(const UDPConnectionClient& other);
-  /// Assignment operator
-  UDPConnectionClient& operator = (const UDPConnectionClient& other);
-  /** @}
-    */
-
   /** \name Stream methods
     @{
     */

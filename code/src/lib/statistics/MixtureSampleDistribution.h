@@ -16,68 +16,59 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Singleton.h
-    \brief This file defines the Singleton class, which implements the singleton
-           design pattern
+/** \file MixtureSampleDistribution.h
+    \brief This file defines the class MixtureSampleDistribution, which
+           represents an interface to sample mixture distributions
   */
 
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#ifndef MIXTURESAMPLEDISTRIBUTION_H
+#define MIXTURESAMPLEDISTRIBUTION_H
 
-#include "exceptions/InvalidOperationException.h"
+#include "statistics/Distribution.h"
 
-/** The class Singleton implements the singleton design pattern.
-    \brief Singleton design pattern
+#include <vector>
+
+/** The MixtureSampleDistribution class represents an interface to sample
+    mixture distributions.
+    \brief Mixture sample distribution
   */
-template <class C> class Singleton {
+template <typename X> class MixtureSampleDistribution :
+  public virtual Distribution<X> {
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  Singleton(const Singleton<C>& other);
+  MixtureSampleDistribution(const MixtureSampleDistribution& other);
   /// Assignment operator
-  Singleton& operator = (const Singleton<C>& other);
+  MixtureSampleDistribution& operator = (const MixtureSampleDistribution& other);
   /** @}
     */
 
 public:
-  /** \name Accessors
+  /** \name Constructors/destructor
     @{
     */
-  /// Access the static instance
-  static C& getInstance();
+  /// Default constructor
+  MixtureSampleDistribution();
+  /// Destructor
+  virtual ~MixtureSampleDistribution();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Check if the object exists
-  static bool exists();
+  /// Access a sample drawn from the distribution
+  virtual X getSample() const = 0;
+  /// Access samples drawn from the distribution
+  void getSamples(std::vector<X>& samples, size_t numSamples) const;
   /** @}
     */
 
 protected:
-  /** \name Protected constructors/destructor
-    @{
-    */
-  /// Default constructor
-  Singleton() throw (InvalidOperationException);
-  /// Destructor
-  virtual ~Singleton();
-  /** @}
-    */
-
-  /** \name Protected members
-    @{
-    */
-  /// Instance of the object
-  static C* instance;
-  /** @}
-    */
 
 };
 
-#include "Singleton.tpp"
+#include "statistics/MixtureSampleDistribution.tpp"
 
-#endif
+#endif // MIXTURESAMPLEDISTRIBUTION_H

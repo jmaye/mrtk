@@ -29,24 +29,6 @@ FunctionPlot<Y, X>::FunctionPlot(const std::string& title, const X& minimum,
 }
 
 template <typename Y, typename X>
-FunctionPlot<Y, X>::FunctionPlot(const FunctionPlot<Y, X>& other) :
-  mTitle(other.mTitle),
-  mMinimum(other.mMinimum),
-  mMaximum(other.mMaximum) {
-}
-
-template <typename Y, typename X>
-FunctionPlot<Y, X>& FunctionPlot<Y, X>::operator =
-  (const FunctionPlot<Y, X>& other) {
-  if (this != &other) {
-    mTitle = other.mTitle;
-    mMinimum = other.mMinimum;
-    mMaximum = other.mMaximum;
-  }
-  return *this;
-}
-
-template <typename Y, typename X>
 FunctionPlot<Y, X>::~FunctionPlot() {
 }
 

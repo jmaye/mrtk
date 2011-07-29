@@ -29,16 +29,22 @@
     \brief Function plotting interface
   */
 template <typename Y, typename X> class FunctionPlot {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  FunctionPlot(const FunctionPlot<Y, X>& other);
+  /// Assignment operator
+  FunctionPlot<Y, X>& operator = (const FunctionPlot<Y, X>& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs plot from parameters
   FunctionPlot(const std::string& title, const X& minimum, const X& maximum);
-  /// Copy constructor
-  FunctionPlot(const FunctionPlot<Y, X>& other);
-  /// Assignment operator
-  FunctionPlot<Y, X>& operator = (const FunctionPlot<Y, X>& other);
   /// Destructor
   virtual ~FunctionPlot();
   /** @}

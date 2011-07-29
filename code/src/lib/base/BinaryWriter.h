@@ -32,16 +32,22 @@
     \brief Binary writer
   */
 class BinaryWriter {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  BinaryWriter(const BinaryWriter& other);
+  /// Assignment operator
+  BinaryWriter& operator = (const BinaryWriter& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
   BinaryWriter();
-  /// Copy constructor
-  BinaryWriter(const BinaryWriter& other);
-  /// Assignment operator
-  BinaryWriter& operator = (const BinaryWriter& other);
   /// Destructor
   virtual ~BinaryWriter();
   /** @}

@@ -9,75 +9,33 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Singleton.h
-    \brief This file defines the Singleton class, which implements the singleton
-           design pattern
-  */
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#ifndef SINGLETON_H
-#define SINGLETON_H
+template <typename X>
+MixtureSampleDistribution<X>::MixtureSampleDistribution() {
+}
 
-#include "exceptions/InvalidOperationException.h"
+template <typename X>
+MixtureSampleDistribution<X>::~MixtureSampleDistribution() {
+}
 
-/** The class Singleton implements the singleton design pattern.
-    \brief Singleton design pattern
-  */
-template <class C> class Singleton {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  Singleton(const Singleton<C>& other);
-  /// Assignment operator
-  Singleton& operator = (const Singleton<C>& other);
-  /** @}
-    */
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
-public:
-  /** \name Accessors
-    @{
-    */
-  /// Access the static instance
-  static C& getInstance();
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Check if the object exists
-  static bool exists();
-  /** @}
-    */
-
-protected:
-  /** \name Protected constructors/destructor
-    @{
-    */
-  /// Default constructor
-  Singleton() throw (InvalidOperationException);
-  /// Destructor
-  virtual ~Singleton();
-  /** @}
-    */
-
-  /** \name Protected members
-    @{
-    */
-  /// Instance of the object
-  static C* instance;
-  /** @}
-    */
-
-};
-
-#include "Singleton.tpp"
-
-#endif
+template <typename X>
+void MixtureSampleDistribution<X>::getSamples(std::vector<X>& samples, size_t
+  numSamples) const {
+  samples.clear();
+  for (size_t i = 0; i < numSamples; ++i)
+    samples.push_back(getSample());
+}

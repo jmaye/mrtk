@@ -16,68 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Singleton.h
-    \brief This file defines the Singleton class, which implements the singleton
-           design pattern
+/** \file MixtureDistribution.cpp
+    \brief This file is a testing binary for the MixtureDistribution class
   */
 
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#include "statistics/NormalDistribution.h"
+#include "statistics/MixtureDistribution.h"
 
-#include "exceptions/InvalidOperationException.h"
+int main(int argc, char** argv) {
+  MixtureDistribution<NormalDistribution<1>, 5> dist;
 
-/** The class Singleton implements the singleton design pattern.
-    \brief Singleton design pattern
-  */
-template <class C> class Singleton {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  Singleton(const Singleton<C>& other);
-  /// Assignment operator
-  Singleton& operator = (const Singleton<C>& other);
-  /** @}
-    */
-
-public:
-  /** \name Accessors
-    @{
-    */
-  /// Access the static instance
-  static C& getInstance();
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Check if the object exists
-  static bool exists();
-  /** @}
-    */
-
-protected:
-  /** \name Protected constructors/destructor
-    @{
-    */
-  /// Default constructor
-  Singleton() throw (InvalidOperationException);
-  /// Destructor
-  virtual ~Singleton();
-  /** @}
-    */
-
-  /** \name Protected members
-    @{
-    */
-  /// Instance of the object
-  static C* instance;
-  /** @}
-    */
-
-};
-
-#include "Singleton.tpp"
-
-#endif
+  return 0;
+}

@@ -26,12 +26,24 @@
 
 #include "statistics/Distribution.h"
 
+#include <vector>
+
 /** The SampleDistribution class represents an interface to sample
     distributions, i.e. distributions which can directly be sampled from
     \brief Sample distribution
   */
 template <typename X> class SampleDistribution :
   public virtual Distribution<X> {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  SampleDistribution(const SampleDistribution& other);
+  /// Assignment operator
+  SampleDistribution& operator = (const SampleDistribution& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
@@ -48,6 +60,8 @@ public:
     */
   /// Access a sample drawn from the distribution
   virtual X getSample() const = 0;
+  /// Access samples drawn from the distribution
+  void getSamples(std::vector<X>& samples, size_t numSamples) const;
   /** @}
     */
 

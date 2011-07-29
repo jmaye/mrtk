@@ -16,68 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Singleton.h
-    \brief This file defines the Singleton class, which implements the singleton
-           design pattern
-  */
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#ifndef SINGLETON_H
-#define SINGLETON_H
+template <typename D, size_t M>
+MixtureDistribution<D, M>::MixtureDistribution() {
+}
 
-#include "exceptions/InvalidOperationException.h"
+template <typename D, size_t M>
+MixtureDistribution<D, M>::~MixtureDistribution() {
+}
 
-/** The class Singleton implements the singleton design pattern.
-    \brief Singleton design pattern
-  */
-template <class C> class Singleton {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  Singleton(const Singleton<C>& other);
-  /// Assignment operator
-  Singleton& operator = (const Singleton<C>& other);
-  /** @}
-    */
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
-public:
-  /** \name Accessors
-    @{
-    */
-  /// Access the static instance
-  static C& getInstance();
-  /** @}
-    */
+template <typename D, size_t M>
+double MixtureDistribution<D, M>::pdf(const VariableType& value) const {
+  return 0.0;
+}
 
-  /** \name Methods
-    @{
-    */
-  /// Check if the object exists
-  static bool exists();
-  /** @}
-    */
 
-protected:
-  /** \name Protected constructors/destructor
-    @{
-    */
-  /// Default constructor
-  Singleton() throw (InvalidOperationException);
-  /// Destructor
-  virtual ~Singleton();
-  /** @}
-    */
-
-  /** \name Protected members
-    @{
-    */
-  /// Instance of the object
-  static C* instance;
-  /** @}
-    */
-
-};
-
-#include "Singleton.tpp"
-
-#endif
+template <typename D, size_t M>
+double MixtureDistribution<D, M>::pmf(const VariableType& value) const {
+  return 0.0;
+}

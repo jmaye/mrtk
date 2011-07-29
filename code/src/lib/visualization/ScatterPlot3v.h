@@ -41,6 +41,7 @@ template <> class ScatterPlot<3> :
   ScatterPlot<3>& operator = (const ScatterPlot<3>& other);
   /** @}
     */
+
 public:
   /** \name Constructors/destructor
     @{

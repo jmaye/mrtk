@@ -27,3 +27,15 @@ SampleDistribution<X>::SampleDistribution() {
 template <typename X>
 SampleDistribution<X>::~SampleDistribution() {
 }
+
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+template <typename X>
+void SampleDistribution<X>::getSamples(std::vector<X>& samples, size_t
+  numSamples) const {
+  samples.clear();
+  for (size_t i = 0; i < numSamples; ++i)
+    samples.push_back(getSample());
+}

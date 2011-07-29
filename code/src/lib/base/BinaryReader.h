@@ -32,16 +32,22 @@
     \brief Binary reader
   */
 class BinaryReader {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  BinaryReader(const BinaryReader& other);
+  /// Assignment operator
+  BinaryReader& operator = (const BinaryReader& other);
+  /** @}
+    */
+
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
   BinaryReader();
-  /// Copy constructor
-  BinaryReader(const BinaryReader& other);
-  /// Assignment operator
-  BinaryReader& operator = (const BinaryReader& other);
   /// Destructor
   virtual ~BinaryReader();
   /** @}

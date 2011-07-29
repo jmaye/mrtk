@@ -49,6 +49,7 @@ template <typename Y, typename X> class DiscreteFunctionPlot<Y, X, 2> :
     (const DiscreteFunctionPlot<Y, X, 2>& other);
   /** @}
     */
+
 public:
   /** \name Constructors/destructor
     @{
