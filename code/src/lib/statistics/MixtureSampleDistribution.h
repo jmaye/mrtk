@@ -24,7 +24,8 @@
 #ifndef MIXTURESAMPLEDISTRIBUTION_H
 #define MIXTURESAMPLEDISTRIBUTION_H
 
-#include "statistics/Distribution.h"
+#include "statistics/MixtureDistribution.h"
+#include "statistics/SampleDistribution.h"
 
 #include <vector>
 
@@ -32,24 +33,29 @@
     mixture distributions.
     \brief Mixture sample distribution
   */
-template <typename X> class MixtureSampleDistribution :
-  public virtual Distribution<X> {
-  /** \name Private constructors
+template <typename D, size_t M> class MixtureSampleDistribution :
+  public MixtureDistribution<D, M>,
+  public SampleDistribution<typename D::VariableType> {
+public:
+  /** \name Types definitions
     @{
     */
-  /// Copy constructor
-  MixtureSampleDistribution(const MixtureSampleDistribution& other);
-  /// Assignment operator
-  MixtureSampleDistribution& operator = (const MixtureSampleDistribution& other);
+  /// Variable type
+  typedef typename D::VariableType VariableType;
   /** @}
     */
 
-public:
   /** \name Constructors/destructor
     @{
     */
-  /// Default constructor
-  MixtureSampleDistribution();
+  /// Constructs from parameters
+  MixtureSampleDistribution(const std::vector<D>& distributions, const
+    CategoricalDistribution<M> weights);
+  /// Copy constructor
+  MixtureSampleDistribution(const MixtureSampleDistribution& other);
+  /// Assignment operator
+  MixtureSampleDistribution& operator = (const MixtureSampleDistribution&
+    other);
   /// Destructor
   virtual ~MixtureSampleDistribution();
   /** @}
@@ -59,9 +65,9 @@ public:
     @{
     */
   /// Access a sample drawn from the distribution
-  virtual X getSample() const = 0;
+  VariableType getSample() const;
   /// Access samples drawn from the distribution
-  void getSamples(std::vector<X>& samples, size_t numSamples) const;
+  void getSamples(std::vector<VariableType>& samples, size_t numSamples) const;
   /** @}
     */
 

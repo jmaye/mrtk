@@ -24,17 +24,17 @@
 #ifndef KMEANSCLUSTERING_H
 #define KMEANSCLUSTERING_H
 
-#include "exceptions/InvalidOperationException.h"
+#include "exceptions/BadArgumentException.h"
+
+#include <Eigen/Core>
 
 #include <vector>
 
-#include <stdint.h>
-
 /** This class implements a K-means clustering algorithm based on
-    Expectation-Maximization
+    Expectation-Maximization.
     \brief K-Means clustering algorithm
   */
-class KMeansClustering {
+template <typename T, size_t M> class KMeansClustering {
   /** \name Private constructors
     @{
     */
@@ -48,15 +48,17 @@ public:
     @{
     */
   /// Clusters the input data points
-  static void cluster(const std::vector<std::vector<double> >&
-    inputPointsVector, std::vector<std::vector<double> >& clusterCentersVector,
-    std::vector<std::vector<uint32_t> >& assignmentsVector, uint32_t u32K,
-    uint32_t u32MaxIterations, double f64Tol) throw (InvalidOperationException);
+  static void cluster(const std::vector<Eigen::Matrix<T, M, 1> >& data,
+    std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
+    std::vector<std::vector<size_t> >& assignments, size_t k,
+    size_t maxIterations, double tol) throw (BadArgumentException<size_t>);
   /** @}
     */
 
 protected:
 
 };
+
+#include "statistics/KMeansClustering.tpp"
 
 #endif // KMEANSCLUSTERING_H

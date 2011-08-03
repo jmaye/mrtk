@@ -25,15 +25,6 @@
 BinaryWriter::BinaryWriter() {
 }
 
-BinaryWriter::BinaryWriter(const BinaryWriter& other) {
-}
-
-BinaryWriter& BinaryWriter::operator = (const BinaryWriter& other) {
-  if (this != &other) {
-  }
-  return *this;
-}
-
 BinaryWriter::~BinaryWriter() {
 }
 

@@ -46,7 +46,7 @@ template <size_t M>
 NormalDistribution<M>& NormalDistribution<M>::operator = (const
   NormalDistribution<M>& other) {
   if (this != &other) {
-    mMean = other.mMeanVector;
+    mMean = other.mMean;
     mCovariance = other.mCovariance;
     mPrecision = other.mPrecision;
     mDeterminant = other.mDeterminant;

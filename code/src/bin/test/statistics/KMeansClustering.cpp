@@ -16,51 +16,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MixtureDistribution.cpp
-    \brief This file is a testing binary for the MixtureDistribution class
+/** \file KMeansClustering.cpp
+    \brief This file is a testing binary for the KMeansClustering class
   */
 
+#include "statistics/KMeansClustering.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
-#include "statistics/MixtureDistribution.h"
+#include "statistics/MixtureSampleDistribution.h"
 
 int main(int argc, char** argv) {
-  std::vector<NormalDistribution<1> > distributions;
-  distributions.push_back(NormalDistribution<1>(0, 1));
-  distributions.push_back(NormalDistribution<1>(5, 1));
-  distributions.push_back(NormalDistribution<1>(10, 1));
-  distributions.push_back(NormalDistribution<1>(-5, 1));
-  distributions.push_back(NormalDistribution<1>(-10, 1));
-  MixtureDistribution<NormalDistribution<1>, 5> dist(distributions,
+  std::vector<NormalDistribution<2> > distributions;
+  distributions.push_back(NormalDistribution<2>(
+    Eigen::Matrix<double, 2, 1>(0, 0),
+    Eigen::Matrix<double, 2, 2>::Identity()));
+  distributions.push_back(NormalDistribution<2>(
+    Eigen::Matrix<double, 2, 1>(5, 5),
+    Eigen::Matrix<double, 2, 2>::Identity()));
+  distributions.push_back(NormalDistribution<2>(
+    Eigen::Matrix<double, 2, 1>(10, 10),
+    Eigen::Matrix<double, 2, 2>::Identity()));
+  distributions.push_back(NormalDistribution<2>(
+    Eigen::Matrix<double, 2, 1>(-5, -5),
+    Eigen::Matrix<double, 2, 2>::Identity()));
+  distributions.push_back(NormalDistribution<2>(
+    Eigen::Matrix<double, 2, 1>(-10, -10),
+    Eigen::Matrix<double, 2, 2>::Identity()));
+  MixtureSampleDistribution<NormalDistribution<2>, 5> dist(distributions,
     CategoricalDistribution<5>());
-  std::cout << "Mixture distribution: " << std::endl
-    << dist << std::endl;
-  std::cout << "dist.getWeights(): " << std::endl << dist.getWeights()
-    << std::endl;
 
-  std::cout << "dist.pdf(0): " << dist(0) << std::endl;
-  if (fabs(dist(0) - 0.07979) > 1e-4)
-    return 1;
-  std::cout << "dist.pdf(5): " << dist(5) << std::endl;
-  if (fabs(dist(5) - 0.07979) > 1e-4)
-    return 1;
-  std::cout << "dist.pdf(10): " << dist(10) << std::endl;
-  if (fabs(dist(10) - 0.07979) > 1e-4)
-    return 1;
-  std::cout << "dist.pdf(-5): " << dist(-5) << std::endl;
-  if (fabs(dist(-5) - 0.07979) > 1e-4)
-    return 1;
-  std::cout << "dist.pdf(-10): " << dist(-10) << std::endl;
-  if (fabs(dist(-10) - 0.07979) > 1e-4)
-    return 1;
+  std::vector<Eigen::Matrix<double, 2, 1> > samples;
+  dist.getSamples(samples, 10000);
 
-  try {
-    distributions.push_back(NormalDistribution<1>(0, 1));
-    dist.setDistributions(distributions);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
+  std::vector<Eigen::Matrix<double, 2, 1> > clusterCenters;
+  std::vector<std::vector<size_t> > assignments;
+  KMeansClustering<double, 2>::cluster(samples, clusterCenters, assignments, 5,
+    1000, 1e-6);
+
+  std::cout << "cluster centers: " << std::endl;
+  for (size_t i = 0; i < 5; ++i)
+    std::cout << clusterCenters[i] << std::endl << std::endl;
 
   return 0;
 }

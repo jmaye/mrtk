@@ -25,15 +25,6 @@
 BinaryReader::BinaryReader() {
 }
 
-BinaryReader::BinaryReader(const BinaryReader& other) {
-}
-
-BinaryReader& BinaryReader::operator = (const BinaryReader& other) {
-  if (this != &other) {
-  }
-  return *this;
-}
-
 BinaryReader::~BinaryReader() {
 }
 

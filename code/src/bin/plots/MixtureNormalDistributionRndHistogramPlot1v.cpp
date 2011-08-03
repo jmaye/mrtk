@@ -9,58 +9,41 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MixtureDistribution.cpp
-    \brief This file is a testing binary for the MixtureDistribution class
+/** \file MixtureNormalDistributionRndHistogramPlot1v.cpp
+    \brief This file is a testing binary for plotting random samples from a
+           mixture of univariate normal distributions
   */
 
+#include "visualization/HistogramPlot.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
-#include "statistics/MixtureDistribution.h"
+#include "statistics/MixtureSampleDistribution.h"
+
+#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
+  QApplication app(argc, argv);
   std::vector<NormalDistribution<1> > distributions;
   distributions.push_back(NormalDistribution<1>(0, 1));
   distributions.push_back(NormalDistribution<1>(5, 1));
   distributions.push_back(NormalDistribution<1>(10, 1));
   distributions.push_back(NormalDistribution<1>(-5, 1));
   distributions.push_back(NormalDistribution<1>(-10, 1));
-  MixtureDistribution<NormalDistribution<1>, 5> dist(distributions,
+  MixtureSampleDistribution<NormalDistribution<1>, 5> dist(distributions,
     CategoricalDistribution<5>());
-  std::cout << "Mixture distribution: " << std::endl
-    << dist << std::endl;
-  std::cout << "dist.getWeights(): " << std::endl << dist.getWeights()
-    << std::endl;
-
-  std::cout << "dist.pdf(0): " << dist(0) << std::endl;
-  if (fabs(dist(0) - 0.07979) > 1e-4)
-    return 1;
-  std::cout << "dist.pdf(5): " << dist(5) << std::endl;
-  if (fabs(dist(5) - 0.07979) > 1e-4)
-    return 1;
-  std::cout << "dist.pdf(10): " << dist(10) << std::endl;
-  if (fabs(dist(10) - 0.07979) > 1e-4)
-    return 1;
-  std::cout << "dist.pdf(-5): " << dist(-5) << std::endl;
-  if (fabs(dist(-5) - 0.07979) > 1e-4)
-    return 1;
-  std::cout << "dist.pdf(-10): " << dist(-10) << std::endl;
-  if (fabs(dist(-10) - 0.07979) > 1e-4)
-    return 1;
-
-  try {
-    distributions.push_back(NormalDistribution<1>(0, 1));
-    dist.setDistributions(distributions);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  return 0;
+  Histogram<double, 1> hist(-20, 20, 0.05);
+  for (size_t i = 0; i < 100000; ++i)
+    hist.addSample(dist.getSample());
+  hist.normalize();
+  HistogramPlot<double, 1> plot("MixtureNormalDistributionRndHistogramPlot1v",
+    hist);
+  plot.show();
+  return app.exec();
 }

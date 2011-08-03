@@ -20,21 +20,49 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename X>
-MixtureSampleDistribution<X>::MixtureSampleDistribution() {
+template <typename D, size_t M>
+MixtureSampleDistribution<D, M>::MixtureSampleDistribution(const std::vector<D>&
+  distributions, const CategoricalDistribution<M> weights) :
+  MixtureDistribution<D, M>(distributions, weights) {
 }
 
-template <typename X>
-MixtureSampleDistribution<X>::~MixtureSampleDistribution() {
+template <typename D, size_t M>
+MixtureSampleDistribution<D, M>::MixtureSampleDistribution(const
+  MixtureSampleDistribution<D, M>& other) :
+  MixtureDistribution<D, M>(other) {
+}
+
+template <typename D, size_t M>
+MixtureSampleDistribution<D, M>& MixtureSampleDistribution<D, M>::operator =
+  (const MixtureSampleDistribution<D, M>& other) {
+  if (this != &other) {
+    this->MixtureDistribution<D, M>::operator=(other);
+  }
+  return *this;
+}
+
+template <typename D, size_t M>
+MixtureSampleDistribution<D, M>::~MixtureSampleDistribution() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename X>
-void MixtureSampleDistribution<X>::getSamples(std::vector<X>& samples, size_t
-  numSamples) const {
+template <typename D, size_t M>
+typename MixtureSampleDistribution<D, M>::VariableType
+  MixtureSampleDistribution<D, M>::getSample() const {
+  Eigen::Matrix<size_t, M, 1> component = this->mWeights.getSample();
+  for (size_t i = 0; i < M; ++i) {
+    if (component(i) == 1)
+      return this->mDistributions[i].getSample();
+  }
+  return this->mDistributions[0].getSample();
+}
+
+template <typename D, size_t M>
+void MixtureSampleDistribution<D, M>::getSamples(std::vector<VariableType>&
+  samples, size_t numSamples) const {
   samples.clear();
   for (size_t i = 0; i < numSamples; ++i)
     samples.push_back(getSample());

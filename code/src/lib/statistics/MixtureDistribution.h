@@ -25,6 +25,8 @@
 
 #include "statistics/Distribution.h"
 #include "statistics/CategoricalDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
 #include <vector>
 
@@ -33,17 +35,8 @@
     \brief Mixture distribution
   */
 template <typename D, size_t M> class MixtureDistribution :
-  public D::DistributionType {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  MixtureDistribution(const MixtureDistribution& other);
-  /// Assignment operator
-  MixtureDistribution& operator = (const MixtureDistribution& other);
-  /** @}
-    */
-
+  public D::DistributionType,
+  public virtual Serializable {
 public:
   /** \name Types
     @{
@@ -56,8 +49,13 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Default constructor
-  MixtureDistribution();
+  /// Constructs mixture from parameters
+  MixtureDistribution(const std::vector<D>& distributions, const
+    CategoricalDistribution<M> weights);
+  /// Copy constructor
+  MixtureDistribution(const MixtureDistribution& other);
+  /// Assignment operator
+  MixtureDistribution& operator = (const MixtureDistribution& other);
   /// Destructor
   virtual ~MixtureDistribution();
   /** @}
@@ -66,6 +64,15 @@ public:
   /** \name Accessors
     @{
     */
+  /// Returns the distributions
+  const std::vector<D>& getDistributions() const;
+  /// Sets the distributions
+  void setDistributions(const std::vector<D>& distributions)
+    throw (BadArgumentException<size_t>);
+  /// Returns the weights
+  const CategoricalDistribution<M>& getWeights() const;
+  /// Sets the weights
+  void setWeights(const CategoricalDistribution<M>& weights);
   /// Returns the probability density function at the given value
   virtual double pdf(const VariableType& value) const;
   /// Returns the probability mass function at the given value
@@ -74,8 +81,29 @@ public:
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Distributions in the mixture
   std::vector<D> mDistributions;
+  /// Weights of each component
   CategoricalDistribution<M> mWeights;
+  /** @}
+    */
 
 };
 

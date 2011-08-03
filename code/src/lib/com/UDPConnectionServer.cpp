@@ -32,17 +32,6 @@ UDPConnectionServer::UDPConnectionServer(uint16_t port, double timeout) :
   mSocket(0) {
 }
 
-UDPConnectionServer::UDPConnectionServer(const UDPConnectionServer& other) {
-}
-
-UDPConnectionServer& UDPConnectionServer::operator =
-  (const UDPConnectionServer& other) {
-  if (this != &other) {
-  }
-  return *this;
-}
-
-
 UDPConnectionServer::~UDPConnectionServer() {
   close();
 }

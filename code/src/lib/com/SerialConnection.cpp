@@ -49,15 +49,6 @@ SerialConnection::~SerialConnection() {
   close();
 }
 
-SerialConnection::SerialConnection(const SerialConnection& other) {
-}
-
-SerialConnection& SerialConnection::operator = (const SerialConnection& other) {
-  if (this != &other) {
-  }
-  return *this;
-}
-
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/

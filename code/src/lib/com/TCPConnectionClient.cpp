@@ -34,16 +34,6 @@ TCPConnectionClient::TCPConnectionClient(const std::string& serverIP, uint16_t
   mSocket(0) {
 }
 
-TCPConnectionClient::TCPConnectionClient(const TCPConnectionClient& other) {
-}
-
-TCPConnectionClient& TCPConnectionClient::operator =
-  (const TCPConnectionClient& other) {
-  if (this != &other) {
-  }
-  return *this;
-}
-
 TCPConnectionClient::~TCPConnectionClient() {
   close();
 }

@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MixtureDistribution.cpp
-    \brief This file is a testing binary for the MixtureDistribution class
+/** \file MixtureSampleDistribution.cpp
+    \brief This file is a testing binary for the MixtureSampleDistribution class
   */
 
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
-#include "statistics/MixtureDistribution.h"
+#include "statistics/MixtureSampleDistribution.h"
 
 int main(int argc, char** argv) {
   std::vector<NormalDistribution<1> > distributions;
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
   distributions.push_back(NormalDistribution<1>(10, 1));
   distributions.push_back(NormalDistribution<1>(-5, 1));
   distributions.push_back(NormalDistribution<1>(-10, 1));
-  MixtureDistribution<NormalDistribution<1>, 5> dist(distributions,
+  MixtureSampleDistribution<NormalDistribution<1>, 5> dist(distributions,
     CategoricalDistribution<5>());
   std::cout << "Mixture distribution: " << std::endl
     << dist << std::endl;

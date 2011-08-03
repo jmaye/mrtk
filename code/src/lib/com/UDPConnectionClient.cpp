@@ -38,16 +38,6 @@ UDPConnectionClient::UDPConnectionClient(const std::string& serverIP, uint16_t
     throw IOException("UDPConnectionClient::UDPConnectionClient(): invalid IP address");
 }
 
-UDPConnectionClient::UDPConnectionClient(const UDPConnectionClient& other) {
-}
-
-UDPConnectionClient& UDPConnectionClient::operator =
-  (const UDPConnectionClient& other) {
-  if (this != &other) {
-  }
-  return *this;
-}
-
 UDPConnectionClient::~UDPConnectionClient() {
   close();
 }

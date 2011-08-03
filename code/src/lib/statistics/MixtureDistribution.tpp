@@ -21,7 +21,27 @@
 /******************************************************************************/
 
 template <typename D, size_t M>
-MixtureDistribution<D, M>::MixtureDistribution() {
+MixtureDistribution<D, M>::MixtureDistribution(const std::vector<D>&
+  distributions, const CategoricalDistribution<M> weights) :
+  mWeights(weights) {
+  setDistributions(distributions);
+}
+
+template <typename D, size_t M>
+MixtureDistribution<D, M>::MixtureDistribution(const MixtureDistribution<D, M>&
+  other) :
+  mDistributions(other.mDistributions),
+  mWeights(other.mWeights) {
+}
+
+template <typename D, size_t M>
+MixtureDistribution<D, M>& MixtureDistribution<D, M>::operator =
+  (const MixtureDistribution<D, M>& other) {
+  if (this != &other) {
+    mDistributions = other.mDistributions;
+    mWeights = other.mWeights;
+  }
+  return *this;
 }
 
 template <typename D, size_t M>
@@ -29,16 +49,74 @@ MixtureDistribution<D, M>::~MixtureDistribution() {
 }
 
 /******************************************************************************/
+/* Stream operations                                                          */
+/******************************************************************************/
+
+template <typename D, size_t M>
+void MixtureDistribution<D, M>::read(std::istream& stream) {
+}
+
+template <typename D, size_t M>
+void MixtureDistribution<D, M>::write(std::ostream& stream) const {
+  stream << "weights: " << std::endl << mWeights << std::endl
+    << "distributions: " << std::endl;
+  for (size_t i = 0; i < M; ++i)
+    stream <<std::endl << mDistributions[i] << std::endl;
+}
+
+template <typename D, size_t M>
+void MixtureDistribution<D, M>::read(std::ifstream& stream) {
+}
+
+template <typename D, size_t M>
+void MixtureDistribution<D, M>::write(std::ofstream& stream) const {
+}
+
+/******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
 template <typename D, size_t M>
-double MixtureDistribution<D, M>::pdf(const VariableType& value) const {
-  return 0.0;
+const std::vector<D>& MixtureDistribution<D, M>::getDistributions() const {
+  return mDistributions;
 }
 
+template <typename D, size_t M>
+void MixtureDistribution<D, M>::setDistributions(const std::vector<D>&
+  distributions) throw (BadArgumentException<size_t>) {
+  if (distributions.size() != M)
+    throw BadArgumentException<size_t>(distributions.size(),
+      "MixtureDistribution<D, M>::setDistributions(): wrong number of components",
+      __FILE__, __LINE__);
+  mDistributions = distributions;
+}
+
+template <typename D, size_t M>
+const CategoricalDistribution<M>& MixtureDistribution<D, M>::getWeights()
+  const {
+  return mWeights;
+}
+
+template <typename D, size_t M>
+void MixtureDistribution<D, M>::setWeights(const CategoricalDistribution<M>&
+  weights) {
+  mWeights = weights;
+}
+
+template <typename D, size_t M>
+double MixtureDistribution<D, M>::pdf(const VariableType& value) const {
+  double probability = 0.0;
+
+  for (size_t i = 0; i < M; ++i) {
+    Eigen::Matrix<size_t, M, 1> component = Eigen::Matrix<size_t, M, 1>::Zero();
+    component(i) = 1.0;
+    probability += mWeights(component) * mDistributions[i](value);
+  }
+
+  return probability;
+}
 
 template <typename D, size_t M>
 double MixtureDistribution<D, M>::pmf(const VariableType& value) const {
-  return 0.0;
+  return pdf(value);
 }

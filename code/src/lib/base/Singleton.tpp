@@ -34,17 +34,6 @@ Singleton<C>::Singleton() throw (InvalidOperationException) {
 }
 
 template <class C>
-Singleton<C>::Singleton(const Singleton<C>& other) {
-}
-
-template <class C>
-Singleton<C>& Singleton<C>::operator = (const Singleton<C>& other) {
-  if (this != &other) {
-  }
-  return *this;
-}
-
-template <class C>
 Singleton<C>::~Singleton() {
   instance = 0;
 }

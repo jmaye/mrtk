@@ -32,16 +32,6 @@ TCPConnectionServer::TCPConnectionServer(uint16_t port, double timeout) :
   mSocket(0) {
 }
 
-TCPConnectionServer::TCPConnectionServer(const TCPConnectionServer& other) {
-}
-
-TCPConnectionServer& TCPConnectionServer::operator =
-  (const TCPConnectionServer& other) {
-  if (this != &other) {
-  }
-  return *this;
-}
-
 TCPConnectionServer::~TCPConnectionServer() {
   close();
 }
