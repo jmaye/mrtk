@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file KMeansClustering.cpp
+/** \file MeanShiftClustering.cpp
     \brief This file is a testing binary for the KMeansClustering class
   */
 
-#include "statistics/KMeansClustering.h"
+#include "statistics/MeanShiftClustering.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureSampleDistribution.h"
@@ -51,11 +51,11 @@ int main(int argc, char** argv) {
   std::vector<Eigen::Matrix<double, 2, 1> > clusterCenters;
   std::vector<std::vector<size_t> > clusterToData;
   std::vector<size_t> dataToCluster;
-  KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
-    dataToCluster, 5, 1000, 1e-6, true);
+  MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
+    clusterToData, dataToCluster, 5, 1000, 1e-6, true);
 
   std::cout << "cluster centers: " << std::endl;
-  for (size_t i = 0; i < 5; ++i)
+  for (size_t i = 0; i < clusterCenters.size(); ++i)
     std::cout << clusterCenters[i] << std::endl << std::endl;
 
   return 0;

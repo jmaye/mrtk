@@ -27,8 +27,9 @@
 template <typename T, size_t M>
 void KMeansClustering<T, M>::cluster(const std::vector<Eigen::Matrix<T, M, 1> >&
   data, std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
-  std::vector<std::vector<size_t> >& assignments, size_t k,
-  size_t maxIterations, double tol) throw (BadArgumentException<size_t>) {
+  std::vector<std::vector<size_t> >& clusterToData, std::vector<size_t>&
+  dataToCluster, size_t k, size_t maxIterations, double tol, bool debug)
+  throw (BadArgumentException<size_t>) {
 
   if (k == 0)
     throw BadArgumentException<size_t>(k,
@@ -45,12 +46,9 @@ void KMeansClustering<T, M>::cluster(const std::vector<Eigen::Matrix<T, M, 1> >&
   Randomizer<size_t> randomizer;
 
   for (size_t i = 0; i < k; ++i) {
-    size_t idx = randomizer.sampleUniform(0, data.size());
-    ANNpoint point = annAllocPt(M);
+    size_t idx = randomizer.sampleUniform(0, data.size() - 1);
     for (size_t j = 0; j < M; ++j)
-      point[j] = data[idx](j);
-    clusterCentersANN[i] = point;
-    annDeallocPt(point);
+      clusterCentersANN[i][j] = data[idx](j);
   }
 
   size_t iteration = 0;
@@ -61,45 +59,58 @@ void KMeansClustering<T, M>::cluster(const std::vector<Eigen::Matrix<T, M, 1> >&
   clusterCenters.clear();
   clusterCenters.resize(k);
 
+  std::vector<Eigen::Matrix<T, M, 1> > clusterCentersOld;
+  clusterCentersOld.resize(k);
+
   while (iteration != maxIterations) {
     ANNkd_tree* pKdTree =  new ANNkd_tree(clusterCentersANN, k, M);
 
-    assignments.clear();
-    assignments.resize(k);
+    clusterToData.clear();
+    clusterToData.resize(k);
+    dataToCluster.clear();
+    dataToCluster.resize(data.size());
 
     for (size_t i = 0; i < data.size(); ++i) {
       ANNpoint point = annAllocPt(M);
       for (size_t j = 0; j < M; j++)
         point[j] = data[i](j);
       pKdTree->annkSearch(point, 1, idx, dist, 0);
-      assignments[idx[0]].push_back(i);
+      clusterToData[idx[0]].push_back(i);
+      dataToCluster[i] = idx[0];
       annDeallocPt(point);
     }
 
     delete pKdTree;
 
+    double dist = 0;
     for (size_t i = 0; i < k; ++i) {
       clusterCenters[i].setConstant(0);
-      for (size_t j = 0; j < assignments[i].size(); ++j) {
-        clusterCenters[i] += data[assignments[i][j]];
+      for (size_t j = 0; j < clusterToData[i].size(); ++j) {
+        clusterCenters[i] += data[clusterToData[i][j]];
       }
-      if (assignments[i].size())
-        clusterCenters[i] /= assignments[i].size();
+      if (clusterToData[i].size())
+        clusterCenters[i] /= clusterToData[i].size();
+      for (size_t j = 0; j < M; ++j) {
+        clusterCentersANN[i][j] = clusterCenters[i](j);
+        if (iteration)
+          dist += (clusterCenters[i] - clusterCentersOld[i]).norm();
+        clusterCentersOld[i] = clusterCenters[i];
+      }
     }
 
-    for (size_t i = 0; i < k; ++i) {
-      ANNpoint point = annAllocPt(M);
-      for (size_t j = 0; j < M; ++j)
-        point[j] = clusterCenters[i](j);
-      clusterCentersANN[i] = point;
-      annDeallocPt(point);
+    if (debug) {
+      std::cout << "Centers moved: " << std::scientific << dist << std::endl;
+      std::cout << "Iteration: " << std::fixed << iteration << std::endl;
     }
+
+    if (iteration && dist < tol)
+      break;
 
     iteration++;
   }
 
-  //annDeallocPts(clusterCentersANN);
-  //delete [] idx;
-  //delete [] dist;
+  annDeallocPts(clusterCentersANN);
+  delete [] idx;
+  delete [] dist;
   annClose();
 }

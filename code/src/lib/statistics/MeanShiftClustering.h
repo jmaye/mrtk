@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file KMeansClustering.h
-    \brief This file defines the KMeansClustering class, which implements a
-           K-Means clustering algorithm
+/** \file MeanShiftClustering.h
+    \brief This file defines the MeanShiftClustering class, which implements a
+           mean-shift clustering algorithm
   */
 
-#ifndef KMEANSCLUSTERING_H
-#define KMEANSCLUSTERING_H
+#ifndef MEANSHIFTCLUSTERING_H
+#define MEANSHIFTCLUSTERING_H
 
 #include "exceptions/BadArgumentException.h"
 
@@ -30,16 +30,15 @@
 
 #include <vector>
 
-/** This class implements a K-means clustering algorithm based on
-    Expectation-Maximization.
-    \brief K-Means clustering algorithm
+/** This class implements a mean-shift clustering algorithm.
+    \brief Mean-shift clustering algorithm
   */
-template <typename T, size_t M> class KMeansClustering {
+template <typename T, size_t M> class MeanShiftClustering {
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  KMeansClustering();
+  MeanShiftClustering();
   /** @}
     */
 
@@ -51,8 +50,8 @@ public:
   static void cluster(const std::vector<Eigen::Matrix<T, M, 1> >& data,
     std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
     std::vector<std::vector<size_t> >& clusterToData, std::vector<size_t>&
-    dataToCluster, size_t k, size_t maxIterations = 10000, double tol = 1e-6,
-    bool debug = false) throw (BadArgumentException<size_t>);
+    dataToCluster, double bandwidth, size_t maxIterations = 10000,
+    double tol = 1e-6, bool debug = false) throw (BadArgumentException<double>);
   /** @}
     */
 
@@ -60,6 +59,6 @@ protected:
 
 };
 
-#include "statistics/KMeansClustering.tpp"
+#include "statistics/MeanShiftClustering.tpp"
 
-#endif // KMEANSCLUSTERING_H
+#endif // MEANSHIFTCLUSTERING_H
