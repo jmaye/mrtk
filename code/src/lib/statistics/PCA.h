@@ -16,13 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MeanShiftClustering.h
-    \brief This file defines the MeanShiftClustering class, which implements a
-           mean-shift clustering algorithm
+/** \file PCA.h
+    \brief This file defines the PCA class, which implements a PCA algorithm
   */
 
-#ifndef MEANSHIFTCLUSTERING_H
-#define MEANSHIFTCLUSTERING_H
+#ifndef PCA_H
+#define PCA_H
 
 #include "exceptions/BadArgumentException.h"
 
@@ -30,15 +29,15 @@
 
 #include <vector>
 
-/** This class implements a mean-shift clustering algorithm.
-    \brief Mean-shift clustering algorithm
+/** This class implements a Principal Component Analysis (PCA) algorithm.
+    \brief Principal Component Analysis (PCA)
   */
-template <typename T, size_t M> class MeanShiftClustering {
+template <typename T, size_t D, size_t M> class PCA {
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  MeanShiftClustering();
+  PCA();
   /** @}
     */
 
@@ -46,13 +45,11 @@ public:
   /** \name Methods
     @{
     */
-  /// Clusters the input data points
-  static void cluster(const std::vector<Eigen::Matrix<T, M, 1> >& data,
-    std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
-    std::vector<std::vector<size_t> >& clusterToData, std::vector<size_t>&
-    dataToCluster, double bandwidth, size_t maxIterations = 10000,
-    double tol = 1e-6, bool debug = false) throw (BadArgumentException<double>,
-      BadArgumentException<size_t>);
+  /// Analyze the input data points
+  static void analyze(const std::vector<Eigen::Matrix<T, D, 1> >& data,
+    std::vector<Eigen::Matrix<T, M, 1> >& transformedData,
+    Eigen::Matrix<T, D, 1>& eigenValues, Eigen::Matrix<T, D, D>& eigenVectors)
+    throw (BadArgumentException<size_t>);
   /** @}
     */
 
@@ -60,6 +57,6 @@ protected:
 
 };
 
-#include "statistics/MeanShiftClustering.tpp"
+#include "statistics/PCA.tpp"
 
-#endif // MEANSHIFTCLUSTERING_H
+#endif // PCA_H

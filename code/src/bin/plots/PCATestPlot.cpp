@@ -16,14 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file KMeansClustering.cpp
-    \brief This file is a testing binary for the KMeansClustering class
+/** \file PCATestPlot.cpp
+    \brief This file is a testing binary for plotting PCA result
   */
 
-#include "statistics/KMeansClustering.h"
+#include "statistics/PCA.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureSampleDistribution.h"
+#include "visualization/ScatterPlot.h"
+#include "visualization/HistogramPlot.h"
+
+#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   std::vector<NormalDistribution<2> > distributions;
@@ -44,36 +48,27 @@ int main(int argc, char** argv) {
     Eigen::Matrix<double, 2, 2>::Identity()));
   MixtureSampleDistribution<NormalDistribution<2>, 5> dist(distributions,
     CategoricalDistribution<5>());
-
   std::vector<Eigen::Matrix<double, 2, 1> > samples;
   dist.getSamples(samples, 10000);
 
-  std::vector<Eigen::Matrix<double, 2, 1> > clusterCenters;
-  std::vector<std::vector<size_t> > clusterToData;
-  std::vector<size_t> dataToCluster;
-  KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
-    dataToCluster, 5, 1000, 1e-6, true);
+  std::vector<Eigen::Matrix<double, 1, 1> > transformedSamples;
+  Eigen::Matrix<double, 2, 1> eigenValues;
+  Eigen::Matrix<double, 2, 2> eigenVectors;
 
-  std::cout << "cluster centers: " << std::endl;
-  for (size_t i = 0; i < 5; ++i)
-    std::cout << clusterCenters[i] << std::endl << std::endl;
+  PCA<double, 2, 1>::analyze(samples, transformedSamples, eigenValues,
+    eigenVectors);
 
-  try {
-    KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
-      dataToCluster, 0, 1000, 1e-6, true);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
+  Histogram<double, 1> hist(-20, 20, 0.05);
+  for (size_t i = 0; i < transformedSamples.size(); ++i)
+    hist.addSample(transformedSamples[i](0));
+  hist.normalize();
 
-  try {
-    samples.clear();
-    KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
-      dataToCluster, 5, 1000, 1e-6, true);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
+  QApplication app(argc, argv);
+  ScatterPlot<2> plotOriginal("Original Data", samples);
+  HistogramPlot<double, 1> plotTransformed("Transformed Data", hist);
+  plotOriginal.show();
+  plotTransformed.show();
+  return app.exec();
 
   return 0;
 }

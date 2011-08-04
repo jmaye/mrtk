@@ -58,5 +58,22 @@ int main(int argc, char** argv) {
   for (size_t i = 0; i < clusterCenters.size(); ++i)
     std::cout << clusterCenters[i] << std::endl << std::endl;
 
+  try {
+    MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
+      clusterToData, dataToCluster, 0, 1000, 1e-6, true);
+  }
+  catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
+
+  try {
+    samples.clear();
+    MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
+      clusterToData, dataToCluster, 5, 1000, 1e-6, true);
+  }
+  catch (BadArgumentException<size_t>& e) {
+    std::cout << e.what() << std::endl;
+  }
+
   return 0;
 }

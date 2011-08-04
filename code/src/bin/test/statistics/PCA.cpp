@@ -9,57 +9,45 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MeanShiftClustering.h
-    \brief This file defines the MeanShiftClustering class, which implements a
-           mean-shift clustering algorithm
+/** \file PCA.cpp
+    \brief This file is a testing binary for the PCA class
   */
 
-#ifndef MEANSHIFTCLUSTERING_H
-#define MEANSHIFTCLUSTERING_H
+#include "statistics/PCA.h"
+#include "statistics/NormalDistribution.h"
 
-#include "exceptions/BadArgumentException.h"
+int main(int argc, char** argv) {
+  NormalDistribution<2> dist;
+  std::vector<Eigen::Matrix<double, 2, 1> > samples;
+  dist.getSamples(samples, 10000);
 
-#include <Eigen/Core>
+  std::vector<Eigen::Matrix<double, 2, 1> > transformedSamples;
+  Eigen::Matrix<double, 2, 1> eigenValues;
+  Eigen::Matrix<double, 2, 2> eigenVectors;
 
-#include <vector>
+  PCA<double, 2, 2>::analyze(samples, transformedSamples, eigenValues,
+    eigenVectors);
 
-/** This class implements a mean-shift clustering algorithm.
-    \brief Mean-shift clustering algorithm
-  */
-template <typename T, size_t M> class MeanShiftClustering {
-  /** \name Private constructors
-    @{
-    */
-  /// Default constructor
-  MeanShiftClustering();
-  /** @}
-    */
+  std::cout << "Eigen values: " << std::endl << eigenValues << std::endl
+    << std::endl;
+  std::cout << "Eigen vectors: " << std::endl << eigenVectors << std::endl
+    << std::endl;
 
-public:
-  /** \name Methods
-    @{
-    */
-  /// Clusters the input data points
-  static void cluster(const std::vector<Eigen::Matrix<T, M, 1> >& data,
-    std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
-    std::vector<std::vector<size_t> >& clusterToData, std::vector<size_t>&
-    dataToCluster, double bandwidth, size_t maxIterations = 10000,
-    double tol = 1e-6, bool debug = false) throw (BadArgumentException<double>,
-      BadArgumentException<size_t>);
-  /** @}
-    */
+  try {
+    samples.clear();
+    PCA<double, 2, 2>::analyze(samples, transformedSamples, eigenValues,
+      eigenVectors);
+  }
+  catch (BadArgumentException<size_t>& e) {
+    std::cout << e.what() << std::endl;
+  }
 
-protected:
-
-};
-
-#include "statistics/MeanShiftClustering.tpp"
-
-#endif // MEANSHIFTCLUSTERING_H
+  return 0;
+}
