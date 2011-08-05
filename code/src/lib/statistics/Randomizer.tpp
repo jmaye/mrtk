@@ -103,7 +103,9 @@ template <typename T, size_t M>
 T Randomizer<T, M>::sampleUniform(const T& minSupport, const T& maxSupport)
   const throw (BadArgumentException<T>) {
   if (minSupport >= maxSupport)
-    throw BadArgumentException<T>(minSupport, "Randomizer<T, M>::sampleUniform(): minimum support must be smaller than maximum support");
+    throw BadArgumentException<T>(minSupport,
+      "Randomizer<T, M>::sampleUniform(): minimum support must be smaller than maximum support",
+      __FILE__, __LINE__);
   return minSupport + Traits<T>::round(random() / (double)RAND_MAX *
     (maxSupport - minSupport));
 }
@@ -112,7 +114,9 @@ template <typename T, size_t M>
 T Randomizer<T, M>::sampleNormal(const T& mean, const T& variance) const
   throw (BadArgumentException<T>) {
   if (variance <= 0)
-    throw BadArgumentException<T>(variance, "Randomizer<T, M>::sampleNormal(): variance must be strictly positive");
+    throw BadArgumentException<T>(variance,
+      "Randomizer<T, M>::sampleNormal(): variance must be strictly positive",
+      __FILE__, __LINE__);
   double u, v, s;
   do {
     u = 2.0 * sampleUniform() - 1.0;
@@ -132,7 +136,8 @@ Eigen::Matrix<size_t, M, 1> Randomizer<T, M>::sampleCategorical(const
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(successProbabilities,
-      "Randomizer<T, M>::sampleCategorical: success probabilities must sum to 1 and probabilities bigger or equal to 0");
+      "Randomizer<T, M>::sampleCategorical: success probabilities must sum to 1 and probabilities bigger or equal to 0",
+      __FILE__, __LINE__);
   Eigen::Matrix<double, M + 1, 1> cumProbabilities =
     Eigen::Matrix<double, M + 1, 1>::Zero();
   double sum = 0.0;
@@ -156,7 +161,9 @@ template <typename T, size_t M>
 size_t Randomizer<T, M>::samplePoisson(double rate) const
   throw (BadArgumentException<double>) {
   if (rate <= 0)
-    throw BadArgumentException<double>(rate, "Randomizer<T, M>::samplePoisson(): rate must be strictly positive");
+    throw BadArgumentException<double>(rate,
+      "Randomizer<T, M>::samplePoisson(): rate must be strictly positive",
+      __FILE__, __LINE__);
   double l = exp(-rate);
   size_t k = 0;
   double p = 1.0;
@@ -172,7 +179,9 @@ template <typename T, size_t M>
 double Randomizer<T, M>::sampleExponential(double rate) const
   throw (BadArgumentException<double>) {
   if (rate <= 0)
-    throw BadArgumentException<double>(rate, "Randomizer<T, M>::sampleExponential(): rate must be strictly positive");
+    throw BadArgumentException<double>(rate,
+      "Randomizer<T, M>::sampleExponential(): rate must be strictly positive",
+      __FILE__, __LINE__);
   double u;
   do {
     u = sampleUniform();
@@ -185,7 +194,9 @@ template <typename T, size_t M>
 size_t Randomizer<T, M>::sampleGeometric(double successProbability) const
   throw (BadArgumentException<double>) {
   if (successProbability <= 0.0 || successProbability > 1.0)
-    throw BadArgumentException<double>(successProbability, "Randomizer<T, M>::sampleGeometric(): success probability must be between 0 and 1");
+    throw BadArgumentException<double>(successProbability,
+      "Randomizer<T, M>::sampleGeometric(): success probability must be between 0 and 1",
+      __FILE__, __LINE__);
   double u;
   do {
     u = sampleUniform();
@@ -198,9 +209,13 @@ template <typename T, size_t M>
 double Randomizer<T, M>::sampleGamma(double shape, double scale) const
   throw (BadArgumentException<double>) {
   if (shape <= 0)
-    throw BadArgumentException<double>(shape, "Randomizer<T, M>::::sampleGamma(): shape must be strictly positive");
+    throw BadArgumentException<double>(shape,
+      "Randomizer<T, M>::::sampleGamma(): shape must be strictly positive",
+      __FILE__, __LINE__);
   if (scale <= 0)
-    throw BadArgumentException<double>(scale, "Randomizer<T, M>::::sampleGamma(): scale must be strictly positive");
+    throw BadArgumentException<double>(scale,
+      "Randomizer<T, M>::sampleGamma(): scale must be strictly positive",
+      __FILE__, __LINE__);
   size_t integralPart = floor(shape);
   double fractionalPart = shape - integralPart;
   double y = 0;

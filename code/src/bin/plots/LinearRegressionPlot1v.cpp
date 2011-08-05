@@ -9,12 +9,26 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-class Dummy {
-};
+/** \file LinearRegressionPlot1v.cpp
+    \brief This file is a testing binary for plotting a 1v linear regression
+  */
+
+#include "visualization/ContinuousFunctionPlot.h"
+#include "statistics/LinearRegression.h"
+
+#include <QtGui/QApplication>
+
+int main(int argc, char** argv) {
+  QApplication app(argc, argv);
+  ContinuousFunctionPlot<double, double> plot("LinearRegression1v",
+    LinearRegression<2>(), -10, 10, 0.05);
+  plot.show();
+  return app.exec();
+}
