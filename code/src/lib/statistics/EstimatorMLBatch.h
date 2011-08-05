@@ -26,6 +26,7 @@
 
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
+#include "statistics/MultinomialDistribution.h"
 
 #include <vector>
 
@@ -79,7 +80,7 @@ public:
     */
 };
 
-/** The class EstimatorMLBatch is implemented for Categorical distributions.
+/** The class EstimatorMLBatch is implemented for categorical distributions.
     \brief Categorical distribution ML estimator
   */
 template <size_t M> class EstimatorMLBatch<CategoricalDistribution<M>, M> {
@@ -97,6 +98,29 @@ public:
     */
   /// Estimate the parameters
   static void estimate(CategoricalDistribution<M>& dist,
+    const std::vector<Eigen::Matrix<size_t, M, 1> >& points);
+  /** @}
+    */
+};
+
+/** The class EstimatorMLBatch is implemented for multinomial distributions.
+    \brief Multinomial distribution ML estimator
+  */
+template <size_t M> class EstimatorMLBatch<MultinomialDistribution<M>, M> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(MultinomialDistribution<M>& dist,
     const std::vector<Eigen::Matrix<size_t, M, 1> >& points);
   /** @}
     */

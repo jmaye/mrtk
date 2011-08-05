@@ -39,5 +39,11 @@ int main(int argc, char** argv) {
   EstimatorMLBatch<CategoricalDistribution<4>, 4>::estimate(distCat4,
     samplesCat4);
   std::cout << "Estimation3: " << std::endl << distCat4 << std::endl;
+  MultinomialDistribution<4> distMult4(20);
+  std::vector<Eigen::Matrix<size_t, 4, 1> > samplesMult4;
+  distMult4.getSamples(samplesMult4, 1000);
+  EstimatorMLBatch<MultinomialDistribution<4>, 4>::estimate(distMult4,
+    samplesMult4);
+  std::cout << "Estimation4: " << std::endl << distMult4 << std::endl;
   return 0;
 }

@@ -67,3 +67,25 @@ void EstimatorMLBatch<CategoricalDistribution<M>, M>::estimate(
     dist.setSuccessProbabilities(successProbabilities);
   }
 }
+
+template <size_t M>
+void EstimatorMLBatch<MultinomialDistribution<M>, M>::estimate(
+  MultinomialDistribution<M>& dist, const
+  std::vector<Eigen::Matrix<size_t, M, 1> >& points) {
+  if (points.size()) {
+    Eigen::Matrix<double, M, 1> successProbabilities =
+      Eigen::Matrix<double, M, 1>::Zero();
+    double numTrials = 0;
+    for (size_t i = 0; i < points.size(); ++i) {
+      for (size_t j = 0; j < M; ++j)
+        successProbabilities(j) += points[i](j) / (double)points[i].sum();
+      numTrials += points[i].sum();
+    }
+    successProbabilities /= points.size();
+    numTrials /= points.size();
+    std::cout << successProbabilities << std::endl;
+    std::cout << numTrials << std::endl;
+    dist.setNumTrials(numTrials);
+    dist.setSuccessProbabilities(successProbabilities);
+  }
+}
