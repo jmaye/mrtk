@@ -29,7 +29,7 @@
 
 #include <Eigen/Core>
 
-template <typename T, size_t M> class Histogram;
+template <typename T, size_t M = 1> class Histogram;
 
 /** The Histogram1v class defines univariate histograms
     \brief 1-v histogram

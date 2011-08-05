@@ -16,48 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file GMMClustering.h
-    \brief This file defines the GMMClustering class, which implements a GMM
-           clustering algorithm
+/** \file LinearRegressionPlot2v.cpp
+    \brief This file is a testing binary for plotting a 2v linear regression
   */
 
-#ifndef GMMCLUSTERING_H
-#define GMMCLUSTERING_H
+#include "visualization/ContinuousFunctionPlot.h"
+#include "statistics/LinearRegression.h"
 
-#include "exceptions/InvalidOperationException.h"
+#include <QtGui/QApplication>
 
-#include <vector>
-
-#include <stdint.h>
-
-/** This class implements a Gaussian Mixture Model algorithm based on
-    Exceptation-Maximization
-    \brief Gaussian Mixture Model clustering algorithm
-  */
-class GMMClustering {
-  /** \name Private constructors
-    @{
-    */
-  /// Default constructor
-  GMMClustering();
-  /** @}
-    */
-
-public:
-  /** \name Methods
-    @{
-    */
-  /// Clusters the input data points
-  static void cluster(const std::vector<std::vector<double> >&
-    inputPointsVector, uint32_t u32K, std::vector<std::vector<double> >&
-    meansVector, std::vector<std::vector<std::vector<double> > >&
-    variancesVector, std::vector<double>& weightsVector)
-    throw (InvalidOperationException);
-  /** @}
-    */
-
-protected:
-
-};
-
-#endif // GMMCLUSTERING_H
+int main(int argc, char** argv) {
+  Eigen::Matrix<double, 2, 1> minimum(-10, -10);
+  Eigen::Matrix<double, 2, 1> maximum(10, 10);
+  Eigen::Matrix<double, 2, 1> resolution(0.05, 0.05);
+  QApplication app(argc, argv);
+  ContinuousFunctionPlot<double, double, 2> plot("LinearRegression2v",
+    LinearRegression<3>(), minimum, maximum, resolution);
+  plot.show();
+  return app.exec();
+}

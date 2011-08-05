@@ -28,7 +28,7 @@
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-template <size_t M> class StudentDistribution;
+template <size_t M = 1> class StudentDistribution;
 
 /** The StudentDistribution1v class represents a univariate Student
     distribution.

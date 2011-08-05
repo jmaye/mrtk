@@ -33,7 +33,7 @@
 #include <qwt-qt4/qwt_plot_panner.h>
 #include <qwt-qt4/qwt_plot_magnifier.h>
 
-template <typename T, size_t M> class HistogramPlot;
+template <typename T, size_t M = 1> class HistogramPlot;
 
 /** The HistogramPlot1v class is a plotting tool for univariate histograms.
     \brief 1-v histogram plot

@@ -35,7 +35,7 @@
 
 #include <vector>
 
-template <size_t M> class ScatterPlot;
+template <size_t M = 2> class ScatterPlot;
 
 /** The ScatterPlot2v class is a plotting tool for bivariate scatter plots.
     \brief 2-v scatter plot

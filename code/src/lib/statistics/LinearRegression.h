@@ -16,17 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/GMMClustering.h"
+/** \file LinearRegression.h
+    \brief This file is an interface to linear regression
+  */
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+#ifndef LINEARREGRESSION_H
+#define LINEARREGRESSION_H
 
-void GMMClustering::cluster(const std::vector<std::vector<double> >&
-  inputPointsVector, uint32_t u32K, std::vector<std::vector<double> >&
-  meansVector, std::vector<std::vector<std::vector<double> > >&
-  variancesVector, std::vector<double>& weightsVector)
-  throw (InvalidOperationException) {
-  if (u32K == 0)
-    throw InvalidOperationException("KMeansClustering::cluster(): K must be greater than 0");
-}
+#include "statistics/LinearRegression1v.h"
+#include "statistics/LinearRegressionMv.h"
+
+#endif // LINEARREGRESSION_H

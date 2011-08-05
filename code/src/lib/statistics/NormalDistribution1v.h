@@ -28,7 +28,7 @@
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-template <size_t M> class NormalDistribution;
+template <size_t M = 1> class NormalDistribution;
 
 /** The NormalDistribution1v class represents a univariate normal distribution.
     \brief Univariate normal distribution

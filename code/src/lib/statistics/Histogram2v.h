@@ -29,8 +29,6 @@
 
 #include <utils/SizeTSupport.h>
 
-template <typename T, size_t M> class Histogram;
-
 /** The Histogram2v class defines bivariate histograms
     \brief 2-v histogram
   */
