@@ -78,14 +78,45 @@ void EstimatorMLBatch<MultinomialDistribution<M>, M>::estimate(
     double numTrials = 0;
     for (size_t i = 0; i < points.size(); ++i) {
       for (size_t j = 0; j < M; ++j)
-        successProbabilities(j) += points[i](j) / (double)points[i].sum();
+        successProbabilities(j) += points[i](j);
       numTrials += points[i].sum();
     }
-    successProbabilities /= points.size();
+    successProbabilities /= numTrials;
     numTrials /= points.size();
-    std::cout << successProbabilities << std::endl;
-    std::cout << numTrials << std::endl;
     dist.setNumTrials(numTrials);
     dist.setSuccessProbabilities(successProbabilities);
+  }
+}
+
+void EstimatorMLBatch<ExponentialDistribution>::estimate(
+  ExponentialDistribution& dist, const
+  std::vector<ExponentialDistribution::VariableType>& points) {
+  if (points.size()) {
+    Eigen::Map<Eigen::VectorXd> dataMapped(&points[0], points.size());
+    double mean = dataMapped.sum() / points.size();
+    dist.setRate(1.0 / mean);
+  }
+}
+
+void EstimatorMLBatch<GeometricDistribution>::estimate(
+  GeometricDistribution& dist, const
+  std::vector<GeometricDistribution::VariableType>& points) {
+  if (points.size()) {
+    Eigen::Map<Eigen::Matrix<size_t, Eigen::Dynamic, 1> >
+      dataMapped(&points[0], points.size());
+    double mean = dataMapped.sum() / (double)points.size();
+    mean++;
+    dist.setSuccessProbability(1.0 / mean);
+  }
+}
+
+void EstimatorMLBatch<PoissonDistribution>::estimate(
+  PoissonDistribution& dist, const
+  std::vector<PoissonDistribution::VariableType>& points) {
+  if (points.size()) {
+    Eigen::Map<Eigen::Matrix<size_t, Eigen::Dynamic, 1> >
+      dataMapped(&points[0], points.size());
+    double mean = dataMapped.sum() / (double)points.size();
+    dist.setRate(mean);
   }
 }

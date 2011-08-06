@@ -27,6 +27,9 @@
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
 #include "statistics/MultinomialDistribution.h"
+#include "statistics/ExponentialDistribution.h"
+#include "statistics/GeometricDistribution.h"
+#include "statistics/PoissonDistribution.h"
 
 #include <vector>
 
@@ -122,6 +125,75 @@ public:
   /// Estimate the parameters
   static void estimate(MultinomialDistribution<M>& dist,
     const std::vector<Eigen::Matrix<size_t, M, 1> >& points);
+  /** @}
+    */
+};
+
+/** The class EstimatorMLBatch is implemented for exponential distributions.
+    \brief Exponential distribution ML estimator
+  */
+template <> class EstimatorMLBatch<ExponentialDistribution> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(ExponentialDistribution& dist,
+    const std::vector<ExponentialDistribution::VariableType>& points);
+  /** @}
+    */
+};
+
+/** The class EstimatorMLBatch is implemented for geometric distributions.
+    \brief Geometric distribution ML estimator
+  */
+template <> class EstimatorMLBatch<GeometricDistribution> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(GeometricDistribution& dist,
+    const std::vector<GeometricDistribution::VariableType>& points);
+  /** @}
+    */
+};
+
+/** The class EstimatorMLBatch is implemented for Poisson distributions.
+    \brief Poisson distribution ML estimator
+  */
+template <> class EstimatorMLBatch<PoissonDistribution> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(PoissonDistribution& dist,
+    const std::vector<PoissonDistribution::VariableType>& points);
   /** @}
     */
 };

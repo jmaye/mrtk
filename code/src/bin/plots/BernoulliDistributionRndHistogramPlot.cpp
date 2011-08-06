@@ -25,7 +25,6 @@
 #include "statistics/BernoulliDistribution.h"
 
 #include <QtGui/QApplication>
-// TODO: MEAN VALUE WRONG
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<size_t, 1> hist(0, 10, 1);

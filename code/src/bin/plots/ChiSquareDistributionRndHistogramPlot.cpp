@@ -20,7 +20,7 @@
     \brief This file is a testing binary for plotting random samples of the
            ChiSquareDistribution class
   */
-// TODO: SOMETHING WRONG IN THE SAMPLING
+
 #include "visualization/HistogramPlot.h"
 #include "statistics/ChiSquareDistribution.h"
 

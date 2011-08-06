@@ -45,5 +45,20 @@ int main(int argc, char** argv) {
   EstimatorMLBatch<MultinomialDistribution<4>, 4>::estimate(distMult4,
     samplesMult4);
   std::cout << "Estimation4: " << std::endl << distMult4 << std::endl;
+  ExponentialDistribution distExp(2);
+  std::vector<double> samplesExp;
+  distExp.getSamples(samplesExp, 1000);
+  EstimatorMLBatch<ExponentialDistribution>::estimate(distExp, samplesExp);
+  std::cout << "Estimation5: " << std::endl << distExp << std::endl;
+  GeometricDistribution distGeom(0.7);
+  std::vector<size_t> samplesGeom;
+  distGeom.getSamples(samplesGeom, 1000);
+  EstimatorMLBatch<GeometricDistribution>::estimate(distGeom, samplesGeom);
+  std::cout << "Estimation6: " << std::endl << distGeom << std::endl;
+  PoissonDistribution distPois;
+  std::vector<size_t> samplesPois;
+  distPois.getSamples(samplesPois, 1000);
+  EstimatorMLBatch<PoissonDistribution>::estimate(distPois, samplesPois);
+  std::cout << "Estimation7: " << std::endl << distPois << std::endl;
   return 0;
 }

@@ -25,7 +25,7 @@
 #include "statistics/StudentDistribution.h"
 
 #include <QtGui/QApplication>
-//TODO: ERROR HERE DUE TO CHI-SQUARE
+
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<double, 1> hist(-100, 100, 0.05);
