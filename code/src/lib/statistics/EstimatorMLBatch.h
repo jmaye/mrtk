@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 /** \file EstimatorMLBatch.h
-    \brief This file defines the EstimatorMLBatch class, which implements
+    \brief This file defines the EstimatorMLBatch class, which implements batch
            maximum likelihood estimators for various distributions
   */
 
@@ -30,6 +30,7 @@
 #include "statistics/ExponentialDistribution.h"
 #include "statistics/GeometricDistribution.h"
 #include "statistics/PoissonDistribution.h"
+#include "statistics/LinearRegression.h"
 
 #include <vector>
 
@@ -194,6 +195,29 @@ public:
   /// Estimate the parameters
   static void estimate(PoissonDistribution& dist,
     const std::vector<PoissonDistribution::VariableType>& points);
+  /** @}
+    */
+};
+
+/** The class EstimatorMLBatch is implemented for univariate linear regression.
+    \brief Univariate linear regression ML estimator
+  */
+template <size_t M> class EstimatorMLBatch<LinearRegression<M>, M> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(LinearRegression<M>& dist,
+    const std::vector<Eigen::Matrix<double, M, 1> >& points);
   /** @}
     */
 };

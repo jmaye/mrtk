@@ -98,9 +98,8 @@ void EstimatorMLBatch<ExponentialDistribution>::estimate(
   }
 }
 
-void EstimatorMLBatch<GeometricDistribution>::estimate(
-  GeometricDistribution& dist, const
-  std::vector<GeometricDistribution::VariableType>& points) {
+void EstimatorMLBatch<GeometricDistribution>::estimate(GeometricDistribution&
+  dist, const std::vector<GeometricDistribution::VariableType>& points) {
   if (points.size()) {
     Eigen::Map<Eigen::Matrix<size_t, Eigen::Dynamic, 1> >
       dataMapped(&points[0], points.size());
@@ -110,13 +109,39 @@ void EstimatorMLBatch<GeometricDistribution>::estimate(
   }
 }
 
-void EstimatorMLBatch<PoissonDistribution>::estimate(
-  PoissonDistribution& dist, const
-  std::vector<PoissonDistribution::VariableType>& points) {
+void EstimatorMLBatch<PoissonDistribution>::estimate(PoissonDistribution& dist,
+  const std::vector<PoissonDistribution::VariableType>& points) {
   if (points.size()) {
     Eigen::Map<Eigen::Matrix<size_t, Eigen::Dynamic, 1> >
       dataMapped(&points[0], points.size());
     double mean = dataMapped.sum() / (double)points.size();
     dist.setRate(mean);
+  }
+}
+
+template <size_t M>
+void EstimatorMLBatch<LinearRegression<M>, M>::estimate(LinearRegression<M>&
+  dist, const std::vector<Eigen::Matrix<double, M, 1> >& points) {
+  if (points.size()) {
+    Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
+    Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
+      (int)M);
+    for (size_t i = 0; i < points.size(); ++i) {
+      targets(i) = points[i](M - 1);
+      designMatrix(i, 0) = 1.0;
+      for (size_t j = 1; j < M; ++j)
+        designMatrix(i, j) = points[i](j - 1);
+    }
+    // TODO: CHECK IF MATRIX IS INVERTIBLE, I.E., THERE ARE ENOUGH INDEPENDENT POINTS
+    Eigen::Matrix<double, M, 1> coefficients = (designMatrix.transpose() *
+      designMatrix).inverse() * designMatrix.transpose() * targets;
+    double variance = 0.0;
+    for (size_t i = 0; i < points.size(); ++i)
+      variance += (targets(i) - (coefficients.transpose() *
+        designMatrix.row(i).transpose())(0)) * (targets(i) -
+        (coefficients.transpose() * designMatrix.row(i).transpose())(0));
+    variance /= points.size();
+    dist.setCoefficients(coefficients);
+    dist.setVariance(variance);
   }
 }
