@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
   distGeom.getSamples(samplesGeom, 1000);
   EstimatorMLBatch<GeometricDistribution>::estimate(distGeom, samplesGeom);
   std::cout << "Estimation6: " << std::endl << distGeom << std::endl;
-  PoissonDistribution distPois;
+  PoissonDistribution distPois(2.0);
   std::vector<size_t> samplesPois;
   distPois.getSamples(samplesPois, 1000);
   EstimatorMLBatch<PoissonDistribution>::estimate(distPois, samplesPois);
@@ -69,11 +69,27 @@ int main(int argc, char** argv) {
   LinearRegression<3> distPlane((Eigen::Matrix<double, 3, 1>()
     << 2.0, 2.0, 2.0).finished(), 2);
   std::vector<Eigen::Matrix<double, 3, 1> > samplesPlane;
-  for (double x = -10; x < 10; x+=0.1)
-    for (double y = -10; y < 10; y+= 0.1)
+  for (double x = -10; x < 10; x += 0.1)
+    for (double y = -10; y < 10; y += 0.1)
       samplesPlane.push_back(Eigen::Matrix<double, 3, 1>(x, y,
         distPlane((Eigen::Matrix<double, 2, 1>() << x, y).finished())));
   EstimatorMLBatch<LinearRegression<3>, 3>::estimate(distPlane, samplesPlane);
   std::cout << "Estimation9: " << std::endl << distPlane << std::endl;
+  LinearRegression<3> distPlaneTestFail((Eigen::Matrix<double, 3, 1>()
+    << 2.0, 2.0, 2.0).finished(), 2);
+  std::vector<Eigen::Matrix<double, 3, 1> > samplesPlaneTestFail;
+  for (double x = -10; x < 10; x += 0.1) {
+    for (double y = -10; y < 10; y += 0.1)
+      samplesPlaneTestFail.push_back(Eigen::Matrix<double, 3, 1>(x, y,
+        distPlane((Eigen::Matrix<double, 2, 1>() << x, y).finished())));
+    break;
+  }
+  try {
+    EstimatorMLBatch<LinearRegression<3>, 3>::estimate(distPlaneTestFail,
+      samplesPlaneTestFail);
+  }
+  catch (InvalidOperationException& e) {
+    std::cout << e.what() << std::endl;
+  }
   return 0;
 }

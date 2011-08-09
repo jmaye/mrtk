@@ -121,7 +121,8 @@ void EstimatorMLBatch<PoissonDistribution>::estimate(PoissonDistribution& dist,
 
 template <size_t M>
 void EstimatorMLBatch<LinearRegression<M>, M>::estimate(LinearRegression<M>&
-  dist, const std::vector<Eigen::Matrix<double, M, 1> >& points) {
+  dist, const std::vector<Eigen::Matrix<double, M, 1> >& points, double tol)
+  throw (InvalidOperationException) {
   if (points.size()) {
     Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
     Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
@@ -132,9 +133,12 @@ void EstimatorMLBatch<LinearRegression<M>, M>::estimate(LinearRegression<M>&
       for (size_t j = 1; j < M; ++j)
         designMatrix(i, j) = points[i](j - 1);
     }
-    // TODO: CHECK IF MATRIX IS INVERTIBLE, I.E., THERE ARE ENOUGH INDEPENDENT POINTS
-    Eigen::Matrix<double, M, 1> coefficients = (designMatrix.transpose() *
-      designMatrix).inverse() * designMatrix.transpose() * targets;
+    Eigen::Matrix<double, M, M> invCheckMatrix =
+      designMatrix.transpose() * designMatrix;
+    if (points.size() < M || invCheckMatrix.determinant() < tol)
+      throw InvalidOperationException("EstimatorMLBatch<LinearRegression<M>, M>::estimate(): data cannot be fitted");
+    Eigen::Matrix<double, M, 1> coefficients = invCheckMatrix.inverse() *
+      designMatrix.transpose() * targets;
     double variance = 0.0;
     for (size_t i = 0; i < points.size(); ++i)
       variance += (targets(i) - (coefficients.transpose() *

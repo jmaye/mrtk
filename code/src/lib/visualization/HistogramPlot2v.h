@@ -23,6 +23,8 @@
 #ifndef HISTOGRAMPLOT2V_H
 #define HISTOGRAMPLOT2V_H
 
+#include "statistics/Histogram.h"
+
 #include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
 
 template <typename T, size_t M> class HistogramPlot;
@@ -47,15 +49,9 @@ public:
     @{
     */
   /// Constructs plot from parameters
-  HistogramPlot(const std::string& title);
+  HistogramPlot(const std::string& title, const Histogram<T, 2>& histogram);
   /// Destructor
   virtual ~HistogramPlot();
-  /** @}
-    */
-
-  /** \name Accessors
-    @{
-    */
   /** @}
     */
 

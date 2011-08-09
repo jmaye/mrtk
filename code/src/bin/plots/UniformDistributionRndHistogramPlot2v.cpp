@@ -41,5 +41,7 @@ int main(int argc, char** argv) {
   std::cout << "Sample covariance: " << std::endl << hist.getSampleCovariance()
     << std::endl;
   hist.normalize();
+  HistogramPlot<double, 2> plot("UniformDistributionRndHistogramPlot2v", hist);
+  plot.show();
   return app.exec();
 }

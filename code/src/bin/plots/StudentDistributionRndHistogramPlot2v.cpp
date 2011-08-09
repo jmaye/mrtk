@@ -46,5 +46,7 @@ int main(int argc, char** argv) {
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;
   hist.normalize();
+  HistogramPlot<double, 2> plot("StudentDistributionRndHistogramPlot2v", hist);
+  plot.show();
   return app.exec();
 }

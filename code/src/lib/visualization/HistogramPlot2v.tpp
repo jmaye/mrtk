@@ -21,39 +21,42 @@
 /******************************************************************************/
 
 template <typename T>
-HistogramPlot<T, 2>::HistogramPlot(const std::string& title) :
+HistogramPlot<T, 2>::HistogramPlot(const std::string& title, const
+  Histogram<T, 2>& histogram) :
   Qwt3D::SurfacePlot(0) {
   Qwt3D::SurfacePlot::setTitle(title.c_str());
   setRotation(30, 0, 15);
   setScale(1, 1, 1);
   setShift(0.15, 0, 0);
   setZoom(0.9);
-//  for (size_t i = 0; i != coordinates()->axes.size(); ++i) {
-//    coordinates()->axes[i].setMajors(7);
-//    coordinates()->axes[i].setMinors(4);
-//  }
-//  coordinates()->axes[Qwt3D::X1].setLabelString("x-axis");
-//  coordinates()->axes[Qwt3D::Y1].setLabelString("y-axis");
-//  coordinates()->axes[Qwt3D::Z1].setLabelString("z-axis");
-//  setCoordinateStyle(Qwt3D::FRAME);
-//  setPlotStyle(Qwt3D::FILLED);
-//  X xValue = minimum(0);
-//  size_t xSize = round((maximum(0) - minimum(0)) / resolution(0));
-//  size_t ySize = round((maximum(1) - minimum(1)) / resolution(1));
-//  mData = new Y*[xSize];
-//  for (size_t i = 0; i < xSize; ++i) {
-//    Qwt3D::Cell cell;
-//    X yValue = minimum(1);
-//    mData[i] = new Y[ySize];
-//    for (size_t j = 0; j < ySize; ++j) {
-//      mData[i][j] = function((Eigen::Matrix<X, 2, 1>() << xValue, yValue).
-//        finished());
-//      yValue += resolution(1);
-//    }
-//    xValue += resolution(0);
-//  }
-//  loadFromData(mData, xSize, ySize, minimum(0), maximum(0), minimum(1),
-//    maximum(1));
+  for (size_t i = 0; i != coordinates()->axes.size(); ++i) {
+    coordinates()->axes[i].setMajors(7);
+    coordinates()->axes[i].setMinors(4);
+  }
+  coordinates()->axes[Qwt3D::X1].setLabelString("x-axis");
+  coordinates()->axes[Qwt3D::Y1].setLabelString("y-axis");
+  coordinates()->axes[Qwt3D::Z1].setLabelString("z-axis");
+  setCoordinateStyle(Qwt3D::FRAME);
+  setPlotStyle(Qwt3D::FILLED);
+  Eigen::Matrix<size_t, 2, 1> numBins = histogram.getNumBins();
+  size_t xSize = numBins(0);
+  size_t ySize = numBins(0);
+  mData = new T*[xSize];
+  for (size_t i = 0; i < xSize; ++i) {
+    Qwt3D::Cell cell;
+    mData[i] = new T[ySize];
+    for (size_t j = 0; j < ySize; ++j) {
+      mData[i][j] = histogram.getBinContent((Eigen::Matrix<size_t, 2, 1>()
+        << i, j).finished());
+    }
+  }
+  loadFromData(mData, xSize, ySize, histogram.getBinCenter(
+    (Eigen::Matrix<size_t, 2, 1>() << 0, 0).finished())(0),
+    histogram.getBinCenter((Eigen::Matrix<size_t, 2, 1>() << numBins(0) - 1,
+    numBins(1) - 1).finished())(0), histogram.getBinCenter(
+    (Eigen::Matrix<size_t, 2, 1>() << 0, 0).finished())(1),
+    histogram.getBinCenter((Eigen::Matrix<size_t, 2, 1>() << numBins(0) - 1,
+    numBins(1) - 1).finished())(1));
 }
 
 template <typename T>

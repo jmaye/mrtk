@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
   Histogram<double, 2> hist(Eigen::Matrix<double, 2, 1>(-10, -10),
     Eigen::Matrix<double, 2, 1>(10, 10),
     Eigen::Matrix<double, 2, 1>(0.05, 0.05));
-  NormalDistribution<2> dist;
+  NormalDistribution<2> dist(Eigen::Matrix<double, 2, 1>(2.0, 0.0));
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample());
   std::cout << "Sample mean: " << std::endl << hist.getSampleMean()
@@ -45,5 +45,7 @@ int main(int argc, char** argv) {
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;
   hist.normalize();
+  HistogramPlot<double, 2> plot("NormalDistributionRndHistogramPlot2v", hist);
+  plot.show();
   return app.exec();
 }
