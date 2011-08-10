@@ -16,19 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LinearRegressionPlot1v.cpp
-    \brief This file is a testing binary for plotting a 1v linear regression
+/** \file MixtureLinearRegressionRndScatterPlot1v.cpp
+    \brief This file is a testing binary for plotting random samples of a 
+           a mixture of univariate linear regressions
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
+#include "visualization/ScatterPlot.h"
 #include "statistics/LinearRegression.h"
+#include "statistics/MixtureSampleDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double> plot("LinearRegression1v",
-    LinearRegression<2>(), -10, 10, 0.05);
+  std::vector<LinearRegression<2> > distributions;
+  distributions.push_back(LinearRegression<2>(
+    Eigen::Matrix<double, 2, 1>(1, 1), 0.0, 1.0));
+  distributions.push_back(LinearRegression<2>(
+    Eigen::Matrix<double, 2, 1>(2, 2), 0.0, 1.0));
+  distributions.push_back(LinearRegression<2>(
+    Eigen::Matrix<double, 2, 1>(-1, -1), 0.0, 1.0));
+  distributions.push_back(LinearRegression<2>(
+    Eigen::Matrix<double, 2, 1>(-2, -2), 0.0, 1.0));
+  MixtureSampleDistribution<LinearRegression<2>, 4> dist(distributions,
+    CategoricalDistribution<4>());
+  std::vector<Eigen::Matrix<double, 2, 1> > data;
+  for (size_t i = 0; i < 100; ++i)
+    for (double x = -10; x < 10; x += 0.01) {
+      for (size_t j = 0; j < distributions.size(); ++j)
+      distributions[j].setBasis(x);
+      dist.setDistributions(distributions);
+      data.push_back(Eigen::Matrix<double, 2, 1>(x, dist.getSample()));
+    }
+  ScatterPlot<2> plot("MixtureLinearRegressionRndScatterPlot1v", data);
   plot.show();
   return app.exec();
 }

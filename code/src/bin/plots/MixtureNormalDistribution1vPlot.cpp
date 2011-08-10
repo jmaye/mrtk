@@ -23,7 +23,6 @@
 
 #include "visualization/ContinuousFunctionPlot.h"
 #include "statistics/NormalDistribution.h"
-#include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureDistribution.h"
 
 #include <QtGui/QApplication>

@@ -23,7 +23,6 @@
 
 #include "visualization/HistogramPlot.h"
 #include "statistics/NormalDistribution.h"
-#include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureSampleDistribution.h"
 
 #include <QtGui/QApplication>

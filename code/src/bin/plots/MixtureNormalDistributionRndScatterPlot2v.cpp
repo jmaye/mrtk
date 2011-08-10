@@ -18,12 +18,11 @@
 
 /** \file MixtureNormalDistributionRndScatterPlot2v.cpp
     \brief This file is a testing binary for plotting random samples of a 
-           a mixture of bivariate normal idstributions
+           a mixture of bivariate normal distributions
   */
 
 #include "visualization/ScatterPlot.h"
 #include "statistics/NormalDistribution.h"
-#include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureSampleDistribution.h"
 
 #include <QtGui/QApplication>

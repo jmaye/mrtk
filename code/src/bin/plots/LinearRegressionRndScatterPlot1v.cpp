@@ -16,22 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LinearRegressionPlot2v.cpp
-    \brief This file is a testing binary for plotting a 2v linear regression
+/** \file LinearRegressionRndScatterPlot1v.cpp
+    \brief This file is a testing binary for plotting random samples of a
+           univariate linear regression
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
+#include "visualization/ScatterPlot.h"
 #include "statistics/LinearRegression.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
-  Eigen::Matrix<double, 2, 1> minimum(-10, -10);
-  Eigen::Matrix<double, 2, 1> maximum(10, 10);
-  Eigen::Matrix<double, 2, 1> resolution(0.05, 0.05);
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 2> plot("LinearRegression2v",
-    LinearRegression<3>(), minimum, maximum, resolution);
+  std::vector<Eigen::Matrix<double, 2, 1> > data;
+  LinearRegression<2> dist;
+  for (double x = -10; x < 10; x += 0.01) {
+    dist.setBasis(x);
+    data.push_back(Eigen::Matrix<double, 2, 1>(x, dist.getSample()));
+  }
+  ScatterPlot<2> plot("LinearRegressionRndScatterPlot1v", data);
   plot.show();
   return app.exec();
 }

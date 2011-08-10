@@ -28,10 +28,6 @@ int main(int argc, char** argv) {
     << std::endl;
   std::cout << "l.getCoefficients(): " << std::endl <<
     linearRegression.getCoefficients() << std::endl;
-  std::cout << "l.getVariance(): " << std::endl <<
-    linearRegression.getVariance() << std::endl;
-  std::cout << "l.getPrecision(): " << std::endl <<
-    linearRegression.getPrecision() << std::endl;
   std::cout << "l.setVariance(2)" << std::endl;
   linearRegression.setVariance(2);
   std::cout << "l.setCoefficients(2, 2)" << std::endl;
@@ -39,12 +35,5 @@ int main(int argc, char** argv) {
   std::cout << "New parameters: " << std::endl << linearRegression
     << std::endl;
   std::cout << "l.getValue(2):" << linearRegression(2) << std::endl;
-  try {
-    std::cout << "l.setVariance(0)" << std::endl;
-    linearRegression.setVariance(0);
-  }
-  catch (BadArgumentException<double>& e) {
-    std::cout << e.what() << std::endl;
-  }
   return 0;
 }

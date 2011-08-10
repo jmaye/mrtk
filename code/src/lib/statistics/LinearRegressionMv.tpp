@@ -16,33 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/NormalDistribution.h"
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
 template <size_t M>
 LinearRegression<M>::LinearRegression(const Eigen::Matrix<double, M, 1>&
-  coefficients, double variance) :
-  mCoefficients(coefficients) {
+  coefficients, const Eigen::Matrix<double, M - 1, 1>& basis, double variance) :
+  mCoefficients(coefficients),
+  mBasis(basis) {
+  Eigen::Matrix<double, M, 1> basisTrans;
+  basisTrans << 1, basis;
+  setMean((mCoefficients.transpose() * basisTrans)(0));
   setVariance(variance);
 }
 
 template <size_t M>
 LinearRegression<M>::LinearRegression(const LinearRegression<M>& other) :
+  NormalDistribution<1>(other),
   mCoefficients(other.mCoefficients),
-  mVariance(other.mVariance),
-  mPrecision(other.mPrecision) {
+  mBasis(other.mBasis) {
 }
 
 template <size_t M>
 LinearRegression<M>& LinearRegression<M>::operator = (const LinearRegression<M>&
   other) {
   if (this != &other) {
+    this->NormalDistribution<1>::operator=(other);
     mCoefficients = other.mCoefficients;
-    mVariance = other.mVariance;
-    mPrecision = other.mPrecision;
+    mBasis = other.mBasis;
   }
   return *this;
 }
@@ -62,6 +64,7 @@ void LinearRegression<M>::read(std::istream& stream) {
 template <size_t M>
 void LinearRegression<M>::write(std::ostream& stream) const {
   stream << "coefficients: " << std::endl << mCoefficients << std::endl
+    << "basis: " << std::endl << mBasis << std::endl
     << "variance: " << mVariance;
 }
 
@@ -90,31 +93,15 @@ const Eigen::Matrix<double, M, 1>& LinearRegression<M>::getCoefficients()
 }
 
 template <size_t M>
-void LinearRegression<M>::setVariance(double variance)
-  throw (BadArgumentException<double>) {
-  if (variance <= 0)
-    throw BadArgumentException<double>(variance,
-      "LinearRegression<M>::setVariance(): variance must be strictly positive",
-      __FILE__, __LINE__);
-  mVariance = variance;
-  mPrecision = 1 / mVariance;
+void LinearRegression<M>::setBasis(const Eigen::Matrix<double, M - 1, 1>&
+  basis) {
+  Eigen::Matrix<double, M, 1> basisTrans;
+  basisTrans << 1, basis;
+  setMean((mCoefficients.transpose() * basisTrans)(0));
+  mBasis = basis;
 }
 
 template <size_t M>
-double LinearRegression<M>::getVariance() const {
-  return mVariance;
-}
-
-template <size_t M>
-double LinearRegression<M>::getPrecision() const {
-  return mPrecision;
-}
-
-template <size_t M>
-double LinearRegression<M>::getValue(const Eigen::Matrix<double, M - 1, 1>&
-  value) const {
-  Eigen::Matrix<double, M, 1> valueTrans;
-  valueTrans << 1, value;
-  return NormalDistribution<1>((mCoefficients.transpose() * valueTrans)(0),
-    mVariance).getSample();
+const Eigen::Matrix<double, M - 1, 1>& LinearRegression<M>::getBasis() const {
+  return mBasis;
 }

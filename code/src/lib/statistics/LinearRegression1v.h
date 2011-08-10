@@ -24,7 +24,7 @@
 #ifndef LINEARREGRESSION1V_H
 #define LINEARREGRESSION1V_H
 
-#include "functions/ContinuousFunction.h"
+#include "statistics/NormalDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
@@ -35,7 +35,7 @@ template <size_t M = 2> class LinearRegression;
     \brief Univariate linear regression
   */
 template <> class LinearRegression<2> :
-  public ContinuousFunction<double, double>,
+  public NormalDistribution<1>,
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
@@ -43,7 +43,8 @@ public:
     */
   /// Constructs linear regression from parameters
   LinearRegression(const Eigen::Matrix<double, 2, 1>& coefficients =
-    Eigen::Matrix<double, 2, 1>::Ones(), double variance = 1.0);
+    Eigen::Matrix<double, 2, 1>::Ones(), double basis = 0.0, double
+    variance = 1.0);
   /// Copy constructor
   LinearRegression(const LinearRegression<2>& other);
   /// Assignment operator
@@ -60,14 +61,10 @@ public:
   void setCoefficients(const Eigen::Matrix<double, 2, 1>& coefficients);
   /// Returns the coefficients
   const Eigen::Matrix<double, 2, 1>& getCoefficients() const;
-  /// Sets the variance
-  void setVariance(double variance) throw (BadArgumentException<double>);
-  /// Returns the variance
-  double getVariance() const;
-  /// Returns the precision
-  double getPrecision() const;
-  /// Returns a sample of the regression variable at value
-  virtual double getValue(const double& value) const;
+  /// Sets the basis
+  void setBasis(double basis);
+  /// Returns the basis
+  double getBasis() const;
   /** @}
     */
 
@@ -91,10 +88,8 @@ protected:
     */
   /// Regression weights
   Eigen::Matrix<double, 2, 1> mCoefficients;
-  /// Variance
-  double mVariance;
-  /// Precision
-  double mPrecision;
+  /// Basis
+  double mBasis;
   /** @}
     */
 

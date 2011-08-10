@@ -61,28 +61,34 @@ int main(int argc, char** argv) {
   distPois.getSamples(samplesPois, 1000);
   EstimatorMLBatch<PoissonDistribution>::estimate(distPois, samplesPois);
   std::cout << "Estimation7: " << std::endl << distPois << std::endl;
-  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);
+  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 0.0, 2.0);
   std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
-  for (double x = -10; x < 10; x+=0.01)
-    samplesLine.push_back(Eigen::Matrix<double, 2, 1>(x, distLine(x)));
+  for (double x = -10; x < 10; x += 0.01) {
+    distLine.setBasis(x);
+    samplesLine.push_back(Eigen::Matrix<double, 2, 1>(x, distLine.getSample()));
+  }
   EstimatorMLBatch<LinearRegression<2>, 2>::estimate(distLine, samplesLine);
   std::cout << "Estimation8: " << std::endl << distLine << std::endl;
-  LinearRegression<3> distPlane((Eigen::Matrix<double, 3, 1>()
-    << 2.0, 2.0, 2.0).finished(), 2);
+  LinearRegression<3> distPlane(Eigen::Matrix<double, 3, 1>(2.0, 2.0, 2.0),
+    Eigen::Matrix<double, 2, 1>(0.0, 0.0), 2.0);
   std::vector<Eigen::Matrix<double, 3, 1> > samplesPlane;
   for (double x = -10; x < 10; x += 0.1)
-    for (double y = -10; y < 10; y += 0.1)
+    for (double y = -10; y < 10; y += 0.1) {
+      distPlane.setBasis(Eigen::Matrix<double, 2, 1>(x, y));
       samplesPlane.push_back(Eigen::Matrix<double, 3, 1>(x, y,
-        distPlane((Eigen::Matrix<double, 2, 1>() << x, y).finished())));
+        distPlane.getSample()));
+     }
   EstimatorMLBatch<LinearRegression<3>, 3>::estimate(distPlane, samplesPlane);
   std::cout << "Estimation9: " << std::endl << distPlane << std::endl;
-  LinearRegression<3> distPlaneTestFail((Eigen::Matrix<double, 3, 1>()
-    << 2.0, 2.0, 2.0).finished(), 2);
+  LinearRegression<3> distPlaneTestFail(Eigen::Matrix<double, 3, 1>(2.0, 2.0,
+    2.0), Eigen::Matrix<double, 2, 1>(0.0, 0.0), 2.0);
   std::vector<Eigen::Matrix<double, 3, 1> > samplesPlaneTestFail;
   for (double x = -10; x < 10; x += 0.1) {
-    for (double y = -10; y < 10; y += 0.1)
+    for (double y = -10; y < 10; y += 0.1) {
+      distPlaneTestFail.setBasis(Eigen::Matrix<double, 2, 1>(x, y));
       samplesPlaneTestFail.push_back(Eigen::Matrix<double, 3, 1>(x, y,
-        distPlane((Eigen::Matrix<double, 2, 1>() << x, y).finished())));
+        distPlaneTestFail.getSample()));
+    }
     break;
   }
   try {

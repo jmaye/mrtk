@@ -16,30 +16,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/NormalDistribution.h"
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
 LinearRegression<2>::LinearRegression(const Eigen::Matrix<double, 2, 1>&
-  coefficients, double variance) :
-  mCoefficients(coefficients) {
+  coefficients, double basis, double variance) :
+  mCoefficients(coefficients),
+  mBasis(basis) {
+  Eigen::Matrix<double, 2, 1> basisTrans;
+  basisTrans << 1, basis;
+  setMean((mCoefficients.transpose() * basisTrans)(0));
   setVariance(variance);
 }
 
 LinearRegression<2>::LinearRegression(const LinearRegression<2>& other) :
+  NormalDistribution<1>(other),
   mCoefficients(other.mCoefficients),
-  mVariance(other.mVariance),
-  mPrecision(other.mPrecision) {
+  mBasis(other.mBasis) {
 }
 
 LinearRegression<2>& LinearRegression<2>::operator = (const LinearRegression<2>&
   other) {
   if (this != &other) {
+    this->NormalDistribution<1>::operator=(other);
     mCoefficients = other.mCoefficients;
-    mVariance = other.mVariance;
-    mPrecision = other.mPrecision;
+    mBasis = other.mBasis;
   }
   return *this;
 }
@@ -56,6 +58,7 @@ void LinearRegression<2>::read(std::istream& stream) {
 
 void LinearRegression<2>::write(std::ostream& stream) const {
   stream << "coefficients: " << std::endl << mCoefficients << std::endl
+    << "basis: " << mBasis << std::endl
     << "variance: " << mVariance;
 }
 
@@ -79,27 +82,13 @@ const Eigen::Matrix<double, 2, 1>& LinearRegression<2>::getCoefficients()
   return mCoefficients;
 }
 
-void LinearRegression<2>::setVariance(double variance)
-  throw (BadArgumentException<double>) {
-  if (variance <= 0)
-    throw BadArgumentException<double>(variance,
-      "LinearRegression<2>::setVariance(): variance must be strictly positive",
-      __FILE__, __LINE__);
-  mVariance = variance;
-  mPrecision = 1 / mVariance;
+void LinearRegression<2>::setBasis(double basis) {
+  Eigen::Matrix<double, 2, 1> basisTrans;
+  basisTrans << 1, basis;
+  setMean((mCoefficients.transpose() * basisTrans)(0));
+  mBasis = basis;
 }
 
-double LinearRegression<2>::getVariance() const {
-  return mVariance;
-}
-
-double LinearRegression<2>::getPrecision() const {
-  return mPrecision;
-}
-
-double LinearRegression<2>::getValue(const double& value) const {
-  Eigen::Matrix<double, 2, 1> valueTrans;
-  valueTrans << 1, value;
-  return NormalDistribution<1>((mCoefficients.transpose() * valueTrans)(0),
-    mVariance).getSample();
+double LinearRegression<2>::getBasis() const {
+  return mBasis;
 }
