@@ -21,6 +21,7 @@
   */
 
 #include "statistics/EstimatorMLBatch.h"
+#include "statistics/MixtureSampleDistribution.h"
 
 int main(int argc, char** argv) {
   NormalDistribution<1> distNorm1(5, 2);
@@ -91,5 +92,17 @@ int main(int argc, char** argv) {
   catch (InvalidOperationException& e) {
     std::cout << e.what() << std::endl;
   }
+  std::vector<NormalDistribution<1> > distributions;
+  distributions.push_back(NormalDistribution<1>(0, 1));
+  distributions.push_back(NormalDistribution<1>(5, 1));
+  distributions.push_back(NormalDistribution<1>(10, 1));
+  distributions.push_back(NormalDistribution<1>(-5, 1));
+  distributions.push_back(NormalDistribution<1>(-10, 1));
+  MixtureSampleDistribution<NormalDistribution<1>, 5> distMixtNorm1(
+    distributions, CategoricalDistribution<5>());
+  std::vector<double> samplesMixtNorm1;
+  distMixtNorm1.getSamples(samplesMixtNorm1, 1000);
+  EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, 5>, 1, 5>::
+    estimate(distMixtNorm1, samplesMixtNorm1);
   return 0;
 }

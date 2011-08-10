@@ -21,7 +21,6 @@
   */
 
 #include "statistics/NormalDistribution.h"
-#include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureDistribution.h"
 
 int main(int argc, char** argv) {

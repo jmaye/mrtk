@@ -31,11 +31,12 @@
 #include "statistics/GeometricDistribution.h"
 #include "statistics/PoissonDistribution.h"
 #include "statistics/LinearRegression.h"
+#include "statistics/MixtureDistribution.h"
 #include "exceptions/InvalidOperationException.h"
 
 #include <vector>
 
-template <typename D, size_t M = 1> class EstimatorMLBatch;
+template <typename D, size_t M = 1, size_t N = 1> class EstimatorMLBatch;
 
 /** The class EstimatorMLBatch is implemented for univariate normal
     distributions.
@@ -220,6 +221,56 @@ public:
   static void estimate(LinearRegression<M>& dist,
     const std::vector<Eigen::Matrix<double, M, 1> >& points, double tol = 1e-5)
     throw (InvalidOperationException);
+  /** @}
+    */
+};
+
+/** The class EstimatorMLBatch is implemented for mixtures of univariate normal
+    distributions.
+    \brief Mixture of univariate normal distributions ML estimator
+  */
+template <size_t N>
+class EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, N>, 1, N> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(MixtureDistribution<NormalDistribution<1>, N>& dist,
+    const std::vector<double>& points);
+  /** @}
+    */
+};
+
+/** The class EstimatorMLBatch is implemented for mixtures of multivariate
+    normal distributions.
+    \brief Mixture of multivariate normal distributions ML estimator
+  */
+template <size_t M, size_t N>
+class EstimatorMLBatch<MixtureDistribution<NormalDistribution<M>, N>, M, N> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(MixtureDistribution<NormalDistribution<M>, N>& dist,
+    const std::vector<typename NormalDistribution<M>::VariableType>& points);
   /** @}
     */
 };

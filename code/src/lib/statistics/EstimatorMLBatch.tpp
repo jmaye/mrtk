@@ -149,3 +149,11 @@ void EstimatorMLBatch<LinearRegression<M>, M>::estimate(LinearRegression<M>&
     dist.setVariance(variance);
   }
 }
+
+template <size_t N>
+void EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
+  estimate(MixtureDistribution<NormalDistribution<1>, N>& dist, const
+  std::vector<double>& points) {
+  if (points.size()) {
+  }
+}
