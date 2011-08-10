@@ -9,69 +9,33 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ScatterPlot3v.h
-    \brief This file contains a plotting tool for trivariate scatter plots
+/** \file LinearRegressionRndScatterPlot2v.cpp
+    \brief This file is a testing binary for plotting random samples of a
+           bivariate linear regression
   */
 
-#ifndef SCATTERPLOT3V_H
-#define SCATTERPLOT3V_H
+#include "visualization/ScatterPlot.h"
+#include "statistics/LinearRegression.h"
 
-#include "visualization/PointViewer3d.h"
+#include <QtGui/QApplication>
 
-template <size_t M> class ScatterPlot;
-
-/** The ScatterPlot3v class is a plotting tool for trivariate scatter plots.
-    \brief 3-v scatter plot
-  */
-template <> class ScatterPlot<3> {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  ScatterPlot(const ScatterPlot<3>& other);
-  /// Assignment operator
-  ScatterPlot<3>& operator = (const ScatterPlot<3>& other);
-  /** @}
-    */
-
-public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Constructs plot from parameters
-  ScatterPlot(const std::string& title,
-    const std::vector<Eigen::Matrix<double, 3, 1> >& data);
-  /// Destructor
-  virtual ~ScatterPlot();
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Show the plot
-  void show();
-  /** @}
-    */
-
-protected:
-  /** \name Protected members
-    @{
-    */
-  /// Point viewer
-  PointViewer3d mPointViewer3d;
-  /** @}
-    */
-
-};
-
-#include "visualization/ScatterPlot3v.tpp"
-
-#endif // SCATTERPLOT3V_H
+int main(int argc, char** argv) {
+  QApplication app(argc, argv);
+  std::vector<Eigen::Matrix<double, 3, 1> > data;
+  LinearRegression<3> dist;
+  for (double x = -10; x < 10; x += 0.1)
+    for (double y = -10; y < 10; y += 0.1) {
+      dist.setBasis(Eigen::Matrix<double, 2, 1>(x, y));
+      data.push_back(Eigen::Matrix<double, 3, 1>(x, y, dist.getSample()));
+     }
+  ScatterPlot<3> plot("LinearRegressionRndScatterPlot2v", data);
+  plot.show();
+  return app.exec();
+}

@@ -16,18 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ScatterPlot3v.cpp
-    \brief This file is a testing binary for the ScatterPlot3v class
+/** \file MixtureLinearRegressionRndScatterPlot2v.cpp
+    \brief This file is a testing binary for plotting random samples of a 
+           a mixture of bivariate linear regressions
   */
 
 #include "visualization/ScatterPlot.h"
+#include "statistics/LinearRegression.h"
+#include "statistics/MixtureSampleDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
+  std::vector<LinearRegression<3> > distributions;
+  distributions.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(1, 1, 1)));
+  distributions.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(2, 2, 2)));
+  distributions.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(-1, -1, -1)));
+  distributions.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(-2, -2, -2)));
+  MixtureSampleDistribution<LinearRegression<3>, 4> dist(distributions,
+    CategoricalDistribution<4>());
   std::vector<Eigen::Matrix<double, 3, 1> > data;
-  ScatterPlot<3> plot("ScatterPlot3v", data);
-  app.closeAllWindows();
-  return 0;
+  for (double x = -10; x < 10; x += 0.1)
+    for (double y = -10; y < 10; y += 0.1) {
+      for (size_t j = 0; j < distributions.size(); ++j)
+        distributions[j].setBasis(Eigen::Matrix<double, 2, 1>(x, y));
+      dist.setDistributions(distributions);
+      data.push_back(Eigen::Matrix<double, 3, 1>(x, y, dist.getSample()));
+     }
+  ScatterPlot<3> plot("MixtureLinearRegressionRndScatterPlot2v", data);
+  plot.show();
+  return app.exec();
 }

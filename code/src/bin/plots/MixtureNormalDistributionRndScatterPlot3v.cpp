@@ -16,18 +16,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ScatterPlot3v.cpp
-    \brief This file is a testing binary for the ScatterPlot3v class
+/** \file MixtureNormalDistributionRndScatterPlot3v.cpp
+    \brief This file is a testing binary for plotting random samples of a 
+           a mixture of trivariate normal distributions
   */
 
 #include "visualization/ScatterPlot.h"
+#include "statistics/NormalDistribution.h"
+#include "statistics/MixtureSampleDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
+  std::vector<NormalDistribution<3> > distributions;
+  distributions.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(0, 0, 0),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  distributions.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(5, 5, 5),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  distributions.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(10, 10, 10),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  distributions.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(-5, -5, -5),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  distributions.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(-10, -10, -10),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  MixtureSampleDistribution<NormalDistribution<3>, 5> dist(distributions,
+    CategoricalDistribution<5>());
   std::vector<Eigen::Matrix<double, 3, 1> > data;
-  ScatterPlot<3> plot("ScatterPlot3v", data);
-  app.closeAllWindows();
-  return 0;
+  dist.getSamples(data, 100000);
+  ScatterPlot<3> plot("MixtureNormalDistributionRndScatterPlot3v", data);
+  plot.show();
+  return app.exec();
 }

@@ -9,69 +9,53 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ScatterPlot3v.h
-    \brief This file contains a plotting tool for trivariate scatter plots
-  */
+#ifndef SCENE_H
+#define SCENE_H
 
-#ifndef SCATTERPLOT3V_H
-#define SCATTERPLOT3V_H
+#include <QtCore/QObject>
 
-#include "visualization/PointViewer3d.h"
+#include <vector>
 
-template <size_t M> class ScatterPlot;
+class GLView;
 
-/** The ScatterPlot3v class is a plotting tool for trivariate scatter plots.
-    \brief 3-v scatter plot
-  */
-template <> class ScatterPlot<3> {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  ScatterPlot(const ScatterPlot<3>& other);
-  /// Assignment operator
-  ScatterPlot<3>& operator = (const ScatterPlot<3>& other);
-  /** @}
-    */
+class Scene :
+  public QObject {
+Q_OBJECT
 
 public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Constructs plot from parameters
-  ScatterPlot(const std::string& title,
-    const std::vector<Eigen::Matrix<double, 3, 1> >& data);
-  /// Destructor
-  virtual ~ScatterPlot();
-  /** @}
-    */
+  Scene();
+  ~Scene();
 
-  /** \name Methods
-    @{
-    */
-  /// Show the plot
-  void show();
-  /** @}
-    */
+  void setTranslation(double f64X, double f64Y, double f64Z);
+  const std::vector<double>& getTranslation() const;
+  void setRotation(double f64Yaw, double f64Pitch, double f64Roll);
+  const std::vector<double>& getRotation() const;
+  void setScale(double f64Scale);
+  double getScale() const;
+
+  void setup(GLView& view);
+  void render(GLView& view);
 
 protected:
-  /** \name Protected members
-    @{
-    */
-  /// Point viewer
-  PointViewer3d mPointViewer3d;
-  /** @}
-    */
+  double correctAngle(double f64Angle) const;
+
+  std::vector<double> mTranslationVector;
+  std::vector<double> mRotationVector;
+  double mf64Scale;
+
+signals:
+  void translationChanged(const std::vector<double>& translationVector);
+  void rotationChanged(const std::vector<double>& rotationVector);
+  void scaleChanged(double f64Scale);
+  void render(GLView& view, Scene& scene);
 
 };
 
-#include "visualization/ScatterPlot3v.tpp"
-
-#endif // SCATTERPLOT3V_H
+#endif

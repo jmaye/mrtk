@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
   for (size_t i = 0; i < 100; ++i)
     for (double x = -10; x < 10; x += 0.01) {
       for (size_t j = 0; j < distributions.size(); ++j)
-      distributions[j].setBasis(x);
+        distributions[j].setBasis(x);
       dist.setDistributions(distributions);
       data.push_back(Eigen::Matrix<double, 2, 1>(x, dist.getSample()));
     }

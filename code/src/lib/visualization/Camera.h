@@ -9,69 +9,53 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ScatterPlot3v.h
-    \brief This file contains a plotting tool for trivariate scatter plots
-  */
+#ifndef CAMERA_H
+#define CAMERA_H
 
-#ifndef SCATTERPLOT3V_H
-#define SCATTERPLOT3V_H
+#include <QtCore/QObject>
 
-#include "visualization/PointViewer3d.h"
+#include <vector>
 
-template <size_t M> class ScatterPlot;
+class GLView;
 
-/** The ScatterPlot3v class is a plotting tool for trivariate scatter plots.
-    \brief 3-v scatter plot
-  */
-template <> class ScatterPlot<3> {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  ScatterPlot(const ScatterPlot<3>& other);
-  /// Assignment operator
-  ScatterPlot<3>& operator = (const ScatterPlot<3>& other);
-  /** @}
-    */
+class Camera :
+  public QObject {
+Q_OBJECT
 
 public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Constructs plot from parameters
-  ScatterPlot(const std::string& title,
-    const std::vector<Eigen::Matrix<double, 3, 1> >& data);
-  /// Destructor
-  virtual ~ScatterPlot();
-  /** @}
-    */
+  Camera(double f64X = -20.0, double f64Y = 0.0, double f64Z = 0.0,
+    double f64Near = 0.1, double f64Far = 1000.0);
+  ~Camera();
 
-  /** \name Methods
-    @{
-    */
-  /// Show the plot
-  void show();
-  /** @}
-    */
+  void setPosition(double f64X, double f64Y, double f64Z);
+  const std::vector<double>& getPosition() const;
+  void setViewpoint(double f64X, double f64Y, double f64Z);
+  const std::vector<double>& getViewpoint() const;
+  void setRange(double f64Near, double f64Far);
+  const std::vector<double>& getRange() const;
+  const std::vector<double>& getProjection() const;
+  double getViewpointDistance() const;
+
+  void setup(GLView& view, double f64Width, double f64Height);
 
 protected:
-  /** \name Protected members
-    @{
-    */
-  /// Point viewer
-  PointViewer3d mPointViewer3d;
-  /** @}
-    */
+  std::vector<double> mPositionVector;
+  std::vector<double> mViewpointVector;
+  std::vector<double> mRangeVector;
+  std::vector<double> mProjectionVector;
+
+signals:
+  void positionChanged(const std::vector<double>& positionVector);
+  void viewpointChanged(const std::vector<double>& viewpointVector);
+  void rangeChanged(const std::vector<double>& rangeVector);
 
 };
 
-#include "visualization/ScatterPlot3v.tpp"
-
-#endif // SCATTERPLOT3V_H
+#endif

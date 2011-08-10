@@ -61,12 +61,6 @@ public:
   /** @}
     */
 
-  /** \name Accessors
-    @{
-    */
-  /** @}
-    */
-
   /** \name Methods
     @{
     */

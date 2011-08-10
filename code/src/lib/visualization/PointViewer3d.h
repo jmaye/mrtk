@@ -16,28 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ScatterPlot3v.h
-    \brief This file contains a plotting tool for trivariate scatter plots
+/** \file PointViewer3d.h
+    \brief This file contains a plotting tool 3d points
   */
 
-#ifndef SCATTERPLOT3V_H
-#define SCATTERPLOT3V_H
+#ifndef POINTVIEWER3D_H
+#define POINTVIEWER3D_H
 
-#include "visualization/PointViewer3d.h"
+#include "visualization/GLView.h"
 
-template <size_t M> class ScatterPlot;
+#include <Eigen/Core>
 
-/** The ScatterPlot3v class is a plotting tool for trivariate scatter plots.
-    \brief 3-v scatter plot
+/** The PointViewer3d class is a plotting tool 3d points.
+    \brief 3d points viewer
   */
-template <> class ScatterPlot<3> {
+class PointViewer3d :
+  public QObject {
+Q_OBJECT
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  ScatterPlot(const ScatterPlot<3>& other);
+  PointViewer3d(const PointViewer3d& other);
   /// Assignment operator
-  ScatterPlot<3>& operator = (const ScatterPlot<3>& other);
+  PointViewer3d& operator = (const PointViewer3d& other);
   /** @}
     */
 
@@ -45,33 +47,74 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs plot from parameters
-  ScatterPlot(const std::string& title,
-    const std::vector<Eigen::Matrix<double, 3, 1> >& data);
+  /// Constructs viewer with points
+  PointViewer3d(const std::vector<Eigen::Matrix<double, 3, 1> >& data);
   /// Destructor
-  virtual ~ScatterPlot();
+  virtual ~PointViewer3d();
+  /** @}
+    */
+
+  /** \name Accessors
+    @{
+    */
+  /// Sets the background color
+  void setBackgroundColor(const QColor& color);
+  /// Sets the fog color
+  void setFogColor(const QColor& color);
+  /// Sets the ground color
+  void setGroundColor(const QColor& color);
+  /// Sets the point color
+  void setPointColor(const QColor& color);
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Show the plot
+  /// Show the points
   void show();
   /** @}
     */
 
 protected:
+  /** \name Protected methods
+    @{
+    */
+  /// Render background
+  void renderBackground();
+  /// Render fog
+  void renderFog(double start, double end, double density);
+  /// Render ground
+  void renderGround(double radius, double elevation, double angleStep,
+    double rangeStep);
+  /// Render axes
+  void renderAxes(double length);
+  /// Render the points
+  void renderPoints(double size, bool smooth);
+  /** @}
+    */
+
   /** \name Protected members
     @{
     */
-  /// Point viewer
-  PointViewer3d mPointViewer3d;
+  /// GL viewer
+  GLView mGLView;
+  /// Points to be displayed
+  std::vector<Eigen::Matrix<double, 3, 1> > mData;
+  /// Palette
+  Palette mPalette;
+  /** @}
+    */
+
+protected slots:
+  /** \name Protected slots
+    @{
+    */
+  /// Rendering loop
+  void render(GLView& view, Scene& scene);
   /** @}
     */
 
 };
 
-#include "visualization/ScatterPlot3v.tpp"
-
-#endif // SCATTERPLOT3V_H
+#endif // POINTVIEWER3D_H

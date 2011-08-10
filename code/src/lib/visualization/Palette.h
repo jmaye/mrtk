@@ -9,69 +9,47 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ScatterPlot3v.h
-    \brief This file contains a plotting tool for trivariate scatter plots
-  */
+#ifndef PALETTE_H
+#define PALETTE_H
 
-#ifndef SCATTERPLOT3V_H
-#define SCATTERPLOT3V_H
+#include "exceptions/OutOfBoundException.h"
 
-#include "visualization/PointViewer3d.h"
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtGui/QColor>
 
-template <size_t M> class ScatterPlot;
+#include <map>
 
-/** The ScatterPlot3v class is a plotting tool for trivariate scatter plots.
-    \brief 3-v scatter plot
-  */
-template <> class ScatterPlot<3> {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  ScatterPlot(const ScatterPlot<3>& other);
-  /// Assignment operator
-  ScatterPlot<3>& operator = (const ScatterPlot<3>& other);
-  /** @}
-    */
+class Palette :
+  public QObject {
+Q_OBJECT
 
 public:
-  /** \name Constructors/destructor
-    @{
-    */
-  /// Constructs plot from parameters
-  ScatterPlot(const std::string& title,
-    const std::vector<Eigen::Matrix<double, 3, 1> >& data);
-  /// Destructor
-  virtual ~ScatterPlot();
-  /** @}
-    */
+  typedef std::map<QString, QColor>::const_iterator Iterator;
 
-  /** \name Methods
-    @{
-    */
-  /// Show the plot
-  void show();
-  /** @}
-    */
+  Palette();
+  ~Palette();
+
+  Iterator getColorBegin() const;
+  Iterator getColorEnd() const;
+  const QString& getRole(const Iterator& it) const;
+  void setColor(const QString& role, const QColor& color);
+  const QColor& getColor(const Iterator& it) const;
+  const QColor& getColor(const QString& role) const throw (OutOfBoundException<std::string>);
 
 protected:
-  /** \name Protected members
-    @{
-    */
-  /// Point viewer
-  PointViewer3d mPointViewer3d;
-  /** @}
-    */
+  std::map<QString, QColor> mColorsMap;
+
+signals:
+  void colorChanged(const QString& role, const QColor& color);
 
 };
 
-#include "visualization/ScatterPlot3v.tpp"
-
-#endif // SCATTERPLOT3V_H
+#endif // PALETTE_H
