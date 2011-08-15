@@ -98,17 +98,95 @@ int main(int argc, char** argv) {
   catch (InvalidOperationException& e) {
     std::cout << e.what() << std::endl;
   }
-  std::vector<NormalDistribution<1> > distributions;
-  distributions.push_back(NormalDistribution<1>(0, 1));
-  distributions.push_back(NormalDistribution<1>(5, 1));
-  distributions.push_back(NormalDistribution<1>(10, 1));
-  distributions.push_back(NormalDistribution<1>(-5, 1));
-  distributions.push_back(NormalDistribution<1>(-10, 1));
+  std::vector<NormalDistribution<1> > distributionsNorm1;
+  distributionsNorm1.push_back(NormalDistribution<1>(0, 1));
+  distributionsNorm1.push_back(NormalDistribution<1>(5, 1));
+  distributionsNorm1.push_back(NormalDistribution<1>(10, 1));
+  distributionsNorm1.push_back(NormalDistribution<1>(-5, 1));
+  distributionsNorm1.push_back(NormalDistribution<1>(-10, 1));
   MixtureSampleDistribution<NormalDistribution<1>, 5> distMixtNorm1(
-    distributions, CategoricalDistribution<5>());
+    distributionsNorm1, CategoricalDistribution<5>());
   std::vector<double> samplesMixtNorm1;
   distMixtNorm1.getSamples(samplesMixtNorm1, 1000);
-  EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, 5>, 1, 5>::
-    estimate(distMixtNorm1, samplesMixtNorm1);
+  distributionsNorm1[0] = NormalDistribution<1>(1, 1.5);
+  distributionsNorm1[1] = NormalDistribution<1>(6, 1.2);
+  distributionsNorm1[2] = NormalDistribution<1>(12, 1.1);
+  distributionsNorm1[3] = NormalDistribution<1>(-5.5, 0.9);
+  distributionsNorm1[4] = NormalDistribution<1>(-9.5, 2.0);
+  distMixtNorm1.setDistributions(distributionsNorm1);
+  std::vector<Eigen::Matrix<double, 5, 1> > responsibilities;
+  size_t numIter =
+    EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, 5>, 1, 5>::
+    estimate(distMixtNorm1, samplesMixtNorm1, responsibilities);
+  std::cout << "Estimation10: " << std::endl << distMixtNorm1 << std::endl;
+  std::cout << "Converged in: " << numIter << " iterations" << std::endl;
+  std::vector<NormalDistribution<3> > distributionsNorm3;
+  distributionsNorm3.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(0, 0, 0),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  distributionsNorm3.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(5, 5, 5),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  distributionsNorm3.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(10, 10, 10),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  distributionsNorm3.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(-5, -5, -5),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  distributionsNorm3.push_back(NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(-10, -10, -10),
+    Eigen::Matrix<double, 3, 3>::Identity()));
+  MixtureSampleDistribution<NormalDistribution<3>, 5> distMixtNorm3(
+    distributionsNorm3, CategoricalDistribution<5>());
+  std::vector<Eigen::Matrix<double, 3, 1> > samplesMixtNorm3;
+  distMixtNorm3.getSamples(samplesMixtNorm3, 1000);
+  distributionsNorm3[0] = NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(0.12, 0.11, 0.13),
+    Eigen::Matrix<double, 3, 3>::Identity());
+  distributionsNorm3[1] = NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(5.05, 5.1, 5.04),
+    Eigen::Matrix<double, 3, 3>::Identity());
+  distributionsNorm3[2] = NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(10.1, 10.2, 10.4),
+    Eigen::Matrix<double, 3, 3>::Identity());
+  distributionsNorm3[3] = NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(-5.14, -5.1, -5.04),
+    Eigen::Matrix<double, 3, 3>::Identity());
+  distributionsNorm3[4] = NormalDistribution<3>(
+    Eigen::Matrix<double, 3, 1>(-10.2, -10.1, -10.04),
+    Eigen::Matrix<double, 3, 3>::Identity());
+  distMixtNorm3.setDistributions(distributionsNorm3);
+  numIter =
+    EstimatorMLBatch<MixtureDistribution<NormalDistribution<3>, 5>, 3, 5>::
+    estimate(distMixtNorm3, samplesMixtNorm3, responsibilities);
+  std::cout << "Estimation11: " << std::endl << distMixtNorm3 << std::endl;
+  std::cout << "Converged in: " << numIter << " iterations" << std::endl;
+  std::vector<LinearRegression<3> > distributionsLin3;
+  distributionsLin3.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(1, 1, 1)));
+  distributionsLin3.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(2, 2, 2)));
+  distributionsLin3.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(-1, -1, -1)));
+  distributionsLin3.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(-2, -2, -2)));
+  distributionsLin3.push_back(LinearRegression<3>(
+    Eigen::Matrix<double, 3, 1>(-3, -3, -3)));
+  MixtureSampleDistribution<LinearRegression<3>, 5>
+    distMixtLin3(distributionsLin3, CategoricalDistribution<5>());
+  std::vector<Eigen::Matrix<double, 3, 1> > samplesMixtLin3;
+  for (double x = -10; x < 10; x += 0.1)
+    for (double y = -10; y < 10; y += 0.1) {
+      for (size_t j = 0; j < distributionsLin3.size(); ++j)
+        distributionsLin3[j].setBasis(Eigen::Matrix<double, 2, 1>(x, y));
+      distMixtLin3.setDistributions(distributionsLin3);
+      samplesMixtLin3.push_back(Eigen::Matrix<double, 3, 1>(x, y,
+        distMixtLin3.getSample()));
+     }
+  numIter =
+    EstimatorMLBatch<MixtureDistribution<LinearRegression<3>, 5>, 3, 5>::
+    estimate(distMixtLin3, samplesMixtLin3, responsibilities);
+  std::cout << "Estimation12: " << std::endl << distMixtLin3 << std::endl;
+  std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   return 0;
 }

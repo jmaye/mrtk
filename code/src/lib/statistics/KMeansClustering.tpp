@@ -25,8 +25,9 @@
 /******************************************************************************/
 
 template <typename T, size_t M>
-void KMeansClustering<T, M>::cluster(const std::vector<Eigen::Matrix<T, M, 1> >&
-  data, std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
+size_t KMeansClustering<T, M>::cluster(const
+  std::vector<Eigen::Matrix<T, M, 1> >& data,
+  std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
   std::vector<std::vector<size_t> >& clusterToData, std::vector<size_t>&
   dataToCluster, size_t k, size_t maxIterations, double tol, bool debug)
   throw (BadArgumentException<size_t>) {
@@ -113,4 +114,5 @@ void KMeansClustering<T, M>::cluster(const std::vector<Eigen::Matrix<T, M, 1> >&
   delete [] idx;
   delete [] dist;
   annClose();
+  return iteration;
 }

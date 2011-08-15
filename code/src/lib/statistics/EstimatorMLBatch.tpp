@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "base/Timestamp.h"
+
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
@@ -130,8 +132,7 @@ void EstimatorMLBatch<LinearRegression<M>, M>::estimate(LinearRegression<M>&
     for (size_t i = 0; i < points.size(); ++i) {
       targets(i) = points[i](M - 1);
       designMatrix(i, 0) = 1.0;
-      for (size_t j = 1; j < M; ++j)
-        designMatrix(i, j) = points[i](j - 1);
+      designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
     }
     Eigen::Matrix<double, M, M> invCheckMatrix =
       designMatrix.transpose() * designMatrix;
@@ -151,9 +152,239 @@ void EstimatorMLBatch<LinearRegression<M>, M>::estimate(LinearRegression<M>&
 }
 
 template <size_t N>
-void EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
+size_t EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
   estimate(MixtureDistribution<NormalDistribution<1>, N>& dist, const
-  std::vector<double>& points) {
+  std::vector<double>& points, std::vector<Eigen::Matrix<double, N, 1> >&
+  responsibilities, size_t maxNumIter, double tol) {
+  size_t numIter = 0;
+  responsibilities.clear();
   if (points.size()) {
+    double oldLogLikelihood = 0;
+    for (size_t i = 0; i < points.size(); ++i)
+      oldLogLikelihood += log(dist(points[i]));
+    responsibilities.resize(points.size());
+    while (numIter != maxNumIter) {
+      for (size_t i = 0; i < points.size(); ++i) {
+        Eigen::Matrix<double, N, 1> responsibility;
+        for (size_t k = 0; k < N; ++k) {
+          Eigen::Matrix<size_t, N, 1> component =
+            Eigen::Matrix<size_t, N, 1>::Zero();
+          component(k) = 1.0;
+          responsibility(k) = dist.getWeights()(component) *
+            dist.getDistributions()[k](points[i]);
+        }
+        responsibility /= dist(points[i]);
+        responsibilities[i] = responsibility;
+      }
+      Eigen::Matrix<double, N, 1> mean = Eigen::Matrix<double, N, 1>::Zero();
+      Eigen::Matrix<double, N, 1> numPoints =
+        Eigen::Matrix<double, N, 1>::Zero();
+      for (size_t i = 0; i < points.size(); ++i) {
+        for (size_t k = 0; k < N; ++k)
+          mean(k) += responsibilities[i](k) * points[i];
+        numPoints += responsibilities[i];
+      }
+      mean.cwise() /= numPoints;
+      Eigen::Matrix<double, N, 1> variance =
+        Eigen::Matrix<double, N, 1>::Zero();
+      for (size_t i = 0; i < points.size(); ++i)
+        for (size_t k = 0; k < N; ++k)
+          variance(k) += responsibilities[i](k) * (points[i] - mean(k)) *
+            (points[i] - mean(k));
+      variance.cwise() /= numPoints;
+      Eigen::Matrix<double, N, 1> weights = numPoints / points.size();
+      weights /= weights.sum();
+      dist.setWeights(CategoricalDistribution<N>(weights));
+      std::vector<NormalDistribution<1> > distributions;
+      distributions.resize(N);
+      for (size_t k = 0; k < N; ++k) {
+        distributions[k].setMean(mean(k));
+        distributions[k].setVariance(variance(k));
+      }
+      dist.setDistributions(distributions);
+      double newLogLikelihood = 0;
+      for (size_t i = 0; i < points.size(); ++i) {
+        newLogLikelihood += log(dist(points[i]));
+      }
+      if (fabs(oldLogLikelihood - newLogLikelihood) < tol)
+        break;
+      oldLogLikelihood = newLogLikelihood;
+      numIter++;
+    }
   }
+  return numIter;
+}
+
+template <size_t M, size_t N>
+size_t EstimatorMLBatch<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+  estimate(MixtureDistribution<NormalDistribution<M>, N>& dist, const
+  std::vector<typename NormalDistribution<M>::VariableType>& points,
+  std::vector<Eigen::Matrix<double, N, 1> >& responsibilities, size_t
+  maxNumIter, double tol) {
+  size_t numIter = 0;
+  responsibilities.clear();
+  if (points.size()) {
+    double oldLogLikelihood = 0;
+    for (size_t i = 0; i < points.size(); ++i)
+      oldLogLikelihood += log(dist(points[i]));
+    responsibilities.resize(points.size());
+    while (numIter != maxNumIter) {
+      for (size_t i = 0; i < points.size(); ++i) {
+        Eigen::Matrix<double, N, 1> responsibility;
+        for (size_t k = 0; k < N; ++k) {
+          Eigen::Matrix<size_t, N, 1> component =
+            Eigen::Matrix<size_t, N, 1>::Zero();
+          component(k) = 1.0;
+          responsibility(k) = dist.getWeights()(component) *
+            dist.getDistributions()[k](points[i]);
+        }
+        responsibility /= dist(points[i]);
+        responsibilities[i] = responsibility;
+      }
+      std::vector<Eigen::Matrix<double, M, 1> > mean(N);
+      for (size_t k = 0; k < N; ++k)
+        mean[k] = Eigen::Matrix<double, M, 1>::Zero();
+      Eigen::Matrix<double, N, 1> numPoints =
+        Eigen::Matrix<double, N, 1>::Zero();
+      for (size_t i = 0; i < points.size(); ++i) {
+        for (size_t k = 0; k < N; ++k)
+          mean[k] += responsibilities[i](k) * points[i];
+        numPoints += responsibilities[i];
+      }
+      for (size_t k = 0; k < N; ++k)
+        mean[k] /= numPoints[k];
+      std::vector<Eigen::Matrix<double, M, M> > covariance(N);
+      for (size_t k = 0; k < N; ++k)
+        covariance[k] = Eigen::Matrix<double, M, M>::Zero();
+      for (size_t i = 0; i < points.size(); ++i)
+        for (size_t k = 0; k < N; ++k)
+          covariance[k] += responsibilities[i](k) * (points[i] - mean[k]) *
+            (points[i] - mean[k]).transpose();
+      for (size_t k = 0; k < N; ++k) {
+        covariance[k] /= numPoints[k];
+      }
+      Eigen::Matrix<double, N, 1> weights = numPoints / points.size();
+      weights /= weights.sum();
+      dist.setWeights(CategoricalDistribution<N>(weights));
+      std::vector<NormalDistribution<M> > distributions;
+      distributions.resize(N);
+      for (size_t k = 0; k < N; ++k) {
+        distributions[k].setMean(mean[k]);
+        for (size_t i = 0; i < M; ++i)
+          for (size_t j = i + 1; j < M; ++j)
+            covariance[k](i, j) = covariance[k](j, i);
+        distributions[k].setCovariance(covariance[k]);
+      }
+      dist.setDistributions(distributions);
+      double newLogLikelihood = 0;
+      for (size_t i = 0; i < points.size(); ++i) {
+        newLogLikelihood += log(dist(points[i]));
+      }
+      if (fabs(oldLogLikelihood - newLogLikelihood) < tol)
+        break;
+      oldLogLikelihood = newLogLikelihood;
+      numIter++;
+    }
+  }
+  return numIter;
+}
+
+template <size_t M, size_t N>
+size_t EstimatorMLBatch<MixtureDistribution<LinearRegression<M>, N>, M, N>::
+  estimate(MixtureDistribution<LinearRegression<M>, N>& dist, const
+  std::vector<Eigen::Matrix<double, M, 1> >& points,
+  std::vector<Eigen::Matrix<double, N, 1> >& responsibilities, size_t
+  maxNumIter, double tol) {
+  size_t numIter = 0;
+  responsibilities.clear();
+  if (points.size()) {
+    double oldLogLikelihood = 0;
+    std::vector<LinearRegression<M> > distributions = dist.getDistributions();
+    for (size_t i = 0; i < points.size(); ++i) {
+      for (size_t j = 0; j < N; ++j)
+        distributions[j].setBasis(points[i].segment(0, M - 1));
+      dist.setDistributions(distributions);
+      oldLogLikelihood += log(dist(points[i](M - 1)));
+    }
+    responsibilities.resize(points.size());
+    while (numIter != maxNumIter) {
+      Eigen::Matrix<double, Eigen::Dynamic, N> responsibilityInternal(
+        points.size(), (int)N);
+      for (size_t i = 0; i < points.size(); ++i) {
+        Eigen::Matrix<double, N, 1> responsibility;
+        for (size_t j = 0; j < N; ++j)
+          distributions[j].setBasis(points[i].segment(0, M - 1));
+        dist.setDistributions(distributions);
+        for (size_t k = 0; k < N; ++k) {
+          Eigen::Matrix<size_t, N, 1> component =
+            Eigen::Matrix<size_t, N, 1>::Zero();
+          component(k) = 1.0;
+          responsibility(k) = dist.getWeights()(component) *
+            dist.getDistributions()[k](points[i](M - 1));
+          responsibilityInternal(i, k) = responsibility(k);
+        }
+        responsibility /= dist(points[i](M - 1));
+        responsibilities[i] = responsibility;
+      }
+      Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
+      Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
+        (int)M);
+      for (size_t i = 0; i < points.size(); ++i) {
+        targets(i) = points[i](M - 1);
+        designMatrix(i, 0) = 1.0;
+        designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
+      }
+      for (size_t k = 0; k < N; ++k) {
+        (designMatrix.transpose() * responsibilityInternal.col(k).asDiagonal() * designMatrix).inverse() *
+          designMatrix.transpose() * responsibilityInternal.col(k).asDiagonal() * targets;
+      }
+//      std::vector<Eigen::Matrix<double, M, 1> > mean(N);
+//      for (size_t k = 0; k < N; ++k)
+//        mean[k] = Eigen::Matrix<double, M, 1>::Zero();
+//      Eigen::Matrix<double, N, 1> numPoints =
+//        Eigen::Matrix<double, N, 1>::Zero();
+//      for (size_t i = 0; i < points.size(); ++i) {
+//        for (size_t k = 0; k < N; ++k)
+//          mean[k] += responsibilities[i](k) * points[i];
+//        numPoints += responsibilities[i];
+//      }
+//      for (size_t k = 0; k < N; ++k)
+//        mean[k] /= numPoints[k];
+//      std::vector<Eigen::Matrix<double, M, M> > covariance(N);
+//      for (size_t k = 0; k < N; ++k)
+//        covariance[k] = Eigen::Matrix<double, M, M>::Zero();
+//      for (size_t i = 0; i < points.size(); ++i)
+//        for (size_t k = 0; k < N; ++k)
+//          covariance[k] += responsibilities[i](k) * (points[i] - mean[k]) *
+//            (points[i] - mean[k]).transpose();
+//      for (size_t k = 0; k < N; ++k) {
+//        covariance[k] /= numPoints[k];
+//      }
+//      Eigen::Matrix<double, N, 1> weights = numPoints / points.size();
+//      weights /= weights.sum();
+//      dist.setWeights(CategoricalDistribution<N>(weights));
+//      std::vector<NormalDistribution<M> > distributions;
+//      distributions.resize(N);
+//      for (size_t k = 0; k < N; ++k) {
+//        distributions[k].setMean(mean[k]);
+//        for (size_t i = 0; i < M; ++i)
+//          for (size_t j = i + 1; j < M; ++j)
+//            covariance[k](i, j) = covariance[k](j, i);
+//        distributions[k].setCovariance(covariance[k]);
+//      }
+//      dist.setDistributions(distributions);
+      double newLogLikelihood = 0;
+      for (size_t i = 0; i < points.size(); ++i) {
+        for (size_t j = 0; j < N; ++j)
+          distributions[j].setBasis(points[i].segment(0, M - 1));
+        dist.setDistributions(distributions);
+        newLogLikelihood += log(dist(points[i](M - 1)));
+      }
+      if (fabs(oldLogLikelihood - newLogLikelihood) < tol)
+        break;
+      oldLogLikelihood = newLogLikelihood;
+      numIter++;
+    }
+  }
+  return numIter;
 }

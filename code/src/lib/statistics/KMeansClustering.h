@@ -48,7 +48,7 @@ public:
     @{
     */
   /// Clusters the input data points
-  static void cluster(const std::vector<Eigen::Matrix<T, M, 1> >& data,
+  static size_t cluster(const std::vector<Eigen::Matrix<T, M, 1> >& data,
     std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
     std::vector<std::vector<size_t> >& clusterToData, std::vector<size_t>&
     dataToCluster, size_t k, size_t maxIterations = 10000, double tol = 1e-6,

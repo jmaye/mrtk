@@ -201,7 +201,8 @@ public:
     */
 };
 
-/** The class EstimatorMLBatch is implemented for univariate linear regression.
+/** The class EstimatorMLBatch is implemented for multivariate linear
+    regression.
     \brief Multivariate linear regression ML estimator
   */
 template <size_t M> class EstimatorMLBatch<LinearRegression<M>, M> {
@@ -244,8 +245,10 @@ public:
     @{
     */
   /// Estimate the parameters
-  static void estimate(MixtureDistribution<NormalDistribution<1>, N>& dist,
-    const std::vector<double>& points);
+  static size_t estimate(MixtureDistribution<NormalDistribution<1>, N>& dist,
+    const std::vector<double>& points,
+    std::vector<Eigen::Matrix<double, N, 1> >& responsibilities, size_t
+    maxNumIter = 100, double tol = 1e-6);
   /** @}
     */
 };
@@ -269,8 +272,38 @@ public:
     @{
     */
   /// Estimate the parameters
-  static void estimate(MixtureDistribution<NormalDistribution<M>, N>& dist,
-    const std::vector<typename NormalDistribution<M>::VariableType>& points);
+  static size_t estimate(MixtureDistribution<NormalDistribution<M>, N>& dist,
+    const std::vector<typename NormalDistribution<M>::VariableType>& points,
+    std::vector<Eigen::Matrix<double, N, 1> >& responsibilities,
+    size_t maxNumIter = 100, double tol = 1e-6);
+  /** @}
+    */
+
+/** The class EstimatorMLBatch is implemented for mixtures of linear
+    regressions.
+    \brief Mixture of linear regression ML estimator
+  */
+};
+
+template <size_t M, size_t N>
+class EstimatorMLBatch<MixtureDistribution<LinearRegression<M>, N>, M, N> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static size_t estimate(MixtureDistribution<LinearRegression<M>, N>& dist,
+    const std::vector<Eigen::Matrix<double, M, 1> >& points,
+    std::vector<Eigen::Matrix<double, N, 1> >& responsibilities,
+    size_t maxNumIter = 100, double tol = 1e-6);
   /** @}
     */
 };

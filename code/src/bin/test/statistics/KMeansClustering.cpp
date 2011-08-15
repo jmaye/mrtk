@@ -51,12 +51,14 @@ int main(int argc, char** argv) {
   std::vector<Eigen::Matrix<double, 2, 1> > clusterCenters;
   std::vector<std::vector<size_t> > clusterToData;
   std::vector<size_t> dataToCluster;
-  KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
-    dataToCluster, 5, 1000, 1e-6, true);
+  size_t numIter = KMeansClustering<double, 2>::cluster(samples, clusterCenters,
+    clusterToData, dataToCluster, 5, 1000, 1e-6, true);
 
   std::cout << "cluster centers: " << std::endl;
   for (size_t i = 0; i < 5; ++i)
     std::cout << clusterCenters[i] << std::endl << std::endl;
+
+  std::cout << "converged in: " << numIter << " iterations" << std::endl;
 
   try {
     KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,

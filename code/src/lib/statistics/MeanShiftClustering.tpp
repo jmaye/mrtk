@@ -31,7 +31,7 @@ void MeanShiftClustering<T, M>::cluster(const
   std::vector<Eigen::Matrix<T, M, 1> >& data,
   std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
   std::vector<std::vector<size_t> >& clusterToData, std::vector<size_t>&
-  dataToCluster, double bandwidth, size_t maxIterations, double tol, bool debug)
+  dataToCluster, double bandwidth, double tol, bool debug)
   throw (BadArgumentException<double>, BadArgumentException<size_t>) {
 
   if (bandwidth <= 0)
