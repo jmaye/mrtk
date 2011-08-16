@@ -16,20 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLBatchNormal1v.h
+    \brief This file implements a bach ML estimator for multivariate normal
+           distributions.
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLBATCHNORMALMV_H
+#define ESTIMATORMLBATCHNORMALMV_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/NormalDistribution.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorMLBatch is implemented for multivariate normal
+    distributions.
+    \brief Multivariate normal distribution batch ML estimator
+  */
+template <size_t M> class EstimatorMLBatch<NormalDistribution<M>, M> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(NormalDistribution<M>& dist,
+    const std::vector<typename NormalDistribution<M>::VariableType>& points);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLBatchNormalMv.tpp"
+
+#endif // ESTIMATORMLBATCHNORMALMV

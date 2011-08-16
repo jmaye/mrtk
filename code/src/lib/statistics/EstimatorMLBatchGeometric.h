@@ -16,20 +16,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLBatchGeometric.h
+    \brief This file implements a batch ML estimator for geometric
+           distributions.
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLBATCHGEOMETRIC_H
+#define ESTIMATORMLBATCHGEOMETRIC_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/GeometricDistribution.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorMLBatch is implemented for geometric distributions.
+    \brief Geometric distribution batch ML estimator
+  */
+template <> class EstimatorMLBatch<GeometricDistribution> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(GeometricDistribution& dist,
+    const std::vector<GeometricDistribution::VariableType>& points);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLBatchGeometric.tpp"
+
+#endif // ESTIMATORMLBATCHGEOMETRIC

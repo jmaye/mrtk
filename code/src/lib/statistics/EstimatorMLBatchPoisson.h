@@ -16,20 +16,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLBatchPoisson.h
+    \brief This file implements a batch ML estimator for Poisson
+           distributions.
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLBATCHPOISSON_H
+#define ESTIMATORMLBATCHPOISSON_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/PoissonDistribution.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorMLBatch is implemented for Poisson distributions.
+    \brief Poisson distribution batch ML estimator
+  */
+template <> class EstimatorMLBatch<PoissonDistribution> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(PoissonDistribution& dist,
+    const std::vector<PoissonDistribution::VariableType>& points);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLBatchPoisson.tpp"
+
+#endif // ESTIMATORMLBATCHPOISSON

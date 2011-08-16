@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
   distributionsNorm1[3] = NormalDistribution<1>(-5.5, 0.9);
   distributionsNorm1[4] = NormalDistribution<1>(-9.5, 2.0);
   distMixtNorm1.setDistributions(distributionsNorm1);
-  std::vector<Eigen::Matrix<double, 5, 1> > responsibilities;
+  Eigen::Matrix<double, Eigen::Dynamic, 5> responsibilities;
   size_t numIter =
     EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, 5>, 1, 5>::
     estimate(distMixtNorm1, samplesMixtNorm1, responsibilities);

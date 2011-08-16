@@ -16,20 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
-  */
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
-
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
-
-#endif // ESTIMATORMLONLINE
+void EstimatorMLBatch<PoissonDistribution>::estimate(PoissonDistribution& dist,
+  const std::vector<PoissonDistribution::VariableType>& points) {
+  if (points.size()) {
+    Eigen::Map<Eigen::Matrix<size_t, Eigen::Dynamic, 1> >
+      dataMapped(&points[0], points.size());
+    double mean = dataMapped.sum() / (double)points.size();
+    dist.setRate(mean);
+  }
+}

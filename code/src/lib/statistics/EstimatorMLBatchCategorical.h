@@ -16,20 +16,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLBatchCategorical.h
+    \brief This file implements a batch ML estimator for categorical
+           distributions.
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLBATCHCATEGORICAL_H
+#define ESTIMATORMLBATCHCATEGORICAL_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/CategoricalDistribution.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorMLBatch is implemented for categorical distributions.
+    \brief Categorical distribution batch ML estimator
+  */
+template <size_t M> class EstimatorMLBatch<CategoricalDistribution<M>, M> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(CategoricalDistribution<M>& dist,
+    const std::vector<Eigen::Matrix<size_t, M, 1> >& points);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLBatchCategorical.tpp"
+
+#endif // ESTIMATORMLBATCHCATEGORICAL

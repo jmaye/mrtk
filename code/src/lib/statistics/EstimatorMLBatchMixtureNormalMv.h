@@ -16,20 +16,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLBatchMixtureNormalMv.h
+    \brief This file implements a batch ML estimator for mixture of multivariate
+           normal distributions
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLBATCHMIXTURENORMALMV_H
+#define ESTIMATORMLBATCHMIXTURENORMALMV_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/NormalDistribution.h"
+#include "statistics/MixtureDistribution.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorMLBatch is implemented for mixtures of multivariate
+    normal distributions.
+    \brief Mixture of multivariate normal distributions batch ML estimator
+  */
+template <size_t M, size_t N>
+class EstimatorMLBatch<MixtureDistribution<NormalDistribution<M>, N>, M, N> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static size_t estimate(MixtureDistribution<NormalDistribution<M>, N>& dist,
+    const std::vector<typename NormalDistribution<M>::VariableType>& points,
+    Eigen::Matrix<double, Eigen::Dynamic, N>& responsibilities, size_t
+    maxNumIter = 100, double tol = 1e-6);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLBatchMixtureNormalMv.tpp"
+
+#endif // ESTIMATORMLBATCHMIXTURENORMALMV

@@ -16,20 +16,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLBatchExponential.h
+    \brief This file implements a batch ML estimator for exponential
+           distributions.
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLBATCHEXPONENTIAL_H
+#define ESTIMATORMLBATCHEXPONENTIAL_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/ExponentialDistribution.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorMLBatch is implemented for exponential distributions.
+    \brief Exponential distribution batch ML estimator
+  */
+template <> class EstimatorMLBatch<ExponentialDistribution> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(ExponentialDistribution& dist,
+    const std::vector<ExponentialDistribution::VariableType>& points);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLBatchExponential.tpp"
+
+#endif // ESTIMATORMLBATCHEXPONENTIAL

@@ -16,20 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
-  */
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
-
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
-
-#endif // ESTIMATORMLONLINE
+template <size_t M>
+void EstimatorMLBatch<NormalDistribution<M>, M>::estimate(NormalDistribution<M>&
+  dist, const std::vector<typename NormalDistribution<M>::VariableType>&
+  points) {
+  if (points.size()) {
+    Eigen::Matrix<double, M, 1> mean = Eigen::Matrix<double, M, 1>::Zero();
+    for (size_t i = 0; i < points.size(); ++i)
+      mean += points[i];
+    mean /= points.size();
+    Eigen::Matrix<double, M, M> covariance =
+      Eigen::Matrix<double, M, M>::Zero();
+    for (size_t i = 0; i < points.size(); ++i)
+      covariance += (points[i] - mean) * (points[i] - mean).transpose();
+    covariance /= points.size();
+    dist.setMean(mean);
+    dist.setCovariance(covariance);
+  }
+}

@@ -16,20 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLBatchLinearRegression.h
+    \brief This file implements a batch ML estimator for linear regression
+           models
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLBATCHLINEARREGRESSION_H
+#define ESTIMATORMLBATCHLINEARREGRESSION_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/LinearRegression.h"
+#include "exceptions/InvalidOperationException.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorMLBatch is implemented for multivariate linear
+    regression.
+    \brief Multivariate linear regression batch ML estimator
+  */
+template <size_t M> class EstimatorMLBatch<LinearRegression<M>, M> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(LinearRegression<M>& dist,
+    const std::vector<Eigen::Matrix<double, M, 1> >& points, double tol = 1e-5)
+    throw (InvalidOperationException);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLBatchLinearRegression.tpp"
+
+#endif // ESTIMATORMLBATCHLINEARREGRESSION

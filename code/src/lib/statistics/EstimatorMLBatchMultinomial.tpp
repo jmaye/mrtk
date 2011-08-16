@@ -16,20 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
-  */
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
-
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
-
-#endif // ESTIMATORMLONLINE
+template <size_t M>
+void EstimatorMLBatch<MultinomialDistribution<M>, M>::estimate(
+  MultinomialDistribution<M>& dist, const
+  std::vector<Eigen::Matrix<size_t, M, 1> >& points) {
+  if (points.size()) {
+    Eigen::Matrix<double, M, 1> successProbabilities =
+      Eigen::Matrix<double, M, 1>::Zero();
+    double numTrials = 0;
+    for (size_t i = 0; i < points.size(); ++i) {
+      for (size_t j = 0; j < M; ++j)
+        successProbabilities(j) += points[i](j);
+      numTrials += points[i].sum();
+    }
+    successProbabilities /= numTrials;
+    numTrials /= points.size();
+    dist.setNumTrials(numTrials);
+    dist.setSuccessProbabilities(successProbabilities);
+  }
+}

@@ -16,20 +16,47 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLBatchMixtureLinearRegression.h
+    \brief This file implements a batch ML estimator for mixture of linear
+           regression models
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLBATCHMIXTURELINEARREGRESSION_H
+#define ESTIMATORMLBATCHMIXTURELINEARREGRESSION_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/LinearRegression.h"
+#include "statistics/MixtureDistribution.h"
+#include "exceptions/InvalidOperationException.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorMLBatch is implemented for mixtures of linear
+    regressions.
+    \brief Mixture of linear regression batch ML estimator
+  */
+template <size_t M, size_t N>
+class EstimatorMLBatch<MixtureDistribution<LinearRegression<M>, N>, M, N> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorMLBatch();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static size_t estimate(MixtureDistribution<LinearRegression<M>, N>& dist,
+    const std::vector<Eigen::Matrix<double, M, 1> >& points,
+    Eigen::Matrix<double, Eigen::Dynamic, N>& responsibilities, size_t
+    maxNumIter = 100, double tol = 1e-6) throw (InvalidOperationException);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLBatchMixtureLinearRegression.tpp"
+
+#endif // ESTIMATORMLBATCHMIXTURELINEARREGRESSION
