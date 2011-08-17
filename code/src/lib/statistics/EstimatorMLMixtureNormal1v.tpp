@@ -21,7 +21,7 @@
 /******************************************************************************/
 
 template <size_t N>
-size_t EstimatorMLBatch<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
+size_t EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
   estimate(MixtureDistribution<NormalDistribution<1>, N>& dist, const
   std::vector<double>& points, Eigen::Matrix<double, Eigen::Dynamic, N>&
   responsibilities, size_t maxNumIter, double tol) {

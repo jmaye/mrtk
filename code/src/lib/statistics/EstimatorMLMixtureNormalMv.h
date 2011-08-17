@@ -16,25 +16,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+/** \file EstimatorMLMixtureNormalMv.h
+    \brief This file implements an ML estimator for mixture of multivariate
+           normal distributions
+  */
 
-template <size_t M>
-void EstimatorMLBatch<NormalDistribution<M>, M>::estimate(NormalDistribution<M>&
-  dist, const std::vector<typename NormalDistribution<M>::VariableType>&
-  points) {
-  if (points.size()) {
-    Eigen::Matrix<double, M, 1> mean = Eigen::Matrix<double, M, 1>::Zero();
-    for (size_t i = 0; i < points.size(); ++i)
-      mean += points[i];
-    mean /= points.size();
-    Eigen::Matrix<double, M, M> covariance =
-      Eigen::Matrix<double, M, M>::Zero();
-    for (size_t i = 0; i < points.size(); ++i)
-      covariance += (points[i] - mean) * (points[i] - mean).transpose();
-    covariance /= points.size();
-    dist.setMean(mean);
-    dist.setCovariance(covariance);
-  }
-}
+#ifndef ESTIMATORMLMIXTURENORMALMV_H
+#define ESTIMATORMLMIXTURENORMALMV_H
+
+#include "statistics/NormalDistribution.h"
+#include "statistics/MixtureDistribution.h"
+
+#include <vector>
+
+/** The class EstimatorML is implemented for mixtures of multivariate
+    normal distributions.
+    \brief Mixture of multivariate normal distributions ML estimator
+  */
+template <size_t M, size_t N>
+class EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorML();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static size_t estimate(MixtureDistribution<NormalDistribution<M>, N>& dist,
+    const std::vector<typename NormalDistribution<M>::VariableType>& points,
+    Eigen::Matrix<double, Eigen::Dynamic, N>& responsibilities, size_t
+    maxNumIter = 100, double tol = 1e-6);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLMixtureNormalMv.tpp"
+
+#endif // ESTIMATORMLMIXTURENORMALMV

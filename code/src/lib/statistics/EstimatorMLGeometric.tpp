@@ -16,75 +16,97 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <limits>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorMLOnline<PoissonDistribution>::EstimatorMLOnline() :
-  mNumPoints(0) {
+EstimatorML<GeometricDistribution>::EstimatorML() :
+  mSuccessProbability(0.0),
+  mMean(0.0),
+  mNumPoints(0),
+  mValid(false) {
 }
 
-EstimatorMLOnline<PoissonDistribution>::EstimatorMLOnline(const
-  EstimatorMLOnline<PoissonDistribution>& other) :
-  mNumPoints(other.mNumPoints) {
+EstimatorML<GeometricDistribution>::EstimatorML(const
+  EstimatorML<GeometricDistribution>& other) :
+  mSuccessProbability(other.mSuccessProbability),
+  mMean(other.mMean),
+  mNumPoints(other.mNumPoints),
+  mValid(other.mValid) {
 }
 
-EstimatorMLOnline<PoissonDistribution>&
-  EstimatorMLOnline<PoissonDistribution>::operator =
-  (const EstimatorMLOnline<PoissonDistribution>& other) {
+EstimatorML<GeometricDistribution>&
+  EstimatorML<GeometricDistribution>::operator =
+  (const EstimatorML<GeometricDistribution>& other) {
   if (this != &other) {
+    mSuccessProbability = other.mSuccessProbability;
+    mMean = other.mMean;
     mNumPoints = other.mNumPoints;
+    mValid = other.mValid;
   }
   return *this;
 }
 
-EstimatorMLOnline<PoissonDistribution>::~EstimatorMLOnline() {
+EstimatorML<GeometricDistribution>::~EstimatorML() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorMLOnline<PoissonDistribution>::read(std::istream& stream) {
+void EstimatorML<GeometricDistribution>::read(std::istream& stream) {
 }
 
-void EstimatorMLOnline<PoissonDistribution>::write(std::ostream& stream)
-  const {
-  stream << "number of points: " << mNumPoints;
+void EstimatorML<GeometricDistribution>::write(std::ostream& stream) const {
+  stream << "success probability: " << mSuccessProbability << std::endl
+    << "number of points: " << mNumPoints << std::endl
+    << "valid: " << mValid;
 }
 
-void EstimatorMLOnline<PoissonDistribution>::read(std::ifstream& stream) {
+void EstimatorML<GeometricDistribution>::read(std::ifstream& stream) {
 }
 
-void EstimatorMLOnline<PoissonDistribution>::write(std::ofstream& stream)
-  const {
+void EstimatorML<GeometricDistribution>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void EstimatorMLOnline<PoissonDistribution>::setNumPoints(size_t numPoints) {
-  mNumPoints = numPoints;
-}
-
-size_t EstimatorMLOnline<PoissonDistribution>::getNumPoints() const {
+size_t EstimatorML<GeometricDistribution>::getNumPoints() const {
   return mNumPoints;
 }
 
-void EstimatorMLOnline<PoissonDistribution>::addPoint(PoissonDistribution& dist,
-  const PoissonDistribution::VariableType& point) {
+bool EstimatorML<GeometricDistribution>::getValid() const {
+  return mValid;
+}
+
+const Eigen::Matrix<double, M, 1>&
+EstimatorML<GeometricDistribution>::getSuccessProbability() const {
+  return mSuccessProbability;
+}
+
+void EstimatorML<GeometricDistribution>::reset() {
+  mNumPoints = 0;
+  mValid = false;
+  mSuccessProbability = 0;
+  mMean = 0;
+}
+
+void EstimatorML<GeometricDistribution>::addPoint(double point) {
   mNumPoints++;
-  double mean;
-  if (mNumPoints == 1)
-    mean = point;
-  else {
-    mean = dist.getMean();
-    mean += 1.0 / mNumPoints * (point - mean);
+  if (mNumPoints == 1) {
+    mMean = point;
+    mValid = true;
   }
-  if (mean == 0)
-    mean = std::numeric_limits<double>::epsilon();
-  dist.setRate(mean);
+  else {
+    mMean += 1.0 / mNumPoints * (point - mMean);
+  }
+  mSuccessProbability = 1.0 / mMean;
+}
+
+void EstimatorML<GeometricDistribution>::addPoints(const std::vector<double>&
+  points) {
+  for (size_t i = 0; i < points.size(); ++i)
+    addPoint(points[i]);
 }

@@ -16,48 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnlineGeometric.h
-    \brief This file implements an online ML estimator for geometric
-           distributions.
+/** \file EstimatorMLGeometric.h
+    \brief This file implements an ML estimator for geometric distributions.
   */
 
-#ifndef ESTIMATORMLONLINEGEOMETRIC_H
-#define ESTIMATORMLONLINEGEOMETRIC_H
+#ifndef ESTIMATORMLGEOMETRIC_H
+#define ESTIMATORMLGEOMETRIC_H
 
 #include "statistics/GeometricDistribution.h"
 #include "base/Serializable.h"
 
-/** The class EstimatorMLOnline is implemented for geometric distributions.
-    \brief Geometric distribution online ML estimator
+#include <vector>
+
+/** The class EstimatorML is implemented for geometric distributions.
+    \brief Geometric distribution ML estimator
   */
-template <> class EstimatorMLOnline<GeometricDistribution> :
+template <> class EstimatorML<GeometricDistribution> :
   public virtual Serializable {
 public:
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  EstimatorMLOnline();
+  EstimatorML();
   /// Copy constructor
-  EstimatorMLOnline(const EstimatorMLOnline<GeometricDistribution>& other);
+  EstimatorML(const EstimatorML<GeometricDistribution>& other);
   /// Assignment operator
-  EstimatorMLOnline<GeometricDistribution>& operator =
-    (const EstimatorMLOnline<GeometricDistribution>& other);
+  EstimatorML<GeometricDistribution>& operator =
+    (const EstimatorML<GeometricDistribution>& other);
   /// Destructor
-  virtual ~EstimatorMLOnline();
+  virtual ~EstimatorML();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of points
-  void setNumPoints(size_t numPoints);
   /// Returns the number of points
   size_t getNumPoints() const;
-  /// Add a point to the estimator and estimate the distribution
-  void addPoint(GeometricDistribution& dist, const
-    GeometricDistribution::VariableType& point);
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated success probability
+  double getSuccessProbability() const;
+  /// Add a point to the estimator
+  void addPoint(double point);
+  /// Add points to the estimator
+  void addPoints(const std::vector<double>& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
 
@@ -79,13 +85,19 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Estimated success probability
+  double mSuccessProbability;
+  /// Estimated mean
+  double mMean;
   /// Number of points in the estimator
   size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
   /** @}
     */
 
 };
 
-#include "statistics/EstimatorMLOnlineGeometric.tpp"
+#include "statistics/EstimatorMLGeometric.tpp"
 
-#endif // ESTIMATORMLONLINEGEOMETRIC
+#endif // ESTIMATORMLGEOMETRIC

@@ -16,16 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+/** \file EstimatorMLLinearRegression.h
+    \brief This file implements an ML estimator for linear regression models
+  */
 
-void EstimatorMLBatch<PoissonDistribution>::estimate(PoissonDistribution& dist,
-  const std::vector<PoissonDistribution::VariableType>& points) {
-  if (points.size()) {
-    Eigen::Map<Eigen::Matrix<size_t, Eigen::Dynamic, 1> >
-      dataMapped(&points[0], points.size());
-    double mean = dataMapped.sum() / (double)points.size();
-    dist.setRate(mean);
-  }
-}
+#ifndef ESTIMATORMLLINEARREGRESSION_H
+#define ESTIMATORMLLINEARREGRESSION_H
+
+#include "statistics/LinearRegression.h"
+#include "exceptions/InvalidOperationException.h"
+
+#include <vector>
+
+/** The class EstimatorML is implemented for multivariate linear regression.
+    \brief Multivariate linear regression ML estimator
+  */
+template <size_t M> class EstimatorML<LinearRegression<M>, M> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorML();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static void estimate(LinearRegression<M>& dist,
+    const std::vector<Eigen::Matrix<double, M, 1> >& points, double tol = 1e-5)
+    throw (InvalidOperationException);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLLinearRegression.tpp"
+
+#endif // ESTIMATORMLLINEARREGRESSION

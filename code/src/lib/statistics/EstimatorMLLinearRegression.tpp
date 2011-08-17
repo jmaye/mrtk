@@ -20,12 +20,32 @@
 /* Methods                                                                    */
 /******************************************************************************/
 
-void EstimatorMLBatch<ExponentialDistribution>::estimate(
-  ExponentialDistribution& dist, const
-  std::vector<ExponentialDistribution::VariableType>& points) {
+template <size_t M>
+void EstimatorML<LinearRegression<M>, M>::estimate(LinearRegression<M>&
+  dist, const std::vector<Eigen::Matrix<double, M, 1> >& points, double tol)
+  throw (InvalidOperationException) {
   if (points.size()) {
-    Eigen::Map<Eigen::VectorXd> dataMapped(&points[0], points.size());
-    double mean = dataMapped.sum() / points.size();
-    dist.setRate(1.0 / mean);
+    Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
+    Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
+      (int)M);
+    for (size_t i = 0; i < points.size(); ++i) {
+      targets(i) = points[i](M - 1);
+      designMatrix(i, 0) = 1.0;
+      designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
+    }
+    Eigen::Matrix<double, M, M> invCheckMatrix =
+      designMatrix.transpose() * designMatrix;
+    if (points.size() < M || invCheckMatrix.determinant() < tol)
+      throw InvalidOperationException("EstimatorML<LinearRegression<M>, M>::estimate(): data cannot be fitted");
+    Eigen::Matrix<double, M, 1> coefficients = invCheckMatrix.inverse() *
+      designMatrix.transpose() * targets;
+    double variance = 0.0;
+    for (size_t i = 0; i < points.size(); ++i)
+      variance += (targets(i) - (coefficients.transpose() *
+        designMatrix.row(i).transpose())(0)) * (targets(i) -
+        (coefficients.transpose() * designMatrix.row(i).transpose())(0));
+    variance /= points.size();
+    dist.setCoefficients(coefficients);
+    dist.setVariance(variance);
   }
 }

@@ -16,48 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnlinePoisson.h
-    \brief This file implements an online ML estimator for Poisson
-           distributions.
+/** \file EstimatorMLPoisson.h
+    \brief This file implements an ML estimator for Poisson distributions.
   */
 
-#ifndef ESTIMATORMLONLINEPOISSON_H
-#define ESTIMATORMLONLINEPOISSON_H
+#ifndef ESTIMATORMLPOISSON_H
+#define ESTIMATORMLPOISSON_H
 
 #include "statistics/PoissonDistribution.h"
 #include "base/Serializable.h"
 
-/** The class EstimatorMLOnline is implemented for Poisson distributions.
+#include <vector>
+
+/** The class EstimatorML is implemented for Poisson distributions.
     \brief Poisson distribution ML estimator
   */
-template <> class EstimatorMLOnline<PoissonDistribution> :
+template <> class EstimatorML<PoissonDistribution> :
   public virtual Serializable {
 public:
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  EstimatorMLOnline();
+  EstimatorML();
   /// Copy constructor
-  EstimatorMLOnline(const EstimatorMLOnline<PoissonDistribution>& other);
+  EstimatorML(const EstimatorML<PoissonDistribution>& other);
   /// Assignment operator
-  EstimatorMLOnline<PoissonDistribution>& operator =
-    (const EstimatorMLOnline<PoissonDistribution>& other);
+  EstimatorML<PoissonDistribution>& operator =
+    (const EstimatorML<PoissonDistribution>& other);
   /// Destructor
-  virtual ~EstimatorMLOnline();
+  virtual ~EstimatorML();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of points
-  void setNumPoints(size_t numPoints);
   /// Returns the number of points
   size_t getNumPoints() const;
-  /// Add a point to the estimator and estimate the distribution
-  void addPoint(PoissonDistribution& dist, const
-    PoissonDistribution::VariableType& point);
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated mean
+  double getMean() const;
+  /// Add a point to the estimator
+  void addPoint(double point);
+  /// Add points to the estimator
+  void addPoints(const std::vector<double>& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
 
@@ -79,13 +85,17 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Estimated mean
+  double mMean;
   /// Number of points in the estimator
   size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
   /** @}
     */
 
 };
 
-#include "statistics/EstimatorMLOnlinePoisson.tpp"
+#include "statistics/EstimatorMLPoisson.tpp"
 
-#endif // ESTIMATORMLONLINEPOISSON
+#endif // ESTIMATORMLPOISSON

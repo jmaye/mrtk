@@ -26,10 +26,10 @@ int main(int argc, char** argv) {
   PoissonDistribution dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
-  std::cout << "dist.getRate(): " << dist.getRate() << std::endl
+  std::cout << "dist.getMean(): " << dist.getMean() << std::endl
     << std::endl;
-  std::cout << "dist.setRate(2.5)" << std::endl << std::endl;
-  dist.setRate(2.5);
+  std::cout << "dist.setMean(2.5)" << std::endl << std::endl;
+  dist.setMean(2.5);
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
 

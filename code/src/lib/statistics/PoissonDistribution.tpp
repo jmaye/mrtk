@@ -24,18 +24,18 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-PoissonDistribution::PoissonDistribution(double rate) {
-  setRate(rate);
+PoissonDistribution::PoissonDistribution(double mean) {
+  setMean(mean);
 }
 
 PoissonDistribution::PoissonDistribution(const PoissonDistribution& other) : 
-  mRate(other.mRate) {
+  mMean(other.mMean) {
 }
 
 PoissonDistribution& PoissonDistribution::operator = (const
   PoissonDistribution& other) {
   if (this != &other) {
-    mRate = other.mRate;
+    mMean = other.mMean;
   }
   return *this;
 }
@@ -51,7 +51,7 @@ void PoissonDistribution::read(std::istream& stream) {
 }
 
 void PoissonDistribution::write(std::ostream& stream) const {
-  stream << "rate: " << mRate;
+  stream << "mean: " << mMean;
 }
 
 void PoissonDistribution::read(std::ifstream& stream) {
@@ -64,17 +64,17 @@ void PoissonDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void PoissonDistribution::setRate(double rate)
+void PoissonDistribution::setMean(double mean)
   throw (BadArgumentException<double>) {
-  if (rate <= 0)
-    throw BadArgumentException<double>(rate,
-      "PoissonDistribution::setRate(): rate must be strictly positive",
+  if (mean <= 0)
+    throw BadArgumentException<double>(mean,
+      "PoissonDistribution::setMean(): mean must be strictly positive",
       __FILE__, __LINE__);
-  mRate = rate;
+  mMean = mean;
 }
 
-double PoissonDistribution::getRate() const {
-  return mRate;
+double PoissonDistribution::getMean() const {
+  return mMean;
 }
 
 double PoissonDistribution::pmf(const size_t& value) const {
@@ -83,40 +83,36 @@ double PoissonDistribution::pmf(const size_t& value) const {
 
 double PoissonDistribution::logpmf(const size_t& value) const {
   LogFactorialFunction lfactorial;
-  return value * log(mRate) - mRate - lfactorial(value);
+  return value * log(mMean) - mMean - lfactorial(value);
 }
 
 double PoissonDistribution::cdf(const size_t& value) const {
   FactorialFunction factorial;
   double sum = 0.0;
   for (size_t i = 0; i <= value; ++i) {
-    sum += pow(mRate, i) / factorial(i);
+    sum += pow(mMean, i) / factorial(i);
   }
-  return exp(-mRate) * sum;
+  return exp(-mMean) * sum;
 }
 
 size_t PoissonDistribution::getSample() const {
   static Randomizer<double> randomizer;
-  return randomizer.samplePoisson(mRate);
-}
-
-double PoissonDistribution::getMean() const {
-  return mRate;
+  return randomizer.samplePoisson(mMean);
 }
 
 double PoissonDistribution::getMedian() const {
-return floor(mRate + 1.0/ 3.0 - 0.02 / mRate);
+return floor(mMean + 1.0/ 3.0 - 0.02 / mMean);
 }
 
 double PoissonDistribution::getMode() const {
-  return ceil(mRate) - 1.0;
+  return ceil(mMean) - 1.0;
 }
 
 double PoissonDistribution::getVariance() const {
-  return mRate;
+  return mMean;
 }
 
 double PoissonDistribution::KLDivergence(const PoissonDistribution& other)
   const {
-  return mRate - other.mRate + other.mRate * log(other.mRate / mRate);
+  return mMean - other.mMean + other.mMean * log(other.mMean / mMean);
 }

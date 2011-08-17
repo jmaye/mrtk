@@ -16,49 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnlineNormalMv.h
-    \brief This file implements an online ML estimator for multivariate normal
-           distributions.
+/** \file EstimatorMLExponential.h
+    \brief This file implements an ML estimator for exponential distributions.
   */
 
-#ifndef ESTIMATORMLONLINENORMALMV_H
-#define ESTIMATORMLONLINENORMALMV_H
+#ifndef ESTIMATORMLEXPONENTIAL_H
+#define ESTIMATORMLEXPONENTIAL_H
 
-#include "statistics/NormalDistribution.h"
+#include "statistics/ExponentialDistribution.h"
 #include "base/Serializable.h"
 
-/** The class EstimatorMLOnline is implemented for multivariate normal
-    distributions.
-    \brief Multivariate normal distribution online ML estimator
+#include <vector>
+
+/** The class EstimatorML is implemented for exponential distributions.
+    \brief Exponential distribution ML estimator
   */
-template <size_t M> class EstimatorMLOnline<NormalDistribution<M>, M> :
+template <> class EstimatorML<ExponentialDistribution> :
   public virtual Serializable {
 public:
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  EstimatorMLOnline();
+  EstimatorML();
   /// Copy constructor
-  EstimatorMLOnline(const EstimatorMLOnline<NormalDistribution<M>, M>& other);
+  EstimatorML(const EstimatorML<ExponentialDistribution>& other);
   /// Assignment operator
-  EstimatorMLOnline<NormalDistribution<M>, M>& operator =
-    (const EstimatorMLOnline<NormalDistribution<M>, M>& other);
+  EstimatorML<ExponentialDistribution>& operator =
+    (const EstimatorML<ExponentialDistribution>& other);
   /// Destructor
-  virtual ~EstimatorMLOnline();
+  virtual ~EstimatorML();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of points
-  void setNumPoints(size_t numPoints);
   /// Returns the number of points
   size_t getNumPoints() const;
-  /// Add a point to the estimator and estimate the distribution
-  void addPoint(NormalDistribution<M>& dist, const typename
-    NormalDistribution<M>::VariableType& point);
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated rate
+  double getRate() const;
+  /// Add a point to the estimator
+  void addPoint(double point);
+  /// Add points to the estimator
+  void addPoints(const std::vector<double>& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
 
@@ -80,13 +85,19 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Estimated rate
+  double mRate;
+  /// Estimated mean
+  double mMean;
   /// Number of points in the estimator
   size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
   /** @}
     */
 
 };
 
-#include "statistics/EstimatorMLOnlineNormalMv.tpp"
+#include "statistics/EstimatorMLExponential.tpp"
 
-#endif // ESTIMATORMLONLINENORMALMV
+#endif // ESTIMATORMLEXPONENTIAL

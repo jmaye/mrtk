@@ -16,24 +16,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLBatch.h
-    \brief This file defines the EstimatorMLBatch class, which implements batch
-           maximum likelihood estimators for various distributions
+/** \file EstimatorMLMixtureNormal1v.h
+    \brief This file implements a batch ML estimator for mixture of univariate
+           normal distributions
   */
 
-#ifndef ESTIMATORMLBATCH_H
-#define ESTIMATORMLBATCH_H
+#ifndef ESTIMATORMLMIXTURENORMAL1V_H
+#define ESTIMATORMLMIXTURENORMAL1V_H
 
-#include "statistics/EstimatorMLBatchNormal1v.h"
-#include "statistics/EstimatorMLBatchNormalMv.h"
-#include "statistics/EstimatorMLBatchCategorical.h"
-#include "statistics/EstimatorMLBatchMultinomial.h"
-#include "statistics/EstimatorMLBatchExponential.h"
-#include "statistics/EstimatorMLBatchGeometric.h"
-#include "statistics/EstimatorMLBatchPoisson.h"
-#include "statistics/EstimatorMLBatchLinearRegression.h"
-#include "statistics/EstimatorMLBatchMixtureLinearRegression.h"
-#include "statistics/EstimatorMLBatchMixtureNormal1v.h"
-#include "statistics/EstimatorMLBatchMixtureNormalMv.h"
+#include "statistics/NormalDistribution.h"
+#include "statistics/MixtureDistribution.h"
 
-#endif // ESTIMATORMLBATCH
+#include <vector>
+
+/** The class EstimatorML is implemented for mixtures of univariate normal
+    distributions.
+    \brief Mixture of univariate normal distributions ML estimator
+  */
+template <size_t N>
+class EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorML();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static size_t estimate(MixtureDistribution<NormalDistribution<1>, N>& dist,
+    const std::vector<double>& points, Eigen::Matrix<double, Eigen::Dynamic, N>&
+    responsibilities, size_t maxNumIter = 100, double tol = 1e-6);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLMixtureNormal1v.tpp"
+
+#endif // ESTIMATORMLMIXTURENORMAL1V

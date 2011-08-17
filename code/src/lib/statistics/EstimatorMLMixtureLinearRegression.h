@@ -16,20 +16,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnline.h
-    \brief This file defines the EstimatorMLOnline class, which implements
-           online maximum likelihood estimators for various distributions
+/** \file EstimatorMLMixtureLinearRegression.h
+    \brief This file implements an ML estimator for mixture of linear
+           regression models
   */
 
-#ifndef ESTIMATORMLONLINE_H
-#define ESTIMATORMLONLINE_H
+#ifndef ESTIMATORMLMIXTURELINEARREGRESSION_H
+#define ESTIMATORMLMIXTURELINEARREGRESSION_H
 
-#include "statistics/EstimatorMLOnlineNormal1v.h"
-#include "statistics/EstimatorMLOnlineNormalMv.h"
-#include "statistics/EstimatorMLOnlineCategorical.h"
-#include "statistics/EstimatorMLOnlineMultinomial.h"
-#include "statistics/EstimatorMLOnlineExponential.h"
-#include "statistics/EstimatorMLOnlineGeometric.h"
-#include "statistics/EstimatorMLOnlinePoisson.h"
+#include "statistics/LinearRegression.h"
+#include "statistics/MixtureDistribution.h"
+#include "exceptions/InvalidOperationException.h"
 
-#endif // ESTIMATORMLONLINE
+#include <vector>
+
+/** The class EstimatorML is implemented for mixtures of linear regressions.
+    \brief Mixture of linear regression ML estimator
+  */
+template <size_t M, size_t N>
+class EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N> {
+  /** \name Private constructors
+    @{
+    */
+  /// Default constructor
+  EstimatorML();
+  /** @}
+    */
+
+public:
+  /** \name Methods
+    @{
+    */
+  /// Estimate the parameters
+  static size_t estimate(MixtureDistribution<LinearRegression<M>, N>& dist,
+    const std::vector<Eigen::Matrix<double, M, 1> >& points,
+    Eigen::Matrix<double, Eigen::Dynamic, N>& responsibilities, size_t
+    maxNumIter = 100, double tol = 1e-6) throw (InvalidOperationException);
+  /** @}
+    */
+};
+
+#include "statistics/EstimatorMLMixtureLinearRegression.tpp"
+
+#endif // ESTIMATORMLMIXTURELINEARREGRESSION

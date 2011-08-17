@@ -16,49 +16,56 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnlineCategorical.h
-    \brief This file implements an online ML estimator for categorical
-           distributions.
+/** \file EstimatorMLMultinomial.h
+    \brief This file implements an ML estimator for multinomial distributions.
   */
 
-#ifndef ESTIMATORMLONLINECATEGORICAL_H
-#define ESTIMATORMLONLINECATEGORICAL_H
+#ifndef ESTIMATORMLMULTINOMIAL_H
+#define ESTIMATORMLMULTINOMIAL_H
 
-#include "statistics/CategoricalDistribution.h"
+#include "statistics/MultinomialDistribution.h"
 #include "base/Serializable.h"
 
-/** The class EstimatorMLOnline is implemented for categorical distributions.
-    \brief Categorical distribution online ML estimator
+#include <vector>
+
+/** The class EstimatorML is implemented for categorical distributions.
+    \brief Categorical distribution ML estimator
   */
-template <size_t M> class EstimatorMLOnline<CategoricalDistribution<M>, M> :
+template <size_t M> class EstimatorML<MultinomialDistribution<M>, M> :
   public virtual Serializable {
 public:
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  EstimatorMLOnline();
+  EstimatorML();
   /// Copy constructor
-  EstimatorMLOnline(const EstimatorMLOnline<CategoricalDistribution<M>, M>&
-    other);
+  EstimatorML(const EstimatorML<MultinomialDistribution<M>, M>& other);
   /// Assignment operator
-  EstimatorMLOnline<CategoricalDistribution<M>, M>& operator =
-    (const EstimatorMLOnline<CategoricalDistribution<M>, M>& other);
+  EstimatorML<MultinomialDistribution<M>, M>& operator =
+    (const EstimatorML<MultinomialDistribution<M>, M>& other);
   /// Destructor
-  virtual ~EstimatorMLOnline();
+  virtual ~EstimatorML();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of points
-  void setNumPoints(size_t numPoints);
   /// Returns the number of points
   size_t getNumPoints() const;
-  /// Add a point to the estimator and estimate the distribution
-  void addPoint(CategoricalDistribution<M>& dist, const
-    Eigen::Matrix<size_t, M, 1>& point);
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated success probabilities
+  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  /// Returns the estimated number of trials
+  size_t getNumTrials() const;
+  /// Add a point to the estimator
+  void addPoint(const Eigen::Matrix<size_t, M, 1>& point);
+  /// Add points to the estimator
+  void addPoints(const std::vector<Eigen::Matrix<size_t, M, 1> >& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
 
@@ -80,13 +87,19 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Estimated success probabilities
+  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  /// Estimated number of trials
+  size_t mNumTrials;
   /// Number of points in the estimator
   size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
   /** @}
     */
 
 };
 
-#include "statistics/EstimatorMLOnlineCategorical.tpp"
+#include "statistics/EstimatorMLMultinomial.tpp"
 
-#endif // ESTIMATORMLONLINECATEGORICAL
+#endif // ESTIMATORMLMULTINOMIAL

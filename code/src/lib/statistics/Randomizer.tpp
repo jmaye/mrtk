@@ -158,13 +158,13 @@ Eigen::Matrix<size_t, M, 1> Randomizer<T, M>::sampleCategorical(const
 }
 
 template <typename T, size_t M>
-size_t Randomizer<T, M>::samplePoisson(double rate) const
+size_t Randomizer<T, M>::samplePoisson(double mean) const
   throw (BadArgumentException<double>) {
-  if (rate <= 0)
-    throw BadArgumentException<double>(rate,
-      "Randomizer<T, M>::samplePoisson(): rate must be strictly positive",
+  if (mean <= 0)
+    throw BadArgumentException<double>(mean,
+      "Randomizer<T, M>::samplePoisson(): mean must be strictly positive",
       __FILE__, __LINE__);
-  double l = exp(-rate);
+  double l = exp(-mean);
   size_t k = 0;
   double p = 1.0;
   do {

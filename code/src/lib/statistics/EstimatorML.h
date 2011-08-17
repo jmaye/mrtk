@@ -16,46 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLBatchMixtureNormalMv.h
-    \brief This file implements a batch ML estimator for mixture of multivariate
-           normal distributions
+/** \file EstimatorML.h
+    \brief This file defines the EstimatorML class, which implements
+           maximum likelihood estimators for various distributions
   */
 
-#ifndef ESTIMATORMLBATCHMIXTURENORMALMV_H
-#define ESTIMATORMLBATCHMIXTURENORMALMV_H
+#ifndef ESTIMATORML_H
+#define ESTIMATORML_H
 
-#include "statistics/NormalDistribution.h"
-#include "statistics/MixtureDistribution.h"
+#include "statistics/EstimatorMLNormal1v.h"
+#include "statistics/EstimatorMLNormalMv.h"
+#include "statistics/EstimatorMLCategorical.h"
+#include "statistics/EstimatorMLMultinomial.h"
+#include "statistics/EstimatorMLExponential.h"
+#include "statistics/EstimatorMLGeometric.h"
+#include "statistics/EstimatorMLPoisson.h"
+#include "statistics/EstimatorMLLinearRegression.h"
+#include "statistics/EstimatorMLMixtureLinearRegression.h"
+#include "statistics/EstimatorMLMixtureNormal1v.h"
+#include "statistics/EstimatorMLMixtureNormalMv.h"
 
-#include <vector>
-
-/** The class EstimatorMLBatch is implemented for mixtures of multivariate
-    normal distributions.
-    \brief Mixture of multivariate normal distributions batch ML estimator
-  */
-template <size_t M, size_t N>
-class EstimatorMLBatch<MixtureDistribution<NormalDistribution<M>, N>, M, N> {
-  /** \name Private constructors
-    @{
-    */
-  /// Default constructor
-  EstimatorMLBatch();
-  /** @}
-    */
-
-public:
-  /** \name Methods
-    @{
-    */
-  /// Estimate the parameters
-  static size_t estimate(MixtureDistribution<NormalDistribution<M>, N>& dist,
-    const std::vector<typename NormalDistribution<M>::VariableType>& points,
-    Eigen::Matrix<double, Eigen::Dynamic, N>& responsibilities, size_t
-    maxNumIter = 100, double tol = 1e-6);
-  /** @}
-    */
-};
-
-#include "statistics/EstimatorMLBatchMixtureNormalMv.tpp"
-
-#endif // ESTIMATORMLBATCHMIXTURENORMALMV
+#endif // ESTIMATORML

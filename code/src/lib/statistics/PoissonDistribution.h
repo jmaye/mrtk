@@ -44,7 +44,7 @@ public:
     @{
     */
   /// Constructs the distribution from the parameter
-  PoissonDistribution(double rate = 1.0);
+  PoissonDistribution(double mean = 1.0);
   /// Copy constructor
   PoissonDistribution(const PoissonDistribution& other);
   /// Assignment operator
@@ -57,11 +57,9 @@ public:
   /** \name Accessors
     @{
     */
-  /// Sets the event rate
-  void setRate(double rate) throw (BadArgumentException<double>);
-  /// Returns the event rate
-  double getRate() const;
-  /// Returns the mean of the distribution
+  /// Sets the event mean
+  void setMean(double mean) throw (BadArgumentException<double>);
+  /// Returns the event mean
   double getMean() const;
   /// Returns the median of the distribution
   double getMedian() const;
@@ -100,8 +98,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Event rate
-  double mRate;
+  /// Event mean
+  double mMean;
   /** @}
     */
 

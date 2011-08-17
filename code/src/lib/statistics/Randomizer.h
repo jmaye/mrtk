@@ -97,7 +97,7 @@ public:
     Eigen::Matrix<double, M, 1>::Constant(1.0 / M))
     const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns a sample from a Poisson distribution
-  size_t samplePoisson(double rate = 1.0) const
+  size_t samplePoisson(double mean = 1.0) const
     throw (BadArgumentException<double>);
   /// Returns a sample from a exponential distribution
   double sampleExponential(double rate = 1.0) const

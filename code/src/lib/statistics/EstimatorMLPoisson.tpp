@@ -20,76 +20,87 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorMLOnline<NormalDistribution<1> >::EstimatorMLOnline() :
-  mNumPoints(0) {
+EstimatorML<PoissonDistribution>::EstimatorML() :
+  mMean(0.0),
+  mNumPoints(0),
+  mValid(false) {
 }
 
-EstimatorMLOnline<NormalDistribution<1> >::EstimatorMLOnline(const
-  EstimatorMLOnline<NormalDistribution<1> >& other) :
-  mNumPoints(other.mNumPoints) {
+EstimatorML<PoissonDistribution>::EstimatorML(const
+  EstimatorML<PoissonDistribution>& other) :
+  mMean(other.mMean),
+  mNumPoints(other.mNumPoints),
+  mValid(other.mValid) {
 }
 
-EstimatorMLOnline<NormalDistribution<1> >&
-  EstimatorMLOnline<NormalDistribution<1> >::operator =
-  (const EstimatorMLOnline<NormalDistribution<1> >& other) {
+EstimatorML<PoissonDistribution>&
+  EstimatorML<PoissonDistribution>::operator =
+  (const EstimatorML<PoissonDistribution>& other) {
   if (this != &other) {
+    mMean = other.mMean;
     mNumPoints = other.mNumPoints;
+    mValid = other.mValid;
   }
   return *this;
 }
 
-EstimatorMLOnline<NormalDistribution<1> >::~EstimatorMLOnline() {
+EstimatorML<PoissonDistribution>::~EstimatorML() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorMLOnline<NormalDistribution<1> >::read(std::istream& stream) {
+void EstimatorML<PoissonDistribution>::read(std::istream& stream) {
 }
 
-void EstimatorMLOnline<NormalDistribution<1> >::write(std::ostream& stream)
-  const {
-  stream << "number of points: " << mNumPoints;
+void EstimatorML<PoissonDistribution>::write(std::ostream& stream) const {
+  stream << "mean " << mMean << std::endl
+    << "number of points: " << mNumPoints << std::endl
+    << "valid: " << mValid;
 }
 
-void EstimatorMLOnline<NormalDistribution<1> >::read(std::ifstream& stream) {
+void EstimatorML<PoissonDistribution>::read(std::ifstream& stream) {
 }
 
-void EstimatorMLOnline<NormalDistribution<1> >::write(std::ofstream& stream)
-  const {
+void EstimatorML<PoissonDistribution>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void EstimatorMLOnline<NormalDistribution<1> >::setNumPoints(size_t numPoints) {
-  mNumPoints = numPoints;
-}
-
-size_t EstimatorMLOnline<NormalDistribution<1> >::getNumPoints() const {
+size_t EstimatorML<PoissonDistribution>::getNumPoints() const {
   return mNumPoints;
 }
 
-void EstimatorMLOnline<NormalDistribution<1> >::addPoint(NormalDistribution<1>&
-  dist, const NormalDistribution<1>::VariableType& point) {
+bool EstimatorML<PoissonDistribution>::getValid() const {
+  return mValid;
+}
+
+double EstimatorML<PoissonDistribution>::getMean() const {
+  return mMean;
+}
+
+void EstimatorML<PoissonDistribution>::reset() {
+  mNumPoints = 0;
+  mValid = false;
+  mMean = 0;
+}
+
+void EstimatorML<PoissonDistribution>::addPoint(double point) {
   mNumPoints++;
-  double mean;
-  if (mNumPoints == 1)
-    mean = point;
+  if (mNumPoints == 1) {
+    mMean = point;
+    mValid = true;
+  }
   else {
-    mean = dist.getMean();
-    mean += 1.0 / mNumPoints * (point - mean);
+    mMean += 1.0 / mNumPoints * (point - mMean);
   }
-  double variance = dist.getVariance();
-  variance += 1.0 / mNumPoints * ((point - mean) * (point - mean) - variance);
-  if (variance == 0.0 || mNumPoints == 1)
-    variance = dist.getVariance();
-  dist.setMean(mean);
-  try {
-    dist.setVariance(variance);
-  }
-  catch (BadArgumentException<double>& e) {
-  }
+}
+
+void EstimatorML<PoissonDistribution>::addPoints(const std::vector<double>&
+  points) {
+  for (size_t i = 0; i < points.size(); ++i)
+    addPoint(points[i]);
 }

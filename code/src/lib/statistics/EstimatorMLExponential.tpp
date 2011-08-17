@@ -20,43 +20,54 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorMLOnline<ExponentialDistribution>::EstimatorMLOnline() :
-  mNumPoints(0) {
+EstimatorML<ExponentialDistribution>::EstimatorML() :
+  mRate(0.0),
+  mMean(0.0),
+  mNumPoints(0),
+  mValid(false) {
 }
 
-EstimatorMLOnline<ExponentialDistribution>::EstimatorMLOnline(const
-  EstimatorMLOnline<ExponentialDistribution>& other) :
-  mNumPoints(other.mNumPoints) {
+EstimatorML<ExponentialDistribution>::EstimatorML(const
+  EstimatorML<ExponentialDistribution>& other) :
+  mRate(other.mRate),
+  mMean(other.mMean),
+  mNumPoints(other.mNumPoints),
+  mValid(other.mValid) {
 }
 
-EstimatorMLOnline<ExponentialDistribution>&
-  EstimatorMLOnline<ExponentialDistribution>::operator =
-  (const EstimatorMLOnline<ExponentialDistribution>& other) {
+EstimatorML<ExponentialDistribution>&
+  EstimatorML<ExponentialDistribution>::operator =
+  (const EstimatorML<ExponentialDistribution>& other) {
   if (this != &other) {
+    mRate = other.mRate;
+    mMean = other.mMean;
     mNumPoints = other.mNumPoints;
+    mValid = other.mValid;
   }
   return *this;
 }
 
-EstimatorMLOnline<ExponentialDistribution>::~EstimatorMLOnline() {
+EstimatorML<ExponentialDistribution>::~EstimatorML() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorMLOnline<ExponentialDistribution>::read(std::istream& stream) {
+void EstimatorML<ExponentialDistribution>::read(std::istream& stream) {
 }
 
-void EstimatorMLOnline<ExponentialDistribution>::write(std::ostream& stream)
+void EstimatorML<ExponentialDistribution>::write(std::ostream& stream)
   const {
-  stream << "number of points: " << mNumPoints;
+  stream << "rate: " << mRate << std::endl
+    << "number of points: " << mNumPoints << std::endl
+    << "valid: " << mValid;
 }
 
-void EstimatorMLOnline<ExponentialDistribution>::read(std::ifstream& stream) {
+void EstimatorML<ExponentialDistribution>::read(std::ifstream& stream) {
 }
 
-void EstimatorMLOnline<ExponentialDistribution>::write(std::ofstream& stream)
+void EstimatorML<ExponentialDistribution>::write(std::ofstream& stream)
   const {
 }
 
@@ -64,25 +75,40 @@ void EstimatorMLOnline<ExponentialDistribution>::write(std::ofstream& stream)
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void EstimatorMLOnline<ExponentialDistribution>::setNumPoints(size_t
-  numPoints) {
-  mNumPoints = numPoints;
-}
-
-size_t EstimatorMLOnline<ExponentialDistribution>::getNumPoints() const {
+size_t EstimatorML<ExponentialDistribution>::getNumPoints() const {
   return mNumPoints;
 }
 
-void EstimatorMLOnline<ExponentialDistribution>::addPoint(
-  ExponentialDistribution& dist, const ExponentialDistribution::VariableType&
-  point) {
+bool EstimatorML<ExponentialDistribution>::getValid() const {
+  return mValid;
+}
+
+const Eigen::Matrix<double, M, 1>&
+EstimatorML<ExponentialDistribution>::getRate() const {
+  return mRate;
+}
+
+void EstimatorML<ExponentialDistribution>::reset() {
+  mNumPoints = 0;
+  mValid = false;
+  mRate = 0;
+  mMean = 0;
+}
+
+void EstimatorML<ExponentialDistribution>::addPoint(double point) {
   mNumPoints++;
-  double mean;
-  if (mNumPoints == 1)
-    mean = point;
-  else {
-    mean = dist.getMean();
-    mean += 1.0 / mNumPoints * (point - mean);
+  if (mNumPoints == 1) {
+    mMean = point;
+    mValid = true;
   }
-  dist.setRate(1.0 / mean);
+  else {
+    mMean += 1.0 / mNumPoints * (point - mMean);
+  }
+  mRate = 1.0 / mMean;
+}
+
+void EstimatorML<ExponentialDistribution>::addPoints(const std::vector<double>&
+  points) {
+  for (size_t i = 0; i < points.size(); ++i)
+    addPoint(points[i]);
 }

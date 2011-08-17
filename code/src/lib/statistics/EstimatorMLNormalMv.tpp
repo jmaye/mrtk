@@ -21,28 +21,37 @@
 /******************************************************************************/
 
 template <size_t M>
-EstimatorMLOnline<CategoricalDistribution<M>, M>::EstimatorMLOnline() :
-  mNumPoints(0) {
+EstimatorML<NormalDistribution<M>, M>::EstimatorML() :
+  mMean(Eigen::Matrix<double, M, 1>::Zero()),
+  mCovariance(Eigen::Matrix<double, M, M>::Zero()),
+  mNumPoints(0),
+  mValid(false) {
 }
 
 template <size_t M>
-EstimatorMLOnline<CategoricalDistribution<M>, M>::EstimatorMLOnline(const
-  EstimatorMLOnline<CategoricalDistribution<M>, M>& other) :
-  mNumPoints(other.mNumPoints) {
+EstimatorML<NormalDistribution<M>, M>::EstimatorML(const
+  EstimatorML<NormalDistribution<M>, M>& other) :
+  mMean(other.mMean),
+  mCovariance(other.mCovariance),
+  mNumPoints(other.mNumPoints),
+  mValid(other.mValid) {
 }
 
 template <size_t M>
-EstimatorMLOnline<CategoricalDistribution<M>, M>&
-  EstimatorMLOnline<CategoricalDistribution<M>, M>::operator =
-  (const EstimatorMLOnline<CategoricalDistribution<M>, M>& other) {
+EstimatorML<NormalDistribution<M>, M>&
+  EstimatorML<NormalDistribution<M>, M>::operator =
+  (const EstimatorML<NormalDistribution<M>, M>& other) {
   if (this != &other) {
+    mMean = other.mMean;
+    mCovariance = other.mCovariance;
     mNumPoints = other.mNumPoints;
+    mValid = other.mValid;
   }
   return *this;
 }
 
 template <size_t M>
-EstimatorMLOnline<CategoricalDistribution<M>, M>::~EstimatorMLOnline() {
+EstimatorML<NormalDistribution<M>, M>::~EstimatorML() {
 }
 
 /******************************************************************************/
@@ -50,24 +59,24 @@ EstimatorMLOnline<CategoricalDistribution<M>, M>::~EstimatorMLOnline() {
 /******************************************************************************/
 
 template <size_t M>
-void EstimatorMLOnline<CategoricalDistribution<M>, M>::read(std::istream&
-  stream) {
+void EstimatorML<NormalDistribution<M>, M>::read(std::istream& stream) {
 }
 
 template <size_t M>
-void EstimatorMLOnline<CategoricalDistribution<M>, M>::write(std::ostream&
-  stream) const {
-  stream << "number of points: " << mNumPoints;
+void EstimatorML<NormalDistribution<M>, M>::write(std::ostream& stream)
+  const {
+  stream << "mean: " << mMean << std::endl
+    << "covariance: " << std::endl << mCovariance << std::endl
+    << "valid: " << mValid;
 }
 
 template <size_t M>
-void EstimatorMLOnline<CategoricalDistribution<M>, M>::read(std::ifstream&
-  stream) {
+void EstimatorML<NormalDistribution<M>, M>::read(std::ifstream& stream) {
 }
 
 template <size_t M>
-void EstimatorMLOnline<CategoricalDistribution<M>, M>::write(std::ofstream&
-  stream) const {
+void EstimatorML<NormalDistribution<M>, M>::write(std::ofstream& stream)
+  const {
 }
 
 /******************************************************************************/
@@ -75,32 +84,52 @@ void EstimatorMLOnline<CategoricalDistribution<M>, M>::write(std::ofstream&
 /******************************************************************************/
 
 template <size_t M>
-void EstimatorMLOnline<CategoricalDistribution<M>, M>::setNumPoints(size_t
-  numPoints) {
-  mNumPoints = numPoints;
-}
-
-template <size_t M>
-size_t EstimatorMLOnline<CategoricalDistribution<M>, M>::getNumPoints() const {
+size_t EstimatorML<NormalDistribution<M>, M>::getNumPoints() const {
   return mNumPoints;
 }
 
 template <size_t M>
-void EstimatorMLOnline<CategoricalDistribution<M>, M>::addPoint(
-  CategoricalDistribution<M>& dist, const Eigen::Matrix<size_t, M, 1>& point) {
+bool EstimatorML<NormalDistribution<M>, M>::getValid() const {
+  return mValid;
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M, 1>&
+EstimatorML<NormalDistribution<M>, M>::getMean() const {
+  return mMean;
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M, M>&
+EstimatorML<NormalDistribution<M>, M>::getCovariance() const {
+  return mCovariance;
+}
+
+template <size_t M>
+void EstimatorML<NormalDistribution<M>, M>::reset() {
+  mNumPoints = 0;
+  mValid = false;
+  mMean = Eigen::Matrix<double, M, 1>::Zero();
+  mCovariance = Eigen::Matrix<double, M, M>::Zero();
+}
+
+template <size_t M>
+void EstimatorML<NormalDistribution<M>, M>::addPoint(const
+  Eigen::Matrix<double, M, 1>& point) {
   mNumPoints++;
-  Eigen::Matrix<double, M, 1> successProbabilities =
-    Eigen::Matrix<double, M, 1>::Zero();
-  if (mNumPoints == 1) {
-    for (size_t i = 0; i < M; ++i)
-      successProbabilities(i) += point(i);
-  }
+  if (mNumPoints == 1)
+    mMean = point;
   else {
-    successProbabilities = dist.getSuccessProbabilities();
-    for (size_t i = 0; i < M; ++i)
-      successProbabilities(i) += 1.0 / mNumPoints * (point(i) -
-        successProbabilities(i));
+    mMean += 1.0 / mNumPoints * (point - mean);
+    mValid = true;
   }
-  successProbabilities /= successProbabilities.sum();
-  dist.setSuccessProbabilities(successProbabilities);
+  mCovariance += 1.0 / mNumPoints * ((point - mean) * (point - mean).transpose()
+    - mCovariance);
+}
+
+template <size_t M>
+void EstimatorML<NormalDistribution<M>, M>::addPoints(const
+  std::vector<Eigen::Matrix<double, M, 1> >& points) {
+  for (size_t i = 0; i < points.size(); ++i)
+    addPoint(points[i]);
 }

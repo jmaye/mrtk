@@ -16,51 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnlineNormal1v.h
-    \brief This file implements an online ML estimator for univariate normal
-           distributions.
+/** \file EstimatorMLCategorical.h
+    \brief This file implements an ML estimator for categorical distributions.
   */
 
-#ifndef ESTIMATORMLONLINENORMAL1V_H
-#define ESTIMATORMLONLINENORMAL1V_H
+#ifndef ESTIMATORMLCATEGORICAL_H
+#define ESTIMATORMLCATEGORICAL_H
 
-#include "statistics/NormalDistribution.h"
+#include "statistics/CategoricalDistribution.h"
 #include "base/Serializable.h"
 
-template <typename D, size_t M = 1> class EstimatorMLOnline;
+#include <vector>
 
-/** The class EstimatorMLOnline is implemented for univariate normal
-    distributions.
-    \brief Univariate normal distribution online ML estimator
+/** The class EstimatorML is implemented for categorical distributions.
+    \brief Categorical distribution ML estimator
   */
-template <> class EstimatorMLOnline<NormalDistribution<1> > :
+template <size_t M> class EstimatorML<CategoricalDistribution<M>, M> :
   public virtual Serializable {
 public:
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  EstimatorMLOnline();
+  EstimatorML();
   /// Copy constructor
-  EstimatorMLOnline(const EstimatorMLOnline<NormalDistribution<1> >& other);
+  EstimatorML(const EstimatorML<CategoricalDistribution<M>, M>& other);
   /// Assignment operator
-  EstimatorMLOnline<NormalDistribution<1> >& operator =
-    (const EstimatorMLOnline<NormalDistribution<1> >& other);
+  EstimatorML<CategoricalDistribution<M>, M>& operator =
+    (const EstimatorML<CategoricalDistribution<M>, M>& other);
   /// Destructor
-  virtual ~EstimatorMLOnline();
+  virtual ~EstimatorML();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of points
-  void setNumPoints(size_t numPoints);
   /// Returns the number of points
   size_t getNumPoints() const;
-  /// Add a point to the estimator and estimate the distribution
-  void addPoint(NormalDistribution<1>& dist, const
-    NormalDistribution<1>::VariableType& point);
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated success probabilities
+  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  /// Add a point to the estimator
+  void addPoint(const Eigen::Matrix<size_t, M, 1>& point);
+  /// Add points to the estimator
+  void addPoints(const std::vector<Eigen::Matrix<size_t, M, 1> >& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
 
@@ -82,13 +85,17 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Estimated success probabilities
+  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
   /// Number of points in the estimator
   size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
   /** @}
     */
 
 };
 
-#include "statistics/EstimatorMLOnlineNormal1v.tpp"
+#include "statistics/EstimatorMLCategorical.tpp"
 
-#endif // ESTIMATORMLONLINENORMAL1V
+#endif // ESTIMATORMLCATEGORICAL

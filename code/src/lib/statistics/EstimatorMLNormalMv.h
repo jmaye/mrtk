@@ -16,49 +16,57 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLOnlineGeometric.h
-    \brief This file implements an online ML estimator for multinomial
+/** \file EstimatorMLNormalMv.h
+    \brief This file implements an ML estimator for multivariate normal
            distributions.
   */
 
-#ifndef ESTIMATORMLONLINEMULTINOMIAL_H
-#define ESTIMATORMLONLINEMULTINOMIAL_H
+#ifndef ESTIMATORMLNORMALMV_H
+#define ESTIMATORMLNORMALMV_H
 
-#include "statistics/MultinomialDistribution.h"
+#include "statistics/NormalDistribution.h"
 #include "base/Serializable.h"
 
-/** The class EstimatorMLOnline is implemented for multinomial distributions.
-    \brief Multinomial distribution online ML estimator
+#include <vector>
+
+/** The class EstimatorML is implemented for multivariate normal distributions.
+    \brief Multivariate normal distribution ML estimator
   */
-template <size_t M> class EstimatorMLOnline<MultinomialDistribution<M>, M> :
+template <size_t M> class EstimatorML<NormalDistribution<M>, M> :
   public virtual Serializable {
 public:
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  EstimatorMLOnline();
+  EstimatorML();
   /// Copy constructor
-  EstimatorMLOnline(const EstimatorMLOnline<MultinomialDistribution<M>, M>&
-    other);
+  EstimatorML(const EstimatorML<NormalDistribution<M>, M>& other);
   /// Assignment operator
-  EstimatorMLOnline<MultinomialDistribution<M>, M>& operator =
-    (const EstimatorMLOnline<MultinomialDistribution<M>, M>& other);
+  EstimatorML<NormalDistribution<M>, M>& operator =
+    (const EstimatorML<NormalDistribution<M>, M>& other);
   /// Destructor
-  virtual ~EstimatorMLOnline();
+  virtual ~EstimatorML();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the number of points
-  void setNumPoints(size_t numPoints);
   /// Returns the number of points
   size_t getNumPoints() const;
-  /// Add a point to the estimator and estimate the distribution
-  void addPoint(MultinomialDistribution<M>& dist, const
-    Eigen::Matrix<size_t, M, 1>& point);
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated mean
+  const Eigen::Matrix<double, M, 1>& getMean() const;
+  /// Returns the estimated covariance
+  const Eigen::Matrix<double, M, M>& getCovariance() const;
+  /// Add a point to the estimator
+  void addPoint(const Eigen::Matrix<double, M, 1>& point);
+  /// Add points to the estimator
+  void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
 
@@ -80,13 +88,19 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Estimated mean
+  Eigen::Matrix<double, M, 1> mMean
+  /// Estimated covariance
+  Eigen::Matrix<double, M, M> mCovariance;
   /// Number of points in the estimator
   size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
   /** @}
     */
 
 };
 
-#include "statistics/EstimatorMLOnlineMultinomial.tpp"
+#include "statistics/EstimatorMLNormalMv.tpp"
 
-#endif // ESTIMATORMLONLINEMULTINOMIAL
+#endif // ESTIMATORMLNORMALMV
