@@ -49,8 +49,8 @@ public:
     @{
     */
   /// Constructs from parameters
-  MixtureSampleDistribution(const std::vector<D>& distributions, const
-    CategoricalDistribution<M> weights);
+  MixtureSampleDistribution(const std::vector<D>& compDistributions, const
+    CategoricalDistribution<M> assignDistribution);
   /// Copy constructor
   MixtureSampleDistribution(const MixtureSampleDistribution& other);
   /// Assignment operator

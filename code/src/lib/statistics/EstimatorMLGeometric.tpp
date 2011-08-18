@@ -81,8 +81,7 @@ bool EstimatorML<GeometricDistribution>::getValid() const {
   return mValid;
 }
 
-const Eigen::Matrix<double, M, 1>&
-EstimatorML<GeometricDistribution>::getSuccessProbability() const {
+double EstimatorML<GeometricDistribution>::getSuccessProbability() const {
   return mSuccessProbability;
 }
 
@@ -93,19 +92,21 @@ void EstimatorML<GeometricDistribution>::reset() {
   mMean = 0;
 }
 
-void EstimatorML<GeometricDistribution>::addPoint(double point) {
+void EstimatorML<GeometricDistribution>::addPoint(size_t point) {
   mNumPoints++;
-  if (mNumPoints == 1) {
+  if (mNumPoints == 1)
     mMean = point;
+  else
+    mMean += 1.0 / mNumPoints * (point - mMean);
+  if (mMean != 0) {
+    mSuccessProbability = 1.0 / (1 + mMean);
     mValid = true;
   }
-  else {
-    mMean += 1.0 / mNumPoints * (point - mMean);
-  }
-  mSuccessProbability = 1.0 / mMean;
+  else
+    mValid = false;
 }
 
-void EstimatorML<GeometricDistribution>::addPoints(const std::vector<double>&
+void EstimatorML<GeometricDistribution>::addPoints(const std::vector<size_t>&
   points) {
   for (size_t i = 0; i < points.size(); ++i)
     addPoint(points[i]);

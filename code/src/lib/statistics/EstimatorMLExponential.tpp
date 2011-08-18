@@ -83,8 +83,7 @@ bool EstimatorML<ExponentialDistribution>::getValid() const {
   return mValid;
 }
 
-const Eigen::Matrix<double, M, 1>&
-EstimatorML<ExponentialDistribution>::getRate() const {
+double EstimatorML<ExponentialDistribution>::getRate() const {
   return mRate;
 }
 
@@ -97,14 +96,16 @@ void EstimatorML<ExponentialDistribution>::reset() {
 
 void EstimatorML<ExponentialDistribution>::addPoint(double point) {
   mNumPoints++;
-  if (mNumPoints == 1) {
+  if (mNumPoints == 1)
     mMean = point;
+  else
+    mMean += 1.0 / mNumPoints * (point - mMean);
+  if (mMean != 0) {
+    mRate = 1.0 / mMean;
     mValid = true;
   }
-  else {
-    mMean += 1.0 / mNumPoints * (point - mMean);
-  }
-  mRate = 1.0 / mMean;
+  else
+    mValid = false;
 }
 
 void EstimatorML<ExponentialDistribution>::addPoints(const std::vector<double>&

@@ -50,8 +50,8 @@ public:
     @{
     */
   /// Constructs mixture from parameters
-  MixtureDistribution(const std::vector<D>& distributions, const
-    CategoricalDistribution<M> weights);
+  MixtureDistribution(const std::vector<D>& compDistributions, const
+    CategoricalDistribution<M> assignDistribution);
   /// Copy constructor
   MixtureDistribution(const MixtureDistribution& other);
   /// Assignment operator
@@ -64,15 +64,15 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the distributions
-  const std::vector<D>& getDistributions() const;
-  /// Sets the distributions
-  void setDistributions(const std::vector<D>& distributions)
+  /// Returns the components distributions
+  const std::vector<D>& getCompDistributions() const;
+  /// Sets the components distributions
+  void setCompDistributions(const std::vector<D>& distributions)
     throw (BadArgumentException<size_t>);
-  /// Returns the weights
-  const CategoricalDistribution<M>& getWeights() const;
-  /// Sets the weights
-  void setWeights(const CategoricalDistribution<M>& weights);
+  /// Returns the assignments distribution
+  const CategoricalDistribution<M>& getAssignDistribution() const;
+  /// Sets the assignments distribution
+  void setAssignDistribution(const CategoricalDistribution<M>& distribution);
   /// Returns the probability density function at the given value
   virtual double pdf(const VariableType& value) const;
   /// Returns the probability mass function at the given value
@@ -98,10 +98,10 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Distributions in the mixture
-  std::vector<D> mDistributions;
-  /// Weights of each component
-  CategoricalDistribution<M> mWeights;
+  /// Distributions of the components
+  std::vector<D> mCompDistributions;
+  /// Distribution of the assignments
+  CategoricalDistribution<M> mAssignDistribution;
   /** @}
     */
 

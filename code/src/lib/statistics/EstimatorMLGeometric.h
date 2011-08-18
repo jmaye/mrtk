@@ -59,9 +59,9 @@ public:
   /// Returns the estimated success probability
   double getSuccessProbability() const;
   /// Add a point to the estimator
-  void addPoint(double point);
+  void addPoint(size_t point);
   /// Add points to the estimator
-  void addPoints(const std::vector<double>& points);
+  void addPoints(const std::vector<size_t>& points);
   /// Reset the estimator
   void reset();
   /** @}

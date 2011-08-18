@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     for (double y = -10; y < 10; y += 0.1) {
       for (size_t j = 0; j < distributions.size(); ++j)
         distributions[j].setBasis(Eigen::Matrix<double, 2, 1>(x, y));
-      dist.setDistributions(distributions);
+      dist.setCompDistributions(distributions);
       data.push_back(Eigen::Matrix<double, 3, 1>(x, y, dist.getSample()));
      }
   ScatterPlot<3> plot("MixtureLinearRegressionRndScatterPlot2v", data);

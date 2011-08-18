@@ -112,11 +112,10 @@ void EstimatorML<CategoricalDistribution<M>, M>::addPoint(const
       mSuccessProbabilities(i) += point(i);
     mValid = true;
   }
-  else {
+  else
     for (size_t i = 0; i < M; ++i)
       mSuccessProbabilities(i) += 1.0 / mNumPoints * (point(i) -
         mSuccessProbabilities(i));
-  }
 }
 
 template <size_t M>

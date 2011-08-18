@@ -89,7 +89,7 @@ protected:
     @{
     */
   /// Estimated mean
-  Eigen::Matrix<double, M, 1> mMean
+  Eigen::Matrix<double, M, 1> mMean;
   /// Estimated covariance
   Eigen::Matrix<double, M, M> mCovariance;
   /// Number of points in the estimator

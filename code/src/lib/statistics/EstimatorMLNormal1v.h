@@ -29,12 +29,12 @@
 
 #include <vector>
 
-template <typename D, size_t M = 1> class EstimatorML;
+template <typename D, size_t M = 1, size_t N = 1> class EstimatorML;
 
 /** The class EstimatorML is implemented for univariate normal distributions.
     \brief Univariate normal distribution ML estimator
   */
-template <size_t M> class EstimatorML<NormalDistribution<1> > :
+template <> class EstimatorML<NormalDistribution<1> > :
   public virtual Serializable {
 public:
   /** \name Private constructors
@@ -91,7 +91,7 @@ protected:
     @{
     */
   /// Estimated mean
-  double mMean
+  double mMean;
   /// Estimated variance
   double mVariance;
   /// Number of points in the estimator

@@ -35,8 +35,8 @@ int main(int argc, char** argv) {
     CategoricalDistribution<5>());
   std::cout << "Mixture distribution: " << std::endl
     << dist << std::endl;
-  std::cout << "dist.getWeights(): " << std::endl << dist.getWeights()
-    << std::endl;
+  std::cout << "dist.getAssignDistribution(): " << std::endl
+    << dist.getAssignDistribution() << std::endl;
 
   std::cout << "dist.pdf(0): " << dist(0) << std::endl;
   if (fabs(dist(0) - 0.07979) > 1e-4)
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 
   try {
     distributions.push_back(NormalDistribution<1>(0, 1));
-    dist.setDistributions(distributions);
+    dist.setCompDistributions(distributions);
   }
   catch (BadArgumentException<size_t>& e) {
     std::cout << e.what() << std::endl;

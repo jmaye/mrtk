@@ -88,18 +88,17 @@ void EstimatorML<PoissonDistribution>::reset() {
   mMean = 0;
 }
 
-void EstimatorML<PoissonDistribution>::addPoint(double point) {
+void EstimatorML<PoissonDistribution>::addPoint(size_t point) {
   mNumPoints++;
   if (mNumPoints == 1) {
     mMean = point;
     mValid = true;
   }
-  else {
+  else
     mMean += 1.0 / mNumPoints * (point - mMean);
-  }
 }
 
-void EstimatorML<PoissonDistribution>::addPoints(const std::vector<double>&
+void EstimatorML<PoissonDistribution>::addPoints(const std::vector<size_t>&
   points) {
   for (size_t i = 0; i < points.size(); ++i)
     addPoint(points[i]);

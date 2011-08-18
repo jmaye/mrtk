@@ -20,7 +20,6 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <size_t M>
 EstimatorML<NormalDistribution<1> >::EstimatorML() :
   mMean(0),
   mVariance(0),
@@ -28,7 +27,6 @@ EstimatorML<NormalDistribution<1> >::EstimatorML() :
   mValid(false) {
 }
 
-template <size_t M>
 EstimatorML<NormalDistribution<1> >::EstimatorML(const
   EstimatorML<NormalDistribution<1> >& other) :
   mMean(other.mMean),
@@ -37,7 +35,6 @@ EstimatorML<NormalDistribution<1> >::EstimatorML(const
   mValid(other.mValid) {
 }
 
-template <size_t M>
 EstimatorML<NormalDistribution<1> >&
   EstimatorML<NormalDistribution<1> >::operator =
   (const EstimatorML<NormalDistribution<1> >& other) {
@@ -50,7 +47,6 @@ EstimatorML<NormalDistribution<1> >&
   return *this;
 }
 
-template <size_t M>
 EstimatorML<NormalDistribution<1> >::~EstimatorML() {
 }
 
@@ -58,11 +54,9 @@ EstimatorML<NormalDistribution<1> >::~EstimatorML() {
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-template <size_t M>
 void EstimatorML<NormalDistribution<1> >::read(std::istream& stream) {
 }
 
-template <size_t M>
 void EstimatorML<NormalDistribution<1> >::write(std::ostream& stream)
   const {
   stream << "mean: " << mMean << std::endl
@@ -70,11 +64,9 @@ void EstimatorML<NormalDistribution<1> >::write(std::ostream& stream)
     << "valid: " << mValid;
 }
 
-template <size_t M>
 void EstimatorML<NormalDistribution<1> >::read(std::ifstream& stream) {
 }
 
-template <size_t M>
 void EstimatorML<NormalDistribution<1> >::write(std::ofstream& stream)
   const {
 }
@@ -83,27 +75,22 @@ void EstimatorML<NormalDistribution<1> >::write(std::ofstream& stream)
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <size_t M>
 size_t EstimatorML<NormalDistribution<1> >::getNumPoints() const {
   return mNumPoints;
 }
 
-template <size_t M>
 bool EstimatorML<NormalDistribution<1> >::getValid() const {
   return mValid;
 }
 
-template <size_t M>
 double EstimatorML<NormalDistribution<1> >::getMean() const {
   return mMean;
 }
 
-template <size_t M>
 double EstimatorML<NormalDistribution<1> >::getVariance() const {
   return mVariance;
 }
 
-template <size_t M>
 void EstimatorML<NormalDistribution<1> >::reset() {
   mNumPoints = 0;
   mValid = false;
@@ -111,21 +98,20 @@ void EstimatorML<NormalDistribution<1> >::reset() {
   mVariance = 0;
 }
 
-template <size_t M>
 void EstimatorML<NormalDistribution<1> >::addPoint(double point) {
   mNumPoints++;
   if (mNumPoints == 1)
     mMean = point;
   else {
-    mMean += 1.0 / mNumPoints * (point - mean);
+    mMean += 1.0 / mNumPoints * (point - mMean);
     mValid = true;
   }
-  mVariance += 1.0 / mNumPoints * ((point - mean) * (point - mean) - variance);
-  if (variance == 0.0)
+  mVariance += 1.0 / mNumPoints * ((point - mMean) * (point - mMean) -
+    mVariance);
+  if (mVariance == 0.0)
     mValid = false;
 }
 
-template <size_t M>
 void EstimatorML<NormalDistribution<1> >::addPoints(const std::vector<double>&
   points) {
   for (size_t i = 0; i < points.size(); ++i)

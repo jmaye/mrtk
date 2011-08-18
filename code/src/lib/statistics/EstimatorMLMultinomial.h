@@ -28,8 +28,8 @@
 
 #include <vector>
 
-/** The class EstimatorML is implemented for categorical distributions.
-    \brief Categorical distribution ML estimator
+/** The class EstimatorML is implemented for multinomial distributions.
+    \brief Multinomial distribution ML estimator
   */
 template <size_t M> class EstimatorML<MultinomialDistribution<M>, M> :
   public virtual Serializable {

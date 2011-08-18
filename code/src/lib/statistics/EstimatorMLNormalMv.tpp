@@ -65,7 +65,7 @@ void EstimatorML<NormalDistribution<M>, M>::read(std::istream& stream) {
 template <size_t M>
 void EstimatorML<NormalDistribution<M>, M>::write(std::ostream& stream)
   const {
-  stream << "mean: " << mMean << std::endl
+  stream << "mean: " << std::endl << mMean << std::endl
     << "covariance: " << std::endl << mCovariance << std::endl
     << "valid: " << mValid;
 }
@@ -120,11 +120,12 @@ void EstimatorML<NormalDistribution<M>, M>::addPoint(const
   if (mNumPoints == 1)
     mMean = point;
   else {
-    mMean += 1.0 / mNumPoints * (point - mean);
+    mMean += 1.0 / mNumPoints * (point - mMean);
     mValid = true;
   }
-  mCovariance += 1.0 / mNumPoints * ((point - mean) * (point - mean).transpose()
-    - mCovariance);
+  mCovariance += 1.0 / mNumPoints * ((point - mMean) *
+    (point - mMean).transpose()- mCovariance);
+  //TODO: CHECK DETERMINANT?
 }
 
 template <size_t M>

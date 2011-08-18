@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     << std::endl << std::endl;
 
   try {
-    dist.setRate(-1.0);
+    dist.setMean(-1.0);
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;

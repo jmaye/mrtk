@@ -117,9 +117,8 @@ template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::addPoint(const
   Eigen::Matrix<size_t, M, 1>& point) {
   mNumPoints++;
-  size_t numTrials;
   if (mNumPoints == 1) {
-    numTrials = point.sum();
+    mNumTrials = point.sum();
     for (size_t i = 0; i < M; ++i)
       mSuccessProbabilities(i) += point(i) / (double)mNumTrials;
   }
