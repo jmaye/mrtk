@@ -17,13 +17,118 @@
  ******************************************************************************/
 
 /******************************************************************************/
-/* Methods                                                                    */
+/* Constructors and Destructor                                                */
 /******************************************************************************/
 
 template <size_t M>
-void EstimatorML<LinearRegression<M>, M>::estimate(LinearRegression<M>&
-  dist, const std::vector<Eigen::Matrix<double, M, 1> >& points, double tol)
-  throw (InvalidOperationException) {
+EstimatorML<LinearRegression<M>, M>::EstimatorML(double tol) :
+  mCoefficients(Eigen::Matrix<double, M, 1>::Zero()),
+  mVariance(0),
+  mTol(tol),
+  mNumPoints(0),
+  mValid(false) {
+}
+
+template <size_t M>
+EstimatorML<LinearRegression<M>, M>::EstimatorML(const
+  EstimatorML<LinearRegression<M>, M>& other) :
+  mCoefficients(other.mCoefficients),
+  mVariance(other.mVariance),
+  mTol(other.mTol),
+  mNumPoints(other.mNumPoints),
+  mValid(other.mValid) {
+}
+
+template <size_t M>
+EstimatorML<LinearRegression<M>, M>&
+  EstimatorML<LinearRegression<M>, M>::operator =
+  (const EstimatorML<LinearRegression<M>, M>& other) {
+  if (this != &other) {
+    mCoefficients = other.mCoefficients;
+    mVariance = other.mVariance;
+    mTol = other.mTol;
+    mNumPoints = other.mNumPoints;
+    mValid = other.mValid;
+  }
+  return *this;
+}
+
+template <size_t M>
+EstimatorML<LinearRegression<M>, M>::~EstimatorML() {
+}
+
+/******************************************************************************/
+/* Streaming operations                                                       */
+/******************************************************************************/
+
+template <size_t M>
+void EstimatorML<LinearRegression<M>, M>::read(std::istream& stream) {
+}
+
+template <size_t M>
+void EstimatorML<LinearRegression<M>, M>::write(std::ostream& stream) const {
+  stream << "coefficients: " << mCoefficients.transpose() << std::endl
+    << "variance: " << mVariance << std::endl
+    << "tolerance: " << mTol << std::endl
+    << "number of points: " << mNumPoints << std::endl
+    << "valid: " << mValid;
+}
+
+template <size_t M>
+void EstimatorML<LinearRegression<M>, M>::read(std::ifstream& stream) {
+}
+
+template <size_t M>
+void EstimatorML<LinearRegression<M>, M>::write(std::ofstream& stream) const {
+}
+
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+template <size_t M>
+size_t EstimatorML<LinearRegression<M>, M>::getNumPoints() const {
+  return mNumPoints;
+}
+
+template <size_t M>
+bool EstimatorML<LinearRegression<M>, M>::getValid() const {
+  return mValid;
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M, 1>&
+EstimatorML<LinearRegression<M>, M>::getCoefficients() const {
+  return mCoefficients;
+}
+
+template <size_t M>
+double EstimatorML<LinearRegression<M>, M>::getVariance() const {
+  return mVariance;
+}
+
+template <size_t M>
+double EstimatorML<LinearRegression<M>, M>::getTolerance() const {
+  return mTol;
+}
+
+template <size_t M>
+void EstimatorML<LinearRegression<M>, M>::setTolerance(double tol) {
+  mTol = tol;
+}
+
+template <size_t M>
+void EstimatorML<LinearRegression<M>, M>::reset() {
+  mCoefficients = Eigen::Matrix<double, M, 1>::Zero();
+  mVariance = 0;
+  mNumPoints = 0;
+  mValid = false;
+}
+
+template <size_t M>
+void EstimatorML<LinearRegression<M>, M>::addPoints(const
+  std::vector<Eigen::Matrix<double, M, 1> >& points) {
+  reset();
   if (points.size()) {
     Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
     Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
@@ -35,17 +140,16 @@ void EstimatorML<LinearRegression<M>, M>::estimate(LinearRegression<M>&
     }
     Eigen::Matrix<double, M, M> invCheckMatrix =
       designMatrix.transpose() * designMatrix;
-    if (points.size() < M || invCheckMatrix.determinant() < tol)
-      throw InvalidOperationException("EstimatorML<LinearRegression<M>, M>::estimate(): data cannot be fitted");
-    Eigen::Matrix<double, M, 1> coefficients = invCheckMatrix.inverse() *
-      designMatrix.transpose() * targets;
-    double variance = 0.0;
+    if (points.size() < M || invCheckMatrix.determinant() < mTol)
+      return;
+    mCoefficients = invCheckMatrix.inverse() * designMatrix.transpose() *
+      targets;
     for (size_t i = 0; i < points.size(); ++i)
-      variance += (targets(i) - (coefficients.transpose() *
+      mVariance += (targets(i) - (mCoefficients.transpose() *
         designMatrix.row(i).transpose())(0)) * (targets(i) -
-        (coefficients.transpose() * designMatrix.row(i).transpose())(0));
-    variance /= points.size();
-    dist.setCoefficients(coefficients);
-    dist.setVariance(variance);
+        (mCoefficients.transpose() * designMatrix.row(i).transpose())(0));
+    mVariance /= points.size();
+    mValid = true;
+    mNumPoints = points.size();
   }
 }

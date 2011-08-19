@@ -34,7 +34,7 @@
 template <> class EstimatorML<GeometricDistribution> :
   public virtual Serializable {
 public:
-  /** \name Private constructors
+  /** \name Constructors/destructor
     @{
     */
   /// Default constructor

@@ -37,7 +37,7 @@ template <typename D, size_t M = 1, size_t N = 1> class EstimatorML;
 template <> class EstimatorML<NormalDistribution<1> > :
   public virtual Serializable {
 public:
-  /** \name Private constructors
+  /** \name Constructors/destructor
     @{
     */
   /// Default constructor

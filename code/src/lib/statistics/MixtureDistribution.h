@@ -69,6 +69,12 @@ public:
   /// Sets the components distributions
   void setCompDistributions(const std::vector<D>& distributions)
     throw (BadArgumentException<size_t>);
+  /// Returns a particular component distribution
+  const D& getCompDistribution(size_t idx) const
+    throw (BadArgumentException<size_t>);
+  /// Sets a particular component distribution
+  void setCompDistribution(const D& distribution, size_t idx)
+    throw (BadArgumentException<size_t>);
   /// Returns the assignments distribution
   const CategoricalDistribution<M>& getAssignDistribution() const;
   /// Sets the assignments distribution

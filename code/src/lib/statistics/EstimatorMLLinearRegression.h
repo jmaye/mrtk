@@ -24,32 +24,84 @@
 #define ESTIMATORMLLINEARREGRESSION_H
 
 #include "statistics/LinearRegression.h"
-#include "exceptions/InvalidOperationException.h"
+#include "base/Serializable.h"
 
 #include <vector>
 
 /** The class EstimatorML is implemented for multivariate linear regression.
     \brief Multivariate linear regression ML estimator
   */
-template <size_t M> class EstimatorML<LinearRegression<M>, M> {
-  /** \name Private constructors
+template <size_t M> class EstimatorML<LinearRegression<M>, M> :
+  public virtual Serializable {
+public:
+  /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  EstimatorML();
+  EstimatorML(double tol = 1e-5);
+  /// Copy constructor
+  EstimatorML(const EstimatorML<LinearRegression<M>, M>& other);
+  /// Assignment operator
+  EstimatorML<LinearRegression<M>, M>& operator =
+    (const EstimatorML<LinearRegression<M>, M>& other);
+  /// Destructor
+  virtual ~EstimatorML();
   /** @}
     */
 
-public:
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Estimate the parameters
-  static void estimate(LinearRegression<M>& dist,
-    const std::vector<Eigen::Matrix<double, M, 1> >& points, double tol = 1e-5)
-    throw (InvalidOperationException);
+  /// Returns the number of points
+  size_t getNumPoints() const;
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated coefficients
+  const Eigen::Matrix<double, M, 1>& getCoefficients() const;
+  /// Returns the estimated variance
+  double getVariance() const;
+  /// Returns the tolerance of the estimator
+  double getTolerance() const;
+  /// Sets the tolerance of the estimator
+  void setTolerance(double tol);
+  /// Add points to the estimator
+  void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
+
+protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Estimated regression coefficients
+  Eigen::Matrix<double, M, 1> mCoefficients;
+  /// Estimated variance
+  double mVariance;
+  /// Tolerance for the determinant
+  double mTol;
+  /// Number of points in the estimator
+  size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
+  /** @}
+    */
+
 };
 
 #include "statistics/EstimatorMLLinearRegression.tpp"

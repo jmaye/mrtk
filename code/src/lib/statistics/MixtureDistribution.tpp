@@ -93,6 +93,26 @@ void MixtureDistribution<D, M>::setCompDistributions(const std::vector<D>&
 }
 
 template <typename D, size_t M>
+const D& MixtureDistribution<D, M>::getCompDistribution(size_t idx) const
+  throw (BadArgumentException<size_t>) {
+  if (idx >= mCompDistributions.size())
+    throw BadArgumentException<size_t>(idx,
+      "MixtureDistribution<D, M>::getCompDistribution(): invalid index",
+      __FILE__, __LINE__);
+  return mCompDistributions[idx];
+}
+
+template <typename D, size_t M>
+void MixtureDistribution<D, M>::setCompDistribution(const D& distribution,
+  size_t idx) throw (BadArgumentException<size_t>) {
+  if (idx >= mCompDistributions.size())
+    throw BadArgumentException<size_t>(idx,
+      "MixtureDistribution<D, M>::setCompDistribution(): invalid index",
+      __FILE__, __LINE__);
+  mCompDistributions[idx] = distribution;
+}
+
+template <typename D, size_t M>
 const CategoricalDistribution<M>& MixtureDistribution<D, M>::
   getAssignDistribution() const {
   return mAssignDistribution;

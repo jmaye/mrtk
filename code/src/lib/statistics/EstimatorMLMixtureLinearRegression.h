@@ -26,34 +26,103 @@
 
 #include "statistics/LinearRegression.h"
 #include "statistics/MixtureDistribution.h"
-#include "exceptions/InvalidOperationException.h"
 
 #include <vector>
 
 /** The class EstimatorML is implemented for mixtures of linear regressions.
     \brief Mixture of linear regression ML estimator
   */
+
 template <size_t M, size_t N>
-class EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N> {
-  /** \name Private constructors
+class EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N> :
+  public virtual Serializable {
+public:
+  /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  EstimatorML();
+  EstimatorML(const Eigen::Matrix<double, N, M>& coefficients, const
+    Eigen::Matrix<double, N, 1>& variances, const Eigen::Matrix<double, N, 1>&
+    weights, size_t maxNumIter = 100, double tol = 1e-5);
+  /// Copy constructor
+  EstimatorML(const
+    EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>& other);
+  /// Assignment operator
+  EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>& operator =
+    (const EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>&
+    other);
+  /// Destructor
+  virtual ~EstimatorML();
   /** @}
     */
 
-public:
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Estimate the parameters
-  static size_t estimate(MixtureDistribution<LinearRegression<M>, N>& dist,
-    const std::vector<Eigen::Matrix<double, M, 1> >& points,
-    Eigen::Matrix<double, Eigen::Dynamic, N>& responsibilities, size_t
-    maxNumIter = 100, double tol = 1e-6) throw (InvalidOperationException);
+  /// Returns the number of points
+  size_t getNumPoints() const;
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated coefficients
+  const Eigen::Matrix<double, N, M>& getCoefficients() const;
+  /// Returns the estimated variances
+  const Eigen::Matrix<double, N, 1>& getVariances() const;
+  /// Returns the estimated responsibilities
+  const Eigen::Matrix<double, Eigen::Dynamic, N>& getResponsibilities() const;
+  /// Returns the estimated component weights
+  const Eigen::Matrix<double, N, 1>& getWeights() const;
+  /// Returns the tolerance of the estimator
+  double getTolerance() const;
+  /// Sets the tolerance of the estimator
+  void setTolerance(double tol);
+  /// Returns the maximum number of iterations for EM
+  size_t getMaxNumIter() const;
+  /// Sets the maximum number of iterations for EM
+  void setMaxNumIter(size_t maxNumIter);
+  /// Add points to the estimator / Returns number of EM iterationss
+  size_t addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
+
+protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Estimated regression coefficients
+  Eigen::Matrix<double, N, M> mCoefficients;
+  /// Estimated variances
+  Eigen::Matrix<double, N, 1> mVariances;
+  /// Estimated responsibilities
+  Eigen::Matrix<double, Eigen::Dynamic, N> mResponsibilities;
+  /// Estimated component weights
+  Eigen::Matrix<double, N, 1> mWeights;
+  /// Maximum number of iterations for EM
+  size_t mMaxNumIter;
+  /// Tolerance for the determinant
+  double mTol;
+  /// Number of points in the estimator
+  size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
+  /** @}
+    */
+
 };
 
 #include "statistics/EstimatorMLMixtureLinearRegression.tpp"

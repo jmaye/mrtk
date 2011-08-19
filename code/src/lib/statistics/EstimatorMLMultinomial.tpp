@@ -66,7 +66,7 @@ template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::write(std::ostream& stream)
   const {
   stream << "success probabilities: " << mSuccessProbabilities.transpose()
-    << std::endl << "number of trials:" << mNumTrials << std::endl
+    << std::endl << "number of trials: " << mNumTrials << std::endl
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }

@@ -34,7 +34,7 @@
 template <size_t M> class EstimatorML<MultinomialDistribution<M>, M> :
   public virtual Serializable {
 public:
-  /** \name Private constructors
+  /** \name Constructors/destructor
     @{
     */
   /// Default constructor
