@@ -9,25 +9,25 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayes.h
-    \brief This file defines the EstimatorBayes class, which implements Bayesian
-           estimators for various distributions
+/** \file EstimatorBayes.cpp
+    \brief This file is a testing binary for the EstimatorBayes class
   */
 
-#ifndef ESTIMATORBAYES_H
-#define ESTIMATORBAYES_H
+#include "statistics/EstimatorBayes.h"
 
-#include <cstdlib>
-
-template <typename D, size_t M = 1> class EstimatorBayes;
-
-#include "statistics/EstimatorBayesNormal1v.h"
-
-#endif // ESTIMATORBAYES
+int main(int argc, char** argv) {
+  NormalDistribution<1> distNorm1(5, 2);
+  std::vector<double> samplesNorm1;
+  distNorm1.getSamples(samplesNorm1, 1000);
+  EstimatorBayes<NormalDistribution<1> > estNorm1;
+  estNorm1.addPoints(samplesNorm1);
+  std::cout << "Estimation1: " << std::endl << estNorm1 << std::endl;
+  return 0;
+}

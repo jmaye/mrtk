@@ -21,14 +21,10 @@
            distributions.
   */
 
-#ifndef ESTIMATORBAYESNORMAL1V_H
-#define ESTIMATORBAYESNORMAL1V_H
-
 #include "statistics/NormalDistribution.h"
 #include "statistics/GammaDistribution.h"
-#include "base/Serializable.h"
 
-template <typename D, size_t M = 1> class EstimatorBayes;
+#include <vector>
 
 /** The class EstimatorBayes is implemented for univariate normal
     distributions.
@@ -37,12 +33,13 @@ template <typename D, size_t M = 1> class EstimatorBayes;
 template <> class EstimatorBayes<NormalDistribution<1> > :
   public virtual Serializable {
 public:
-  /** \name Private constructors
+  /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  EstimatorBayes(const NormalDistribution<1>& meanPrior = NormalDistribution<1>(),
-    const GammaDistribution& variancePrior = GammaDistribution());
+  EstimatorBayes(const NormalDistribution<1>& meanPrior =
+    NormalDistribution<1>(), const GammaDistribution<double>& variancePrior =
+    GammaDistribution<double>());
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes<NormalDistribution<1> >& other);
   /// Assignment operator
@@ -56,13 +53,14 @@ public:
   /** \name Accessors
     @{
     */
-  /// Sets the number of points
-  void setNumPoints(size_t numPoints);
   /// Returns the number of points
   size_t getNumPoints() const;
-  /// Add a point to the estimator and estimate the distribution
-  void addPoint(NormalDistribution<1>& dist, const
-    NormalDistribution<1>::VariableType& point);
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Add a point to the estimator
+  void addPoint(double point);
+  /// Add points to the estimator
+  void addPoints(const std::vector<double>& points);
   /** @}
     */
 
@@ -84,13 +82,17 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Mean posterior
+  NormalDistribution<1> mMeanPosterior;
+  /// Variance posterior
+  GammaDistribution<double> mVariancePosterior;
   /// Number of points in the estimator
   size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
   /** @}
     */
 
 };
 
 #include "statistics/EstimatorBayesNormal1v.tpp"
-
-#endif // EstimatorBayesNORMAL1V

@@ -101,7 +101,7 @@ size_t PoissonDistribution::getSample() const {
 }
 
 double PoissonDistribution::getMedian() const {
-return floor(mMean + 1.0/ 3.0 - 0.02 / mMean);
+  return floor(mMean + 1.0/ 3.0 - 0.02 / mMean);
 }
 
 double PoissonDistribution::getMode() const {

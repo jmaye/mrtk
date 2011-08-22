@@ -21,20 +21,30 @@
 /******************************************************************************/
 
 EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(const
-  NormalDistribution<1>& meanPrior, const GammaDistribution& variancePrior) :
-  mNumPoints(0) {
+  NormalDistribution<1>& meanPrior, const GammaDistribution<double>&
+  variancePrior) :
+  mMeanPosterior(meanPrior),
+  mVariancePosterior(variancePrior),
+  mNumPoints(0),
+  mValid(false) {
 }
 
 EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(const
   EstimatorBayes<NormalDistribution<1> >& other) :
-  mNumPoints(other.mNumPoints) {
+  mMeanPosterior(other.mMeanPosterior),
+  mVariancePosterior(other.mVariancePosterior),
+  mNumPoints(other.mNumPoints),
+  mValid(other.mValid) {
 }
 
 EstimatorBayes<NormalDistribution<1> >&
   EstimatorBayes<NormalDistribution<1> >::operator =
   (const EstimatorBayes<NormalDistribution<1> >& other) {
   if (this != &other) {
+    mMeanPosterior = other.mMeanPosterior;
+    mVariancePosterior = other.mVariancePosterior;
     mNumPoints = other.mNumPoints;
+    mValid = other.mValid;
   }
   return *this;
 }
@@ -49,9 +59,11 @@ EstimatorBayes<NormalDistribution<1> >::~EstimatorBayes() {
 void EstimatorBayes<NormalDistribution<1> >::read(std::istream& stream) {
 }
 
-void EstimatorBayes<NormalDistribution<1> >::write(std::ostream& stream)
-  const {
-  stream << "number of points: " << mNumPoints;
+void EstimatorBayes<NormalDistribution<1> >::write(std::ostream& stream) const {
+  stream << "mean posterior: " << std::endl << mMeanPosterior << std::endl
+    << "variance posterior: " << std::endl << mVariancePosterior << std::endl
+    << "number of points: " << mNumPoints << std::endl
+    << "valid: " << mValid;
 }
 
 void EstimatorBayes<NormalDistribution<1> >::read(std::ifstream& stream) {
@@ -65,32 +77,17 @@ void EstimatorBayes<NormalDistribution<1> >::write(std::ofstream& stream)
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void EstimatorBayes<NormalDistribution<1> >::setNumPoints(size_t numPoints) {
-  mNumPoints = numPoints;
-}
-
 size_t EstimatorBayes<NormalDistribution<1> >::getNumPoints() const {
   return mNumPoints;
 }
 
-void EstimatorBayes<NormalDistribution<1> >::addPoint(NormalDistribution<1>&
-  dist, const NormalDistribution<1>::VariableType& point) {
-  mNumPoints++;
-  double mean;
-  if (mNumPoints == 1)
-    mean = point;
-  else {
-    mean = dist.getMean();
-    mean += 1.0 / mNumPoints * (point - mean);
-  }
-  double variance = dist.getVariance();
-  variance += 1.0 / mNumPoints * ((point - mean) * (point - mean) - variance);
-  if (variance == 0.0 || mNumPoints == 1)
-    variance = dist.getVariance();
-  dist.setMean(mean);
-  try {
-    dist.setVariance(variance);
-  }
-  catch (BadArgumentException<double>& e) {
-  }
+bool EstimatorBayes<NormalDistribution<1> >::getValid() const {
+  return mValid;
+}
+
+void EstimatorBayes<NormalDistribution<1> >::addPoint(double point) {
+}
+
+void EstimatorBayes<NormalDistribution<1> >::addPoints(const
+  std::vector<double>& points) {
 }
