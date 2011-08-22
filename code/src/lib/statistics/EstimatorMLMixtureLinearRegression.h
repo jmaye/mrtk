@@ -21,9 +21,6 @@
            regression models
   */
 
-#ifndef ESTIMATORMLMIXTURELINEARREGRESSION_H
-#define ESTIMATORMLMIXTURELINEARREGRESSION_H
-
 #include "statistics/LinearRegression.h"
 #include "statistics/MixtureDistribution.h"
 
@@ -126,5 +123,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLMixtureLinearRegression.tpp"
-
-#endif // ESTIMATORMLMIXTURELINEARREGRESSION

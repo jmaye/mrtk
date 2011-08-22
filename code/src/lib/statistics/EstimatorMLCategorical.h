@@ -20,9 +20,6 @@
     \brief This file implements an ML estimator for categorical distributions.
   */
 
-#ifndef ESTIMATORMLCATEGORICAL_H
-#define ESTIMATORMLCATEGORICAL_H
-
 #include "statistics/CategoricalDistribution.h"
 #include "base/Serializable.h"
 
@@ -97,5 +94,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLCategorical.tpp"
-
-#endif // ESTIMATORMLCATEGORICAL

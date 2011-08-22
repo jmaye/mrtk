@@ -17,77 +17,232 @@
  ******************************************************************************/
 
 /******************************************************************************/
-/* Methods                                                                    */
+/* Constructors and Destructor                                                */
+/******************************************************************************/
+
+template <size_t M, size_t N>
+EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::EstimatorML(
+  const std::vector<Eigen::Matrix<double, M, 1> >& means,
+  const std::vector<Eigen::Matrix<double, M, M> >& covariances,
+  const Eigen::Matrix<double, N, 1>& weights, size_t maxNumIter, double tol) :
+  mMeans(means),
+  mCovariances(covariances),
+  mWeights(weights),
+  mMaxNumIter(maxNumIter),
+  mTol(tol),
+  mNumPoints(0),
+  mValid(false) {
+}
+
+template <size_t M, size_t N>
+EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::EstimatorML(
+  const EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>&
+  other) :
+  mMeans(other.mMeans),
+  mCovariances(other.mCovariances),
+  mResponsibilities(other.mResponsibilities),
+  mWeights(other.mWeights),
+  mMaxNumIter(other.mMaxNumIter),
+  mTol(other.mTol),
+  mNumPoints(other.mNumPoints),
+  mValid(other.mValid) {
+}
+
+template <size_t M, size_t N>
+EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>&
+  EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::operator =
+  (const EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>&
+  other) {
+  if (this != &other) {
+    mMeans = other.mMeans;
+    mCovariances = other.mCovariances;
+    mResponsibilities = other.mResponsibilities;
+    mWeights = other.mWeights;
+    mMaxNumIter = other.mMaxNumIter;
+    mTol = other.mTol;
+    mNumPoints = other.mNumPoints;
+    mValid = other.mValid;
+  }
+  return *this;
+}
+
+template <size_t M, size_t N>
+EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+~EstimatorML() {
+}
+
+/******************************************************************************/
+/* Streaming operations                                                       */
+/******************************************************************************/
+
+template <size_t M, size_t N>
+void EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::read(
+  std::istream& stream) {
+}
+
+template <size_t M, size_t N>
+void EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::write(
+  std::ostream& stream) const {
+  stream << "means: " << std::endl;
+  for (size_t i = 0; i < N; ++i)
+    stream << mMeans[i] << std::endl;
+  stream << "covariances: " << std::endl;
+  for (size_t i = 0; i < N; ++i)
+    stream << mCovariances[i] << std::endl;
+  stream << "weights: " << mWeights.transpose() << std::endl
+    << "maxNumIter: " << mMaxNumIter << std::endl
+    << "tolerance: " << mTol << std::endl
+    << "number of points: " << mNumPoints << std::endl
+    << "valid: " << mValid;
+}
+
+template <size_t M, size_t N>
+void EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::read(
+  std::ifstream& stream) {
+}
+
+template <size_t M, size_t N>
+void EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::write(
+  std::ofstream& stream) const {
+}
+
+/******************************************************************************/
+/* Accessors                                                                  */
 /******************************************************************************/
 
 template <size_t M, size_t N>
 size_t EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
-  estimate(MixtureDistribution<NormalDistribution<M>, N>& dist, const
-  std::vector<typename NormalDistribution<M>::VariableType>& points,
-  Eigen::Matrix<double, Eigen::Dynamic, N>& responsibilities, size_t
-  maxNumIter, double tol) {
+getNumPoints() const {
+  return mNumPoints;
+}
+
+template <size_t M, size_t N>
+bool EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+getValid() const {
+  return mValid;
+}
+
+template <size_t M, size_t N>
+const std::vector<Eigen::Matrix<double, M, 1> >&
+EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+getMeans() const {
+  return mMeans;
+}
+
+template <size_t M, size_t N>
+const std::vector<Eigen::Matrix<double, M, M> >&
+EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+getCovariances() const {
+  return mCovariances;
+}
+
+template <size_t M, size_t N>
+const Eigen::Matrix<double, Eigen::Dynamic, N>&
+EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+getResponsibilities() const {
+  return mResponsibilities;
+}
+
+template <size_t M, size_t N>
+const Eigen::Matrix<double, N, 1>&
+EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+getWeights() const {
+  return mWeights;
+}
+
+template <size_t M, size_t N>
+double EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+getTolerance() const {
+  return mTol;
+}
+
+template <size_t M, size_t N>
+void EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+setTolerance(double tol) {
+  mTol = tol;
+}
+
+template <size_t M, size_t N>
+size_t EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+getMaxNumIter() const {
+  return mMaxNumIter;
+}
+
+template <size_t M, size_t N>
+void EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+setMaxNumIter(size_t maxNumIter) {
+  mMaxNumIter = maxNumIter;
+}
+
+template <size_t M, size_t N>
+void EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::reset() {
+  mNumPoints = 0;
+  mValid = false;
+}
+
+template <size_t M, size_t N>
+size_t EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
+addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points) {
   size_t numIter = 0;
+  reset();
+  if (mMeans.size() != N || mCovariances.size() != N)
+    return numIter;
   if (points.size()) {
-    responsibilities.resize(points.size(), N);
+    mNumPoints += points.size();
     double oldLogLikelihood = 0;
-    for (size_t i = 0; i < points.size(); ++i)
-      oldLogLikelihood += log(dist(points[i]));
-    while (numIter != maxNumIter) {
+    mResponsibilities.resize(points.size(), N);
+    for (size_t i = 0; i < points.size(); ++i) {
+      double probability = 0.0;
+      for (size_t j = 0; j < N; ++j)
+        probability += mWeights(j) *
+          NormalDistribution<M>(mMeans[i], mCovariances[j])(points[i]);
+      oldLogLikelihood += log(probability);
+    }
+    while (numIter != mMaxNumIter) {
       for (size_t i = 0; i < points.size(); ++i) {
-        for (size_t k = 0; k < N; ++k) {
-          Eigen::Matrix<size_t, N, 1> component =
-            Eigen::Matrix<size_t, N, 1>::Zero();
-          component(k) = 1.0;
-          responsibilities(i, k) = dist.getWeights()(component) *
-            dist.getDistributions()[k](points[i]);
+        for (size_t j = 0; j < N; ++j) {
+          mResponsibilities(i, j) = mWeights(j) *
+            NormalDistribution<M>(mMeans[j], mCovariances[j])(points[i]);
         }
-        responsibilities.row(i) /= dist(points[i]);
+        mResponsibilities.row(i) /= mResponsibilities.row(i).sum();
       }
-      std::vector<Eigen::Matrix<double, M, 1> > mean(N);
-      for (size_t k = 0; k < N; ++k)
-        mean[k] = Eigen::Matrix<double, M, 1>::Zero();
-      for (size_t i = 0; i < points.size(); ++i) {
-        for (size_t k = 0; k < N; ++k)
-          mean[k] += responsibilities(i, k) * points[i];
+      Eigen::Matrix<double, N, 1> numPoints;
+      for (size_t j = 0; j < N; ++j)
+        numPoints(j) = mResponsibilities.col(j).sum();
+      mWeights = numPoints / points.size();
+      for (size_t j = 0; j < N; ++j) {
+        mMeans[j] = Eigen::Matrix<double, M, 1>::Zero();
+        mCovariances[j] = Eigen::Matrix<double, M, M>::Zero();
       }
-      Eigen::Matrix<double, N, 1> numPoints =
-        Eigen::Matrix<double, N, 1>::Zero();
-      for (size_t k = 0; k < N; ++k)
-        numPoints(k) = responsibilities.col(k).sum();
-      for (size_t k = 0; k < N; ++k)
-        mean[k] /= numPoints[k];
-      std::vector<Eigen::Matrix<double, M, M> > covariance(N);
-      for (size_t k = 0; k < N; ++k)
-        covariance[k] = Eigen::Matrix<double, M, M>::Zero();
       for (size_t i = 0; i < points.size(); ++i)
-        for (size_t k = 0; k < N; ++k)
-          covariance[k] += responsibilities(i, k) * (points[i] - mean[k]) *
-            (points[i] - mean[k]).transpose();
-      for (size_t k = 0; k < N; ++k) {
-        covariance[k] /= numPoints[k];
-      }
-      Eigen::Matrix<double, N, 1> weights = numPoints / points.size();
-      weights /= weights.sum();
-      dist.setWeights(CategoricalDistribution<N>(weights));
-      std::vector<NormalDistribution<M> > distributions;
-      distributions.resize(N);
-      for (size_t k = 0; k < N; ++k) {
-        distributions[k].setMean(mean[k]);
+        for (size_t j = 0; j < N; ++j)
+          mMeans[j] += mResponsibilities(i, j) * points[i];
+      for (size_t j = 0; j < N; ++j)
+        mMeans[j] /= numPoints(j);
+      for (size_t i = 0; i < points.size(); ++i)
+        for (size_t j = 0; j < N; ++j)
+          mCovariances[j] += mResponsibilities(i, j) * (points[i] - mMeans[j]) *
+            (points[i] - mMeans[j]).transpose();
+      for (size_t j = 0; j < N; ++j)
+        mCovariances[j] /= numPoints(j);
+      for (size_t k = 0; k < N; ++k)
         for (size_t i = 0; i < M; ++i)
           for (size_t j = i + 1; j < M; ++j)
-            covariance[k](i, j) = covariance[k](j, i);
-        distributions[k].setCovariance(covariance[k]);
-      }
-      dist.setDistributions(distributions);
+            mCovariances[k](i, j) = mCovariances[k](j, i);
       double newLogLikelihood = 0;
       for (size_t i = 0; i < points.size(); ++i) {
-        newLogLikelihood += log(dist(points[i]));
+        double probability = 0.0;
+        for (size_t j = 0; j < N; ++j)
+          probability += mWeights(j) *
+            NormalDistribution<M>(mMeans[j], mCovariances[j])(points[i]);
+        newLogLikelihood += log(probability);
       }
-      if (fabs(oldLogLikelihood - newLogLikelihood) < tol)
+      if (fabs(oldLogLikelihood - newLogLikelihood) < mTol)
         break;
       oldLogLikelihood = newLogLikelihood;
       numIter++;
     }
+    mValid = true;
   }
   return numIter;
 }

@@ -20,9 +20,6 @@
     \brief This file implements an ML estimator for Poisson distributions.
   */
 
-#ifndef ESTIMATORMLPOISSON_H
-#define ESTIMATORMLPOISSON_H
-
 #include "statistics/PoissonDistribution.h"
 #include "base/Serializable.h"
 
@@ -97,5 +94,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLPoisson.tpp"
-
-#endif // ESTIMATORMLPOISSON

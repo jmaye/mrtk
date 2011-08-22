@@ -65,8 +65,8 @@ void MultinomialDistribution<M>::read(std::istream& stream) {
 
 template <size_t M>
 void MultinomialDistribution<M>::write(std::ostream& stream) const {
-  stream << "success probabilities: " << std::endl
-    << mSuccessProbabilities << std::endl
+  stream << "success probabilities: "
+    << mSuccessProbabilities.transpose() << std::endl
     << "trials number: " << mNumTrials;
 }
 

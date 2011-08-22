@@ -21,9 +21,6 @@
            distributions.
   */
 
-#ifndef ESTIMATORMLNORMALMV_H
-#define ESTIMATORMLNORMALMV_H
-
 #include "statistics/NormalDistribution.h"
 #include "base/Serializable.h"
 
@@ -102,5 +99,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLNormalMv.tpp"
-
-#endif // ESTIMATORMLNORMALMV

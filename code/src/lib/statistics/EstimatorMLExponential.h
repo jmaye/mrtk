@@ -20,9 +20,6 @@
     \brief This file implements an ML estimator for exponential distributions.
   */
 
-#ifndef ESTIMATORMLEXPONENTIAL_H
-#define ESTIMATORMLEXPONENTIAL_H
-
 #include "statistics/ExponentialDistribution.h"
 #include "base/Serializable.h"
 
@@ -99,5 +96,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLExponential.tpp"
-
-#endif // ESTIMATORMLEXPONENTIAL

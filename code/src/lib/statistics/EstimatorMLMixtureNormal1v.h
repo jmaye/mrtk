@@ -21,9 +21,6 @@
            normal distributions
   */
 
-#ifndef ESTIMATORMLMIXTURENORMAL1V_H
-#define ESTIMATORMLMIXTURENORMAL1V_H
-
 #include "statistics/NormalDistribution.h"
 #include "statistics/MixtureDistribution.h"
 
@@ -34,27 +31,95 @@
     \brief Mixture of univariate normal distributions ML estimator
   */
 template <size_t N>
-class EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N> {
-  /** \name Private constructors
+class EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N> :
+  public virtual Serializable {
+public:
+  /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  EstimatorML();
+  EstimatorML(const Eigen::Matrix<double, N, 1>& means, const
+    Eigen::Matrix<double, N, 1>& variances, const Eigen::Matrix<double, N, 1>&
+    weights, size_t maxNumIter = 100, double tol = 1e-5);
+  /// Copy constructor
+  EstimatorML(const
+    EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>& other);
+  /// Assignment operator
+  EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>& operator =
+    (const EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>&
+    other);
+  /// Destructor
+  virtual ~EstimatorML();
   /** @}
     */
 
-public:
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Estimate the parameters
-  static size_t estimate(MixtureDistribution<NormalDistribution<1>, N>& dist,
-    const std::vector<double>& points, Eigen::Matrix<double, Eigen::Dynamic, N>&
-    responsibilities, size_t maxNumIter = 100, double tol = 1e-6);
+  /// Returns the number of points
+  size_t getNumPoints() const;
+  /// Returns the validity state of the estimator
+  bool getValid() const;
+  /// Returns the estimated means
+  const Eigen::Matrix<double, N, 1>& getMeans() const;
+  /// Returns the estimated variances
+  const Eigen::Matrix<double, N, 1>& getVariances() const;
+  /// Returns the estimated responsibilities
+  const Eigen::Matrix<double, Eigen::Dynamic, N>& getResponsibilities() const;
+  /// Returns the estimated component weights
+  const Eigen::Matrix<double, N, 1>& getWeights() const;
+  /// Returns the tolerance of the estimator
+  double getTolerance() const;
+  /// Sets the tolerance of the estimator
+  void setTolerance(double tol);
+  /// Returns the maximum number of iterations for EM
+  size_t getMaxNumIter() const;
+  /// Sets the maximum number of iterations for EM
+  void setMaxNumIter(size_t maxNumIter);
+  /// Add points to the estimator / Returns number of EM iterationss
+  size_t addPoints(const std::vector<double>& points);
+  /// Reset the estimator
+  void reset();
   /** @}
     */
+
+protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Estimated means
+  Eigen::Matrix<double, N, 1> mMeans;
+  /// Estimated variances
+  Eigen::Matrix<double, N, 1> mVariances;
+  /// Estimated responsibilities
+  Eigen::Matrix<double, Eigen::Dynamic, N> mResponsibilities;
+  /// Estimated component weights
+  Eigen::Matrix<double, N, 1> mWeights;
+  /// Maximum number of iterations for EM
+  size_t mMaxNumIter;
+  /// Tolerance for the determinant
+  double mTol;
+  /// Number of points in the estimator
+  size_t mNumPoints;
+  /// Valid flag
+  bool mValid;
+  /** @}
+    */
+
 };
 
 #include "statistics/EstimatorMLMixtureNormal1v.tpp"
-
-#endif // ESTIMATORMLMIXTURENORMAL1V

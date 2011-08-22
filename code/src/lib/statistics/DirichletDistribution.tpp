@@ -62,7 +62,7 @@ void DirichletDistribution<M>::read(std::istream& stream) {
 
 template <size_t M>
 void DirichletDistribution<M>::write(std::ostream& stream) const {
-  stream << "mAlpha: " << std::endl << mAlpha;
+  stream << "mAlpha: " << std::endl << mAlpha.transpose();
 }
 
 template <size_t M>

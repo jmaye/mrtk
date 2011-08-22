@@ -21,15 +21,10 @@
            distributions.
   */
 
-#ifndef ESTIMATORMLNORMAL1V_H
-#define ESTIMATORMLNORMAL1V_H
-
 #include "statistics/NormalDistribution.h"
 #include "base/Serializable.h"
 
 #include <vector>
-
-template <typename D, size_t M = 1, size_t N = 1> class EstimatorML;
 
 /** The class EstimatorML is implemented for univariate normal distributions.
     \brief Univariate normal distribution ML estimator
@@ -104,5 +99,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLNormal1v.tpp"
-
-#endif // ESTIMATORMLNORMAL1V

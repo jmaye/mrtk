@@ -24,6 +24,10 @@
 #ifndef ESTIMATORML_H
 #define ESTIMATORML_H
 
+#include <cstdlib>
+
+template <typename D, size_t M = 1, size_t N = 1> class EstimatorML;
+
 #include "statistics/EstimatorMLNormal1v.h"
 #include "statistics/EstimatorMLNormalMv.h"
 #include "statistics/EstimatorMLCategorical.h"

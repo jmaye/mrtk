@@ -20,9 +20,6 @@
     \brief This file implements an ML estimator for multinomial distributions.
   */
 
-#ifndef ESTIMATORMLMULTINOMIAL_H
-#define ESTIMATORMLMULTINOMIAL_H
-
 #include "statistics/MultinomialDistribution.h"
 #include "base/Serializable.h"
 
@@ -101,5 +98,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLMultinomial.tpp"
-
-#endif // ESTIMATORMLMULTINOMIAL

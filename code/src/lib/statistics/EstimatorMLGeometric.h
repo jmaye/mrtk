@@ -20,9 +20,6 @@
     \brief This file implements an ML estimator for geometric distributions.
   */
 
-#ifndef ESTIMATORMLGEOMETRIC_H
-#define ESTIMATORMLGEOMETRIC_H
-
 #include "statistics/GeometricDistribution.h"
 #include "base/Serializable.h"
 
@@ -99,5 +96,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLGeometric.tpp"
-
-#endif // ESTIMATORMLGEOMETRIC

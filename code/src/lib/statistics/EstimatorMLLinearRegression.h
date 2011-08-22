@@ -20,9 +20,6 @@
     \brief This file implements an ML estimator for linear regression models
   */
 
-#ifndef ESTIMATORMLLINEARREGRESSION_H
-#define ESTIMATORMLLINEARREGRESSION_H
-
 #include "statistics/LinearRegression.h"
 #include "base/Serializable.h"
 
@@ -105,5 +102,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLLinearRegression.tpp"
-
-#endif // ESTIMATORMLLINEARREGRESSION
