@@ -144,6 +144,7 @@ void EstimatorML<LinearRegression<M>, M>::addPoints(const
       return;
     mCoefficients = invCheckMatrix.inverse() * designMatrix.transpose() *
       targets;
+    //mVariance = targets - mCoefficients *
     for (size_t i = 0; i < points.size(); ++i)
       mVariance += (targets(i) - (mCoefficients.transpose() *
         designMatrix.row(i).transpose())(0)) * (targets(i) -

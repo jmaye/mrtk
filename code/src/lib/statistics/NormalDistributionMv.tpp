@@ -100,12 +100,18 @@ template <size_t M>
 void NormalDistribution<M>::setCovariance(const Eigen::Matrix<double, M, M>&
   covariance) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
   if (covariance.transpose() != covariance)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance, "NormalDistribution<M>::setCovariance(): covariance must be symmetric");
+    throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance,
+      "NormalDistribution<M>::setCovariance(): covariance must be symmetric",
+      __FILE__, __LINE__);
   mTransformation = covariance.llt();
   if (mTransformation.isPositiveDefinite() == false)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance, "NormalDistribution<M>::setCovariance(): covariance must be positive definite");
+    throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance,
+      "NormalDistribution<M>::setCovariance(): covariance must be positive definite",
+      __FILE__, __LINE__);
   if ((covariance.diagonal().cwise() < 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance, "NormalDistribution<M>::setCovariance(): variances must be positive");
+    throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance,
+      "NormalDistribution<M>::setCovariance(): variances must be positive",
+      __FILE__, __LINE__);
   mDeterminant = covariance.determinant();
   mPrecision = covariance.inverse();
   mNormalizer = 0.5 * M * log(2.0 * M_PI) + 0.5 * log(mDeterminant);

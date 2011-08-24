@@ -23,7 +23,6 @@
 template <size_t M>
 EstimatorML<MultinomialDistribution<M>, M>::EstimatorML() :
   mSuccessProbabilities(Eigen::Matrix<double, M, 1>::Zero()),
-  mNumTrials(0),
   mNumPoints(0),
   mValid(false) {
 }
@@ -32,7 +31,6 @@ template <size_t M>
 EstimatorML<MultinomialDistribution<M>, M>::EstimatorML(const
   EstimatorML<MultinomialDistribution<M>, M>& other) :
   mSuccessProbabilities(other.mSuccessProbabilities),
-  mNumTrials(other.mNumTrials),
   mNumPoints(other.mNumPoints),
   mValid(other.mValid) {
 }
@@ -43,7 +41,6 @@ EstimatorML<MultinomialDistribution<M>, M>&
   (const EstimatorML<MultinomialDistribution<M>, M>& other) {
   if (this != &other) {
     mSuccessProbabilities = other.mSuccessProbabilities;
-    mNumTrials = other.mNumTrials;
     mNumPoints = other.mNumPoints;
     mValid = other.mValid;
   }
@@ -66,8 +63,7 @@ template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::write(std::ostream& stream)
   const {
   stream << "success probabilities: " << mSuccessProbabilities.transpose()
-    << std::endl << "number of trials: " << mNumTrials << std::endl
-    << "number of points: " << mNumPoints << std::endl
+    << std::endl << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }
 
@@ -101,32 +97,26 @@ EstimatorML<MultinomialDistribution<M>, M>::getSuccessProbabilities() const {
 }
 
 template <size_t M>
-size_t EstimatorML<MultinomialDistribution<M>, M>::getNumTrials() const {
-  return mNumTrials;
-}
-
-template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::reset() {
   mNumPoints = 0;
   mValid = false;
   mSuccessProbabilities = Eigen::Matrix<double, M, 1>::Zero();
-  mNumTrials = 0;
 }
 
 template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::addPoint(const
   Eigen::Matrix<size_t, M, 1>& point) {
   mNumPoints++;
+  size_t numTrials = point.sum();
   if (mNumPoints == 1) {
-    mNumTrials = point.sum();
     for (size_t i = 0; i < M; ++i)
-      mSuccessProbabilities(i) += point(i) / (double)mNumTrials;
+      mSuccessProbabilities(i) += point(i) / (double)numTrials;
+    mValid = true;
   }
   else {
-    mNumTrials += 1.0 / mNumPoints * (point.sum() - mNumTrials);
     for (size_t i = 0; i < M; ++i)
       mSuccessProbabilities(i) += 1.0 / mNumPoints * (point(i) /
-        (double)mNumTrials - mSuccessProbabilities(i));
+        (double)numTrials - mSuccessProbabilities(i));
   }
 }
 

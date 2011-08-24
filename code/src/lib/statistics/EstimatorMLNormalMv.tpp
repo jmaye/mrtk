@@ -117,15 +117,13 @@ template <size_t M>
 void EstimatorML<NormalDistribution<M>, M>::addPoint(const
   Eigen::Matrix<double, M, 1>& point) {
   mNumPoints++;
-  if (mNumPoints == 1)
-    mMean = point;
-  else {
-    mMean += 1.0 / mNumPoints * (point - mMean);
+  mMean += 1.0 / mNumPoints * (point - mMean);
+  if (mNumPoints > M) {
+    mCovariance += 1.0 / mNumPoints * ((point - mMean) *
+      (point - mMean).transpose() - mCovariance);
     mValid = true;
   }
-  mCovariance += 1.0 / mNumPoints * ((point - mMean) *
-    (point - mMean).transpose()- mCovariance);
-  //TODO: CHECK DETERMINANT?
+  // TODO: CHECK FOR VALID COVARIANCES MATRIX, I.E., M NON-COLINEAR POINTS
 }
 
 template <size_t M>

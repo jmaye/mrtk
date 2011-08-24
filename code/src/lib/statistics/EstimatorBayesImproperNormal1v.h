@@ -16,68 +16,60 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorMLMixtureNormal1v.h
-    \brief This file implements a batch ML estimator for mixture of univariate
-           normal distributions
+/** \file EstimatorBayesImproperNormal1v.h
+    \brief This file implements a Bayesian estimator for univariate normal
+           distributions with improper prior.
   */
 
 #include "statistics/NormalDistribution.h"
-#include "statistics/MixtureDistribution.h"
+#include "statistics/StudentDistribution.h"
 
 #include <vector>
 
-/** The class EstimatorML is implemented for mixtures of univariate normal
+/** The class EstimatorBayesImproper is implemented for univariate normal
     distributions.
-    \brief Mixture of univariate normal distributions ML estimator
+    \brief Univariate normal distribution Bayesian estimator with improper prior
   */
-template <size_t N>
-class EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N> :
+template <> class EstimatorBayesImproper<NormalDistribution<1> > :
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs estimator with initial guess of the parameters
-  EstimatorML(const Eigen::Matrix<double, N, 1>& means, const
-    Eigen::Matrix<double, N, 1>& variances, const Eigen::Matrix<double, N, 1>&
-    weights, size_t maxNumIter = 100, double tol = 1e-5);
+  /// Default constructor
+  EstimatorBayesImproper();
   /// Copy constructor
-  EstimatorML(const
-    EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>& other);
-  /// Assignment operator
-  EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>& operator =
-    (const EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>&
+  EstimatorBayesImproper(const EstimatorBayesImproper<NormalDistribution<1> >&
     other);
+  /// Assignment operator
+  EstimatorBayesImproper<NormalDistribution<1> >& operator =
+    (const EstimatorBayesImproper<NormalDistribution<1> >& other);
   /// Destructor
-  virtual ~EstimatorML();
+  virtual ~EstimatorBayesImproper();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
+  /// Returns the posterior marginal mean distribution
+  const StudentDistribution<1>& getPostMeanDist() const;
+  /// Returns the posterior marginal variance distribution
+  // TODO
+  /// Returns the posterior predictive distribution
+  const StudentDistribution<1>& getPostPredDist() const;
+  /// Returns the sample mean
+  double getSampleMean() const;
+  /// Returns the sample variance
+  double getSampleVariance() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
   bool getValid() const;
-  /// Returns the estimated means
-  const Eigen::Matrix<double, N, 1>& getMeans() const;
-  /// Returns the estimated variances
-  const Eigen::Matrix<double, N, 1>& getVariances() const;
-  /// Returns the estimated responsibilities
-  const Eigen::Matrix<double, Eigen::Dynamic, N>& getResponsibilities() const;
-  /// Returns the estimated component weights
-  const Eigen::Matrix<double, N, 1>& getWeights() const;
-  /// Returns the tolerance of the estimator
-  double getTolerance() const;
-  /// Sets the tolerance of the estimator
-  void setTolerance(double tol);
-  /// Returns the maximum number of iterations for EM
-  size_t getMaxNumIter() const;
-  /// Sets the maximum number of iterations for EM
-  void setMaxNumIter(size_t maxNumIter);
-  /// Add points to the estimator / Returns number of EM iterationss
-  size_t addPoints(const std::vector<double>& points);
+  /// Add a point to the estimator
+  void addPoint(double point);
+  /// Add points to the estimator
+  void addPoints(const std::vector<double>& points);
   /// Reset the estimator
   void reset();
   /** @}
@@ -101,18 +93,16 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Estimated means
-  Eigen::Matrix<double, N, 1> mMeans;
-  /// Estimated variances
-  Eigen::Matrix<double, N, 1> mVariances;
-  /// Estimated responsibilities
-  Eigen::Matrix<double, Eigen::Dynamic, N> mResponsibilities;
-  /// Estimated component weights
-  Eigen::Matrix<double, N, 1> mWeights;
-  /// Maximum number of iterations for EM
-  size_t mMaxNumIter;
-  /// Tolerance for the determinant
-  double mTol;
+  /// Posterior marginal mean distribution
+  StudentDistribution<1> mPostMeanDist;
+  /// Posterior marginal variance distribution
+  // TODO
+  /// Posterior predictive distribution
+  StudentDistribution<1> mPostPredDist;
+  /// Sample mean
+  double mSampleMean;
+  /// Sample variance
+  double mSampleVariance;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag
@@ -122,4 +112,4 @@ protected:
 
 };
 
-#include "statistics/EstimatorMLMixtureNormal1v.tpp"
+#include "statistics/EstimatorBayesImproperNormal1v.tpp"

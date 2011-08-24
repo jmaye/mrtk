@@ -37,7 +37,7 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Default constructor
+  /// Constructs estimator with initial guess of the parameters
   EstimatorML(const std::vector<Eigen::Matrix<double, M, 1> >& means, const
     std::vector<Eigen::Matrix<double, M, M> >& covariances,
     const Eigen::Matrix<double, N, 1>& weights, size_t maxNumIter = 100,

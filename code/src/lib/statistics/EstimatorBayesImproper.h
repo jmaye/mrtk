@@ -16,18 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayes.h
-    \brief This file defines the EstimatorBayes class, which implements Bayesian
-           estimators for various distributions
+/** \file EstimatorBayesImproper.h
+    \brief This file defines the EstimatorBayesImproper class, which implements
+           Bayesian estimators with improper priors for various distributions
   */
 
-#ifndef ESTIMATORBAYES_H
-#define ESTIMATORBAYES_H
+#ifndef ESTIMATORBAYESIMPROPER_H
+#define ESTIMATORBAYESIMPROPER_H
 
 #include <cstdlib>
 
-template <typename D, size_t M = 1, size_t N = 1> class EstimatorBayes;
+template <typename D, size_t M = 1, size_t N = 1> class EstimatorBayesImproper;
 
-#include "statistics/EstimatorBayesNormal1v.h"
+#include "statistics/EstimatorBayesImproperNormal1v.h"
 
-#endif // ESTIMATORBAYES
+#endif // ESTIMATORBAYESIMPROPER
