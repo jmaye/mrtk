@@ -18,9 +18,7 @@
 
 #include "base/Timestamp.h"
 
-#include <Eigen/LU>
-#include <Eigen/Cholesky>
-#include <Eigen/Geometry>
+#include <Eigen/Array>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */

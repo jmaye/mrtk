@@ -186,6 +186,6 @@ Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
   static Randomizer<double> randomizer;
   Eigen::Matrix<double, M, 1> sampleGammaVector;
   for (size_t i = 0; i < M; ++i)
-    sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1);
+    sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), mAlpha(i));
   return sampleGammaVector / sampleGammaVector.sum();
 }

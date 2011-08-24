@@ -19,7 +19,6 @@
 #include "statistics/Randomizer.h"
 
 #include <Eigen/LU>
-#include <Eigen/Geometry>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */

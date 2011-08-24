@@ -16,31 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BetaDistributionRndHistogramPlot.cpp
+/** \file DirichletDistributionRndScatterPlot3v.cpp
     \brief This file is a testing binary for plotting random samples of the
-           BetaDistribution class
+           Dirichlet3v distribution
   */
 
-#include "visualization/HistogramPlot.h"
-#include "statistics/BetaDistribution.h"
+#include "visualization/ScatterPlot.h"
+#include "statistics/DirichletDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<double, 1> hist(-2, 2, 0.05);
-  BetaDistribution dist(1.5, 1.5);
+  std::vector<Eigen::Matrix<double, 3, 1> > data;
+  DirichletDistribution<3> dist;
   for (size_t i = 0; i < 100000; ++i)
-    hist.addSample(dist.getSample()(1));
-  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
-  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
-    << std::endl;
-  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
-  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
-  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
-  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-  hist.normalize();
-  HistogramPlot<double, 1> plot("BetaDistributionRndHistogramPlot", hist);
+    data.push_back(dist.getSample());
+  ScatterPlot<3> plot("DirichletDistributionRndScatterPlot3v", data);
   plot.show();
   return app.exec();
 }

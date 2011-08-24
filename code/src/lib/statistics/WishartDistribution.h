@@ -76,6 +76,10 @@ public:
   double getNormalizer() const;
   /// Returns the cholesky decomposition of the scale matrix
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
+  /// Returns the mean of the distribution
+  Eigen::Matrix<double, M, M> getMean() const;
+  /// Returns the mode of the distribution
+  Eigen::Matrix<double, M, M> getMode() const;
   /// Access the probability density function at the given value
   virtual double pdf(const Eigen::Matrix<double, M, M>& value) const;
   /// Access the log-probability density function at the given value

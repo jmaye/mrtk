@@ -21,7 +21,6 @@
 #include "statistics/NormalDistribution.h"
 
 #include <Eigen/LU>
-#include <Eigen/Geometry>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */

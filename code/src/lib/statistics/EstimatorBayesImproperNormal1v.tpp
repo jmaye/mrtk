@@ -30,6 +30,7 @@ EstimatorBayesImproper<NormalDistribution<1> >::EstimatorBayesImproper() :
 EstimatorBayesImproper<NormalDistribution<1> >::EstimatorBayesImproper(const
   EstimatorBayesImproper<NormalDistribution<1> >& other) :
   mPostMeanDist(other.mPostMeanDist),
+  mPostVarianceDist(other.mPostVarianceDist),
   mPostPredDist(other.mPostPredDist),
   mSampleMean(other.mSampleMean),
   mSampleVariance(other.mSampleVariance),
@@ -42,6 +43,7 @@ EstimatorBayesImproper<NormalDistribution<1> >&
   (const EstimatorBayesImproper<NormalDistribution<1> >& other) {
   if (this != &other) {
     mPostMeanDist = other.mPostMeanDist;
+    mPostVarianceDist = other.mPostVarianceDist;
     mPostPredDist = other.mPostPredDist;
     mSampleMean = other.mSampleMean;
     mSampleVariance = other.mSampleVariance;
@@ -65,6 +67,8 @@ void EstimatorBayesImproper<NormalDistribution<1> >::read(std::istream&
 void EstimatorBayesImproper<NormalDistribution<1> >::write(std::ostream& stream)
   const {
   stream << "posterior mean distribution: " << std::endl << mPostMeanDist
+    << std::endl << "posterior variance distribution: " << std::endl
+    << mPostVarianceDist
     << std::endl << "posterior predictive distribution: " << std::endl
     << mPostPredDist << std::endl
     << "sample mean: " << mSampleMean << std::endl
@@ -88,6 +92,11 @@ void EstimatorBayesImproper<NormalDistribution<1> >::write(std::ofstream&
 const StudentDistribution<1>& EstimatorBayesImproper<NormalDistribution<1> >::
 getPostMeanDist() const {
   return mPostMeanDist;
+}
+
+const GammaDistribution<>& EstimatorBayesImproper<NormalDistribution<1> >::
+getPostVarianceDist() const {
+  return mPostVarianceDist;
 }
 
 const StudentDistribution<1>& EstimatorBayesImproper<NormalDistribution<1> >::
@@ -128,6 +137,8 @@ void EstimatorBayesImproper<NormalDistribution<1> >::addPoint(double point) {
     mPostMeanDist.setDegrees(mNumPoints - 1);
     mPostMeanDist.setLocation(mSampleMean);
     mPostMeanDist.setScale(mSampleVariance / mNumPoints);
+    //mPostVarianceDist.setShape();
+    //mPostVarianceDist.setScale();
     mPostPredDist.setDegrees(mNumPoints - 1);
     mPostPredDist.setLocation(mSampleMean);
     mPostPredDist.setScale(mSampleVariance * (1 + 1.0 / mNumPoints));

@@ -16,11 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
+#include "statistics/NormalDistribution.h"
 #include "functions/LogGammaFunction.h"
 
 #include <Eigen/LU>
-#include <Eigen/Geometry>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -89,9 +88,9 @@ void WishartDistribution<M>::write(std::ofstream& stream) const {
 template <size_t M>
 void WishartDistribution<M>::setDegrees(double degrees)
   throw (BadArgumentException<double>) {
-  if (degrees <= M - 1)
+  if (degrees < M)
     throw BadArgumentException<double>(degrees,
-      "WishartDistribution<M>::setDegrees(): degrees must be strictly bigger than the dimension - 1",
+      "WishartDistribution<M>::setDegrees(): degrees must be strictly bigger than the dimension",
       __FILE__, __LINE__);
   mDegrees = degrees;
 }
@@ -163,19 +162,11 @@ double WishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>& value)
 
 template <size_t M>
 Eigen::Matrix<double, M, M> WishartDistribution<M>::getSample() const {
-  Eigen::Matrix<double, M, M> A = Eigen::Matrix<double, M, M>::Zero();
-  Randomizer<double> randomizer;
-  // TODO: CHECK THIS
-  for (size_t i = 0; i < M; ++i)
-    for (size_t j = 0; j < M; ++j) {
-    if (i == j) {
-      A(i, j) = randomizer.sampleGamma(0.5 * (mDegrees - i), 2.0);
-      break;
-    }
-    else {
-      A(i, j) = randomizer.sampleNormal();
-    }
+  NormalDistribution<M> normalDist(Eigen::Matrix<double, M, 1>::Zero(), mScale);
+  Eigen::Matrix<double, M, M> sample  = Eigen::Matrix<double, M, M>::Zero();
+  for (size_t i = 0; i < mDegrees; ++i) {
+    Eigen::Matrix<double, M, 1> normSample = normalDist.getSample();
+    sample += normSample * normSample.transpose();
   }
-
-  return mTransformation.matrixL() * A * A.transpose() * mTransformation.matrixL().transpose();
+  return sample;
 }
