@@ -114,15 +114,15 @@ double LogisticDistribution::getSample() const {
 }
 
 double LogisticDistribution::getMean() const {
-  return getLocation();
+  return mLocation;
 }
 
 double LogisticDistribution::getMedian() const {
-  return getLocation();
+  return mLocation;
 }
 
 double LogisticDistribution::getMode() const {
-  return getLocation();
+  return mLocation;
 }
 
 double LogisticDistribution::getVariance() const {

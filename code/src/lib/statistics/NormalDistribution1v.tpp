@@ -137,9 +137,9 @@ double NormalDistribution<1>::mahalanobisDistance(const double& value) const {
 }
 
 double NormalDistribution<1>::getMedian() const {
-  return getMean();
+  return mMean;
 }
 
 double NormalDistribution<1>::getMode() const {
-  return getMean();
+  return mMean;
 }

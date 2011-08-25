@@ -144,6 +144,18 @@ const Eigen::LLT<Eigen::Matrix<double, M, M> >&
 }
 
 template <size_t M>
+Eigen::Matrix<double, M, M> WishartDistribution<M>::getMean() const {
+  return mDegrees * mScale;
+}
+
+template <size_t M>
+Eigen::Matrix<double, M, M> WishartDistribution<M>::getMode() const {
+  if (mDegrees >= M + 1)
+    return (mDegrees - M - 1) * mScale;
+  return Eigen::Matrix<double, M, M>::Zero();
+}
+
+template <size_t M>
 double WishartDistribution<M>::pdf(const Eigen::Matrix<double, M, M>& value)
   const {
   return exp(logpdf(value));

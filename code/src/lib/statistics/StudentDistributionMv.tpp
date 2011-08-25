@@ -202,12 +202,12 @@ double StudentDistribution<M>::mahalanobisDistance(const
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMean() const {
-  return getLocation();
+  return mLocation;
 }
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMode() const {
-  return getLocation();
+  return mLocation;
 }
 
 template <size_t M>

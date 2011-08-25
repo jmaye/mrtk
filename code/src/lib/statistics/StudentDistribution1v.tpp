@@ -157,15 +157,15 @@ double StudentDistribution<1>::mahalanobisDistance(const double& value) const {
 }
 
 double StudentDistribution<1>::getMean() const {
-  return getLocation();
+  return mLocation;
 }
 
 double StudentDistribution<1>::getMedian() const {
-  return getLocation();
+  return mLocation;
 }
 
 double StudentDistribution<1>::getMode() const {
-  return getLocation();
+  return mLocation;
 }
 
 double StudentDistribution<1>::getVariance() const {
