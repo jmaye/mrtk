@@ -20,55 +20,61 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-ChiSquareDistribution::ChiSquareDistribution(size_t degrees) :
-  GammaDistribution<>(0.5 * degrees, 0.5) {
+ScaledInvChiSquareDistribution::ScaledInvChiSquareDistribution(size_t degrees,
+  double scale) :
+  InvGammaDistribution<>(0.5 * degrees, 0.5 * degrees * scale) {
 }
 
-ChiSquareDistribution::ChiSquareDistribution(const ChiSquareDistribution&
-  other) :
-  GammaDistribution<>(other) {
+ScaledInvChiSquareDistribution::ScaledInvChiSquareDistribution(const
+  ScaledInvChiSquareDistribution& other) :
+  InvGammaDistribution<>(other) {
 }
 
-ChiSquareDistribution& ChiSquareDistribution::operator =
-  (const ChiSquareDistribution& other) {
+ScaledInvChiSquareDistribution& ScaledInvChiSquareDistribution::operator =
+  (const ScaledInvChiSquareDistribution& other) {
   if (this != &other) {
-    this->GammaDistribution<>::operator=(other);
+    this->InvGammaDistribution<>::operator=(other);
   }
   return *this;
 }
 
-ChiSquareDistribution::~ChiSquareDistribution() {
+ScaledInvChiSquareDistribution::~ScaledInvChiSquareDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void ChiSquareDistribution::read(std::istream& stream) {
+void ScaledInvChiSquareDistribution::read(std::istream& stream) {
 }
 
-void ChiSquareDistribution::write(std::ostream& stream) const {
-  stream << "degrees: " << getDegrees();
+void ScaledInvChiSquareDistribution::write(std::ostream& stream) const {
+  stream << "scale: " << getScale() << std::endl
+    << "degrees: " << getDegrees();
 }
 
-void ChiSquareDistribution::read(std::ifstream& stream) {
+void ScaledInvChiSquareDistribution::read(std::ifstream& stream) {
 }
 
-void ChiSquareDistribution::write(std::ofstream& stream) const {
+void ScaledInvChiSquareDistribution::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void ChiSquareDistribution::setDegrees(size_t degrees) {
+void ScaledInvChiSquareDistribution::setScale(double scale) {
+  InvGammaDistribution<>::setScale(0.5 * getDegrees() * scale);
+}
+
+double ScaledInvChiSquareDistribution::getScale() const {
+  return InvGammaDistribution<>::getScale() * 2.0 / (double)getDegrees();
+}
+
+void ScaledInvChiSquareDistribution::setDegrees(size_t degrees) {
   setShape(degrees * 0.5);
 }
 
-size_t ChiSquareDistribution::getDegrees() const {
+size_t ScaledInvChiSquareDistribution::getDegrees() const {
   return getShape() * 2;
-}
-
-double ChiSquareDistribution::getMedian() const {
-  return getDegrees() * pow(1.0 - 2.0 / (9 * getDegrees()), 3);
 }

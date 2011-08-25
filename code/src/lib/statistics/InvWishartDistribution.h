@@ -16,81 +16,74 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file StudentDistribution1v.h
-    \brief This file defines the univariate Student distribution
+/** \file InvWishartDistribution.h
+    \brief This file defines the InvWishartDistribution class, which represents
+           an inverse Wishart distribution
   */
 
-#ifndef STUDENTDISTRIBUTION1V_H
-#define STUDENTDISTRIBUTION1V_H
+#ifndef INVWISHARTDISTRIBUTION_H
+#define INVWISHARTDISTRIBUTION_H
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-template <size_t M = 1> class StudentDistribution;
+#include <Eigen/Cholesky>
 
-/** The StudentDistribution1v class represents a univariate Student
-    distribution.
-    \brief Univariate Student distribution
+/** The InvWishartDistribution class represents an inverse Wishart distribution.
+    \brief Inverse Wishart distribution
   */
-template <> class StudentDistribution<1> :
-  public ContinuousDistribution<double>,
-  public SampleDistribution<double>,
+template <size_t M> class InvWishartDistribution :
+  public ContinuousDistribution<double, M, M>,
+  public SampleDistribution<Eigen::Matrix<double, M, M> >,
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs the distribution from the parameters
-  StudentDistribution(double degrees = 1.0, double location = 0.0, double
-    scale = 1.0);
+  InvWishartDistribution(double degrees = M, const Eigen::Matrix<double, M, M>&
+    scale = Eigen::Matrix<double, M, M>::Identity());
   /// Copy constructor
-  StudentDistribution(const StudentDistribution<1>& other);
+  InvWishartDistribution(const InvWishartDistribution<M>& other);
   /// Assignment operator
-  StudentDistribution& operator = (const StudentDistribution<1>& other);
+  InvWishartDistribution<M>& operator = (const InvWishartDistribution<M>&
+    other);
   /// Destructor
-  virtual ~StudentDistribution();
+  virtual ~InvWishartDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the location of the distribution
-  void setLocation(double scale);
-  /// Returns the location of the distribution
-  double getLocation() const;
-  /// Sets the scale of the distribution
-  void setScale(double scale) throw (BadArgumentException<double>);
-  /// Returns the scale of the distribution
-  double getScale() const;
   /// Sets the degrees of freedom of the distribution
   void setDegrees(double degrees) throw (BadArgumentException<double>);
   /// Returns the degrees of freedom of the distribution
   double getDegrees() const;
-  /// Returns the inverse scale of the distribution
-  double getInverseScale() const;
+  /// Sets the scale matrix of the distribution
+  void setScale(const Eigen::Matrix<double, M, M>& covariance)
+    throw (BadArgumentException<Eigen::Matrix<double, M, M> >);
+  /// Returns the scale matrix of the distribution
+  const Eigen::Matrix<double, M, M>& getScale() const;
+  /// Returns the determinant of the scale matrix
+  double getDeterminant() const;
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
+  /// Returns the cholesky decomposition of the scale matrix
+  const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Returns the mean of the distribution
-  double getMean() const;
-  /// Returns the median of the distribution
-  double getMedian() const;
+  Eigen::Matrix<double, M, M> getMean() const;
   /// Returns the mode of the distribution
-  double getMode() const;
-  /// Returns the variance of the distribution
-  double getVariance() const;
+  Eigen::Matrix<double, M, M> getMode() const;
   /// Access the probability density function at the given value
-  virtual double pdf(const double& value) const;
+  virtual double pdf(const Eigen::Matrix<double, M, M>& value) const;
   /// Access the log-probability density function at the given value
-  double logpdf(const double& value) const;
-  /// Access the cumulative density function at the given value
-  double cdf(const double& value) const;
+  double logpdf(const Eigen::Matrix<double, M, M>& value) const 
+    throw (BadArgumentException<Eigen::Matrix<double, M, M> >);
   /// Access a sample drawn from the distribution
-  virtual double getSample() const;
-  /// Returns the squared Mahalanobis distance from a given value
-  double mahalanobisDistance(const double& value) const;
+  virtual Eigen::Matrix<double, M, M> getSample() const;
   /** @}
     */
 
@@ -112,21 +105,21 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Location of the distribution
-  double mLocation;
-  /// Scale of the distribution
-  double mScale;
-  /// Degrees of freedom of the distribution
+  /// Degrees of freedom
   double mDegrees;
-  /// Inverse scale of the distribution
-  double mInverseScale;
-  /// Normalizer of the distribution
+  /// Scale
+  Eigen::Matrix<double, M, M> mScale;
+  /// Scale determinant
+  double mDeterminant;
+  /// Normalizer
   double mNormalizer;
+  /// Cholesky decomposition of the scale matrix
+  Eigen::LLT<Eigen::Matrix<double, M, M> > mTransformation;
   /** @}
     */
 
 };
 
-#include "statistics/StudentDistribution1v.tpp"
+#include "statistics/InvWishartDistribution.tpp"
 
-#endif // STUDENTDISTRIBUTION1V_H
+#endif // INVWISHARTDISTRIBUTION_H

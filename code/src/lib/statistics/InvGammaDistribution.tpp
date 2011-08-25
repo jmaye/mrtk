@@ -28,29 +28,29 @@
 /******************************************************************************/
 
 template <typename T>
-GammaDistribution<T>::GammaDistribution(const T& shape, double invScale) {
+InvGammaDistribution<T>::InvGammaDistribution(const T& shape, double scale) {
   setShape(shape);
-  setInvScale(invScale);
+  setScale(scale);
 }
 
 template <typename T>
-GammaDistribution<T>::GammaDistribution(const GammaDistribution<T>& other) :
+InvGammaDistribution<T>::InvGammaDistribution(const InvGammaDistribution<T>& other) :
   mShape(other.mShape),
-  mInvScale(other.mInvScale) {
+  mScale(other.mScale) {
 }
 
 template <typename T>
-GammaDistribution<T>& GammaDistribution<T>::operator =
-  (const GammaDistribution<T>& other) {
+InvGammaDistribution<T>& InvGammaDistribution<T>::operator =
+  (const InvGammaDistribution<T>& other) {
   if (this != &other) {
     mShape = other.mShape;
-    mInvScale = other.mInvScale;
+    mScale = other.mScale;
   }
   return *this;
 }
 
 template <typename T>
-GammaDistribution<T>::~GammaDistribution() {
+InvGammaDistribution<T>::~InvGammaDistribution() {
 }
 
 /******************************************************************************/
@@ -58,21 +58,21 @@ GammaDistribution<T>::~GammaDistribution() {
 /******************************************************************************/
 
 template <typename T>
-void GammaDistribution<T>::read(std::istream& stream) {
+void InvGammaDistribution<T>::read(std::istream& stream) {
 }
 
 template <typename T>
-void GammaDistribution<T>::write(std::ostream& stream) const {
+void InvGammaDistribution<T>::write(std::ostream& stream) const {
   stream << "shape: " << mShape << std::endl
-    << "inverse scale: " << mInvScale;
+    << "scale: " << mScale;
 }
 
 template <typename T>
-void GammaDistribution<T>::read(std::ifstream& stream) {
+void InvGammaDistribution<T>::read(std::ifstream& stream) {
 }
 
 template <typename T>
-void GammaDistribution<T>::write(std::ofstream& stream) const {
+void InvGammaDistribution<T>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -80,46 +80,46 @@ void GammaDistribution<T>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 template <typename T>
-void GammaDistribution<T>::setShape(const T& shape)
+void InvGammaDistribution<T>::setShape(const T& shape)
   throw (BadArgumentException<T>) {
   if (shape <= 0)
     throw BadArgumentException<T>(shape,
-      "GammaDistribution::setShape(): shape must be strictly positive",
+      "InvGammaDistribution::setShape(): shape must be strictly positive",
       __FILE__, __LINE__);
   mShape = shape;
   LogGammaFunction<T> logGammaFunction;
-  mNormalizer = logGammaFunction(mShape) - mShape * log(mInvScale);
+  mNormalizer = logGammaFunction(mShape) - mShape * log(mScale);
 }
 
 template <typename T>
-const T& GammaDistribution<T>::getShape() const {
+const T& InvGammaDistribution<T>::getShape() const {
   return mShape;
 }
 
 template <typename T>
-void GammaDistribution<T>::setInvScale(double invScale)
+void InvGammaDistribution<T>::setScale(double scale)
   throw (BadArgumentException<double>) {
-  if (invScale <= 0)
-    throw BadArgumentException<double>(invScale,
-      "GammaDistribution::setScale(): inverse scale must be strictly positive",
+  if (scale <= 0)
+    throw BadArgumentException<double>(scale,
+      "InvGammaDistribution::setScale(): scale must be strictly positive",
       __FILE__, __LINE__);
-  mInvScale = invScale;
+  mScale = scale;
   LogGammaFunction<T> logGammaFunction;
-  mNormalizer = logGammaFunction(mShape) - mShape * log(mInvScale);
+  mNormalizer = logGammaFunction(mShape) - mShape * log(mScale);
 }
 
 template <typename T>
-double GammaDistribution<T>::getInvScale() const {
-  return mInvScale;
+double InvGammaDistribution<T>::getScale() const {
+  return mScale;
 }
 
 template <typename T>
-double GammaDistribution<T>::getNormalizer() const {
+double InvGammaDistribution<T>::getNormalizer() const {
   return mNormalizer;
 }
 
 template <typename T>
-double GammaDistribution<T>::pdf(const double& value) const {
+double InvGammaDistribution<T>::pdf(const double& value) const {
   if (value <= 0)
     return 0.0;
   else
@@ -127,39 +127,41 @@ double GammaDistribution<T>::pdf(const double& value) const {
 }
 
 template <typename T>
-double GammaDistribution<T>::logpdf(const double& value) const {
-  return (mShape - 1) * log(value) - value * mInvScale - mNormalizer;
+double InvGammaDistribution<T>::logpdf(const double& value) const {
+  return -(mShape + 1) * log(value) - mScale / value - mNormalizer;
 }
 
 template <typename T>
-double GammaDistribution<T>::cdf(const double& value) const {
+double InvGammaDistribution<T>::cdf(const double& value) const {
   if (value <= 0)
     return 0.0;
   else {
     GammaFunction<T> gammaFunction;
-    return gsl_sf_gamma_inc(mShape, value * mInvScale) / gammaFunction(mShape);
+    return gsl_sf_gamma_inc(mShape, mScale / value) / gammaFunction(mShape);
   }
 }
 
 template <typename T>
-double GammaDistribution<T>::getSample() const {
+double InvGammaDistribution<T>::getSample() const {
   static Randomizer<double> randomizer;
-  return randomizer.sampleGamma(mShape, mInvScale);
+  return 1.0 / randomizer.sampleGamma(mShape, mScale);
 }
 
 template <typename T>
-double GammaDistribution<T>::getMean() const {
-  return mShape / mInvScale;
-}
-
-template <typename T>
-double GammaDistribution<T>::getMode() const {
-  if (mShape >= 1)
-    return (mShape - 1) / mInvScale;
+double InvGammaDistribution<T>::getMean() const {
+  if (mShape > 1)
+    return mScale / (mShape - 1);
   return 0;
 }
 
 template <typename T>
-double GammaDistribution<T>::getVariance() const {
-  return mShape / (mInvScale * mInvScale);
+double InvGammaDistribution<T>::getMode() const {
+  return mScale / (mShape + 1);
+}
+
+template <typename T>
+double InvGammaDistribution<T>::getVariance() const {
+  if (mShape > 2)
+    return (mScale * mScale) / ((mShape - 1) * (mShape - 1) * (mShape - 2));
+  return 0;
 }

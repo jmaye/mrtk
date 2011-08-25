@@ -16,19 +16,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayes.h
-    \brief This file defines the EstimatorBayes class, which implements Bayesian
-           estimators for various distributions
+/** \file InvChiSquareDistributionRndHistogramPlot.cpp
+    \brief This file is a testing binary for plotting random samples of the
+           InvChiSquareDistribution class
   */
 
-#ifndef ESTIMATORBAYES_H
-#define ESTIMATORBAYES_H
+#include "visualization/HistogramPlot.h"
+#include "statistics/InvChiSquareDistribution.h"
 
-#include <cstdlib>
+#include <QtGui/QApplication>
 
-template <typename D, size_t M = 1, size_t N = 1> class EstimatorBayes;
-
-#include "statistics/EstimatorBayesNormal1v.h"
-#include "statistics/EstimatorBayesNormalMv.h"
-
-#endif // ESTIMATORBAYES
+int main(int argc, char** argv) {
+  QApplication app(argc, argv);
+  Histogram<double, 1> hist(0, 100, 0.05);
+  InvChiSquareDistribution dist(5);
+  for (size_t i = 0; i < 100000; ++i)
+    hist.addSample(dist.getSample());
+  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
+  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
+  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
+    << std::endl;
+  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
+  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  hist.normalize();
+  HistogramPlot<double, 1> plot("ChiSquareDistributionRndHistogramPlot", hist);
+  plot.show();
+  return app.exec();
+}

@@ -101,13 +101,10 @@ void EstimatorML<NormalDistribution<1> >::reset() {
 void EstimatorML<NormalDistribution<1> >::addPoint(double point) {
   mNumPoints++;
   mMean += 1.0 / mNumPoints * (point - mMean);
-  if (mNumPoints > 1) {
-    mVariance += 1.0 / mNumPoints * ((point - mMean) * (point - mMean) -
-      mVariance);
+  mVariance += 1.0 / mNumPoints * ((point - mMean) * (point - mMean) -
+    mVariance);
+  if (mVariance != 0.0)
     mValid = true;
-  }
-  if (mVariance == 0.0) // TODO: FIND A MORE ELEGANT WAY
-    mValid = false;
 }
 
 void EstimatorML<NormalDistribution<1> >::addPoints(const std::vector<double>&

@@ -44,9 +44,10 @@ public:
     @{
     */
   /// Constructs the distribution from the parameters
-  StudentDistribution(const Eigen::Matrix<double, M, 1>& location =
-    Eigen::Matrix<double, M, 1>::Zero(), const Eigen::Matrix<double, M, M>&
-    scale = Eigen::Matrix<double, M, M>::Identity(), double degrees = 1.0);
+  StudentDistribution(double degrees = 1.0, const Eigen::Matrix<double, M, 1>&
+    location = Eigen::Matrix<double, M, 1>::Zero(), const
+    Eigen::Matrix<double, M, M>& scale =
+    Eigen::Matrix<double, M, M>::Identity());
   /// Copy constructor
   StudentDistribution(const StudentDistribution<M>& other);
   /// Assignment operator

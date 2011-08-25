@@ -118,11 +118,10 @@ void EstimatorML<NormalDistribution<M>, M>::addPoint(const
   Eigen::Matrix<double, M, 1>& point) {
   mNumPoints++;
   mMean += 1.0 / mNumPoints * (point - mMean);
-  if (mNumPoints > M) {
-    mCovariance += 1.0 / mNumPoints * ((point - mMean) *
-      (point - mMean).transpose() - mCovariance);
+  mCovariance += 1.0 / mNumPoints * ((point - mMean) *
+    (point - mMean).transpose() - mCovariance);
+  if (mNumPoints > M)
     mValid = true;
-  }
   // TODO: CHECK FOR VALID COVARIANCES MATRIX, I.E., M NON-COLINEAR POINTS
 }
 

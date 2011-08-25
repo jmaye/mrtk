@@ -16,47 +16,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ChiSquareDistribution.h
-    \brief This file defines the ChiSquareDistribution class, which represents
-           a chi-square distribution
+/** \file ScaledInvChiSquareDistribution.h
+    \brief This file defines the ScaledInvChiSquareDistribution class, which
+           represents a scaled inverse chi-square distribution
   */
 
-#ifndef CHISQUAREDISTRIBUTION_H
-#define CHISQUAREDISTRIBUTION_H
+#ifndef SCALEDINVCHISQUAREDISTRIBUTION_H
+#define SCALEDINVCHISQUAREDISTRIBUTION_H
 
-#include "statistics/GammaDistribution.h"
+#include "statistics/InvGammaDistribution.h"
 
-/** The ChiSquareDistribution class represents a chi-square distribution,
-    i.e., a continuous distribution that models the distribution of a sum of
-    the squares of k independent standard normal random variables (k degrees).
-    \brief Chi-Square distribution
+/** The ScaledInvChiSquareDistribution class represents an inverse chi-square
+    distribution.
+    \brief Scaled inverse chi-Square distribution
   */
-class ChiSquareDistribution :
-  public GammaDistribution<> {
+class ScaledInvChiSquareDistribution :
+  public InvGammaDistribution<> {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameters
-  ChiSquareDistribution(size_t degrees = 1);
+  ScaledInvChiSquareDistribution(size_t degrees = 1, double scale = 1.0);
   /// Copy constructor
-  ChiSquareDistribution(const ChiSquareDistribution& other);
+  ScaledInvChiSquareDistribution(const ScaledInvChiSquareDistribution& other);
   /// Assignment operator
-  ChiSquareDistribution& operator = (const ChiSquareDistribution& other);
+  ScaledInvChiSquareDistribution& operator = (const
+    ScaledInvChiSquareDistribution& other);
   /// Destructor
-  virtual ~ChiSquareDistribution();
+  virtual ~ScaledInvChiSquareDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
+  /// Sets the scale of the distribution
+  void setScale(double scale);
+  /// Returns the scale of the distribution
+  double getScale() const;
   /// Sets the degrees of freedom of the distribution
   void setDegrees(size_t degrees);
   /// Returns the degrees of freedom of the distribution
   size_t getDegrees() const;
-  /// Returns the median of the distribution
-  double getMedian() const;
   /** @}
     */
 
@@ -77,6 +79,6 @@ protected:
 
 };
 
-#include "statistics/ChiSquareDistribution.tpp"
+#include "statistics/ScaledInvChiSquareDistribution.tpp"
 
-#endif // CHISQUAREDISTRIBUTION_H
+#endif // SCALEDINVCHISQUAREDISTRIBUTION_H

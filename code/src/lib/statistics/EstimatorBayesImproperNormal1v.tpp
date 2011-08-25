@@ -94,8 +94,8 @@ getPostMeanDist() const {
   return mPostMeanDist;
 }
 
-const GammaDistribution<>& EstimatorBayesImproper<NormalDistribution<1> >::
-getPostVarianceDist() const {
+const ScaledInvChiSquareDistribution&
+EstimatorBayesImproper<NormalDistribution<1> >::getPostVarianceDist() const {
   return mPostVarianceDist;
 }
 
@@ -131,14 +131,15 @@ void EstimatorBayesImproper<NormalDistribution<1> >::reset() {
 void EstimatorBayesImproper<NormalDistribution<1> >::addPoint(double point) {
   mNumPoints++;
   mSampleMean += 1.0 / mNumPoints * (point - mSampleMean);
-  if (mNumPoints > 1) {
+  if (mNumPoints > 1)
     mSampleVariance += 1.0 / (mNumPoints - 1) * ((point - mSampleMean) *
       (point - mSampleMean) - mSampleVariance);
+  if (mSampleVariance != 0.0) {
     mPostMeanDist.setDegrees(mNumPoints - 1);
     mPostMeanDist.setLocation(mSampleMean);
     mPostMeanDist.setScale(mSampleVariance / mNumPoints);
-    //mPostVarianceDist.setShape();
-    //mPostVarianceDist.setScale();
+    mPostVarianceDist.setDegrees(mNumPoints - 1);
+    mPostVarianceDist.setScale(mSampleVariance);
     mPostPredDist.setDegrees(mNumPoints - 1);
     mPostPredDist.setLocation(mSampleMean);
     mPostPredDist.setScale(mSampleVariance * (1 + 1.0 / mNumPoints));

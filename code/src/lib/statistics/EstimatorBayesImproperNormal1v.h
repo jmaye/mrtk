@@ -23,7 +23,7 @@
 
 #include "statistics/NormalDistribution.h"
 #include "statistics/StudentDistribution.h"
-#include "statistics/GammaDistribution.h"
+#include "statistics/ScaledInvChiSquareDistribution.h"
 
 #include <vector>
 
@@ -56,7 +56,7 @@ public:
   /// Returns the posterior marginal mean distribution
   const StudentDistribution<1>& getPostMeanDist() const;
   /// Returns the posterior marginal variance distribution
-  const GammaDistribution<>& getPostVarianceDist() const;
+  const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
   /// Returns the posterior predictive distribution
   const StudentDistribution<1>& getPostPredDist() const;
   /// Returns the sample mean
@@ -97,7 +97,7 @@ protected:
   /// Posterior marginal mean distribution
   StudentDistribution<1> mPostMeanDist;
   /// Posterior marginal variance distribution
-  GammaDistribution<> mPostVarianceDist;
+  ScaledInvChiSquareDistribution mPostVarianceDist;
   /// Posterior predictive distribution
   StudentDistribution<1> mPostPredDist;
   /// Sample mean

@@ -44,7 +44,7 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  GammaDistribution(const T& shape = T(1), double scale = 1.0);
+  GammaDistribution(const T& shape = T(1), double invScale = 1.0);
   /// Copy constructor
   GammaDistribution(const GammaDistribution<T>& other);
   /// Assignment operator
@@ -61,10 +61,10 @@ public:
   void setShape(const T& shape) throw (BadArgumentException<T>);
   /// Returns the shape parameter
   const T& getShape() const;
-  /// Sets the scale parameter
-  void setScale(double scale) throw (BadArgumentException<double>);
-  /// Returns the scale parameter
-  double getScale() const;
+  /// Sets the inverse scale parameter
+  void setInvScale(double invScale) throw (BadArgumentException<double>);
+  /// Returns the inverse scale parameter
+  double getInvScale() const;
   /// Returns the normalizer
   double getNormalizer() const;
   /// Returns the mean of the distribution
@@ -104,8 +104,8 @@ protected:
     */
   /// Shape parameter
   T mShape;
-  /// Scale parameter
-  double mScale;
+  /// Inverse scale parameter
+  double mInvScale;
   /// Normalizer
   double mNormalizer;
   /** @}

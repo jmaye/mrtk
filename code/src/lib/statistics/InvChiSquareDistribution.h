@@ -16,35 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ChiSquareDistribution.h
-    \brief This file defines the ChiSquareDistribution class, which represents
-           a chi-square distribution
+/** \file InvChiSquareDistribution.h
+    \brief This file defines the InvChiSquareDistribution class, which
+           represents a inverse chi-square distribution
   */
 
-#ifndef CHISQUAREDISTRIBUTION_H
-#define CHISQUAREDISTRIBUTION_H
+#ifndef INVCHISQUAREDISTRIBUTION_H
+#define INVCHISQUAREDISTRIBUTION_H
 
-#include "statistics/GammaDistribution.h"
+#include "statistics/InvGammaDistribution.h"
 
-/** The ChiSquareDistribution class represents a chi-square distribution,
-    i.e., a continuous distribution that models the distribution of a sum of
-    the squares of k independent standard normal random variables (k degrees).
-    \brief Chi-Square distribution
+/** The InvChiSquareDistribution class represents an inverse chi-square
+    distribution.
+    \brief Inverse chi-Square distribution
   */
-class ChiSquareDistribution :
-  public GammaDistribution<> {
+class InvChiSquareDistribution :
+  public InvGammaDistribution<> {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs distribution from parameters
-  ChiSquareDistribution(size_t degrees = 1);
+  InvChiSquareDistribution(size_t degrees = 1);
   /// Copy constructor
-  ChiSquareDistribution(const ChiSquareDistribution& other);
+  InvChiSquareDistribution(const InvChiSquareDistribution& other);
   /// Assignment operator
-  ChiSquareDistribution& operator = (const ChiSquareDistribution& other);
+  InvChiSquareDistribution& operator = (const InvChiSquareDistribution& other);
   /// Destructor
-  virtual ~ChiSquareDistribution();
+  virtual ~InvChiSquareDistribution();
   /** @}
     */
 
@@ -55,8 +54,6 @@ public:
   void setDegrees(size_t degrees);
   /// Returns the degrees of freedom of the distribution
   size_t getDegrees() const;
-  /// Returns the median of the distribution
-  double getMedian() const;
   /** @}
     */
 
@@ -77,6 +74,6 @@ protected:
 
 };
 
-#include "statistics/ChiSquareDistribution.tpp"
+#include "statistics/InvChiSquareDistribution.tpp"
 
-#endif // CHISQUAREDISTRIBUTION_H
+#endif // INVCHISQUAREDISTRIBUTION_H

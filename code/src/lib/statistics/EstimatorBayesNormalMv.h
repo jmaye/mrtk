@@ -16,35 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayesNormal1v.h
-    \brief This file implements a Bayesian estimator for univariate normal
+/** \file EstimatorBayesNormalMv.h
+    \brief This file implements a Bayesian estimator for multivariate normal
            distributions with conjugate prior
   */
 
 #include "statistics/NormalDistribution.h"
 #include "statistics/StudentDistribution.h"
-#include "statistics/ScaledInvChiSquareDistribution.h"
+#include "statistics/InvWishartDistribution.h"
 
 #include <vector>
 
-/** The class EstimatorBayes is implemented for univariate normal
+/** The class EstimatorBayes is implemented for multivariate normal
     distributions with conjugate prior.
-    \brief Univariate normal distribution Bayesian estimator
+    \brief Multivariate normal distribution Bayesian estimator
   */
-template <> class EstimatorBayes<NormalDistribution<1> > :
+template <size_t M> class EstimatorBayes<NormalDistribution<M>, M> :
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructs estimator with hyperparameters prior
-  EstimatorBayes(double mu = 0.0, double kappa = 1.0, double nu = 1.0, double
-    sigma = 1.0);
+  EstimatorBayes(const Eigen::Matrix<double, M, 1>& mu =
+    Eigen::Matrix<double, M, 1>::Zero(), double kappa = 1.0, double nu = 1.0,
+    const Eigen::Matrix<double, M, M>& sigma =
+    Eigen::Matrix<double, M, M>::Identity());
   /// Copy constructor
-  EstimatorBayes(const EstimatorBayes<NormalDistribution<1> >& other);
+  EstimatorBayes(const EstimatorBayes<NormalDistribution<M>, M>& other);
   /// Assignment operator
-  EstimatorBayes<NormalDistribution<1> >& operator =
-    (const EstimatorBayes<NormalDistribution<1> >& other);
+  EstimatorBayes<NormalDistribution<M>, M>& operator =
+    (const EstimatorBayes<NormalDistribution<M>, M>& other);
   /// Destructor
   virtual ~EstimatorBayes();
   /** @}
@@ -54,19 +56,19 @@ public:
     @{
     */
   /// Returns the posterior marginal mean distribution
-  const StudentDistribution<1>& getPostMeanDist() const;
-  /// Returns the posterior marginal variance distribution
-  const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
+  const StudentDistribution<M>& getPostMeanDist() const;
+  /// Returns the posterior marginal covariance distribution
+  const InvWishartDistribution<M>& getPostCovarianceDist() const;
   /// Returns the posterior predictive distribution
-  const StudentDistribution<1>& getPostPredDist() const;
+  const StudentDistribution<M>& getPostPredDist() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
   bool getValid() const;
   /// Add a point to the estimator
-  void addPoint(double point);
+  void addPoint(const Eigen::Matrix<double, M, 1>& point);
   /// Add points to the estimator
-  void addPoints(const std::vector<double>& points);
+  void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
   /// Reset the estimator
   void reset();
   /** @}
@@ -91,19 +93,19 @@ protected:
     @{
     */
   /// Posterior marginal mean distribution
-  StudentDistribution<1> mPostMeanDist;
-  /// Posterior marginal variance distribution
-  ScaledInvChiSquareDistribution mPostVarianceDist;
+  StudentDistribution<M> mPostMeanDist;
+  /// Posterior marginal covariance distribution
+  InvWishartDistribution<M> mPostCovarianceDist;
   /// Posterior predictive distribution
-  StudentDistribution<1> mPostPredDist;
+  StudentDistribution<M> mPostPredDist;
   /// Hyperparameter mu (location of the mean)
-  double mMu;
+  Eigen::Matrix<double, M, 1> mMu;
   /// Hyperparameter kappa (scale of the mean: mSigma/mKappa)
   double mKappa;
   /// Hyperparameter nu (degrees of freedom of the variance)
   double mNu;
   /// Hyperparameter sigma (scale of the variance)
-  double mSigma;
+  Eigen::Matrix<double, M, M> mSigma;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag
@@ -113,4 +115,4 @@ protected:
 
 };
 
-#include "statistics/EstimatorBayesNormal1v.tpp"
+#include "statistics/EstimatorBayesNormalMv.tpp"

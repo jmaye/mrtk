@@ -9,32 +9,30 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file StudentDistribution1v.h
-    \brief This file defines the univariate Student distribution
+/** \file InvGammaDistribution.h
+    \brief This file defines the InvGammaDistribution class, which represents
+           an inverse gamma distribution
   */
 
-#ifndef STUDENTDISTRIBUTION1V_H
-#define STUDENTDISTRIBUTION1V_H
+#ifndef INVGAMMADISTRIBUTION_H
+#define INVGAMMADISTRIBUTION_H
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-template <size_t M = 1> class StudentDistribution;
-
-/** The StudentDistribution1v class represents a univariate Student
-    distribution.
-    \brief Univariate Student distribution
+/** The InvGammaDistribution class represents an inverse gamma distribution.
+    \brief Inverse gamma distribution
   */
-template <> class StudentDistribution<1> :
+template <typename T = double> class InvGammaDistribution :
   public ContinuousDistribution<double>,
   public SampleDistribution<double>,
   public virtual Serializable {
@@ -42,55 +40,44 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs the distribution from the parameters
-  StudentDistribution(double degrees = 1.0, double location = 0.0, double
-    scale = 1.0);
+  /// Constructs distribution from parameters
+  InvGammaDistribution(const T& shape = T(1), double scale = 1.0);
   /// Copy constructor
-  StudentDistribution(const StudentDistribution<1>& other);
+  InvGammaDistribution(const InvGammaDistribution<T>& other);
   /// Assignment operator
-  StudentDistribution& operator = (const StudentDistribution<1>& other);
+  InvGammaDistribution<T>& operator = (const InvGammaDistribution<T>& other);
   /// Destructor
-  virtual ~StudentDistribution();
+  virtual ~InvGammaDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the location of the distribution
-  void setLocation(double scale);
-  /// Returns the location of the distribution
-  double getLocation() const;
-  /// Sets the scale of the distribution
+  /// Sets the shape parameter
+  void setShape(const T& shape) throw (BadArgumentException<T>);
+  /// Returns the shape parameter
+  const T& getShape() const;
+  /// Sets the scale parameter
   void setScale(double scale) throw (BadArgumentException<double>);
-  /// Returns the scale of the distribution
+  /// Returns the scale parameter
   double getScale() const;
-  /// Sets the degrees of freedom of the distribution
-  void setDegrees(double degrees) throw (BadArgumentException<double>);
-  /// Returns the degrees of freedom of the distribution
-  double getDegrees() const;
-  /// Returns the inverse scale of the distribution
-  double getInverseScale() const;
-  /// Returns the normalizer of the distribution
+  /// Returns the normalizer
   double getNormalizer() const;
   /// Returns the mean of the distribution
   double getMean() const;
-  /// Returns the median of the distribution
-  double getMedian() const;
   /// Returns the mode of the distribution
-  double getMode() const;
+  virtual double getMode() const;
   /// Returns the variance of the distribution
   double getVariance() const;
-  /// Access the probability density function at the given value
+  /// Access the probablity density function at the given value
   virtual double pdf(const double& value) const;
-  /// Access the log-probability density function at the given value
+  /// Access the log-probablity density function at the given value
   double logpdf(const double& value) const;
   /// Access the cumulative density function at the given value
   double cdf(const double& value) const;
   /// Access a sample drawn from the distribution
   virtual double getSample() const;
-  /// Returns the squared Mahalanobis distance from a given value
-  double mahalanobisDistance(const double& value) const;
   /** @}
     */
 
@@ -112,21 +99,17 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Location of the distribution
-  double mLocation;
-  /// Scale of the distribution
+  /// Shape parameter
+  T mShape;
+  /// Scale parameter
   double mScale;
-  /// Degrees of freedom of the distribution
-  double mDegrees;
-  /// Inverse scale of the distribution
-  double mInverseScale;
-  /// Normalizer of the distribution
+  /// Normalizer
   double mNormalizer;
   /** @}
     */
 
 };
 
-#include "statistics/StudentDistribution1v.tpp"
+#include "statistics/InvGammaDistribution.tpp"
 
-#endif // STUDENTDISTRIBUTION1V_H
+#endif // INVGAMMADISTRIBUTION_H

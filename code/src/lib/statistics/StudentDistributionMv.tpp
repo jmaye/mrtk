@@ -27,8 +27,9 @@
 /******************************************************************************/
 
 template <size_t M>
-StudentDistribution<M>::StudentDistribution(const Eigen::Matrix<double, M, 1>&
-  location, const Eigen::Matrix<double, M, M>& scale, double degrees):
+StudentDistribution<M>::StudentDistribution(double degrees, const
+  Eigen::Matrix<double, M, 1>& location, const Eigen::Matrix<double, M, M>&
+  scale):
   mLocation(location) {
   setDegrees(degrees);
   setScale(scale);

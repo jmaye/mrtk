@@ -27,8 +27,8 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-StudentDistribution<1>::StudentDistribution(double location, double scale,
-  double degrees) :
+StudentDistribution<1>::StudentDistribution(double degrees, double location,
+  double scale) :
   mLocation(location) {
   setScale(scale);
   setDegrees(degrees);

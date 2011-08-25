@@ -106,7 +106,7 @@ public:
   size_t sampleGeometric(double successProbability = 0.5) const
     throw (BadArgumentException<double>);
   /// Returns a sample from a gamma distribution
-  double sampleGamma(double shape = 1.0, double scale = 1.0) const
+  double sampleGamma(double shape = 1.0, double invScale = 1.0) const
     throw (BadArgumentException<double>);
   /** @}
     */

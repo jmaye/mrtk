@@ -27,15 +27,17 @@ int main(int argc, char** argv) {
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
   std::cout << "dist.getShape(): " << dist.getShape() << std::endl << std::endl;
-  std::cout << "dist.getScale(): " << dist.getScale() << std::endl << std::endl;
+  std::cout << "dist.getInvScale(): " << dist.getInvScale() << std::endl
+    << std::endl;
   std::cout << "dist.setShape(1.5)" << std::endl << std::endl;
-  std::cout << "dist.setScale(0.5)" << std::endl << std::endl;
+  std::cout << "dist.setInvScale(2.0)" << std::endl << std::endl;
   dist.setShape(1.5);
-  dist.setScale(0.5);
+  dist.setInvScale(2.0);
   std::cout << "Distribution new parameters: " << std::endl << dist
     << std::endl << std::endl;
   std::cout << "dist.getShape(): " << dist.getShape() << std::endl << std::endl;
-  std::cout << "dist.getScale(): " << dist.getScale() << std::endl << std::endl;
+  std::cout << "dist.getInvScale(): " << dist.getInvScale() << std::endl
+    << std::endl;
 
   std::cout << "pdf(0.5): " << std::fixed << dist(0.5) << std::endl
     << std::endl;
@@ -72,7 +74,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    dist.setScale(0.0);
+    dist.setInvScale(0.0);
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;

@@ -20,8 +20,10 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(double mu, double kappa,
-  double nu, double sigma) :
+template <size_t M>
+EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
+  Eigen::Matrix<double, M, 1>& mu, double kappa, double nu, const
+  Eigen::Matrix<double, M, M>& sigma) :
   mMu(mu),
   mKappa(kappa),
   mNu(nu),
@@ -30,10 +32,11 @@ EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(double mu, double kappa,
   mValid(false) {
 }
 
-EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(const
-  EstimatorBayes<NormalDistribution<1> >& other) :
+template <size_t M>
+EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
+  EstimatorBayes<NormalDistribution<M>, M>& other) :
   mPostMeanDist(other.mPostMeanDist),
-  mPostVarianceDist(other.mPostVarianceDist),
+  mPostCovarianceDist(other.mPostCovarianceDist),
   mPostPredDist(other.mPostPredDist),
   mMu(other.mMu),
   mKappa(other.mKappa),
@@ -43,12 +46,13 @@ EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(const
   mValid(other.mValid) {
 }
 
-EstimatorBayes<NormalDistribution<1> >&
-  EstimatorBayes<NormalDistribution<1> >::operator =
-  (const EstimatorBayes<NormalDistribution<1> >& other) {
+template <size_t M>
+EstimatorBayes<NormalDistribution<M>, M>&
+  EstimatorBayes<NormalDistribution<M>, M>::operator =
+  (const EstimatorBayes<NormalDistribution<M>, M>& other) {
   if (this != &other) {
     mPostMeanDist = other.mPostMeanDist;
-    mPostVarianceDist = other.mPostVarianceDist;
+    mPostCovarianceDist = other.mPostCovarianceDist;
     mPostPredDist = other.mPostPredDist;
     mMu = other.mMu;
     mKappa = other.mKappa;
@@ -60,30 +64,36 @@ EstimatorBayes<NormalDistribution<1> >&
   return *this;
 }
 
-EstimatorBayes<NormalDistribution<1> >::~EstimatorBayes() {
+template <size_t M>
+EstimatorBayes<NormalDistribution<M>, M>::~EstimatorBayes() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorBayes<NormalDistribution<1> >::read(std::istream& stream) {
+template <size_t M>
+void EstimatorBayes<NormalDistribution<M>, M>::read(std::istream& stream) {
 }
 
-void EstimatorBayes<NormalDistribution<1> >::write(std::ostream& stream) const {
+template <size_t M>
+void EstimatorBayes<NormalDistribution<M>, M>::write(std::ostream& stream) 
+const {
   stream << "posterior mean distribution: " << std::endl << mPostMeanDist
-    << std::endl << "posterior variance distribution: " << std::endl
-    << mPostVarianceDist
+    << std::endl << "posterior covariance distribution: " << std::endl
+    << mPostCovarianceDist
     << std::endl << "posterior predictive distribution: " << std::endl
     << mPostPredDist << std::endl
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }
 
-void EstimatorBayes<NormalDistribution<1> >::read(std::ifstream& stream) {
+template <size_t M>
+void EstimatorBayes<NormalDistribution<M>, M>::read(std::ifstream& stream) {
 }
 
-void EstimatorBayes<NormalDistribution<1> >::write(std::ofstream& stream)
+template <size_t M>
+void EstimatorBayes<NormalDistribution<M>, M>::write(std::ofstream& stream)
   const {
 }
 
@@ -91,58 +101,67 @@ void EstimatorBayes<NormalDistribution<1> >::write(std::ofstream& stream)
 /* Accessors                                                                  */
 /******************************************************************************/
 
-const StudentDistribution<1>& EstimatorBayes<NormalDistribution<1> >::
+template <size_t M>
+const StudentDistribution<M>& EstimatorBayes<NormalDistribution<M>, M>::
 getPostMeanDist() const {
   return mPostMeanDist;
 }
 
-const ScaledInvChiSquareDistribution&
-EstimatorBayes<NormalDistribution<1> >::getPostVarianceDist() const {
-  return mPostVarianceDist;
+template <size_t M>
+const InvWishartDistribution<M>&
+EstimatorBayes<NormalDistribution<M>, M>::getPostCovarianceDist() const {
+  return mPostCovarianceDist;
 }
 
-const StudentDistribution<1>& EstimatorBayes<NormalDistribution<1> >::
+template <size_t M>
+const StudentDistribution<M>& EstimatorBayes<NormalDistribution<M>, M>::
 getPostPredDist() const {
   return mPostPredDist;
 }
 
-size_t EstimatorBayes<NormalDistribution<1> >::getNumPoints() const {
+template <size_t M>
+size_t EstimatorBayes<NormalDistribution<M>, M>::getNumPoints() const {
   return mNumPoints;
 }
 
-bool EstimatorBayes<NormalDistribution<1> >::getValid() const {
+template <size_t M>
+bool EstimatorBayes<NormalDistribution<M>, M>::getValid() const {
   return mValid;
 }
 
-void EstimatorBayes<NormalDistribution<1> >::reset() {
+template <size_t M>
+void EstimatorBayes<NormalDistribution<M>, M>::reset() {
   mNumPoints = 0;
   mValid = false;
 }
 
-void EstimatorBayes<NormalDistribution<1> >::addPoint(double point) {
+template <size_t M>
+void EstimatorBayes<NormalDistribution<M>, M>::addPoint(const
+  Eigen::Matrix<double, M, 1>& point) {
   mNumPoints++;
-  double newMu = (mKappa * mMu + point) / (mKappa + 1);
+  Eigen::Matrix<double, M, 1> newMu = (mKappa * mMu + point) / (mKappa + 1);
   double newKappa = mKappa + 1;
   double newNu = mNu + 1;
-  double newSigma = mSigma + (mKappa / (mKappa + 1)) * (point - mMu) *
-    (point - mMu);
+  Eigen::Matrix<double, M, M> newSigma = mSigma + (mKappa / (mKappa + 1)) *
+    (point - mMu) * (point - mMu).transpose();
   mMu = newMu;
   mKappa = newKappa;
   mNu = newNu;
   mSigma = newSigma;
-  mPostMeanDist.setDegrees(mNu);
+  mPostMeanDist.setDegrees(mNu - M + 1);
   mPostMeanDist.setLocation(mMu);
-  mPostMeanDist.setScale(mSigma / mKappa / mNu);
-  mPostVarianceDist.setDegrees(mNu);
-  mPostVarianceDist.setScale(mSigma / mNu);
-  mPostPredDist.setDegrees(mNu);
+  mPostMeanDist.setScale(mSigma / mKappa / (mNu - M + 1));
+  mPostCovarianceDist.setDegrees(mNu);
+  mPostCovarianceDist.setScale(mSigma / mNu);
+  mPostPredDist.setDegrees(mNu - M + 1);
   mPostPredDist.setLocation(mMu);
-  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / mNu);
+  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / (mNu - M + 1));
   mValid = true;
 }
 
-void EstimatorBayes<NormalDistribution<1> >::addPoints(const
-  std::vector<double>& points) {
+template <size_t M>
+void EstimatorBayes<NormalDistribution<M>, M>::addPoints(const
+  std::vector<Eigen::Matrix<double, M, 1> >& points) {
   for (size_t i = 0; i < points.size(); ++i)
     addPoint(points[i]);
 }

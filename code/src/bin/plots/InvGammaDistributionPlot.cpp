@@ -16,19 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayes.h
-    \brief This file defines the EstimatorBayes class, which implements Bayesian
-           estimators for various distributions
+/** \file InvGammaDistributionPlot.cpp
+    \brief This file is a testing binary for plotting the inverse gamma
+           distribution pdf
   */
 
-#ifndef ESTIMATORBAYES_H
-#define ESTIMATORBAYES_H
+#include "visualization/ContinuousFunctionPlot.h"
+#include "statistics/InvGammaDistribution.h"
 
-#include <cstdlib>
+#include <QtGui/QApplication>
 
-template <typename D, size_t M = 1, size_t N = 1> class EstimatorBayes;
-
-#include "statistics/EstimatorBayesNormal1v.h"
-#include "statistics/EstimatorBayesNormalMv.h"
-
-#endif // ESTIMATORBAYES
+int main(int argc, char** argv) {
+  QApplication app(argc, argv);
+  ContinuousFunctionPlot<double, double, 1> plot("InvGammaDistribution",
+    InvGammaDistribution<>(3.0, 0.5), 0, 5, 0.1);
+  plot.show();
+  return app.exec();
+}

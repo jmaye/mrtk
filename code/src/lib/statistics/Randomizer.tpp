@@ -204,15 +204,15 @@ size_t Randomizer<T, M>::sampleGeometric(double successProbability) const
 }
 
 template <typename T, size_t M>
-double Randomizer<T, M>::sampleGamma(double shape, double scale) const
+double Randomizer<T, M>::sampleGamma(double shape, double invScale) const
   throw (BadArgumentException<double>) {
   if (shape <= 0)
     throw BadArgumentException<double>(shape,
       "Randomizer<T, M>::::sampleGamma(): shape must be strictly positive",
       __FILE__, __LINE__);
-  if (scale <= 0)
-    throw BadArgumentException<double>(scale,
-      "Randomizer<T, M>::sampleGamma(): scale must be strictly positive",
+  if (invScale <= 0)
+    throw BadArgumentException<double>(invScale,
+      "Randomizer<T, M>::sampleGamma(): inverse scale must be strictly positive",
       __FILE__, __LINE__);
   size_t integralPart = floor(shape);
   double fractionalPart = shape - integralPart;
@@ -239,7 +239,7 @@ double Randomizer<T, M>::sampleGamma(double shape, double scale) const
           break;
       }
     }
-  return (y + z) * scale;
+  return (y + z) / invScale;
 }
 
 template <typename T, size_t M>

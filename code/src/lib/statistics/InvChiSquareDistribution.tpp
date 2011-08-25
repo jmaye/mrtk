@@ -20,55 +20,51 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-ChiSquareDistribution::ChiSquareDistribution(size_t degrees) :
-  GammaDistribution<>(0.5 * degrees, 0.5) {
+InvChiSquareDistribution::InvChiSquareDistribution(size_t degrees) :
+  InvGammaDistribution<>(0.5 * degrees, 0.5) {
 }
 
-ChiSquareDistribution::ChiSquareDistribution(const ChiSquareDistribution&
+InvChiSquareDistribution::InvChiSquareDistribution(const InvChiSquareDistribution&
   other) :
-  GammaDistribution<>(other) {
+  InvGammaDistribution<>(other) {
 }
 
-ChiSquareDistribution& ChiSquareDistribution::operator =
-  (const ChiSquareDistribution& other) {
+InvChiSquareDistribution& InvChiSquareDistribution::operator =
+  (const InvChiSquareDistribution& other) {
   if (this != &other) {
-    this->GammaDistribution<>::operator=(other);
+    this->InvGammaDistribution<>::operator=(other);
   }
   return *this;
 }
 
-ChiSquareDistribution::~ChiSquareDistribution() {
+InvChiSquareDistribution::~InvChiSquareDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void ChiSquareDistribution::read(std::istream& stream) {
+void InvChiSquareDistribution::read(std::istream& stream) {
 }
 
-void ChiSquareDistribution::write(std::ostream& stream) const {
+void InvChiSquareDistribution::write(std::ostream& stream) const {
   stream << "degrees: " << getDegrees();
 }
 
-void ChiSquareDistribution::read(std::ifstream& stream) {
+void InvChiSquareDistribution::read(std::ifstream& stream) {
 }
 
-void ChiSquareDistribution::write(std::ofstream& stream) const {
+void InvChiSquareDistribution::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void ChiSquareDistribution::setDegrees(size_t degrees) {
+void InvChiSquareDistribution::setDegrees(size_t degrees) {
   setShape(degrees * 0.5);
 }
 
-size_t ChiSquareDistribution::getDegrees() const {
+size_t InvChiSquareDistribution::getDegrees() const {
   return getShape() * 2;
-}
-
-double ChiSquareDistribution::getMedian() const {
-  return getDegrees() * pow(1.0 - 2.0 / (9 * getDegrees()), 3);
 }

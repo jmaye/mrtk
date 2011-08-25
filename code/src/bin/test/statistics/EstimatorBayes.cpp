@@ -23,11 +23,17 @@
 #include "statistics/EstimatorBayes.h"
 
 int main(int argc, char** argv) {
-  NormalDistribution<1> distNorm1(5, 2);
+  NormalDistribution<1> distNorm1(0, 1);
   std::vector<double> samplesNorm1;
   distNorm1.getSamples(samplesNorm1, 1000);
   EstimatorBayes<NormalDistribution<1> > estNorm1;
   estNorm1.addPoints(samplesNorm1);
   std::cout << "Estimation1: " << std::endl << estNorm1 << std::endl;
+  NormalDistribution<2> distNorm2(Eigen::Matrix<double, 2, 1>(5, 5));
+  std::vector<Eigen::Matrix<double, 2, 1> > samplesNorm2;
+  distNorm2.getSamples(samplesNorm2, 1000);
+  EstimatorBayes<NormalDistribution<2>, 2> estNorm2;
+  estNorm2.addPoints(samplesNorm2);
+  std::cout << "Estimation2: " << std::endl << estNorm2 << std::endl;
   return 0;
 }

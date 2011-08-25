@@ -29,8 +29,8 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   std::vector<Eigen::Matrix<double, 3, 1> > data;
-  StudentDistribution<3> dist(Eigen::Matrix<double, 3, 1>::Zero(),
-    Eigen::Matrix<double, 3, 3>::Identity(), 3.0);
+  StudentDistribution<3> dist(3.0, Eigen::Matrix<double, 3, 1>::Zero(),
+    Eigen::Matrix<double, 3, 3>::Identity());
   for (size_t i = 0; i < 100000; ++i)
     data.push_back(dist.getSample());
   ScatterPlot<3> plot("StudentDistributionRndScatterPlot3v", data);
