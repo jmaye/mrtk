@@ -21,7 +21,7 @@
 /******************************************************************************/
 
 template <size_t M>
-EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
+EstimatorBayes<MultinomialDistribution<M>, M>::EstimatorBayes(const
   Eigen::Matrix<double, M, 1>& mu, double kappa, double nu, const
   Eigen::Matrix<double, M, M>& sigma) :
   mMu(mu),
@@ -33,8 +33,8 @@ EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
 }
 
 template <size_t M>
-EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
-  EstimatorBayes<NormalDistribution<M>, M>& other) :
+EstimatorBayes<MultinomialDistribution<M>, M>::EstimatorBayes(const
+  EstimatorBayes<MultinomialDistribution<M>, M>& other) :
   mPostMeanDist(other.mPostMeanDist),
   mPostCovarianceDist(other.mPostCovarianceDist),
   mPostPredDist(other.mPostPredDist),
@@ -47,9 +47,9 @@ EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
 }
 
 template <size_t M>
-EstimatorBayes<NormalDistribution<M>, M>&
-  EstimatorBayes<NormalDistribution<M>, M>::operator =
-  (const EstimatorBayes<NormalDistribution<M>, M>& other) {
+EstimatorBayes<MultinomialDistribution<M>, M>&
+  EstimatorBayes<MultinomialDistribution<M>, M>::operator =
+  (const EstimatorBayes<MultinomialDistribution<M>, M>& other) {
   if (this != &other) {
     mPostMeanDist = other.mPostMeanDist;
     mPostCovarianceDist = other.mPostCovarianceDist;
@@ -65,7 +65,7 @@ EstimatorBayes<NormalDistribution<M>, M>&
 }
 
 template <size_t M>
-EstimatorBayes<NormalDistribution<M>, M>::~EstimatorBayes() {
+EstimatorBayes<MultinomialDistribution<M>, M>::~EstimatorBayes() {
 }
 
 /******************************************************************************/
@@ -73,11 +73,11 @@ EstimatorBayes<NormalDistribution<M>, M>::~EstimatorBayes() {
 /******************************************************************************/
 
 template <size_t M>
-void EstimatorBayes<NormalDistribution<M>, M>::read(std::istream& stream) {
+void EstimatorBayes<MultinomialDistribution<M>, M>::read(std::istream& stream) {
 }
 
 template <size_t M>
-void EstimatorBayes<NormalDistribution<M>, M>::write(std::ostream& stream) 
+void EstimatorBayes<MultinomialDistribution<M>, M>::write(std::ostream& stream) 
 const {
   stream << "posterior mean distribution: " << std::endl << mPostMeanDist
     << std::endl << "posterior covariance distribution: " << std::endl
@@ -89,11 +89,11 @@ const {
 }
 
 template <size_t M>
-void EstimatorBayes<NormalDistribution<M>, M>::read(std::ifstream& stream) {
+void EstimatorBayes<MultinomialDistribution<M>, M>::read(std::ifstream& stream) {
 }
 
 template <size_t M>
-void EstimatorBayes<NormalDistribution<M>, M>::write(std::ofstream& stream)
+void EstimatorBayes<MultinomialDistribution<M>, M>::write(std::ofstream& stream)
   const {
 }
 
@@ -102,41 +102,41 @@ void EstimatorBayes<NormalDistribution<M>, M>::write(std::ofstream& stream)
 /******************************************************************************/
 
 template <size_t M>
-const StudentDistribution<M>& EstimatorBayes<NormalDistribution<M>, M>::
+const StudentDistribution<M>& EstimatorBayes<MultinomialDistribution<M>, M>::
 getPostMeanDist() const {
   return mPostMeanDist;
 }
 
 template <size_t M>
 const InvWishartDistribution<M>&
-EstimatorBayes<NormalDistribution<M>, M>::getPostCovarianceDist() const {
+EstimatorBayes<MultinomialDistribution<M>, M>::getPostCovarianceDist() const {
   return mPostCovarianceDist;
 }
 
 template <size_t M>
-const StudentDistribution<M>& EstimatorBayes<NormalDistribution<M>, M>::
+const StudentDistribution<M>& EstimatorBayes<MultinomialDistribution<M>, M>::
 getPostPredDist() const {
   return mPostPredDist;
 }
 
 template <size_t M>
-size_t EstimatorBayes<NormalDistribution<M>, M>::getNumPoints() const {
+size_t EstimatorBayes<MultinomialDistribution<M>, M>::getNumPoints() const {
   return mNumPoints;
 }
 
 template <size_t M>
-bool EstimatorBayes<NormalDistribution<M>, M>::getValid() const {
+bool EstimatorBayes<MultinomialDistribution<M>, M>::getValid() const {
   return mValid;
 }
 
 template <size_t M>
-void EstimatorBayes<NormalDistribution<M>, M>::reset() {
+void EstimatorBayes<MultinomialDistribution<M>, M>::reset() {
   mNumPoints = 0;
   mValid = false;
 }
 
 template <size_t M>
-void EstimatorBayes<NormalDistribution<M>, M>::addPoint(const
+void EstimatorBayes<MultinomialDistribution<M>, M>::addPoint(const
   Eigen::Matrix<double, M, 1>& point) {
   mNumPoints++;
   Eigen::Matrix<double, M, 1> newMu = (mKappa * mMu + point) / (mKappa + 1);
@@ -163,7 +163,7 @@ void EstimatorBayes<NormalDistribution<M>, M>::addPoint(const
 }
 
 template <size_t M>
-void EstimatorBayes<NormalDistribution<M>, M>::addPoints(const
+void EstimatorBayes<MultinomialDistribution<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points) {
   for (size_t i = 0; i < points.size(); ++i)
     addPoint(points[i]);

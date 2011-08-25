@@ -30,5 +30,6 @@ template <typename D, size_t M = 1, size_t N = 1> class EstimatorBayes;
 
 #include "statistics/EstimatorBayesNormal1v.h"
 #include "statistics/EstimatorBayesNormalMv.h"
+#include "statistics/EstimatorBayesMultinomial.h"
 
 #endif // ESTIMATORBAYES
