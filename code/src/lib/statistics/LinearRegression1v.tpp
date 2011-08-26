@@ -74,6 +74,9 @@ void LinearRegression<2>::write(std::ofstream& stream) const {
 
 void LinearRegression<2>::setCoefficients(const Eigen::Matrix<double, 2, 1>&
   coefficients) {
+  Eigen::Matrix<double, 2, 1> basisTrans;
+  basisTrans << 1, mBasis;
+  setMean((coefficients.transpose() * basisTrans)(0));
   mCoefficients = coefficients;
 }
 

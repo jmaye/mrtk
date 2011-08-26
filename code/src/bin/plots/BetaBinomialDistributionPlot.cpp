@@ -16,26 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DirichletDistributionRndScatterPlot3v.cpp
-    \brief This file is a testing binary for plotting random samples of the
-           Dirichlet3v distribution
+/** \file BetaBinomialDistributionPlot.cpp
+    \brief This file is a testing binary for plotting the beta binomial pmf
   */
 
-#include "visualization/ScatterPlot.h"
-#include "statistics/DirichletDistribution.h"
+#include "visualization/DiscreteFunctionPlot.h"
+#include "statistics/DCMDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  std::vector<Eigen::Matrix<double, 3, 1> > data;
-  DirichletDistribution<3> dist;
-  std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
-  std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
-    << std::endl;
-  for (size_t i = 0; i < 100000; ++i)
-    data.push_back(dist.getSample());
-  ScatterPlot<3> plot("DirichletDistributionRndScatterPlot3v", data);
+  DiscreteFunctionPlot<double, size_t, 1> plot("BetaBinomialDistribution",
+    DCMDistribution<2>(20), 0, 25);
   plot.show();
   return app.exec();
 }

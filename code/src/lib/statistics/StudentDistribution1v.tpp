@@ -147,8 +147,11 @@ double StudentDistribution<1>::cdf(const double& value) const {
 }
 
 double StudentDistribution<1>::getSample() const {
-  NormalDistribution<1> normalDist(mLocation, mScale);
-  ChiSquareDistribution chi2Dist(mDegrees);
+  static NormalDistribution<1> normalDist;
+  static ChiSquareDistribution chi2Dist;
+  normalDist.setMean(mLocation);
+  normalDist.setVariance(mScale);
+  chi2Dist.setDegrees(mDegrees);
   return normalDist.getSample() / sqrt(chi2Dist.getSample() / mDegrees);
 }
 

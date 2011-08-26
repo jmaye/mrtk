@@ -35,7 +35,7 @@ public:
     @{
     */
   /// Default constructor
-  EstimatorML();
+  EstimatorML(size_t numTrials);
   /// Copy constructor
   EstimatorML(const EstimatorML<MultinomialDistribution<M>, M>& other);
   /// Assignment operator
@@ -55,6 +55,8 @@ public:
   bool getValid() const;
   /// Returns the estimated success probabilities
   const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  /// Returns the number of trials of the distribution
+  size_t getNumTrials() const;
   /// Add a point to the estimator
   void addPoint(const Eigen::Matrix<size_t, M, 1>& point);
   /// Add points to the estimator
@@ -84,6 +86,8 @@ protected:
     */
   /// Estimated success probabilities
   Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  /// Number of trials of the distribution (fixed parameter)
+  size_t mNumTrials;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

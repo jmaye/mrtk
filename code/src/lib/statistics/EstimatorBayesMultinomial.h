@@ -38,8 +38,8 @@ public:
     @{
     */
   /// Constructs estimator with hyperparameters prior
-  EstimatorBayes(const Eigen::Matrix<double, M, 1>& alpha =
-    Eigen::Matrix<double, M, 1>::Ones());
+  EstimatorBayes(size_t numTrials = 1, const Eigen::Matrix<double, M, 1>&
+    alpha = Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes<MultinomialDistribution<M>, M>& other);
   /// Assignment operator
@@ -53,6 +53,8 @@ public:
   /** \name Accessors
     @{
     */
+  /// Returns the number of trials
+  size_t getNumTrials() const;
   /// Returns the posterior success probablities distribution
   const DirichletDistribution<M>& getPostSuccessDist() const;
   /// Returns the posterior predictive distribution
@@ -88,6 +90,8 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Number of trials
+  size_t mNumTrials;
   /// Posterior success probablities distribution
   DirichletDistribution<M> mPostSuccessDist;
   /// Posterior predictive distribution

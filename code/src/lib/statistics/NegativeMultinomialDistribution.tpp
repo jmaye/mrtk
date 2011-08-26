@@ -117,15 +117,15 @@ double NegativeMultinomialDistribution<M>::logpmf(const
       "trial numbers",
       __FILE__, __LINE__);
   LogGammaFunction<size_t> lgamma;
-  double f64Sum = lgamma(value.sum()) + value(0) *
+  double sum = lgamma(value.sum()) + value(0) *
     log(MultinomialDistribution<M>::mSuccessProbabilities(0)) -
       lgamma(value(0));
   LogFactorialFunction lfactorial;
   for (size_t i = 1; i < M; ++i)
-    f64Sum += value(i) *
+    sum += value(i) *
       log(MultinomialDistribution<M>::mSuccessProbabilities(i)) -
       lfactorial(value(i));
-  return f64Sum;
+  return sum;
 }
 
 template <size_t M>

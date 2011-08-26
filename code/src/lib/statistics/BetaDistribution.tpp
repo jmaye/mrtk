@@ -91,7 +91,7 @@ double BetaDistribution::getMean() const {
 
 double BetaDistribution::getMode() const {
   if (mAlpha(0) > 1 && mAlpha(1) > 1)
-    return (mAlpha(0) - 1) / (mAlpha(0) + mAlpha(1) - 2);
+    return (mAlpha(1) - 1) / (mAlpha(0) + mAlpha(1) - 2);
   else
     return 0;
 }

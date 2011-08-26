@@ -34,7 +34,8 @@ template <size_t M>
 HyperGeometricDistribution<M>::HyperGeometricDistribution(const
   HyperGeometricDistribution& other) :
   mMarbles(other.mMarbles),
-  mNumTrials(other.mNumTrials) {
+  mNumTrials(other.mNumTrials),
+  mNormalizer(other.mNormalizer) {
 }
 
 template <size_t M>
@@ -43,6 +44,7 @@ HyperGeometricDistribution<M>& HyperGeometricDistribution<M>::operator =
   if (this != &other) {
     mMarbles = other.mMarbles;
     mNumTrials = other.mNumTrials;
+    mNormalizer = other.mNormalizer;
   }
   return *this;
 }
@@ -180,14 +182,14 @@ double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
       "number",
       __FILE__, __LINE__);
   Eigen::Matrix<size_t, 2, 1> argument;
-  double f64Sum = 0.0;
+  double sum = 0.0;
   LogBinomialFunction logBinomialFunction;
   for (size_t i = 0; i < M; ++i) {
     argument(0) = mMarbles(i);
     argument(1) = value(i);
-    f64Sum += logBinomialFunction(argument);
+    sum += logBinomialFunction(argument);
   }
-  return f64Sum - mNormalizer;
+  return sum - mNormalizer;
 }
 
 template <size_t M>

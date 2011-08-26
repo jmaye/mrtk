@@ -36,7 +36,8 @@ DirichletDistribution<M>::DirichletDistribution(const
 template <size_t M>
 DirichletDistribution<M>::DirichletDistribution(const
   DirichletDistribution<M>& other) :
-  mAlpha(other.mAlpha) {
+  mAlpha(other.mAlpha),
+  mNormalizer(other.mNormalizer) {
 }
 
 template <size_t M>
@@ -44,6 +45,7 @@ DirichletDistribution<M>& DirichletDistribution<M>::operator =
   (const DirichletDistribution<M>& other) {
   if (this != &other) {
     mAlpha = other.mAlpha;
+    mNormalizer = other.mNormalizer;
   }
   return *this;
 }
@@ -62,7 +64,7 @@ void DirichletDistribution<M>::read(std::istream& stream) {
 
 template <size_t M>
 void DirichletDistribution<M>::write(std::ostream& stream) const {
-  stream << "mAlpha: " << std::endl << mAlpha.transpose();
+  stream << "alpha: " << std::endl << mAlpha.transpose();
 }
 
 template <size_t M>
@@ -91,7 +93,7 @@ void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
       __FILE__, __LINE__);
   mAlpha = alpha;
   LogBetaFunction<double, M> logBetaFunction;
-  mf64Normalizer = logBetaFunction(mAlpha);
+  mNormalizer = logBetaFunction(mAlpha);
 }
 
 template <size_t M>
@@ -101,7 +103,7 @@ const Eigen::Matrix<double, M, 1>& DirichletDistribution<M>::getAlpha() const {
 
 template <size_t M>
 double DirichletDistribution<M>::getNormalizer() const {
-  return mf64Normalizer;
+  return mNormalizer;
 }
 
 template <size_t M>
@@ -171,10 +173,10 @@ double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
       "DirichletDistribution<M>::logpdf(): input vector must be strictly "
       "positive",
       __FILE__, __LINE__);
-  double f64Return = 0;
+  double returnValue = 0;
   for (size_t i = 0; i < M; ++i)
-    f64Return += (mAlpha(i) - 1) * log(value(i));
-  return f64Return - mf64Normalizer;
+    returnValue += (mAlpha(i) - 1) * log(value(i));
+  return returnValue - mNormalizer;
 }
 
 template <size_t M>
@@ -188,7 +190,7 @@ Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
   static Randomizer<double> randomizer;
   Eigen::Matrix<double, M, 1> sampleGammaVector;
   for (size_t i = 0; i < M; ++i)
-    sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1.0 / mAlpha(i));
+    sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1.0);
   return sampleGammaVector / sampleGammaVector.sum();
 }
 

@@ -136,7 +136,7 @@ protected:
   /// Pseudo-counts
   Eigen::Matrix<double, M, 1> mAlpha;
   /// Normalizer
-  double mf64Normalizer;
+  double mNormalizer;
   /** @}
     */
 

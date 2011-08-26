@@ -16,26 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DirichletDistributionRndScatterPlot3v.cpp
-    \brief This file is a testing binary for plotting random samples of the
-           Dirichlet3v distribution
+/** \file BetaBinomialDistributionRndHistogramPlot.cpp
+    \brief This file is a testing binary for plotting random samples from the
+           BetaBinomialDistribution class
   */
 
-#include "visualization/ScatterPlot.h"
-#include "statistics/DirichletDistribution.h"
+#include "visualization/HistogramPlot.h"
+#include "statistics/DCMDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  std::vector<Eigen::Matrix<double, 3, 1> > data;
-  DirichletDistribution<3> dist;
-  std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
-  std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
-    << std::endl;
+  Histogram<size_t, 1> hist(0, 20, 1);
+  DCMDistribution<2> dist(20, Eigen::Matrix<double, 2, 1>(10, 10));
   for (size_t i = 0; i < 100000; ++i)
-    data.push_back(dist.getSample());
-  ScatterPlot<3> plot("DirichletDistributionRndScatterPlot3v", data);
+    hist.addSample(dist.getSample()(1));
+  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
+  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
+  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
+    << std::endl;
+  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+//  std::cout << "Dist. median: " << dist.getMedian() << std::endl;
+//  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
+//  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  hist.normalize();
+  HistogramPlot<size_t, 1> plot("BetaBinomialDistributionRndHistogramPlot",
+    hist);
   plot.show();
   return app.exec();
 }

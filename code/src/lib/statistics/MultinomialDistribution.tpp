@@ -188,11 +188,11 @@ double MultinomialDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
       "equal to the number of trials",
       __FILE__, __LINE__);
   LogFactorialFunction logFactorialFunction;
-  double f64Sum = logFactorialFunction(mNumTrials);
+  double sum = logFactorialFunction(mNumTrials);
   for (size_t i = 0; i < M; ++i)
-    f64Sum += value(i) * log(mSuccessProbabilities(i)) -
+    sum += value(i) * log(mSuccessProbabilities(i)) -
       logFactorialFunction(value(i));
-  return f64Sum;
+  return sum;
 }
 
 template <size_t M>

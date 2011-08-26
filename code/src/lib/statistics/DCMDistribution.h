@@ -24,7 +24,7 @@
 #ifndef DCMDISTRIBUTION_H
 #define DCMDISTRIBUTION_H
 
-#include "statistics/ContinuousDistribution.h"
+#include "statistics/DiscreteDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "exceptions/BadArgumentException.h"
 #include "base/Serializable.h"
@@ -34,9 +34,9 @@
     \brief Dirichlet Compound Multinomial distribution
   */
 template <size_t M> class DCMDistribution :
-  public ContinuousDistribution<double, M>,
-  public ContinuousDistribution<double, M - 1>,
-  public SampleDistribution<Eigen::Matrix<double, M, 1> >,
+  public DiscreteDistribution<size_t, M>,
+  public DiscreteDistribution<size_t, M - 1>,
+  public SampleDistribution<Eigen::Matrix<size_t, M, 1> >,
   public virtual Serializable {
 public:
   /** \name Traits
@@ -45,22 +45,22 @@ public:
   /// Support for the N - 1 simplex
   template <size_t N, size_t D = 0> struct Traits {
   public:
-    /// Access the probability density function at the given value
-    static double pdf(const DCMDistribution<N>& distribution,
-      const Eigen::Matrix<double, N - 1, 1>& value);
-    /// Access the log-probability density function at the given value
-    static double logpdf(const DCMDistribution<N>& distribution,
-      const Eigen::Matrix<double, N - 1, 1>& value);
+    /// Access the probability mass function at the given value
+    static double pmf(const DCMDistribution<N>& distribution, const
+      Eigen::Matrix<size_t, N - 1, 1>& value);
+    /// Access the log-probability mass function at the given value
+    static double logpmf(const DCMDistribution<N>& distribution, const
+      Eigen::Matrix<size_t, N - 1, 1>& value);
   };
   /// Support for N = 2
   template <size_t D> struct Traits<2, D> {
   public:
-    /// Access the probability density function at the given value
-    static double pdf(const DCMDistribution<2>& distribution,
-      const double& value);
-    /// Access the log-probability density function at the given value
-    static double logpdf(const DCMDistribution<2>& distribution,
-      const double& value);
+    /// Access the probability mass function at the given value
+    static double pmf(const DCMDistribution<2>& distribution, const size_t&
+      value);
+    /// Access the log-probability mass function at the given value
+    static double logpmf(const DCMDistribution<2>& distribution, const size_t&
+      value);
   };
   /** @}
     */
@@ -69,8 +69,8 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  DCMDistribution(const Eigen::Matrix<double, M, 1>& alpha =
-    Eigen::Matrix<double, M, 1>::Ones());
+  DCMDistribution(size_t numTrials = 1, const Eigen::Matrix<double, M, 1>&
+    alpha = Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
   DCMDistribution(const DCMDistribution<M>& other);
   /// Assignment operator
@@ -88,30 +88,34 @@ public:
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the alpha parameter
   const Eigen::Matrix<double, M, 1>& getAlpha() const;
+  /// Sets the number of trials
+  void setNumTrials(size_t numTrials) throw (BadArgumentException<size_t>);
+  /// Returns the number of trials
+  size_t getNumTrials() const;
   /// Returns the normalizer
   double getNormalizer() const;
   /// Returns the mean of the distribution
   Eigen::Matrix<double, M, 1> getMean() const;
   /// Returns the covariance of the distribution
   Eigen::Matrix<double, M, M> getCovariance() const;
-  /// Access the probability density function at the given value
-  virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
-  /// Access the probability density function at the given value
-  virtual double pdf(const typename
-    ContinuousDistribution<double, M - 1>::Domain& value) const;
-  /// Access the log-probablity density function at the given value
-  double logpdf(const Eigen::Matrix<double, M, 1>& value) const
-    throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
-  /// Access the log-probablity density function at the given value
-  double logpdf(const typename
-    ContinuousDistribution<double, M - 1>::Domain& value) const;
+  /// Access the probability mass function at the given value
+  virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const;
+  /// Access the probability mass function at the given value
+  virtual double pmf(const typename
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const;
+  /// Access the log-probablity mass function at the given value
+  double logpmf(const Eigen::Matrix<size_t, M, 1>& value) const
+    throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);
+  /// Access the log-probablity mass function at the given value
+  double logpmf(const typename
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const;
   /// Access a sample drawn from the distribution
-  virtual Eigen::Matrix<double, M, 1> getSample() const;
+  virtual Eigen::Matrix<size_t, M, 1> getSample() const;
   /** @}
     */
 
-  using ContinuousDistribution<double, M>::operator();
-  using ContinuousDistribution<double, M - 1>::operator();
+  using DiscreteDistribution<size_t, M>::operator();
+  using DiscreteDistribution<size_t, M - 1>::operator();
 
 protected:
   /** \name Stream methods
@@ -133,8 +137,10 @@ protected:
     */
   /// Pseudo-counts
   Eigen::Matrix<double, M, 1> mAlpha;
+  /// Number of trials
+  size_t mNumTrials;
   /// Normalizer
-  double mf64Normalizer;
+  double mNormalizer;
   /** @}
     */
 

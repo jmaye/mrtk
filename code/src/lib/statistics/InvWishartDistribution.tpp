@@ -37,7 +37,8 @@ InvWishartDistribution<M>::InvWishartDistribution(const
   mDegrees(other.mDegrees),
   mScale(other.mScale),
   mDeterminant(other.mDeterminant),
-  mNormalizer(other.mNormalizer) {
+  mNormalizer(other.mNormalizer),
+  mTransformation(other.mTransformation) {
 }
 
 template <size_t M>
@@ -48,6 +49,7 @@ InvWishartDistribution<M>& InvWishartDistribution<M>::operator = (const
     mScale = other.mScale;
     mDeterminant = other.mDeterminant;
     mNormalizer = other.mNormalizer;
+    mTransformation = other.mTransformation;
   }
   return *this;
 }
@@ -136,14 +138,12 @@ const Eigen::LLT<Eigen::Matrix<double, M, M> >&
 
 template <size_t M>
 Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMean() const {
-  return mDegrees * mScale;
+  return mScale / (mDegrees - M - 1);
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMode() const {
-  if (mDegrees >= M + 1)
-    return (mDegrees - M - 1) * mScale;
-  return Eigen::Matrix<double, M, M>::Zero();
+  return mScale / (mDegrees + M + 1);
 }
 
 template <size_t M>
@@ -165,7 +165,8 @@ double InvWishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>&
 
 template <size_t M>
 Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getSample() const {
-  NormalDistribution<M> normalDist(Eigen::Matrix<double, M, 1>::Zero(), mScale);
+  static NormalDistribution<M> normalDist;
+  normalDist.setCovariance(mScale);
   Eigen::Matrix<double, M, M> sample  = Eigen::Matrix<double, M, M>::Zero();
   for (size_t i = 0; i < mDegrees; ++i) {
     Eigen::Matrix<double, M, 1> normSample = normalDist.getSample();

@@ -190,8 +190,11 @@ double StudentDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
 
 template <size_t M>
 Eigen::Matrix<double, M, 1> StudentDistribution<M>::getSample() const {
-  NormalDistribution<M> normalDist(mLocation, mScale);
-  ChiSquareDistribution chi2Dist(mDegrees);
+  static NormalDistribution<M> normalDist;
+  static ChiSquareDistribution chi2Dist;
+  normalDist.setMean(mLocation);
+  normalDist.setCovariance(mScale);
+  chi2Dist.setDegrees(mDegrees);
   return normalDist.getSample() / sqrt(chi2Dist.getSample() / mDegrees);
 }
 

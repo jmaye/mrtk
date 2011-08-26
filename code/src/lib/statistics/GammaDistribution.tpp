@@ -36,7 +36,8 @@ GammaDistribution<T>::GammaDistribution(const T& shape, double invScale) {
 template <typename T>
 GammaDistribution<T>::GammaDistribution(const GammaDistribution<T>& other) :
   mShape(other.mShape),
-  mInvScale(other.mInvScale) {
+  mInvScale(other.mInvScale),
+  mNormalizer(other.mNormalizer) {
 }
 
 template <typename T>
@@ -45,6 +46,7 @@ GammaDistribution<T>& GammaDistribution<T>::operator =
   if (this != &other) {
     mShape = other.mShape;
     mInvScale = other.mInvScale;
+    mNormalizer = other.mNormalizer;
   }
   return *this;
 }

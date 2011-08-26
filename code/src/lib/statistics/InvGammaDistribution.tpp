@@ -37,7 +37,8 @@ template <typename T>
 InvGammaDistribution<T>::InvGammaDistribution(const InvGammaDistribution<T>&
   other) :
   mShape(other.mShape),
-  mScale(other.mScale) {
+  mScale(other.mScale),
+  mNormalizer(other.mNormalizer) {
 }
 
 template <typename T>
@@ -46,6 +47,7 @@ InvGammaDistribution<T>& InvGammaDistribution<T>::operator =
   if (this != &other) {
     mShape = other.mShape;
     mScale = other.mScale;
+    mNormalizer = other.mNormalizer;
   }
   return *this;
 }

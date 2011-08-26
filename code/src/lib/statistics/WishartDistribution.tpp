@@ -39,7 +39,8 @@ WishartDistribution<M>::WishartDistribution(const WishartDistribution<M>&
   mScale(other.mScale),
   mInverseScale(other.mInverseScale),
   mDeterminant(other.mDeterminant),
-  mNormalizer(other.mNormalizer) {
+  mNormalizer(other.mNormalizer),
+  mTransformation(other.mTransformation) {
 }
 
 template <size_t M>
@@ -51,6 +52,7 @@ WishartDistribution<M>& WishartDistribution<M>::operator = (const
     mInverseScale = other.mInverseScale;
     mDeterminant = other.mDeterminant;
     mNormalizer = other.mNormalizer;
+    mTransformation = other.mTransformation;
   }
   return *this;
 }
@@ -175,7 +177,8 @@ double WishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>& value)
 
 template <size_t M>
 Eigen::Matrix<double, M, M> WishartDistribution<M>::getSample() const {
-  NormalDistribution<M> normalDist(Eigen::Matrix<double, M, 1>::Zero(), mScale);
+  static NormalDistribution<M> normalDist;
+  normalDist.setCovariance(mScale);
   Eigen::Matrix<double, M, M> sample  = Eigen::Matrix<double, M, M>::Zero();
   for (size_t i = 0; i < mDegrees; ++i) {
     Eigen::Matrix<double, M, 1> normSample = normalDist.getSample();

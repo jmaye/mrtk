@@ -16,27 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
-#include "functions/LogBetaFunction.h"
+#include "functions/LogGammaFunction.h"
+#include "statistics/DirichletDistribution.h"
+#include "statistics/MultinomialDistribution.h"
 
 #include <Eigen/Array>
-
-#include <limits>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
 template <size_t M>
-DCMDistribution<M>::DCMDistribution(const
+DCMDistribution<M>::DCMDistribution(size_t numTrials, const
   Eigen::Matrix<double, M, 1>& alpha) {
   setAlpha(alpha);
+  setNumTrials(numTrials);
 }
 
 template <size_t M>
-DCMDistribution<M>::DCMDistribution(const
-  DCMDistribution<M>& other) :
-  mAlpha(other.mAlpha) {
+DCMDistribution<M>::DCMDistribution(const DCMDistribution<M>& other) :
+  mAlpha(other.mAlpha),
+  mNumTrials(other.mNumTrials),
+  mNormalizer(other.mNormalizer) {
 }
 
 template <size_t M>
@@ -44,6 +45,8 @@ DCMDistribution<M>& DCMDistribution<M>::operator =
   (const DCMDistribution<M>& other) {
   if (this != &other) {
     mAlpha = other.mAlpha;
+    mNumTrials = other.mNumTrials;
+    mNormalizer = other.mNormalizer;
   }
   return *this;
 }
@@ -62,7 +65,8 @@ void DCMDistribution<M>::read(std::istream& stream) {
 
 template <size_t M>
 void DCMDistribution<M>::write(std::ostream& stream) const {
-  stream << "mAlpha: " << std::endl << mAlpha.transpose();
+  stream << "alpha: " << std::endl << mAlpha.transpose() << std::endl
+    << "trials number: " << mNumTrials;
 }
 
 template <size_t M>
@@ -91,7 +95,7 @@ void DCMDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
       __FILE__, __LINE__);
   mAlpha = alpha;
   LogBetaFunction<double, M> logBetaFunction;
-  mf64Normalizer = logBetaFunction(mAlpha);
+  mNormalizer = logBetaFunction(mAlpha);
 }
 
 template <size_t M>
@@ -100,96 +104,106 @@ const Eigen::Matrix<double, M, 1>& DCMDistribution<M>::getAlpha() const {
 }
 
 template <size_t M>
+void DCMDistribution<M>::setNumTrials(size_t numTrials)
+  throw (BadArgumentException<size_t>) {
+  if (numTrials == 0)
+    throw BadArgumentException<size_t>(numTrials,
+      "DCMDistribution<M>::setNumTrials(): number of trials must be "
+      "strictly positive",
+      __FILE__, __LINE__);
+  mNumTrials = numTrials;
+}
+
+template <size_t M>
+size_t DCMDistribution<M>::getNumTrials() const {
+  return mNumTrials;
+}
+
+template <size_t M>
 double DCMDistribution<M>::getNormalizer() const {
-  return mf64Normalizer;
+  return mNormalizer;
 }
 
 template <size_t M>
 template <size_t N, size_t D>
-double DCMDistribution<M>::Traits<N, D>::pdf(const
-  DCMDistribution<N>& distribution, const
-  Eigen::Matrix<double, N - 1, 1>& value) {
-  Eigen::Matrix<double, M, 1> valueMat;
+double DCMDistribution<M>::Traits<N, D>::pmf(const DCMDistribution<N>&
+  distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
+  Eigen::Matrix<size_t, M, 1> valueMat;
   valueMat << value, 1.0 - value.sum();
-  return distribution.pdf(valueMat);
+  return distribution.pmf(valueMat);
 }
 
 template <size_t M>
 template <size_t D>
-double DCMDistribution<M>::Traits<2, D>::pdf(const
-  DCMDistribution<2>& distribution, const double& value) {
-  Eigen::Matrix<double, 2, 1> valueMat;
+double DCMDistribution<M>::Traits<2, D>::pmf(const DCMDistribution<2>&
+  distribution, const size_t& value) {
+  Eigen::Matrix<size_t, 2, 1> valueMat;
   valueMat << value, 1.0 - value;
-  return distribution.pdf(valueMat);
+  return distribution.pmf(valueMat);
 }
 
 template <size_t M>
 template <size_t N, size_t D>
-double DCMDistribution<M>::Traits<N, D>::logpdf(const
-  DCMDistribution<N>& distribution, const
-  Eigen::Matrix<double, N - 1, 1>& value) {
-  Eigen::Matrix<double, M, 1> valueMat;
+double DCMDistribution<M>::Traits<N, D>::logpmf(const DCMDistribution<N>&
+  distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
+  Eigen::Matrix<size_t, M, 1> valueMat;
   valueMat << value, 1.0 - value.sum();
-  return distribution.logpdf(valueMat);
+  return distribution.logpmf(valueMat);
 }
 
 template <size_t M>
 template <size_t D>
-double DCMDistribution<M>::Traits<2, D>::logpdf(const
-  DCMDistribution<2>& distribution, const double& value) {
-  Eigen::Matrix<double, 2, 1> valueMat;
+double DCMDistribution<M>::Traits<2, D>::logpmf(const DCMDistribution<2>&
+  distribution, const size_t& value) {
+  Eigen::Matrix<size_t, 2, 1> valueMat;
   valueMat << value, 1.0 - value;
-  return distribution.logpdf(valueMat);
+  return distribution.logpmf(valueMat);
 }
 
 template <size_t M>
-double DCMDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
-  const {
-  if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
-    return 0.0;
-  else if ((value.cwise() <= 0).any() == true)
+double DCMDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value) const {
+  if (value.sum() != mNumTrials)
     return 0.0;
   else
-    return exp(logpdf(value));
+    return exp(logpmf(value));
 }
 
 template <size_t M>
-double DCMDistribution<M>::pdf(const typename
-  ContinuousDistribution<double, M - 1>::Domain& value) const {
-  return Traits<M>::pdf(*this, value);
+double DCMDistribution<M>::pmf(const typename
+  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+  return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>
-double DCMDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
-  value) const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value,
-      "DCMDistribution<M>::logpdf(): input vector must sum to 1",
+double DCMDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
+  value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+  if (value.sum() != mNumTrials)
+    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
+      "DCMDistribution<M>::logpmf(): sum of the input vector must be "
+      "equal to the number of trials",
       __FILE__, __LINE__);
-  if ((value.cwise() <= 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value,
-      "DCMDistribution<M>::logpdf(): input vector must be strictly "
-      "positive",
-      __FILE__, __LINE__);
-  double f64Return = 0;
+  LogGammaFunction<double> logGammaFunction;
+  double returnValue = logGammaFunction(mAlpha.sum()) -
+    logGammaFunction(mAlpha.sum() + value.sum());
   for (size_t i = 0; i < M; ++i)
-    f64Return += (mAlpha(i) - 1) * log(value(i));
-  return f64Return - mf64Normalizer;
+    returnValue += logGammaFunction(value(i) + mAlpha(i)) -
+      logGammaFunction(mAlpha(i));
+  return returnValue;
 }
 
 template <size_t M>
-double DCMDistribution<M>::logpdf(const typename
-  ContinuousDistribution<double, M - 1>::Domain& value) const {
-  return Traits<M>::logpdf(*this, value);
+double DCMDistribution<M>::logpmf(const typename
+  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+  return Traits<M>::logpmf(*this, value);
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> DCMDistribution<M>::getSample() const {
-  static Randomizer<double> randomizer;
-  Eigen::Matrix<double, M, 1> sampleGammaVector;
-  for (size_t i = 0; i < M; ++i)
-    sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1.0 / mAlpha(i));
-  return sampleGammaVector / sampleGammaVector.sum();
+Eigen::Matrix<size_t, M, 1> DCMDistribution<M>::getSample() const {
+  static MultinomialDistribution<M> multDist(mNumTrials);
+  static DirichletDistribution<M> dirDist;
+  dirDist.setAlpha(mAlpha);
+  multDist.setSuccessProbabilities(dirDist.getSample());
+  return multDist.getSample();
 }
 
 template <size_t M>

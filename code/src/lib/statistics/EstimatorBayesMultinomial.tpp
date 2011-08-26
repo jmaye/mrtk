@@ -23,8 +23,10 @@
 /******************************************************************************/
 
 template <size_t M>
-EstimatorBayes<MultinomialDistribution<M>, M>::EstimatorBayes(const
-  Eigen::Matrix<double, M, 1>& alpha) :
+EstimatorBayes<MultinomialDistribution<M>, M>::EstimatorBayes(size_t numTrials,
+  const Eigen::Matrix<double, M, 1>& alpha) :
+  mNumTrials(numTrials),
+  mPostPredDist(numTrials, alpha),
   mAlpha(alpha),
   mNumPoints(0),
   mValid(false) {
@@ -33,6 +35,7 @@ EstimatorBayes<MultinomialDistribution<M>, M>::EstimatorBayes(const
 template <size_t M>
 EstimatorBayes<MultinomialDistribution<M>, M>::EstimatorBayes(const
   EstimatorBayes<MultinomialDistribution<M>, M>& other) :
+  mNumTrials(other.mNumTrials),
   mPostSuccessDist(other.mPostSuccessDist),
   mPostPredDist(other.mPostPredDist),
   mAlpha(other.mAlpha),
@@ -45,6 +48,7 @@ EstimatorBayes<MultinomialDistribution<M>, M>&
   EstimatorBayes<MultinomialDistribution<M>, M>::operator =
   (const EstimatorBayes<MultinomialDistribution<M>, M>& other) {
   if (this != &other) {
+    mNumTrials = other.mNumTrials;
     mPostSuccessDist = other.mPostSuccessDist;
     mPostPredDist = other.mPostPredDist;
     mAlpha = other.mAlpha;
@@ -69,7 +73,8 @@ void EstimatorBayes<MultinomialDistribution<M>, M>::read(std::istream& stream) {
 template <size_t M>
 void EstimatorBayes<MultinomialDistribution<M>, M>::write(std::ostream& stream) 
 const {
-  stream << "posterior success probablities distribution: " << std::endl
+  stream << "trials number: " << mNumTrials << std::endl
+    << "posterior success probablities distribution: " << std::endl
     << mPostSuccessDist << std::endl
     << "posterior predictive distribution: " << std::endl << mPostPredDist
     << std::endl << "number of points: " << mNumPoints << std::endl
@@ -89,6 +94,11 @@ void EstimatorBayes<MultinomialDistribution<M>, M>::write(std::ofstream& stream)
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
+
+template <size_t M>
+size_t EstimatorBayes<MultinomialDistribution<M>, M>::getNumTrials() const {
+  return mNumTrials;
+}
 
 template <size_t M>
 const DirichletDistribution<M>& EstimatorBayes<MultinomialDistribution<M>, M>::
@@ -125,6 +135,7 @@ void EstimatorBayes<MultinomialDistribution<M>, M>::addPoint(const
   for (size_t i = 0; i < M; ++i)
     mAlpha(i) += point(i);
   mPostSuccessDist.setAlpha(mAlpha);
+  mPostPredDist.setAlpha(mAlpha);
   mValid = true;
 }
 

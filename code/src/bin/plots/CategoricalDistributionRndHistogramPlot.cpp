@@ -37,6 +37,9 @@ int main(int argc, char** argv) {
       hist.setBinContent(j, hist.getBinContent(j) + sample(j));
   }
   hist.normalize();
+  std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
+  std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
+    << std::endl;
   HistogramPlot<size_t, 1> plot("CategoricalDistributionRndHistogramPlot",
     hist);
   plot.show();

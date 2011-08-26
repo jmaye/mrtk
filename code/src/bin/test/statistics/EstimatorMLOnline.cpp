@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
   MultinomialDistribution<4> distMult4(20);
   std::vector<Eigen::Matrix<size_t, 4, 1> > samplesMult4;
   distMult4.getSamples(samplesMult4, 1000);
-  EstimatorML<MultinomialDistribution<4>, 4> estMult4;
+  EstimatorML<MultinomialDistribution<4>, 4> estMult4(20);
   for (size_t i = 0; i < samplesMult4.size(); ++i)
     estMult4.addPoint(samplesMult4[i]);
   std::cout << "Estimation4: " << std::endl << estMult4 << std::endl;

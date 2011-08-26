@@ -167,10 +167,10 @@ double CategoricalDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
       "CategoricalDistribution<M>::logpmf(): 1-of-K encoding required",
       __FILE__, __LINE__);
-  double f64Sum = 0.0;
+  double sum = 0.0;
   for (size_t i = 0; i < M; ++i)
-    f64Sum += value(i) * log(mSuccessProbabilities(i));
-  return f64Sum;
+    sum += value(i) * log(mSuccessProbabilities(i));
+  return sum;
 }
 
 template <size_t M>
