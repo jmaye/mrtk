@@ -95,6 +95,10 @@ public:
   void setNumTrials(size_t numTrials) throw (BadArgumentException<size_t>);
   /// Returns the number of trials
   size_t getNumTrials() const;
+  /// Returns the mean of the distribution
+  Eigen::Matrix<double, M, 1> getMean() const;
+  /// Returns the covariance of the distribution
+  Eigen::Matrix<double, M, M> getCovariance() const;
   /// Returns the probability mass function at a point
   virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const;
   /// Returns the probability mass function at a point

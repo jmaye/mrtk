@@ -90,7 +90,8 @@ void MultinomialDistribution<M>::setSuccessProbabilities(const
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(successProbabilities,
-      "MultinomialDistribution<M>::setSuccessProbabilities(): success probabilities must sum to 1 and have probabilities bigger or equal to 0",
+      "MultinomialDistribution<M>::setSuccessProbabilities(): success "
+      "probabilities must sum to 1 and have probabilities bigger or equal to 0",
       __FILE__, __LINE__);
   mSuccessProbabilities = successProbabilities;
 }
@@ -106,7 +107,8 @@ void MultinomialDistribution<M>::setNumTrials(size_t numTrials)
   throw (BadArgumentException<size_t>) {
   if (numTrials == 0)
     throw BadArgumentException<size_t>(numTrials,
-      "MultinomialDistribution<M>::setNumTrials(): number of trials must be strictly positive",
+      "MultinomialDistribution<M>::setNumTrials(): number of trials must be "
+      "strictly positive",
       __FILE__, __LINE__);
   mNumTrials = numTrials;
 }
@@ -182,7 +184,8 @@ double MultinomialDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
   value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != mNumTrials)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
-      "MultinomialDistribution<M>::logpmf(): sum of the input vector must be equal to the number of trials",
+      "MultinomialDistribution<M>::logpmf(): sum of the input vector must be "
+      "equal to the number of trials",
       __FILE__, __LINE__);
   LogFactorialFunction logFactorialFunction;
   double f64Sum = logFactorialFunction(mNumTrials);
@@ -207,4 +210,24 @@ Eigen::Matrix<size_t, M, 1> MultinomialDistribution<M>::getSample() const {
     sampleVector += randomizer.sampleCategorical(mSuccessProbabilities);
   }
   return sampleVector;
+}
+
+template <size_t M>
+Eigen::Matrix<double, M, 1> MultinomialDistribution<M>::getMean() const {
+  return mNumTrials * mSuccessProbabilities;
+}
+
+template <size_t M>
+Eigen::Matrix<double, M, M> MultinomialDistribution<M>::getCovariance() const {
+  Eigen::Matrix<double, M, M> covariance;
+  for (size_t i = 0; i < M; ++i) {
+    covariance(i, i) = mNumTrials * mSuccessProbabilities(i) * (1 -
+      mSuccessProbabilities(i));
+    for (size_t j = i + 1; j < M; ++j) {
+      covariance(i, j) = -1.0 * mNumTrials * mSuccessProbabilities(i) *
+        mSuccessProbabilities(j);
+      covariance(j, i) = covariance(i, j);
+    }
+  }
+  return covariance;
 }

@@ -86,7 +86,7 @@ double BetaDistribution::getBeta() const {
 }
 
 double BetaDistribution::getMean() const {
-  return mAlpha(0) / (mAlpha(0) + mAlpha(1));
+  return DirichletDistribution<2>::getMean()(1);
 }
 
 double BetaDistribution::getMode() const {
@@ -97,6 +97,5 @@ double BetaDistribution::getMode() const {
 }
 
 double BetaDistribution::getVariance() const {
-  return mAlpha(0) * mAlpha(1) / ((mAlpha(0) + mAlpha(1)) * (mAlpha(0) +
-    mAlpha(1)) * (mAlpha(0) + mAlpha(1) + 1));
+  return DirichletDistribution<2>::getCovariance()(1, 1);
 }

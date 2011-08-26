@@ -68,7 +68,8 @@ void GeometricDistribution::setSuccessProbability(double successProbability)
   throw (BadArgumentException<double>) {
   if (successProbability <= 0.0 || successProbability > 1.0)
     throw BadArgumentException<double>(successProbability,
-      "GeometricDistribution::setSuccessProbability(): success probability must be between 0 and 1",
+      "GeometricDistribution::setSuccessProbability(): success probability "
+      "must be between 0 and 1",
       __FILE__, __LINE__);
   mSuccessProbability = successProbability;
 }

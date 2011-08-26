@@ -23,17 +23,24 @@
 #include "statistics/EstimatorBayes.h"
 
 int main(int argc, char** argv) {
-  NormalDistribution<1> distNorm1(0, 1);
+  NormalDistribution<1> distNorm1(5, 2);
   std::vector<double> samplesNorm1;
   distNorm1.getSamples(samplesNorm1, 1000);
-  EstimatorBayes<NormalDistribution<1> > estNorm1;
+  EstimatorBayes<NormalDistribution<1> > estNorm1(5, 1, 1, 2);
   estNorm1.addPoints(samplesNorm1);
   std::cout << "Estimation1: " << std::endl << estNorm1 << std::endl;
-  NormalDistribution<2> distNorm2(Eigen::Matrix<double, 2, 1>(5, 5));
+  NormalDistribution<2> distNorm2(Eigen::Matrix<double, 2, 1>(5, 5),
+    (Eigen::Matrix<double, 2, 2>() << 2, 1, 1, 2).finished());
   std::vector<Eigen::Matrix<double, 2, 1> > samplesNorm2;
   distNorm2.getSamples(samplesNorm2, 1000);
   EstimatorBayes<NormalDistribution<2>, 2> estNorm2;
   estNorm2.addPoints(samplesNorm2);
   std::cout << "Estimation2: " << std::endl << estNorm2 << std::endl;
+  MultinomialDistribution<4> distMult4(20);
+  std::vector<Eigen::Matrix<size_t, 4, 1> > samplesMult4;
+  distMult4.getSamples(samplesMult4, 1000);
+  EstimatorBayes<MultinomialDistribution<4>, 4> estMult4;
+  estMult4.addPoints(samplesMult4);
+  std::cout << "Estimation4: " << std::endl << estMult4 << std::endl;
   return 0;
 }

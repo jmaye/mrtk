@@ -87,7 +87,8 @@ void InvWishartDistribution<M>::setDegrees(double degrees)
   throw (BadArgumentException<double>) {
   if (degrees < M)
     throw BadArgumentException<double>(degrees,
-      "InvWishartDistribution<M>::setDegrees(): degrees must be strictly bigger than the dimension",
+      "InvWishartDistribution<M>::setDegrees(): degrees must be strictly "
+      "bigger than the dimension",
       __FILE__, __LINE__);
   mDegrees = degrees;
 }

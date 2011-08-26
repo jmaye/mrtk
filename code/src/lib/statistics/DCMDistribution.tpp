@@ -28,20 +28,20 @@
 /******************************************************************************/
 
 template <size_t M>
-DirichletDistribution<M>::DirichletDistribution(const
+DCMDistribution<M>::DCMDistribution(const
   Eigen::Matrix<double, M, 1>& alpha) {
   setAlpha(alpha);
 }
 
 template <size_t M>
-DirichletDistribution<M>::DirichletDistribution(const
-  DirichletDistribution<M>& other) :
+DCMDistribution<M>::DCMDistribution(const
+  DCMDistribution<M>& other) :
   mAlpha(other.mAlpha) {
 }
 
 template <size_t M>
-DirichletDistribution<M>& DirichletDistribution<M>::operator =
-  (const DirichletDistribution<M>& other) {
+DCMDistribution<M>& DCMDistribution<M>::operator =
+  (const DCMDistribution<M>& other) {
   if (this != &other) {
     mAlpha = other.mAlpha;
   }
@@ -49,7 +49,7 @@ DirichletDistribution<M>& DirichletDistribution<M>::operator =
 }
 
 template <size_t M>
-DirichletDistribution<M>::~DirichletDistribution() {
+DCMDistribution<M>::~DCMDistribution() {
 }
 
 /******************************************************************************/
@@ -57,20 +57,20 @@ DirichletDistribution<M>::~DirichletDistribution() {
 /******************************************************************************/
 
 template <size_t M>
-void DirichletDistribution<M>::read(std::istream& stream) {
+void DCMDistribution<M>::read(std::istream& stream) {
 }
 
 template <size_t M>
-void DirichletDistribution<M>::write(std::ostream& stream) const {
+void DCMDistribution<M>::write(std::ostream& stream) const {
   stream << "mAlpha: " << std::endl << mAlpha.transpose();
 }
 
 template <size_t M>
-void DirichletDistribution<M>::read(std::ifstream& stream) {
+void DCMDistribution<M>::read(std::ifstream& stream) {
 }
 
 template <size_t M>
-void DirichletDistribution<M>::write(std::ofstream& stream) const {
+void DCMDistribution<M>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -78,15 +78,15 @@ void DirichletDistribution<M>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 template <size_t M>
-void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
+void DCMDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
   alpha) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if ((alpha.cwise() <= 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
-      "DirichletDistribution<M>::setAlpha(): alpha must be strictly positive",
+      "DCMDistribution<M>::setAlpha(): alpha must be strictly positive",
       __FILE__, __LINE__);
   if (M < 2)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
-      "DirichletDistribution<M>::setAlpha(): alpha must contain at least 2 "
+      "DCMDistribution<M>::setAlpha(): alpha must contain at least 2 "
       "values",
       __FILE__, __LINE__);
   mAlpha = alpha;
@@ -95,19 +95,19 @@ void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& DirichletDistribution<M>::getAlpha() const {
+const Eigen::Matrix<double, M, 1>& DCMDistribution<M>::getAlpha() const {
   return mAlpha;
 }
 
 template <size_t M>
-double DirichletDistribution<M>::getNormalizer() const {
+double DCMDistribution<M>::getNormalizer() const {
   return mf64Normalizer;
 }
 
 template <size_t M>
 template <size_t N, size_t D>
-double DirichletDistribution<M>::Traits<N, D>::pdf(const
-  DirichletDistribution<N>& distribution, const
+double DCMDistribution<M>::Traits<N, D>::pdf(const
+  DCMDistribution<N>& distribution, const
   Eigen::Matrix<double, N - 1, 1>& value) {
   Eigen::Matrix<double, M, 1> valueMat;
   valueMat << value, 1.0 - value.sum();
@@ -116,8 +116,8 @@ double DirichletDistribution<M>::Traits<N, D>::pdf(const
 
 template <size_t M>
 template <size_t D>
-double DirichletDistribution<M>::Traits<2, D>::pdf(const
-  DirichletDistribution<2>& distribution, const double& value) {
+double DCMDistribution<M>::Traits<2, D>::pdf(const
+  DCMDistribution<2>& distribution, const double& value) {
   Eigen::Matrix<double, 2, 1> valueMat;
   valueMat << value, 1.0 - value;
   return distribution.pdf(valueMat);
@@ -125,8 +125,8 @@ double DirichletDistribution<M>::Traits<2, D>::pdf(const
 
 template <size_t M>
 template <size_t N, size_t D>
-double DirichletDistribution<M>::Traits<N, D>::logpdf(const
-  DirichletDistribution<N>& distribution, const
+double DCMDistribution<M>::Traits<N, D>::logpdf(const
+  DCMDistribution<N>& distribution, const
   Eigen::Matrix<double, N - 1, 1>& value) {
   Eigen::Matrix<double, M, 1> valueMat;
   valueMat << value, 1.0 - value.sum();
@@ -135,15 +135,15 @@ double DirichletDistribution<M>::Traits<N, D>::logpdf(const
 
 template <size_t M>
 template <size_t D>
-double DirichletDistribution<M>::Traits<2, D>::logpdf(const
-  DirichletDistribution<2>& distribution, const double& value) {
+double DCMDistribution<M>::Traits<2, D>::logpdf(const
+  DCMDistribution<2>& distribution, const double& value) {
   Eigen::Matrix<double, 2, 1> valueMat;
   valueMat << value, 1.0 - value;
   return distribution.logpdf(valueMat);
 }
 
 template <size_t M>
-double DirichletDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
+double DCMDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
   const {
   if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
     return 0.0;
@@ -154,21 +154,21 @@ double DirichletDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
 }
 
 template <size_t M>
-double DirichletDistribution<M>::pdf(const typename
+double DCMDistribution<M>::pdf(const typename
   ContinuousDistribution<double, M - 1>::Domain& value) const {
   return Traits<M>::pdf(*this, value);
 }
 
 template <size_t M>
-double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
+double DCMDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
   value) const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value,
-      "DirichletDistribution<M>::logpdf(): input vector must sum to 1",
+      "DCMDistribution<M>::logpdf(): input vector must sum to 1",
       __FILE__, __LINE__);
   if ((value.cwise() <= 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value,
-      "DirichletDistribution<M>::logpdf(): input vector must be strictly "
+      "DCMDistribution<M>::logpdf(): input vector must be strictly "
       "positive",
       __FILE__, __LINE__);
   double f64Return = 0;
@@ -178,13 +178,13 @@ double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
 }
 
 template <size_t M>
-double DirichletDistribution<M>::logpdf(const typename
+double DCMDistribution<M>::logpdf(const typename
   ContinuousDistribution<double, M - 1>::Domain& value) const {
   return Traits<M>::logpdf(*this, value);
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
+Eigen::Matrix<double, M, 1> DCMDistribution<M>::getSample() const {
   static Randomizer<double> randomizer;
   Eigen::Matrix<double, M, 1> sampleGammaVector;
   for (size_t i = 0; i < M; ++i)
@@ -193,12 +193,12 @@ Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getMean() const {
+Eigen::Matrix<double, M, 1> DCMDistribution<M>::getMean() const {
   return mAlpha / mAlpha.sum();
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> DirichletDistribution<M>::getCovariance() const {
+Eigen::Matrix<double, M, M> DCMDistribution<M>::getCovariance() const {
   Eigen::Matrix<double, M, M> covariance = Eigen::Matrix<double, M, M>::Zero();
   double sum = mAlpha.sum();
   for (size_t i = 0; i < M; ++i) {

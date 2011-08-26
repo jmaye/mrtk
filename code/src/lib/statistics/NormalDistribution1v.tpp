@@ -85,7 +85,8 @@ void NormalDistribution<1>::setVariance(double variance)
   mVariance = variance;
   if (mVariance <= 0.0)
     throw BadArgumentException<double>(variance,
-      "NormalDistribution::setVariance(): variance must be strictly bigger than 0",
+      "NormalDistribution::setVariance(): variance must be strictly bigger "
+      "than 0",
       __FILE__, __LINE__);
   mPrecision = 1.0 / variance;
   mStandardDeviation = sqrt(variance);

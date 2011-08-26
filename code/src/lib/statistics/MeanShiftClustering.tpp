@@ -36,7 +36,8 @@ void MeanShiftClustering<T, M>::cluster(const
 
   if (bandwidth <= 0)
     throw BadArgumentException<double>(bandwidth,
-      "MeanShiftClustering::cluster(): bandwidth must be strictly greater than 0",
+      "MeanShiftClustering::cluster(): bandwidth must be strictly greater "
+      "than 0",
       __FILE__, __LINE__);
 
   if (data.size() == 0)

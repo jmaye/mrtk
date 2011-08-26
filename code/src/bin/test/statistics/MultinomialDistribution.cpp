@@ -41,6 +41,10 @@ int main(int argc, char** argv) {
   dist1.setSuccessProbabilities(success1);
   std::cout << "Distribution new parameters: " << std::endl << dist1
     << std::endl << std::endl;
+  std::cout << "dist1.getMean(): " << std::endl <<
+    dist1.getMean() << std::endl << std::endl;
+  std::cout << "dist1.getCovariance(): " << std::endl <<
+    dist1.getCovariance() << std::endl << std::endl;
 
   Eigen::Matrix<size_t, 2, 1> value1;
   value1(0) = 2;

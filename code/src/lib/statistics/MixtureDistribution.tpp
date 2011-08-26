@@ -87,7 +87,8 @@ void MixtureDistribution<D, M>::setCompDistributions(const std::vector<D>&
   compDistributions) throw (BadArgumentException<size_t>) {
   if (compDistributions.size() != M)
     throw BadArgumentException<size_t>(compDistributions.size(),
-      "MixtureDistribution<D, M>::setCompDistributions(): wrong number of components",
+      "MixtureDistribution<D, M>::setCompDistributions(): wrong number of "
+      "components",
       __FILE__, __LINE__);
   mCompDistributions = compDistributions;
 }

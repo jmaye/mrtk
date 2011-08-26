@@ -120,7 +120,8 @@ void HyperGeometricDistribution<M>::setNumTrials(size_t numTrials)
   throw (BadArgumentException<size_t>) {
   if (numTrials > mMarbles.sum())
     throw BadArgumentException<size_t>(numTrials,
-      "HyperGeometricDistribution<M>::setNumTrials(): trials number must be smaller than the number of marbles",
+      "HyperGeometricDistribution<M>::setNumTrials(): trials number must be "
+      "smaller than the number of marbles",
       __FILE__, __LINE__);
   mNumTrials = numTrials;
   Eigen::Matrix<size_t, 2, 1> argument;
@@ -175,7 +176,8 @@ double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
   value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != mNumTrials)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
-      "HyperGeometricDistribution<M>::logpmf(): value has to sum to the trials number",
+      "HyperGeometricDistribution<M>::logpmf(): value has to sum to the trials "
+      "number",
       __FILE__, __LINE__);
   Eigen::Matrix<size_t, 2, 1> argument;
   double f64Sum = 0.0;

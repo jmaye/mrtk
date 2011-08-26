@@ -82,9 +82,9 @@ public:
   /// Returns the cholesky decomposition of the scale matrix
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Returns the mean of the distribution
-  const Eigen::Matrix<double, M, 1>& getMean() const;
+  Eigen::Matrix<double, M, 1> getMean() const;
   /// Returns the mode of the distribution
-  const Eigen::Matrix<double, M, 1>& getMode() const;
+  Eigen::Matrix<double, M, 1> getMode() const;
   /// Returns the variance of the distribution
   Eigen::Matrix<double, M, M> getCovariance() const;
   /// Access the probability density function at the given value

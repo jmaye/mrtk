@@ -16,30 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DirichletDistribution.h
-    \brief This file defines the DirichletDistribution class, which represents
-           a Dirichlet distribution
+/** \file DCMDistribution.h
+    \brief This file defines the DCMDistribution class, which represents
+           a Dirichlet Compound Multinomial distribution
   */
 
-#ifndef DIRICHLETDISTRIBUTION_H
-#define DIRICHLETDISTRIBUTION_H
+#ifndef DCMDISTRIBUTION_H
+#define DCMDISTRIBUTION_H
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "exceptions/BadArgumentException.h"
 #include "base/Serializable.h"
 
-/** The DirichletDistribution class represents a Dirichlet distribution,
-    i.e., a continuous distribution that is a conjugate prior to the multinomial
-    or categorical distribution.
-    \brief Dirichlet distribution
+/** The DCMDistribution class represents a Dirichlet Compound Multinomial
+    distribution.
+    \brief Dirichlet Compound Multinomial distribution
   */
-template <size_t M> class DirichletDistribution :
+template <size_t M> class DCMDistribution :
   public ContinuousDistribution<double, M>,
   public ContinuousDistribution<double, M - 1>,
   public SampleDistribution<Eigen::Matrix<double, M, 1> >,
   public virtual Serializable {
-
 public:
   /** \name Traits
     @{
@@ -48,20 +46,20 @@ public:
   template <size_t N, size_t D = 0> struct Traits {
   public:
     /// Access the probability density function at the given value
-    static double pdf(const DirichletDistribution<N>& distribution,
+    static double pdf(const DCMDistribution<N>& distribution,
       const Eigen::Matrix<double, N - 1, 1>& value);
     /// Access the log-probability density function at the given value
-    static double logpdf(const DirichletDistribution<N>& distribution,
+    static double logpdf(const DCMDistribution<N>& distribution,
       const Eigen::Matrix<double, N - 1, 1>& value);
   };
   /// Support for N = 2
   template <size_t D> struct Traits<2, D> {
   public:
     /// Access the probability density function at the given value
-    static double pdf(const DirichletDistribution<2>& distribution,
+    static double pdf(const DCMDistribution<2>& distribution,
       const double& value);
     /// Access the log-probability density function at the given value
-    static double logpdf(const DirichletDistribution<2>& distribution,
+    static double logpdf(const DCMDistribution<2>& distribution,
       const double& value);
   };
   /** @}
@@ -71,14 +69,14 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  DirichletDistribution(const Eigen::Matrix<double, M, 1>& alpha =
+  DCMDistribution(const Eigen::Matrix<double, M, 1>& alpha =
     Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
-  DirichletDistribution(const DirichletDistribution<M>& other);
+  DCMDistribution(const DCMDistribution<M>& other);
   /// Assignment operator
-  DirichletDistribution& operator = (const DirichletDistribution<M>& other);
+  DCMDistribution& operator = (const DCMDistribution<M>& other);
   /// Destructor
-  virtual ~DirichletDistribution();
+  virtual ~DCMDistribution();
   /** @}
     */
 
@@ -142,6 +140,6 @@ protected:
 
 };
 
-#include "statistics/DirichletDistribution.tpp"
+#include "statistics/DCMDistribution.tpp"
 
-#endif // DIRICHLETDISTRIBUTION_H
+#endif // DCMDISTRIBUTION_H

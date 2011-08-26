@@ -87,7 +87,8 @@ void UniformDistribution<X, M>::setSupport(const Eigen::Matrix<X, M, 1>&
   throw (BadArgumentException<Eigen::Matrix<X, M, 1> >) {
   if ((minSupport.cwise() >= maxSupport).any())
     throw BadArgumentException<Eigen::Matrix<X, M, 1> >(minSupport,
-      "UniformDistribution<X, M>::setSupport(): minimum support must be smaller than maximum support",
+      "UniformDistribution<X, M>::setSupport(): minimum support must be "
+      "smaller than maximum support",
       __FILE__, __LINE__);
   mMinSupport = minSupport;
   mMaxSupport = maxSupport;

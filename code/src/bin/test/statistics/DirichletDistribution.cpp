@@ -39,6 +39,11 @@ int main(int argc, char** argv) {
   std::cout << "dist1.getAlpha(): " << std::endl << dist1.getAlpha()
     << std::endl << std::endl;
 
+  std::cout << "dist1.getMean(): " << std::endl <<
+    dist1.getMean() << std::endl << std::endl;
+  std::cout << "dist1.getCovariance(): " << std::endl <<
+    dist1.getCovariance() << std::endl << std::endl;
+
   Eigen::Matrix<double, 2, 1> value1;
   value1(0) = 0.9;
   value1(1) = 0.1;

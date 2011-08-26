@@ -73,7 +73,7 @@ double BernoulliDistribution::getSuccessProbability() const {
 }
 
 double BernoulliDistribution::getMean() const {
-  return mSuccessProbabilities(1);
+  return CategoricalDistribution<2>::getMean()(1);
 }
 
 double BernoulliDistribution::getMode() const {
@@ -85,5 +85,5 @@ double BernoulliDistribution::getMode() const {
 }
 
 double BernoulliDistribution::getVariance() const {
-  return mSuccessProbabilities(0) * mSuccessProbabilities(1);
+  return CategoricalDistribution<2>::getCovariance()(1, 1);
 }

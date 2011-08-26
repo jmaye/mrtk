@@ -90,11 +90,21 @@ public:
     (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the success probabilities
   const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  /// Returns the mean of the distribution
+  Eigen::Matrix<double, M, 1> getMean() const;
+  /// Returns the covariance of the distribution
+  Eigen::Matrix<double, M, M> getCovariance() const;
   /// Returns the probability mass function at a point
   virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const;
   /// Returns the probability mass function at a point
   virtual double pmf(const typename
     DiscreteDistribution<size_t, M - 1>::Domain& value) const;
+  /// Returns the log-probability mass function at a point
+  double logpmf(const Eigen::Matrix<size_t, M, 1>& value) const
+    throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >);
+  /// Returns the log-probability mass function at a point
+  double logpmf(const typename DiscreteDistribution<size_t, M - 1>::Domain&
+    value) const;
   /// Access a sample drawn from the distribution
   virtual Eigen::Matrix<size_t, M, 1> getSample() const;
   /** @}

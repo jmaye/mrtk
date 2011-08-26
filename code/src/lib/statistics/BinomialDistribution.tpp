@@ -76,7 +76,7 @@ double BinomialDistribution::getSuccessProbability() const {
 }
 
 double BinomialDistribution::getMean() const {
-  return mNumTrials * mSuccessProbabilities(1);
+  return MultinomialDistribution<2>::getMean()(1);
 }
 
 double BinomialDistribution::getMedian() const {
@@ -88,5 +88,5 @@ double BinomialDistribution::getMode() const {
 }
 
 double BinomialDistribution::getVariance() const {
-  return mNumTrials * mSuccessProbabilities(1) * mSuccessProbabilities(0);
+  return MultinomialDistribution<2>::getCovariance()(1, 1);
 }

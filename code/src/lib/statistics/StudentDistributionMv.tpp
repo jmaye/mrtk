@@ -114,7 +114,8 @@ void StudentDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
   mTransformation = scale.llt();
   if (mTransformation.isPositiveDefinite() == false)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
-      "StudentDistribution<M>::setScale(): covariance must be positive definite",
+      "StudentDistribution<M>::setScale(): covariance must be positive "
+      "definite",
       __FILE__, __LINE__);
   if ((scale.diagonal().cwise() < 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
@@ -202,12 +203,12 @@ double StudentDistribution<M>::mahalanobisDistance(const
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMean() const {
+Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMean() const {
   return mLocation;
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getMode() const {
+Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMode() const {
   return mLocation;
 }
 

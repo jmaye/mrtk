@@ -113,7 +113,8 @@ double NegativeMultinomialDistribution<M>::logpmf(const
   throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value(0) != MultinomialDistribution<M>::mNumTrials)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
-      "NegativeMultinomialDistribution<M>::logpmf(): value(0) must contain the trial numbers",
+      "NegativeMultinomialDistribution<M>::logpmf(): value(0) must contain the "
+      "trial numbers",
       __FILE__, __LINE__);
   LogGammaFunction<size_t> lgamma;
   double f64Sum = lgamma(value.sum()) + value(0) *

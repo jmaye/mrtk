@@ -80,7 +80,8 @@ void UniformDistribution<X>::setSupport(const X& minSupport, const X&
   maxSupport) throw (BadArgumentException<X>) {
   if (minSupport >= maxSupport)
     throw BadArgumentException<X>(minSupport,
-      "UniformDistribution<X>::setSupport(): minimum support must be smaller than maximum support",
+      "UniformDistribution<X>::setSupport(): minimum support must be smaller "
+      "than maximum support",
       __FILE__, __LINE__);
   mMinSupport = minSupport;
   mMaxSupport = maxSupport;

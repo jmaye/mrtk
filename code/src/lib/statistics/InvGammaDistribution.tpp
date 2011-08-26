@@ -34,7 +34,8 @@ InvGammaDistribution<T>::InvGammaDistribution(const T& shape, double scale) {
 }
 
 template <typename T>
-InvGammaDistribution<T>::InvGammaDistribution(const InvGammaDistribution<T>& other) :
+InvGammaDistribution<T>::InvGammaDistribution(const InvGammaDistribution<T>&
+  other) :
   mShape(other.mShape),
   mScale(other.mScale) {
 }

@@ -105,7 +105,8 @@ void NormalDistribution<M>::setCovariance(const Eigen::Matrix<double, M, M>&
   mTransformation = covariance.llt();
   if (mTransformation.isPositiveDefinite() == false)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance,
-      "NormalDistribution<M>::setCovariance(): covariance must be positive definite",
+      "NormalDistribution<M>::setCovariance(): covariance must be positive "
+      "definite",
       __FILE__, __LINE__);
   if ((covariance.diagonal().cwise() < 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance,

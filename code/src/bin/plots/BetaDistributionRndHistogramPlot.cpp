@@ -29,7 +29,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<double, 1> hist(-2, 2, 0.05);
-  BetaDistribution dist(1.5, 1.5);
+  BetaDistribution dist(2, 10);
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample()(1));
   std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;

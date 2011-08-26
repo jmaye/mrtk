@@ -32,12 +32,14 @@ Histogram<T, 2>::Histogram(const Eigen::Matrix<T, 2, 1>& minValue, const
   mNormFactor(1.0) {
   if (minValue(0) >= maxValue(0) || minValue(1) >= maxValue(1))
     throw BadArgumentException<Eigen::Matrix<T, 2, 1> >(minValue,
-      "Histogram<T, 2>::Histogram(): maximum value must be strictly larger than minimum value",
+      "Histogram<T, 2>::Histogram(): maximum value must be strictly larger "
+      "than minimum value",
       __FILE__, __LINE__);
   if (binWidth(0) > maxValue(0) - minValue(0) ||
     binWidth(1) > maxValue(1) - minValue(1))
     throw BadArgumentException<Eigen::Matrix<T, 2, 1> >(binWidth,
-      "Histogram<T, 2>::Histogram(): bin width must be strictly smaller than the considered interval",
+      "Histogram<T, 2>::Histogram(): bin width must be strictly smaller than "
+      "the considered interval",
     __FILE__, __LINE__);
   mNumBins = Traits<T>::computeNumBins(*this);
   mBins.resize(mNumBins(0), mNumBins(1));

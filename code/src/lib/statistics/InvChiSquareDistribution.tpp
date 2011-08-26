@@ -24,8 +24,8 @@ InvChiSquareDistribution::InvChiSquareDistribution(size_t degrees) :
   InvGammaDistribution<>(0.5 * degrees, 0.5) {
 }
 
-InvChiSquareDistribution::InvChiSquareDistribution(const InvChiSquareDistribution&
-  other) :
+InvChiSquareDistribution::InvChiSquareDistribution(const
+  InvChiSquareDistribution& other) :
   InvGammaDistribution<>(other) {
 }
 

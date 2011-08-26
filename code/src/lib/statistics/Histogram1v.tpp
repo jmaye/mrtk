@@ -31,11 +31,13 @@ Histogram<T, 1>::Histogram(T minValue, T maxValue, T binWidth)
   mNormFactor(1.0) {
   if (minValue >= maxValue)
     throw BadArgumentException<T>(minValue,
-      "Histogram<T, 1>::Histogram(): maximum value must be strictly larger than minimum value",
+      "Histogram<T, 1>::Histogram(): maximum value must be strictly larger "
+      "than minimum value",
       __FILE__, __LINE__);
   if (binWidth > maxValue - minValue)
     throw BadArgumentException<T>(binWidth,
-      "Histogram<T, 1>::Histogram(): bin width must be strictly smaller than the considered interval",
+      "Histogram<T, 1>::Histogram(): bin width must be strictly smaller than "
+      "the considered interval",
     __FILE__, __LINE__);
   mNumBins = Traits<T>::computeNumBins(*this);
   mBins.resize(mNumBins);

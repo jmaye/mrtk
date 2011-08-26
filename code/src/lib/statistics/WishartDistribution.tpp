@@ -90,7 +90,8 @@ void WishartDistribution<M>::setDegrees(double degrees)
   throw (BadArgumentException<double>) {
   if (degrees < M)
     throw BadArgumentException<double>(degrees,
-      "WishartDistribution<M>::setDegrees(): degrees must be strictly bigger than the dimension",
+      "WishartDistribution<M>::setDegrees(): degrees must be strictly bigger "
+      "than the dimension",
       __FILE__, __LINE__);
   mDegrees = degrees;
 }

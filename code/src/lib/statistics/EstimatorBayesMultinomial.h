@@ -22,6 +22,8 @@
   */
 
 #include "statistics/MultinomialDistribution.h"
+#include "statistics/DirichletDistribution.h"
+#include "statistics/DCMDistribution.h"
 
 #include <vector>
 
@@ -36,10 +38,8 @@ public:
     @{
     */
   /// Constructs estimator with hyperparameters prior
-  EstimatorBayes(const Eigen::Matrix<double, M, 1>& mu =
-    Eigen::Matrix<double, M, 1>::Zero(), double kappa = 1.0, double nu = 1.0,
-    const Eigen::Matrix<double, M, M>& sigma =
-    Eigen::Matrix<double, M, M>::Identity());
+  EstimatorBayes(const Eigen::Matrix<double, M, 1>& alpha =
+    Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes<MultinomialDistribution<M>, M>& other);
   /// Assignment operator
@@ -53,20 +53,18 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the posterior marginal mean distribution
-  const StudentDistribution<M>& getPostMeanDist() const;
-  /// Returns the posterior marginal covariance distribution
-  const InvWishartDistribution<M>& getPostCovarianceDist() const;
+  /// Returns the posterior success probablities distribution
+  const DirichletDistribution<M>& getPostSuccessDist() const;
   /// Returns the posterior predictive distribution
-  const StudentDistribution<M>& getPostPredDist() const;
+  const DCMDistribution<M>& getPostPredDist() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
   bool getValid() const;
   /// Add a point to the estimator
-  void addPoint(const Eigen::Matrix<double, M, 1>& point);
+  void addPoint(const Eigen::Matrix<size_t, M, 1>& point);
   /// Add points to the estimator
-  void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
+  void addPoints(const std::vector<Eigen::Matrix<size_t, M, 1> >& points);
   /// Reset the estimator
   void reset();
   /** @}
@@ -90,20 +88,12 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Posterior marginal mean distribution
-  StudentDistribution<M> mPostMeanDist;
-  /// Posterior marginal covariance distribution
-  InvWishartDistribution<M> mPostCovarianceDist;
+  /// Posterior success probablities distribution
+  DirichletDistribution<M> mPostSuccessDist;
   /// Posterior predictive distribution
-  StudentDistribution<M> mPostPredDist;
-  /// Hyperparameter mu (location of the mean)
-  Eigen::Matrix<double, M, 1> mMu;
-  /// Hyperparameter kappa (scale of the mean: mSigma/mKappa)
-  double mKappa;
-  /// Hyperparameter nu (degrees of freedom of the variance)
-  double mNu;
-  /// Hyperparameter sigma (scale of the variance)
-  Eigen::Matrix<double, M, M> mSigma;
+  DCMDistribution<M> mPostPredDist;
+  /// Hyperparameter alpha from the Dirichlet distribution
+  Eigen::Matrix<double, M, 1> mAlpha;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag
