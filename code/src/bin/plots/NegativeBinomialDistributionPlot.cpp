@@ -16,21 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayes.h
-    \brief This file defines the EstimatorBayes class, which implements Bayesian
-           estimators for various distributions
+/** \file NegativeBinomialDistributionPlot.cpp
+    \brief This file is a testing binary for plotting the negative binomial pmf
   */
 
-#ifndef ESTIMATORBAYES_H
-#define ESTIMATORBAYES_H
+#include "visualization/DiscreteFunctionPlot.h"
+#include "statistics/NegativeBinomialDistribution.h"
 
-#include <cstdlib>
+#include <QtGui/QApplication>
 
-template <typename D, size_t M = 1, size_t N = 1> class EstimatorBayes;
-
-#include "statistics/EstimatorBayesNormal1v.h"
-#include "statistics/EstimatorBayesNormalMv.h"
-#include "statistics/EstimatorBayesMultinomial.h"
-#include "statistics/EstimatorBayesPoisson.h"
-
-#endif // ESTIMATORBAYES
+int main(int argc, char** argv) {
+  QApplication app(argc, argv);
+  DiscreteFunctionPlot<double, size_t, 1> plot("NegativeBinomialDistribution",
+    NegativeBinomialDistribution(20, 0.5), 0, 25);
+  plot.show();
+  return app.exec();
+}

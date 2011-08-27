@@ -42,5 +42,11 @@ int main(int argc, char** argv) {
   EstimatorBayes<MultinomialDistribution<4>, 4> estMult4(20);
   estMult4.addPoints(samplesMult4);
   std::cout << "Estimation4: " << std::endl << estMult4 << std::endl;
+  PoissonDistribution distPois(2.0);
+  std::vector<size_t> samplesPois;
+  distPois.getSamples(samplesPois, 1000);
+  EstimatorBayes<PoissonDistribution> estPois;
+  estPois.addPoints(samplesPois);
+  std::cout << "Estimation5: " << std::endl << estPois << std::endl;
   return 0;
 }
