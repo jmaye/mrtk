@@ -92,8 +92,6 @@ public:
   void setNumTrials(size_t numTrials) throw (BadArgumentException<size_t>);
   /// Returns the number of trials
   size_t getNumTrials() const;
-  /// Returns the normalizer
-  double getNormalizer() const;
   /// Returns the mean of the distribution
   Eigen::Matrix<double, M, 1> getMean() const;
   /// Returns the covariance of the distribution
@@ -139,8 +137,6 @@ protected:
   Eigen::Matrix<double, M, 1> mAlpha;
   /// Number of trials
   size_t mNumTrials;
-  /// Normalizer
-  double mNormalizer;
   /** @}
     */
 

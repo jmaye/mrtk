@@ -28,7 +28,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   DiscreteFunctionPlot<double, size_t, 1> plot("BetaBinomialDistribution",
-    DCMDistribution<2>(20), 0, 25);
+    DCMDistribution<2>(20, Eigen::Matrix<double, 2, 1>(10, 10)), 0, 25);
   plot.show();
   return app.exec();
 }

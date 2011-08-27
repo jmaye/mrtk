@@ -37,10 +37,10 @@ int main(int argc, char** argv) {
   std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
     << std::endl;
   std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
-  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean()(1) << std::endl;
 //  std::cout << "Dist. median: " << dist.getMedian() << std::endl;
 //  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
-//  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  std::cout << "Dist. variance: " << dist.getCovariance()(1, 1) << std::endl;
   hist.normalize();
   HistogramPlot<size_t, 1> plot("BetaBinomialDistributionRndHistogramPlot",
     hist);

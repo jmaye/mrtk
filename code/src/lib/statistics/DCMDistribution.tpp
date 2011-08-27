@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 #include "functions/LogGammaFunction.h"
+#include "functions/LogFactorialFunction.h"
 #include "statistics/DirichletDistribution.h"
 #include "statistics/MultinomialDistribution.h"
 
@@ -36,8 +37,7 @@ DCMDistribution<M>::DCMDistribution(size_t numTrials, const
 template <size_t M>
 DCMDistribution<M>::DCMDistribution(const DCMDistribution<M>& other) :
   mAlpha(other.mAlpha),
-  mNumTrials(other.mNumTrials),
-  mNormalizer(other.mNormalizer) {
+  mNumTrials(other.mNumTrials) {
 }
 
 template <size_t M>
@@ -46,7 +46,6 @@ DCMDistribution<M>& DCMDistribution<M>::operator =
   if (this != &other) {
     mAlpha = other.mAlpha;
     mNumTrials = other.mNumTrials;
-    mNormalizer = other.mNormalizer;
   }
   return *this;
 }
@@ -94,8 +93,6 @@ void DCMDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
       "values",
       __FILE__, __LINE__);
   mAlpha = alpha;
-  LogBetaFunction<double, M> logBetaFunction;
-  mNormalizer = logBetaFunction(mAlpha);
 }
 
 template <size_t M>
@@ -120,16 +117,13 @@ size_t DCMDistribution<M>::getNumTrials() const {
 }
 
 template <size_t M>
-double DCMDistribution<M>::getNormalizer() const {
-  return mNormalizer;
-}
-
-template <size_t M>
 template <size_t N, size_t D>
 double DCMDistribution<M>::Traits<N, D>::pmf(const DCMDistribution<N>&
   distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
+  if (value.sum() > distribution.mNumTrials)
+    return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
-  valueMat << value, 1.0 - value.sum();
+  valueMat << distribution.mNumTrials - value.sum(), value;
   return distribution.pmf(valueMat);
 }
 
@@ -137,8 +131,10 @@ template <size_t M>
 template <size_t D>
 double DCMDistribution<M>::Traits<2, D>::pmf(const DCMDistribution<2>&
   distribution, const size_t& value) {
+  if (value > distribution.mNumTrials)
+    return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat << value, 1.0 - value;
+  valueMat << distribution.mNumTrials - value, value;
   return distribution.pmf(valueMat);
 }
 
@@ -146,8 +142,10 @@ template <size_t M>
 template <size_t N, size_t D>
 double DCMDistribution<M>::Traits<N, D>::logpmf(const DCMDistribution<N>&
   distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
+  if (value.sum() > distribution.mNumTrials)
+    return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
-  valueMat << value, 1.0 - value.sum();
+  valueMat << distribution.mNumTrials - value.sum(), value;
   return distribution.logpmf(valueMat);
 }
 
@@ -155,8 +153,10 @@ template <size_t M>
 template <size_t D>
 double DCMDistribution<M>::Traits<2, D>::logpmf(const DCMDistribution<2>&
   distribution, const size_t& value) {
+  if (value > distribution.mNumTrials)
+    return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat << value, 1.0 - value;
+  valueMat << distribution.mNumTrials - value, value;
   return distribution.logpmf(valueMat);
 }
 
@@ -183,11 +183,13 @@ double DCMDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
       "equal to the number of trials",
       __FILE__, __LINE__);
   LogGammaFunction<double> logGammaFunction;
+  LogFactorialFunction logFactorialFunction;
   double returnValue = logGammaFunction(mAlpha.sum()) -
-    logGammaFunction(mAlpha.sum() + value.sum());
+    logGammaFunction(mAlpha.sum() + mNumTrials) +
+    logFactorialFunction(mNumTrials);
   for (size_t i = 0; i < M; ++i)
     returnValue += logGammaFunction(value(i) + mAlpha(i)) -
-      logGammaFunction(mAlpha(i));
+      logGammaFunction(mAlpha(i)) - logFactorialFunction(value(i));
   return returnValue;
 }
 
@@ -208,15 +210,17 @@ Eigen::Matrix<size_t, M, 1> DCMDistribution<M>::getSample() const {
 
 template <size_t M>
 Eigen::Matrix<double, M, 1> DCMDistribution<M>::getMean() const {
-  return mAlpha / mAlpha.sum();
+  return mNumTrials * mAlpha / mAlpha.sum();
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, M> DCMDistribution<M>::getCovariance() const {
+  // TODO: CHECK THIS!
   Eigen::Matrix<double, M, M> covariance = Eigen::Matrix<double, M, M>::Zero();
   double sum = mAlpha.sum();
   for (size_t i = 0; i < M; ++i) {
-    covariance(i, i) = mAlpha(i) * (sum - mAlpha(i)) / (sum * sum * (sum + 1));
+    covariance(i, i) = mNumTrials * mAlpha(i) * (mNumTrials *
+      (sum - mAlpha(i))) / (sum * sum * (sum + 1));
     for (size_t j = i + 1; j < M; ++j) {
       covariance(i, j) = -mAlpha(i) * mAlpha(j) / (sum * sum * (sum + 1));
       covariance(j, i) = covariance(i, j);
