@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "statistics/GammaDistribution.h"
+#include "statistics/PoissonDistribution.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -70,9 +73,37 @@ void NegativeBinomialDistribution::setSuccessProbability(double
   Eigen::Matrix<double, 2, 1> successProbabilities;
   successProbabilities(0) = 1.0 - successProbability;
   successProbabilities(1) = successProbability;
-  MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
+  setSuccessProbabilities(successProbabilities);
 }
 
 double NegativeBinomialDistribution::getSuccessProbability() const {
   return mSuccessProbabilities(1);
+}
+
+double NegativeBinomialDistribution::getMean() const {
+  return NegativeMultinomialDistribution<2>::getMean()(1);
+}
+
+double NegativeBinomialDistribution::getMedian() const {
+  return floor(mNumTrials * mSuccessProbabilities(1));
+}
+
+double NegativeBinomialDistribution::getMode() const {
+  return floor((mNumTrials + 1) * mSuccessProbabilities(1));
+}
+
+double NegativeBinomialDistribution::getVariance() const {
+  return NegativeMultinomialDistribution<2>::getCovariance()(1, 1);
+}
+
+Eigen::Matrix<size_t, 2, 1> NegativeBinomialDistribution::getSample() const {
+  static GammaDistribution<double> gammaDist;
+  static PoissonDistribution poissonDist;
+  gammaDist.setShape(mNumTrials);
+  gammaDist.setInvScale(1.0 / mSuccessProbabilities(1) - 1.0);
+  poissonDist.setMean(gammaDist.getSample());
+  Eigen::Matrix<size_t, 2, 1> sample =  Eigen::Matrix<size_t, 2, 1>::Zero();
+  sample(0) = mNumTrials;
+  sample(1) = poissonDist.getSample();
+  return sample;
 }

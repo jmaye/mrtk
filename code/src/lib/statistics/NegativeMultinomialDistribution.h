@@ -24,7 +24,10 @@
 #ifndef NEGATIVEMULTINOMIALDISTRIBUTION_H
 #define NEGATIVEMULTINOMIALDISTRIBUTION_H
 
-#include "statistics/MultinomialDistribution.h"
+#include "statistics/DiscreteDistribution.h"
+#include "statistics/SampleDistribution.h"
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The NegativeMultinomialDistribution class represents a negative multinomial
     distribution, i.e., the discrete distribution that models the number of
@@ -33,7 +36,10 @@
     \brief Negative multinomial distribution
   */
 template <size_t M> class NegativeMultinomialDistribution :
-  public MultinomialDistribution<M> {
+  public DiscreteDistribution<size_t, M>,
+  public DiscreteDistribution<size_t, M - 1>,
+  public SampleDistribution<Eigen::Matrix<size_t, M, 1> >,
+  public virtual Serializable {
 public:
   /** \name Traits
     @{
@@ -81,6 +87,20 @@ public:
   /** \name Accessors
     @{
     */
+  /// Sets the success probabilities
+  void setSuccessProbabilities(const Eigen::Matrix<double, M, 1>&
+    successProbabilities) throw
+    (BadArgumentException<Eigen::Matrix<double, M, 1> >);
+  /// Returns the success probabilities
+  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  /// Sets the number of trials
+  void setNumTrials(size_t numTrials) throw (BadArgumentException<size_t>);
+  /// Returns the number of trials
+  size_t getNumTrials() const;
+  /// Returns the mean of the distribution
+  Eigen::Matrix<double, M, 1> getMean() const;
+  /// Returns the covariance of the distribution
+  Eigen::Matrix<double, M, M> getCovariance() const;
   /// Returns the probability mass function at a point
   virtual double pmf(const Eigen::Matrix<size_t, M, 1>& value) const;
   /// Returns the probability mass function at a point
@@ -97,7 +117,33 @@ public:
   /** @}
     */
 
+  using DiscreteDistribution<size_t, M>::operator();
+  using DiscreteDistribution<size_t, M - 1>::operator();
+
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Success probabilities
+  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  /// Number of trials
+  size_t mNumTrials;
+  /** @}
+    */
 
 };
 

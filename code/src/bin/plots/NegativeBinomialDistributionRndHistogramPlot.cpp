@@ -16,20 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BinomialDistributionRndHistogramPlot.cpp
+/** \file NegativeBinomialDistributionRndHistogramPlot.cpp
     \brief This file is a testing binary for plotting random samples from the
-           BinomialDistribution class
+           NegativeBinomialDistribution class
   */
 
 #include "visualization/HistogramPlot.h"
-#include "statistics/BinomialDistribution.h"
+#include "statistics/NegativeBinomialDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> hist(0, 20, 1);
-  BinomialDistribution dist(20, 0.5);
+  Histogram<size_t, 1> hist(0, 50, 1);
+  NegativeBinomialDistribution dist(20, 0.5);
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample()(1));
   std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
@@ -42,7 +42,8 @@ int main(int argc, char** argv) {
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   hist.normalize();
-  HistogramPlot<size_t, 1> plot("BinomialDistributionRndHistogramPlot", hist);
+  HistogramPlot<size_t, 1> plot("NegativeBinomialDistributionRndHistogramPlot",
+    hist);
   plot.show();
   return app.exec();
 }

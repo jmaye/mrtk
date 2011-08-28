@@ -48,5 +48,11 @@ int main(int argc, char** argv) {
   EstimatorBayes<PoissonDistribution> estPois;
   estPois.addPoints(samplesPois);
   std::cout << "Estimation5: " << std::endl << estPois << std::endl;
+  ExponentialDistribution distExp(2);
+  std::vector<double> samplesExp;
+  distExp.getSamples(samplesExp, 1000);
+  EstimatorBayes<ExponentialDistribution> estExp;
+  estExp.addPoints(samplesExp);
+  std::cout << "Estimation6: " << std::endl << estExp << std::endl;
   return 0;
 }

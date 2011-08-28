@@ -16,22 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayesPoisson.h
-    \brief This file implements a Bayesian estimator for Poisson distributions
-           with conjugate prior
+/** \file EstimatorBayesExponential.h
+    \brief This file implements a Bayesian estimator for exponential
+           distribution with conjugate prior
   */
 
-#include "statistics/PoissonDistribution.h"
+#include "statistics/ExponentialDistribution.h"
 #include "statistics/GammaDistribution.h"
 #include "statistics/NegativeBinomialDistribution.h"
 
 #include <vector>
 
-/** The class EstimatorBayes is implemented for Poisson distributions with
+/** The class EstimatorBayes is implemented for exponential distributions with
     conjugate prior.
-    \brief Poisson distribution Bayesian estimator
+    \brief Exponential distribution Bayesian estimator
   */
-template <> class EstimatorBayes<PoissonDistribution> :
+template <> class EstimatorBayes<ExponentialDistribution> :
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
@@ -40,10 +40,10 @@ public:
   /// Constructs estimator with hyperparameters prior
   EstimatorBayes(double alpha = 1.0, double beta = 1.0);
   /// Copy constructor
-  EstimatorBayes(const EstimatorBayes<PoissonDistribution>& other);
+  EstimatorBayes(const EstimatorBayes<ExponentialDistribution>& other);
   /// Assignment operator
-  EstimatorBayes<PoissonDistribution>& operator =
-    (const EstimatorBayes<PoissonDistribution>& other);
+  EstimatorBayes<ExponentialDistribution>& operator =
+    (const EstimatorBayes<ExponentialDistribution>& other);
   /// Destructor
   virtual ~EstimatorBayes();
   /** @}
@@ -52,8 +52,8 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the posterior mean distribution
-  const GammaDistribution<double>& getPostMeanDist() const;
+  /// Returns the posterior rate distribution
+  const GammaDistribution<double>& getPostRateDist() const;
   /// Returns the posterior predictive distribution
   const NegativeBinomialDistribution& getPostPredDist() const;
   /// Returns the number of points
@@ -61,9 +61,9 @@ public:
   /// Returns the validity state of the estimator
   bool getValid() const;
   /// Add a point to the estimator
-  void addPoint(size_t point);
+  void addPoint(double point);
   /// Add points to the estimator
-  void addPoints(const std::vector<size_t>& points);
+  void addPoints(const std::vector<double>& points);
   /// Reset the estimator
   void reset();
   /** @}
@@ -87,8 +87,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Posterior mean distribution
-  GammaDistribution<double> mPostMeanDist;
+  /// Posterior rate distribution
+  GammaDistribution<double> mPostRateDist;
   /// Posterior predictive distribution
   NegativeBinomialDistribution mPostPredDist;
   /// Hyperparameter alpha
@@ -104,4 +104,4 @@ protected:
 
 };
 
-#include "statistics/EstimatorBayesPoisson.tpp"
+#include "statistics/EstimatorBayesExponential.tpp"

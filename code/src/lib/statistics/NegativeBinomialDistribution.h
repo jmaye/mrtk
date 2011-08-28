@@ -58,6 +58,16 @@ public:
   void setSuccessProbability(double successProbability);
   /// Returns the success probability
   double getSuccessProbability() const;
+  /// Returns the mean of the distribution
+  double getMean() const;
+  /// Returns the median of the distribution
+  double getMedian() const;
+  /// Returns the mode of the distribution
+  double getMode() const;
+  /// Returns the variance of the distribution
+  double getVariance() const;
+  /// Access a sample drawn from the distribution
+  virtual Eigen::Matrix<size_t, 2, 1> getSample() const;
   /** @}
     */
 

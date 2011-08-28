@@ -89,7 +89,8 @@ void MultinomialDistribution<M>::setSuccessProbabilities(const
   if (fabs(successProbabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(successProbabilities,
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
+      successProbabilities,
       "MultinomialDistribution<M>::setSuccessProbabilities(): success "
       "probabilities must sum to 1 and have probabilities bigger or equal to 0",
       __FILE__, __LINE__);
