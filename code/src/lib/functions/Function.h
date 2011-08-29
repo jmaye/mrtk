@@ -66,8 +66,6 @@ public:
   virtual Y getValue(const X& argument) const = 0;
   /// Access the function value for the given argument
   virtual Y operator()(const X& argument) const;
-  /// Access the function's number of variables
-  virtual size_t getNumVariables() const = 0;
   /** @}
     */
 

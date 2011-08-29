@@ -32,8 +32,7 @@
     continuous functions.
     \brief Multivariate continuous function
   */
-template <typename Y, typename X, size_t M, size_t N>
-  class ContinuousFunction :
+template <typename Y, typename X, size_t M, size_t N> class ContinuousFunction :
   public virtual Function<Y, Eigen::Matrix<X, M, N> > {
   /** \name Private constructors
     @{
@@ -53,14 +52,6 @@ public:
   ContinuousFunction();
   /// Destructor
   virtual ~ContinuousFunction();
-  /** @}
-    */
-
-  /** \name Accessors
-    @{
-    */
-  /// Access the function's number of variables
-  virtual size_t getNumVariables() const;
   /** @}
     */
 

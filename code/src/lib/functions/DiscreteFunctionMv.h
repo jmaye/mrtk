@@ -57,14 +57,6 @@ public:
   /** @}
     */
 
-  /** \name Accessors
-    @{
-    */
-  /// Access the function's number of variables
-  virtual size_t getNumVariables() const;
-  /** @}
-    */
-
 protected:
 
 };

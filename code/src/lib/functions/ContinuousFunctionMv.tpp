@@ -27,12 +27,3 @@ ContinuousFunction<Y, X, M, N>::ContinuousFunction() {
 template <typename Y, typename X, size_t M, size_t N>
 ContinuousFunction<Y, X, M, N>::~ContinuousFunction() {
 }
-
-/******************************************************************************/
-/* Accessors                                                                  */
-/******************************************************************************/
-
-template <typename Y, typename X, size_t M, size_t N>
-size_t ContinuousFunction<Y, X, M, N>::getNumVariables() const {
-  return M * N;
-}

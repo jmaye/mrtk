@@ -27,12 +27,3 @@ DiscreteFunction<Y, X, M, N>::DiscreteFunction() {
 template <typename Y, typename X, size_t M, size_t N>
 DiscreteFunction<Y, X, M, N>::~DiscreteFunction() {
 }
-
-/******************************************************************************/
-/* Accessors                                                                  */
-/******************************************************************************/
-
-template <typename Y, typename X, size_t M, size_t N>
-size_t DiscreteFunction<Y, X, M, N>::getNumVariables() const {
-  return M * N;
-}
