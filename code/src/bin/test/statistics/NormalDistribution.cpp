@@ -101,18 +101,18 @@ int main(int argc, char** argv) {
   std::cout << "Distribution new parameters: " << std::endl << dist2D
     << std::endl << std::endl;
 
-  std::cout << "pdf((1, 1)): " << std::fixed << dist2D(Eigen::Matrix<double, 2, 1>(1, 1)) << std::endl
-    << std::endl;
+  std::cout << "pdf((1, 1)): " << std::fixed
+    << dist2D(Eigen::Matrix<double, 2, 1>(1, 1)) << std::endl << std::endl;
   if (fabs(dist2D(Eigen::Matrix<double, 2, 1>(1, 1)) -  0.0796) > 1e-4)
     return 1;
 
-  std::cout << "pdf((3, 3)): " << std::fixed << dist2D(Eigen::Matrix<double, 2, 1>(3, 3)) << std::endl
-    << std::endl;
+  std::cout << "pdf((3, 3)): " << std::fixed
+    << dist2D(Eigen::Matrix<double, 2, 1>(3, 3)) << std::endl << std::endl;
   if (fabs(dist2D(Eigen::Matrix<double, 2, 1>(3, 3)) - 0.0108) > 1e-4)
     return 1;
 
-  std::cout << "pdf((-1, -1)): " << std::fixed << dist2D(Eigen::Matrix<double, 2, 1>(-1, -1)) << std::endl
-    << std::endl;
+  std::cout << "pdf((-1, -1)): " << std::fixed
+    << dist2D(Eigen::Matrix<double, 2, 1>(-1, -1)) << std::endl << std::endl;
   if (fabs(dist2D(Eigen::Matrix<double, 2, 1>(-1, -1)) - 0.0108) > 1e-4)
     return 1;
 
