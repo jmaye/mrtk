@@ -16,20 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayesImproper.h
-    \brief This file defines the EstimatorBayesImproper class, which implements
-           Bayesian estimators with improper priors for various distributions
+/** \file LinearRegressionPred.h
+    \brief This file is an interface to predictive linear regression
   */
 
-#ifndef ESTIMATORBAYESIMPROPER_H
-#define ESTIMATORBAYESIMPROPER_H
+#ifndef LINEARREGRESSIONPRED_H
+#define LINEARREGRESSIONPRED_H
 
-#include <cstdlib>
+#include "statistics/LinearRegressionPred1v.h"
+#include "statistics/LinearRegressionPredMv.h"
 
-template <typename D, size_t M = 1, size_t N = 1> class EstimatorBayesImproper;
-
-#include "statistics/EstimatorBayesImproperNormal1v.h"
-#include "statistics/EstimatorBayesImproperNormalMv.h"
-#include "statistics/EstimatorBayesImproperLinearRegression.h"
-
-#endif // ESTIMATORBAYESIMPROPER
+#endif // LINEARREGRESSIONPRED_H

@@ -84,12 +84,14 @@ double NegativeBinomialDistribution::getMean() const {
   return NegativeMultinomialDistribution<2>::getMean()(1);
 }
 
-double NegativeBinomialDistribution::getMedian() const {
-  return floor(mNumTrials * mSuccessProbabilities(1));
-}
+
 
 double NegativeBinomialDistribution::getMode() const {
-  return floor((mNumTrials + 1) * mSuccessProbabilities(1));
+  if (mNumTrials > 1)
+    return floor(mSuccessProbabilities(1) * (mNumTrials - 1) /
+      mSuccessProbabilities(0));
+  else
+    return 0.0;
 }
 
 double NegativeBinomialDistribution::getVariance() const {

@@ -60,8 +60,6 @@ public:
   double getSuccessProbability() const;
   /// Returns the mean of the distribution
   double getMean() const;
-  /// Returns the median of the distribution
-  double getMedian() const;
   /// Returns the mode of the distribution
   double getMode() const;
   /// Returns the variance of the distribution

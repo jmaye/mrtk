@@ -38,7 +38,6 @@ int main(int argc, char** argv) {
     << std::endl;
   std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
-  std::cout << "Dist. median: " << dist.getMedian() << std::endl;
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   hist.normalize();

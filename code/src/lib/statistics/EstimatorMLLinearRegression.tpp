@@ -129,7 +129,7 @@ template <size_t M>
 void EstimatorML<LinearRegression<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points) {
   reset();
-  if (points.size()) {
+  if (points.size() > M) {
     Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
     Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
       (int)M);
@@ -144,13 +144,11 @@ void EstimatorML<LinearRegression<M>, M>::addPoints(const
       return;
     mCoefficients = invCheckMatrix.inverse() * designMatrix.transpose() *
       targets;
-    //mVariance = targets - mCoefficients *
-    for (size_t i = 0; i < points.size(); ++i)
-      mVariance += (targets(i) - (mCoefficients.transpose() *
-        designMatrix.row(i).transpose())(0)) * (targets(i) -
-        (mCoefficients.transpose() * designMatrix.row(i).transpose())(0));
+    mVariance = ((targets - designMatrix * mCoefficients).transpose() *
+      (targets - designMatrix * mCoefficients))(0);
     mVariance /= points.size();
     mValid = true;
     mNumPoints = points.size();
+    mValid = true;
   }
 }

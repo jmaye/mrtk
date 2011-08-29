@@ -209,21 +209,23 @@ Eigen::Matrix<size_t, M, 1> NegativeMultinomialDistribution<M>::getSample()
 template <size_t M>
 Eigen::Matrix<double, M, 1> NegativeMultinomialDistribution<M>::getMean()
   const {
-  return mNumTrials * mSuccessProbabilities;
+  return mNumTrials * mSuccessProbabilities / mSuccessProbabilities(0);
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, M> NegativeMultinomialDistribution<M>::getCovariance()
   const {
-  Eigen::Matrix<double, M, M> covariance;
-  for (size_t i = 0; i < M; ++i) {
-    covariance(i, i) = mNumTrials * mSuccessProbabilities(i) * (1 -
-      mSuccessProbabilities(i));
-    for (size_t j = i + 1; j < M; ++j) {
-      covariance(i, j) = -1.0 * mNumTrials * mSuccessProbabilities(i) *
-        mSuccessProbabilities(j);
-      covariance(j, i) = covariance(i, j);
-    }
-  }
-  return covariance;
+/*  Eigen::Matrix<double, M, M> covariance;*/
+/*  for (size_t i = 0; i < M; ++i) {*/
+/*    covariance(i, i) = mNumTrials * mSuccessProbabilities(i) * (1 -*/
+/*      mSuccessProbabilities(i));*/
+/*    for (size_t j = i + 1; j < M; ++j) {*/
+/*      covariance(i, j) = -1.0 * mNumTrials * mSuccessProbabilities(i) **/
+/*        mSuccessProbabilities(j);*/
+/*      covariance(j, i) = covariance(i, j);*/
+/*    }*/
+/*  }*/
+  return mNumTrials / mSuccessProbabilities(0) / mSuccessProbabilities(0) *
+    mSuccessProbabilities * mSuccessProbabilities.transpose() + mNumTrials /
+    mSuccessProbabilities(0) * mSuccessProbabilities.asDiagonal();
 }
