@@ -59,6 +59,9 @@ public:
   double getVariance() const;
   /// Add points to the estimator
   void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
+  /// Add points to the estimator with weights
+  void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points,
+    const Eigen::Matrix<double, Eigen::Dynamic, 1>& weights);
   /// Reset the estimator
   void reset();
   /** @}
