@@ -9,23 +9,24 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             mNumPoints = points.size();   *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <Eigen/QR>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
 template <size_t M>
-EstimatorBayesImproper<LinearRegression<M>, M>::EstimatorBayesImproper(double
-  tol) :
+EstimatorBayesImproper<LinearRegression<M>, M>::EstimatorBayesImproper() :
   mSampleCoeff(Eigen::Matrix<double, M, 1>::Zero()),
-  mSampleVariance(0),
-  mTol(tol),
+  mSampleCoeffCovariance(Eigen::Matrix<double, M, M>::Identity()),
+  mSampleRegressionVariance(0),
   mNumPoints(0),
   mValid(false) {
 }
@@ -37,8 +38,8 @@ EstimatorBayesImproper<LinearRegression<M>, M>::EstimatorBayesImproper(const
   mPostVarianceDist(other.mPostVarianceDist),
   mPostPredDist(other.mPostPredDist),
   mSampleCoeff(other.mSampleCoeff),
-  mSampleVariance(other.mSampleCovariance),
-  mTol(other.mTol),
+  mSampleCoeffCovariance(other.mSampleCoeffCovariance),
+  mSampleRegressionVariance(other.mSampleRegressionVariance),
   mNumPoints(other.mNumPoints),
   mValid(other.mValid) {
 }
@@ -52,8 +53,8 @@ EstimatorBayesImproper<LinearRegression<M>, M>&
     mPostVarianceDist = other.mPostVarianceDist;
     mPostPredDist = other.mPostPredDist;
     mSampleCoeff = other.mSampleCoeff;
-    mSampleVariance = other.mSampleVariance;
-    mTol = other.mTol;
+    mSampleCoeffCovariance = other.mSampleCoeffCovariance;
+    mSampleRegressionVariance = other.mSampleRegressionVariance;
     mNumPoints = other.mNumPoints;
     mValid = other.mValid;
   }
@@ -83,8 +84,9 @@ void EstimatorBayesImproper<LinearRegression<M>, M>::write(std::ostream&
     << "posterior predictive distribution: " << std::endl << mPostPredDist
     << std::endl
     << "sample coefficients: " << mSampleCoeff.transpose() << std::endl
-    << "sample variance: " << mSampleVariance << std::endl
-    << "tolerance: " << mTol << std::endl
+    << "sample coefficients covariance: " << std::endl
+    << mSampleCoeffCovariance << std::endl
+    << "sample regression variance: " << mSampleRegressionVariance << std::endl
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }
@@ -129,19 +131,16 @@ EstimatorBayesImproper<LinearRegression<M>, M>::getSampleCoeff() const {
 }
 
 template <size_t M>
-double EstimatorBayesImproper<LinearRegression<M>, M>::getSampleVariance()
+const Eigen::Matrix<double, M, M>&
+EstimatorBayesImproper<LinearRegression<M>, M>::getSampleCoeffCovariance()
   const {
-  return mSampleVariance;
+  return mSampleCoeffCovariance;
 }
 
 template <size_t M>
-double EstimatorBayesImproper<LinearRegression<M>, M>::getTolerance() const {
-  return mTol;
-}
-
-template <size_t M>
-void EstimatorBayesImproper<LinearRegression<M>, M>::setTolerance(double tol) {
-  mTol = tol;
+double EstimatorBayesImproper<LinearRegression<M>, M>::
+getSampleRegressionVariance() const {
+  return mSampleRegressionVariance;
 }
 
 template <size_t M>
@@ -157,7 +156,8 @@ bool EstimatorBayesImproper<LinearRegression<M>, M>::getValid() const {
 template <size_t M>
 void EstimatorBayesImproper<LinearRegression<M>, M>::reset() {
   mSampleCoeff = Eigen::Matrix<double, M, 1>::Zero();
-  mSampleVariance = 0;
+  mSampleCoeffCovariance = Eigen::Matrix<double, M, M>::Identity();
+  mSampleRegressionVariance = 0;
   mNumPoints = 0;
   mValid = false;
 }
@@ -166,37 +166,34 @@ template <size_t M>
 void EstimatorBayesImproper<LinearRegression<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points) {
   reset();
-  if (points.size() > M) {
-    Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
-    Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
-      (int)M);
-    for (size_t i = 0; i < points.size(); ++i) {
-      targets(i) = points[i](M - 1);
-      designMatrix(i, 0) = 1.0;
-      designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
-    }
-    Eigen::Matrix<double, M, M> invCheckMatrix =
-      designMatrix.transpose() * designMatrix;
-    if (points.size() < M || invCheckMatrix.determinant() < mTol)
-      return;
-    mSampleCoeff = invCheckMatrix.inverse() * designMatrix.transpose() *
-      targets;
-    mSampleVariance = ((targets - designMatrix * mSampleCoeff).transpose() *
-      (targets - designMatrix * mSampleCoeff))(0);
-    mSampleVariance /= points.size() - M;
-    mValid = true;
-    mNumPoints = points.size();
-    Eigen::Matrix<double, M, M> coeffCovariance = (designMatrix.transpose() *
-      designMatrix).inverse();
+  mNumPoints = points.size();
+  Eigen::Matrix<double, Eigen::Dynamic, 1> targets(mNumPoints);
+  Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(mNumPoints, (int)M);
+  for (size_t i = 0; i < mNumPoints; ++i) {
+    targets(i) = points[i](M - 1);
+    designMatrix(i, 0) = 1.0;
+    designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
+  }
+  Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =
+    designMatrix.qr();
+  if (mNumPoints > M && qrDecomp.rank() == M) {
+    Eigen::Matrix<double, M, M> invR = qrDecomp.matrixR().inverse();
+    mSampleCoeff = invR * qrDecomp.matrixQ().transpose() * targets;
+    mSampleRegressionVariance = ((targets - designMatrix *
+      mSampleCoeff).transpose() * (targets - designMatrix * mSampleCoeff))(0);
+    mSampleRegressionVariance /= points.size() - M;
+    mSampleCoeffCovariance = invR * invR.transpose();
     mPostVarianceDist.setDegrees(mNumPoints - M);
-    mPostVarianceDist.setScale(mSampleVariance);
+    mPostVarianceDist.setScale(mSampleRegressionVariance);
     mPostCoeffDist.setDegrees(mNumPoints - M);
     mPostCoeffDist.setLocation(mSampleCoeff);
-    mPostCoeffDist.setScale(mSampleVariance * coeffCovariance);
+    mPostCoeffDist.setScale(mSampleRegressionVariance * mSampleCoeffCovariance);
     mPostPredDist.setDegrees(mNumPoints - M);
     mPostPredDist.setCoefficients(mSampleCoeff);
-    mPostPredDist.setCoeffCovariance(coeffCovariance);
-    mPostPredDist.setRegressionVariance(mSampleVariance);
+    mPostPredDist.setCoeffCovariance(mSampleCoeffCovariance);
+    mPostPredDist.setRegressionVariance(mSampleRegressionVariance);
     mValid = true;
   }
+  else
+    mValid = false;
 }

@@ -35,7 +35,7 @@ public:
     @{
     */
   /// Default constructor
-  EstimatorML(double tol = 1e-5);
+  EstimatorML();
   /// Copy constructor
   EstimatorML(const EstimatorML<LinearRegression<M>, M>& other);
   /// Assignment operator
@@ -57,10 +57,6 @@ public:
   const Eigen::Matrix<double, M, 1>& getCoefficients() const;
   /// Returns the estimated variance
   double getVariance() const;
-  /// Returns the tolerance of the estimator
-  double getTolerance() const;
-  /// Sets the tolerance of the estimator
-  void setTolerance(double tol);
   /// Add points to the estimator
   void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
   /// Reset the estimator
@@ -90,8 +86,6 @@ protected:
   Eigen::Matrix<double, M, 1> mCoefficients;
   /// Estimated variance
   double mVariance;
-  /// Tolerance for the determinant
-  double mTol;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

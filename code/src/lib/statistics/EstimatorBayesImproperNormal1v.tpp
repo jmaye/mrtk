@@ -145,6 +145,8 @@ void EstimatorBayesImproper<NormalDistribution<1> >::addPoint(double point) {
     mPostPredDist.setScale(mSampleVariance * (1 + 1.0 / mNumPoints));
     mValid = true;
   }
+  else
+    mValid = false;
 }
 
 void EstimatorBayesImproper<NormalDistribution<1> >::addPoints(const

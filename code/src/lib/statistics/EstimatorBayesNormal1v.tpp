@@ -130,15 +130,19 @@ void EstimatorBayes<NormalDistribution<1> >::addPoint(double point) {
   mKappa = newKappa;
   mNu = newNu;
   mSigma = newSigma;
-  mPostMeanDist.setDegrees(mNu);
-  mPostMeanDist.setLocation(mMu);
-  mPostMeanDist.setScale(mSigma / mKappa / mNu);
-  mPostVarianceDist.setDegrees(mNu);
-  mPostVarianceDist.setScale(mSigma / mNu);
-  mPostPredDist.setDegrees(mNu);
-  mPostPredDist.setLocation(mMu);
-  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / mNu);
-  mValid = true;
+  if (mSigma != 0) {
+    mPostMeanDist.setDegrees(mNu);
+    mPostMeanDist.setLocation(mMu);
+    mPostMeanDist.setScale(mSigma / mKappa / mNu);
+    mPostVarianceDist.setDegrees(mNu);
+    mPostVarianceDist.setScale(mSigma / mNu);
+    mPostPredDist.setDegrees(mNu);
+    mPostPredDist.setLocation(mMu);
+    mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / mNu);
+    mValid = true;
+  }
+  else
+    mValid = false;
 }
 
 void EstimatorBayes<NormalDistribution<1> >::addPoints(const

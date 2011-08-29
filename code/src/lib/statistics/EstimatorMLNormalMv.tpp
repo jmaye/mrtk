@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <Eigen/QR>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -120,9 +122,11 @@ void EstimatorML<NormalDistribution<M>, M>::addPoint(const
   mMean += 1.0 / mNumPoints * (point - mMean);
   mCovariance += 1.0 / mNumPoints * ((point - mMean) *
     (point - mMean).transpose() - mCovariance);
-  if (mNumPoints > M)
+  Eigen::QR<Eigen::Matrix<double, M, M> > qrDecomp = mCovariance.qr();
+  if (qrDecomp.rank() == M)
     mValid = true;
-  // TODO: CHECK FOR VALID COVARIANCES MATRIX, I.E., M NON-COLINEAR POINTS
+  else
+    mValid = false;
 }
 
 template <size_t M>

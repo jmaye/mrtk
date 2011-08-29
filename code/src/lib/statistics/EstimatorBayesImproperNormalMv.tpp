@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <Eigen/QR>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -154,8 +156,8 @@ void EstimatorBayesImproper<NormalDistribution<M>, M>::addPoint(const
   if (mNumPoints > 1)
     mSampleCovariance += 1.0 / (mNumPoints - 1) * ((point - mSampleMean) *
       (point - mSampleMean).transpose() - mSampleCovariance);
-  if (mNumPoints > M) {
-    // TODO: CHECK VALID COVARIANCES
+  Eigen::QR<Eigen::Matrix<double, M, M> > qrDecomp = mSampleCovariance.qr();
+  if (qrDecomp.rank() == M) {
     mPostMeanDist.setDegrees(mNumPoints - M);
     mPostMeanDist.setLocation(mSampleMean);
     mPostMeanDist.setScale(mSampleCovariance / mNumPoints);
@@ -166,6 +168,8 @@ void EstimatorBayesImproper<NormalDistribution<M>, M>::addPoint(const
     mPostPredDist.setScale(mSampleCovariance * (1 + 1.0 / mNumPoints));
     mValid = true;
   }
+  else
+    mValid = false;
 }
 
 template <size_t M>

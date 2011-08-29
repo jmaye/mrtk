@@ -30,8 +30,8 @@ LinearRegressionPred<2>::LinearRegressionPred(const Eigen::Matrix<double, 2, 1>&
   Eigen::Matrix<double, 2, 1> basisTrans;
   basisTrans << 1, basis;
   setLocation((mCoefficients.transpose() * basisTrans)(0));
-  setScale(mRegressionVariance + (basisTrans.transpose() * mCoeffCovariance *
-    basisTrans)(0));
+  setScale(mRegressionVariance * (1 + (basisTrans.transpose() *
+    mCoeffCovariance * basisTrans)(0)));
 }
 
 LinearRegressionPred<2>::LinearRegressionPred(const LinearRegressionPred<2>&
@@ -100,8 +100,8 @@ void LinearRegressionPred<2>::setCoeffCovariance(const
   mCoeffCovariance = coeffCovariance;
   Eigen::Matrix<double, 2, 1> basisTrans;
   basisTrans << 1, mBasis;
-  setScale(mRegressionVariance + (basisTrans.transpose() * mCoeffCovariance *
-    basisTrans)(0));
+  setScale(mRegressionVariance * (1 + (basisTrans.transpose() *
+    mCoeffCovariance * basisTrans)(0)));
 }
 
 const Eigen::Matrix<double, 2, 2>& LinearRegressionPred<2>::getCoeffCovariance()
@@ -113,8 +113,8 @@ void LinearRegressionPred<2>::setRegressionVariance(double variance) {
   mRegressionVariance = variance;
   Eigen::Matrix<double, 2, 1> basisTrans;
   basisTrans << 1, mBasis;
-  setScale(mRegressionVariance + (basisTrans.transpose() * mCoeffCovariance *
-    basisTrans)(0));
+  setScale(mRegressionVariance * (1 + (basisTrans.transpose() *
+    mCoeffCovariance * basisTrans)(0)));
 }
 
 double LinearRegressionPred<2>::getRegressionVariance() const {
@@ -125,8 +125,8 @@ void LinearRegressionPred<2>::setBasis(double basis) {
   Eigen::Matrix<double, 2, 1> basisTrans;
   basisTrans << 1, basis;
   setLocation((mCoefficients.transpose() * basisTrans)(0));
-  setScale(mRegressionVariance + (basisTrans.transpose() * mCoeffCovariance *
-    basisTrans)(0));
+  setScale(mRegressionVariance * (1 + (basisTrans.transpose() *
+    mCoeffCovariance * basisTrans)(0)));
   mBasis = basis;
 }
 

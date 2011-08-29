@@ -105,6 +105,8 @@ void EstimatorML<NormalDistribution<1> >::addPoint(double point) {
     mVariance);
   if (mVariance != 0.0)
     mValid = true;
+  else
+    mValid = false;
 }
 
 void EstimatorML<NormalDistribution<1> >::addPoints(const std::vector<double>&

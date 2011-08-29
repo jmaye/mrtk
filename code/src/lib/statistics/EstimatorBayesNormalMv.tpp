@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <Eigen/QR>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -151,15 +153,20 @@ void EstimatorBayes<NormalDistribution<M>, M>::addPoint(const
   for (size_t i = 0; i < M; ++i)
     for (size_t j = i + 1; j < M; ++j)
       mSigma(i, j) = mSigma(j, i);
-  mPostMeanDist.setDegrees(mNu - M + 1);
-  mPostMeanDist.setLocation(mMu);
-  mPostMeanDist.setScale(mSigma / mKappa / (mNu - M + 1));
-  mPostCovarianceDist.setDegrees(mNu);
-  mPostCovarianceDist.setScale(mSigma / mNu);
-  mPostPredDist.setDegrees(mNu - M + 1);
-  mPostPredDist.setLocation(mMu);
-  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / (mNu - M + 1));
-  mValid = true;
+  Eigen::QR<Eigen::Matrix<double, M, M> > qrDecomp = mSigma.qr();
+  if (qrDecomp.rank() == M) {
+    mPostMeanDist.setDegrees(mNu - M + 1);
+    mPostMeanDist.setLocation(mMu);
+    mPostMeanDist.setScale(mSigma / mKappa / (mNu - M + 1));
+    mPostCovarianceDist.setDegrees(mNu);
+    mPostCovarianceDist.setScale(mSigma / mNu);
+    mPostPredDist.setDegrees(mNu - M + 1);
+    mPostPredDist.setLocation(mMu);
+    mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / (mNu - M + 1));
+    mValid = true;
+  }
+  else
+    mValid = false;
 }
 
 template <size_t M>

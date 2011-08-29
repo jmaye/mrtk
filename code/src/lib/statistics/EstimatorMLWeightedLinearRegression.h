@@ -16,59 +16,47 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayesImproperLinearRegression.h
-    \brief This file implements a Bayesian estimator for ordinary linear
-           regression models with improper prior.
+/** \file EstimatorMLWeightedLinearRegression.h
+    \brief This file implements an ML estimator for linear regression models
   */
 
 #include "statistics/LinearRegression.h"
-#include "statistics/LinearRegressionPred.h"
-#include "statistics/ScaledInvChiSquareDistribution.h"
+#include "base/Serializable.h"
 
 #include <vector>
 
-/** The class EstimatorBayesImproper is implemented for ordinary linear
-    regression models
-    \brief Ordinary linear regresssion Bayesian estimator with improper prior
+/** The class EstimatorML is implemented for multivariate linear regression.
+    \brief Multivariate linear regression ML estimator
   */
-template <size_t M> class EstimatorBayesImproper<LinearRegression<M>, M> :
+template <size_t M> class EstimatorML<LinearRegression<M>, M> :
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  EstimatorBayesImproper();
+  EstimatorML();
   /// Copy constructor
-  EstimatorBayesImproper(const EstimatorBayesImproper<LinearRegression<M>, M>&
-    other);
+  EstimatorML(const EstimatorML<LinearRegression<M>, M>& other);
   /// Assignment operator
-  EstimatorBayesImproper<LinearRegression<M>, M>& operator =
-    (const EstimatorBayesImproper<LinearRegression<M>, M>& other);
+  EstimatorML<LinearRegression<M>, M>& operator =
+    (const EstimatorML<LinearRegression<M>, M>& other);
   /// Destructor
-  virtual ~EstimatorBayesImproper();
+  virtual ~EstimatorML();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Returns the posterior marginal coefficients distribution
-  const StudentDistribution<M>& getPostCoeffDist() const;
-  /// Returns the posterior marginal variance distribution
-  const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
-  /// Returns the posterior predictive distribution
-  const LinearRegressionPred<M>& getPostPredDist() const;
-  /// Returns the sample coefficients
-  const Eigen::Matrix<double, M, 1>& getSampleCoeff() const;
-  /// Returns the sample coefficients covariance
-  const Eigen::Matrix<double, M, M>& getSampleCoeffCovariance() const;
-  /// Returns the sample regression variance
-  double getSampleRegressionVariance() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
   bool getValid() const;
+  /// Returns the estimated coefficients
+  const Eigen::Matrix<double, M, 1>& getCoefficients() const;
+  /// Returns the estimated variance
+  double getVariance() const;
   /// Add points to the estimator
   void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
   /// Reset the estimator
@@ -94,18 +82,10 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Posterior marginal coefficients distribution
-  StudentDistribution<M> mPostCoeffDist;
-  /// Posterior marginal variance distribution
-  ScaledInvChiSquareDistribution mPostVarianceDist;
-  /// Posterior predictive distribution
-  LinearRegressionPred<M> mPostPredDist;
-  /// Sample coefficients
-  Eigen::Matrix<double, M, 1> mSampleCoeff;
-  /// Sample coefficients covariance
-  Eigen::Matrix<double, M, M> mSampleCoeffCovariance;
-  /// Sample regression variance
-  double mSampleRegressionVariance;
+  /// Estimated regression coefficients
+  Eigen::Matrix<double, M, 1> mCoefficients;
+  /// Estimated variance
+  double mVariance;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag
@@ -115,4 +95,4 @@ protected:
 
 };
 
-#include "statistics/EstimatorBayesImproperLinearRegression.tpp"
+#include "statistics/EstimatorMLWeightedLinearRegression.tpp"
