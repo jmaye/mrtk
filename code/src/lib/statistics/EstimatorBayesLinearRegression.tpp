@@ -23,7 +23,13 @@
 /******************************************************************************/
 
 template <size_t M>
-EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes() :
+EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes(const
+  Eigen::Matrix<double, M, 1>& mu , const Eigen::Matrix<double, M, M>& V,
+  double nu, double sigma) :
+  mMu(mu),
+  mV(V),
+  mNu(nu),
+  mSigma(sigma),
   mSampleCoeff(Eigen::Matrix<double, M, 1>::Zero()),
   mSampleCoeffCovariance(Eigen::Matrix<double, M, M>::Identity()),
   mSampleRegressionVariance(0),
@@ -191,6 +197,16 @@ void EstimatorBayes<LinearRegression<M>, M>::addPoints(const
       designMatrix * mSampleCoeff))(0) / (points.size() - M);
     Eigen::Matrix<double, M, M> invR = qrDecomp.matrixR().inverse();
     mSampleCoeffCovariance = invR * invR.transpose();
+
+    Eigen::Matrix<double, M, 1> mNewMu = mMu;
+    Eigen::Matrix<double, M, M> mNewV = mV;
+    double mNewNu;
+    double mNewSigma;
+    mMu = mNewMu;
+    mV = mNewV;
+    mNu = mNewNu;
+    mSigma = mNewSigma;
+
     mPostVarianceDist.setDegrees(mNumPoints - M);
     mPostVarianceDist.setScale(mSampleRegressionVariance);
     mPostCoeffDist.setDegrees(mNumPoints - M);

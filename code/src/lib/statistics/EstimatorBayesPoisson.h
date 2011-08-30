@@ -91,9 +91,9 @@ protected:
   GammaDistribution<double> mPostMeanDist;
   /// Posterior predictive distribution
   NegativeBinomialDistribution mPostPredDist;
-  /// Hyperparameter alpha
+  /// Hyperparameter alpha (alpha - 1 prior counts)
   double mAlpha;
-  /// Hyperparameter beta
+  /// Hyperparameter beta (beta prior observations)
   double mBeta;
   /// Number of points in the estimator
   size_t mNumPoints;

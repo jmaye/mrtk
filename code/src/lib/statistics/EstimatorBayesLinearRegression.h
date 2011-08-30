@@ -38,7 +38,10 @@ public:
     @{
     */
   /// Default constructor
-  EstimatorBayes();
+  EstimatorBayes(const Eigen::Matrix<double, M, 1>& mu =
+    Eigen::Matrix<double, M, 1>::Ones(), const Eigen::Matrix<double, M, M>& V =
+    Eigen::Matrix<double, M, M>::Identity(), double nu = 1.0, double sigma =
+    1.0);
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes<LinearRegression<M>, M>& other);
   /// Assignment operator
@@ -102,6 +105,14 @@ protected:
   ScaledInvChiSquareDistribution mPostVarianceDist;
   /// Posterior predictive distribution
   LinearRegressionPred<M> mPostPredDist;
+  /// Hyperparameter mu: prior coefficients mean
+  Eigen::Matrix<double, M, 1> mMu;
+  /// Hyperparameter V: prior coefficients covariance
+  Eigen::Matrix<double, M, M> mV;
+  /// Hyperparameter nu: prior degrees of freedom
+  double mNu;
+  /// Hyperparameter sigma: prior regression variance
+  double mSigma;
   /// Sample coefficients
   Eigen::Matrix<double, M, 1> mSampleCoeff;
   /// Sample coefficients covariance

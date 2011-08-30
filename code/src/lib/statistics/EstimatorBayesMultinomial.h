@@ -96,7 +96,7 @@ protected:
   DirichletDistribution<M> mPostSuccessDist;
   /// Posterior predictive distribution
   DCMDistribution<M> mPostPredDist;
-  /// Hyperparameter alpha from the Dirichlet distribution
+  /// Hyperparameter alpha (alpha_i - 1 pseudo-counts for i, alpha.sum = conf.)
   Eigen::Matrix<double, M, 1> mAlpha;
   /// Number of points in the estimator
   size_t mNumPoints;

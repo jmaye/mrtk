@@ -91,9 +91,9 @@ protected:
   GammaDistribution<double> mPostRateDist;
   /// Posterior predictive distribution
   NegativeBinomialDistribution mPostPredDist;
-  /// Hyperparameter alpha
+  /// Hyperparameter alpha (corresponds to alpha - 1 prior observations)
   double mAlpha;
-  /// Hyperparameter beta
+  /// Hyperparameter beta (corresponds to beta prior total waiting time)
   double mBeta;
   /// Number of points in the estimator
   size_t mNumPoints;

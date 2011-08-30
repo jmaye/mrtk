@@ -54,5 +54,14 @@ int main(int argc, char** argv) {
   EstimatorBayes<ExponentialDistribution> estExp;
   estExp.addPoints(samplesExp);
   std::cout << "Estimation6: " << std::endl << estExp << std::endl;
+  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 0.0, 2.0);
+  std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
+  for (double x = -10; x < 10; x += 0.01) {
+    distLine.setBasis(x);
+    samplesLine.push_back(Eigen::Matrix<double, 2, 1>(x, distLine.getSample()));
+  }
+  EstimatorBayes<LinearRegression<2>, 2> estLine;
+  estLine.addPoints(samplesLine);
+  std::cout << "Estimation7: " << std::endl << estLine << std::endl;
   return 0;
 }
