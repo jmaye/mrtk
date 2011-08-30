@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayesImproperLinearRegression.h
+/** \file EstimatorBayesLinearRegression.h
     \brief This file implements a Bayesian estimator for ordinary linear
-           regression models with improper prior.
+           regression models with conjugate prior.
   */
 
 #include "statistics/LinearRegression.h"
@@ -27,26 +27,25 @@
 
 #include <vector>
 
-/** The class EstimatorBayesImproper is implemented for ordinary linear
-    regression models.
-    \brief Ordinary linear regresssion Bayesian estimator with improper prior
+/** The class EstimatorBayes is implemented for ordinary linear regression
+    models.
+    \brief Ordinary linear regresssion Bayesian estimator with conjugate prior
   */
-template <size_t M> class EstimatorBayesImproper<LinearRegression<M>, M> :
+template <size_t M> class EstimatorBayes<LinearRegression<M>, M> :
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
   /// Default constructor
-  EstimatorBayesImproper();
+  EstimatorBayes();
   /// Copy constructor
-  EstimatorBayesImproper(const EstimatorBayesImproper<LinearRegression<M>, M>&
-    other);
+  EstimatorBayes(const EstimatorBayes<LinearRegression<M>, M>& other);
   /// Assignment operator
-  EstimatorBayesImproper<LinearRegression<M>, M>& operator =
-    (const EstimatorBayesImproper<LinearRegression<M>, M>& other);
+  EstimatorBayes<LinearRegression<M>, M>& operator =
+    (const EstimatorBayes<LinearRegression<M>, M>& other);
   /// Destructor
-  virtual ~EstimatorBayesImproper();
+  virtual ~EstimatorBayes();
   /** @}
     */
 
@@ -118,4 +117,4 @@ protected:
 
 };
 
-#include "statistics/EstimatorBayesImproperLinearRegression.tpp"
+#include "statistics/EstimatorBayesLinearRegression.tpp"

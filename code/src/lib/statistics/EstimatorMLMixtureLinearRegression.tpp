@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <Eigen/QR>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -217,21 +219,18 @@ size_t EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>::
         designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
       }
       for (size_t j = 0; j < N; ++j) {
-        Eigen::Matrix<double, M, M> invCheckMatrix = designMatrix.transpose() *
-          mResponsibilities.col(j).asDiagonal() * designMatrix;
-        if (invCheckMatrix.determinant() < mTol)
-          return numIter;
-        mCoefficients.row(j) = invCheckMatrix.inverse() *
-          designMatrix.transpose() * mResponsibilities.col(j).asDiagonal() *
-          targets;
-        double variance = 0.0;
-        for (size_t i = 0; i < points.size(); ++i)
-          variance += mResponsibilities(i, j) * (targets(i) -
-            (mCoefficients.row(j) * designMatrix.row(i).transpose())(0)) *
-            (targets(i) - (mCoefficients.row(j) *
-            designMatrix.row(i).transpose())(0));
-        variance /= numPoints(j);
-        mVariances(j) = variance;
+        Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =
+          (mResponsibilities.col(j).asDiagonal() * designMatrix).qr();
+        if (numPoints(j) > M && qrDecomp.rank() == M) {
+          Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coeff;
+          qrDecomp.solve(mResponsibilities.col(j).asDiagonal() * targets,
+            &coeff);
+          mCoefficients.row(j) = coeff.transpose();
+          mVariances(j) = ((targets - designMatrix *
+            mCoefficients.row(j).transpose()).transpose() *
+            mResponsibilities.col(j).asDiagonal() * (targets - designMatrix *
+            mCoefficients.row(j).transpose()))(0) / numPoints(j);
+        }
       }
       double newLogLikelihood = 0.0;
       for (size_t i = 0; i < points.size(); ++i) {

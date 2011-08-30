@@ -143,8 +143,8 @@ void EstimatorML<LinearRegression<M>, M>::addPoints(const
     qrDecomp.solve(weights.asDiagonal() * targets, &coeff);
     mCoefficients = coeff;
     mVariance = ((targets - designMatrix * mCoefficients).transpose() *
-      weights.asDiagonal() * (targets - designMatrix * mCoefficients))(0);
-    mVariance /= mNumPoints;
+      weights.asDiagonal() * (targets - designMatrix * mCoefficients))(0) /
+      mNumPoints;
     mValid = true;
   }
   else

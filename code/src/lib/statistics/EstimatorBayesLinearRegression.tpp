@@ -23,7 +23,7 @@
 /******************************************************************************/
 
 template <size_t M>
-EstimatorBayesImproper<LinearRegression<M>, M>::EstimatorBayesImproper() :
+EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes() :
   mSampleCoeff(Eigen::Matrix<double, M, 1>::Zero()),
   mSampleCoeffCovariance(Eigen::Matrix<double, M, M>::Identity()),
   mSampleRegressionVariance(0),
@@ -32,8 +32,8 @@ EstimatorBayesImproper<LinearRegression<M>, M>::EstimatorBayesImproper() :
 }
 
 template <size_t M>
-EstimatorBayesImproper<LinearRegression<M>, M>::EstimatorBayesImproper(const
-  EstimatorBayesImproper<LinearRegression<M>, M>& other) :
+EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes(const
+  EstimatorBayes<LinearRegression<M>, M>& other) :
   mPostCoeffDist(other.mPostCoeffDist),
   mPostVarianceDist(other.mPostVarianceDist),
   mPostPredDist(other.mPostPredDist),
@@ -45,9 +45,9 @@ EstimatorBayesImproper<LinearRegression<M>, M>::EstimatorBayesImproper(const
 }
 
 template <size_t M>
-EstimatorBayesImproper<LinearRegression<M>, M>&
-  EstimatorBayesImproper<LinearRegression<M>, M>::operator =
-  (const EstimatorBayesImproper<LinearRegression<M>, M>& other) {
+EstimatorBayes<LinearRegression<M>, M>&
+  EstimatorBayes<LinearRegression<M>, M>::operator =
+  (const EstimatorBayes<LinearRegression<M>, M>& other) {
   if (this != &other) {
     mPostCoeffDist = other.mPostCoeffDist;
     mPostVarianceDist = other.mPostVarianceDist;
@@ -62,7 +62,7 @@ EstimatorBayesImproper<LinearRegression<M>, M>&
 }
 
 template <size_t M>
-EstimatorBayesImproper<LinearRegression<M>, M>::~EstimatorBayesImproper() {
+EstimatorBayes<LinearRegression<M>, M>::~EstimatorBayes() {
 }
 
 /******************************************************************************/
@@ -70,13 +70,11 @@ EstimatorBayesImproper<LinearRegression<M>, M>::~EstimatorBayesImproper() {
 /******************************************************************************/
 
 template <size_t M>
-void EstimatorBayesImproper<LinearRegression<M>, M>::read(std::istream&
-  stream) {
+void EstimatorBayes<LinearRegression<M>, M>::read(std::istream& stream) {
 }
 
 template <size_t M>
-void EstimatorBayesImproper<LinearRegression<M>, M>::write(std::ostream&
-  stream) const {
+void EstimatorBayes<LinearRegression<M>, M>::write(std::ostream& stream) const {
   stream << "posterior coefficients distribution: " << std::endl
     << mPostCoeffDist
     << std::endl << "posterior variance distribution: " << std::endl
@@ -92,13 +90,12 @@ void EstimatorBayesImproper<LinearRegression<M>, M>::write(std::ostream&
 }
 
 template <size_t M>
-void EstimatorBayesImproper<LinearRegression<M>, M>::read(std::ifstream&
-  stream) {
+void EstimatorBayes<LinearRegression<M>, M>::read(std::ifstream& stream) {
 }
 
 template <size_t M>
-void EstimatorBayesImproper<LinearRegression<M>, M>::write(std::ofstream&
-  stream) const {
+void EstimatorBayes<LinearRegression<M>, M>::write(std::ofstream& stream)
+  const {
 }
 
 /******************************************************************************/
@@ -106,55 +103,53 @@ void EstimatorBayesImproper<LinearRegression<M>, M>::write(std::ofstream&
 /******************************************************************************/
 
 template <size_t M>
-const StudentDistribution<M>& EstimatorBayesImproper<LinearRegression<M>, M>::
-getPostCoeffDist() const {
+const StudentDistribution<M>& EstimatorBayes<LinearRegression<M>, M>::
+  getPostCoeffDist() const {
   return mPostCoeffDist;
 }
 
 template <size_t M>
 const ScaledInvChiSquareDistribution&
-EstimatorBayesImproper<LinearRegression<M>, M>::getPostVarianceDist()
-  const {
+EstimatorBayes<LinearRegression<M>, M>::getPostVarianceDist() const {
   return mPostVarianceDist;
 }
 
 template <size_t M>
-const LinearRegressionPred<M>& EstimatorBayesImproper<LinearRegression<M>, M>::
+const LinearRegressionPred<M>& EstimatorBayes<LinearRegression<M>, M>::
 getPostPredDist() const {
   return mPostPredDist;
 }
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>&
-EstimatorBayesImproper<LinearRegression<M>, M>::getSampleCoeff() const {
+EstimatorBayes<LinearRegression<M>, M>::getSampleCoeff() const {
   return mSampleCoeff;
 }
 
 template <size_t M>
 const Eigen::Matrix<double, M, M>&
-EstimatorBayesImproper<LinearRegression<M>, M>::getSampleCoeffCovariance()
-  const {
+EstimatorBayes<LinearRegression<M>, M>::getSampleCoeffCovariance() const {
   return mSampleCoeffCovariance;
 }
 
 template <size_t M>
-double EstimatorBayesImproper<LinearRegression<M>, M>::
-getSampleRegressionVariance() const {
+double EstimatorBayes<LinearRegression<M>, M>::getSampleRegressionVariance()
+  const {
   return mSampleRegressionVariance;
 }
 
 template <size_t M>
-size_t EstimatorBayesImproper<LinearRegression<M>, M>::getNumPoints() const {
+size_t EstimatorBayes<LinearRegression<M>, M>::getNumPoints() const {
   return mNumPoints;
 }
 
 template <size_t M>
-bool EstimatorBayesImproper<LinearRegression<M>, M>::getValid() const {
+bool EstimatorBayes<LinearRegression<M>, M>::getValid() const {
   return mValid;
 }
 
 template <size_t M>
-void EstimatorBayesImproper<LinearRegression<M>, M>::reset() {
+void EstimatorBayes<LinearRegression<M>, M>::reset() {
   mSampleCoeff = Eigen::Matrix<double, M, 1>::Zero();
   mSampleCoeffCovariance = Eigen::Matrix<double, M, M>::Identity();
   mSampleRegressionVariance = 0;
@@ -163,7 +158,7 @@ void EstimatorBayesImproper<LinearRegression<M>, M>::reset() {
 }
 
 template <size_t M>
-void EstimatorBayesImproper<LinearRegression<M>, M>::addPoints(const
+void EstimatorBayes<LinearRegression<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points) {
   Eigen::Matrix<double, Eigen::Dynamic, 1> weights =
     Eigen::Matrix<double, Eigen::Dynamic, 1>::Ones(points.size());
@@ -171,7 +166,7 @@ void EstimatorBayesImproper<LinearRegression<M>, M>::addPoints(const
 }
 
 template <size_t M>
-void EstimatorBayesImproper<LinearRegression<M>, M>::addPoints(const
+void EstimatorBayes<LinearRegression<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points, const
   Eigen::Matrix<double, Eigen::Dynamic, 1>& weights) {
   reset();
