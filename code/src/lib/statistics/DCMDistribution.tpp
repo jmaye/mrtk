@@ -87,7 +87,7 @@ void DCMDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DCMDistribution<M>::setAlpha(): alpha must be strictly positive",
       __FILE__, __LINE__);
-  if (M < 2)
+  if (alpha.size() < 2)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DCMDistribution<M>::setAlpha(): alpha must contain at least 2 "
       "values",
@@ -187,7 +187,7 @@ double DCMDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
   double returnValue = logGammaFunction(mAlpha.sum()) -
     logGammaFunction(mAlpha.sum() + mNumTrials) +
     logFactorialFunction(mNumTrials);
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < (size_t)mAlpha.size(); ++i)
     returnValue += logGammaFunction(value(i) + mAlpha(i)) -
       logGammaFunction(mAlpha(i)) - logFactorialFunction(value(i));
   return returnValue;
@@ -216,12 +216,12 @@ Eigen::Matrix<double, M, 1> DCMDistribution<M>::getMean() const {
 template <size_t M>
 Eigen::Matrix<double, M, M> DCMDistribution<M>::getCovariance() const {
   // TODO: CHECK THIS!
-  Eigen::Matrix<double, M, M> covariance = Eigen::Matrix<double, M, M>::Zero();
+  Eigen::Matrix<double, M, M> covariance(mAlpha.size(), mAlpha.size());
   double sum = mAlpha.sum();
-  for (size_t i = 0; i < M; ++i) {
+  for (size_t i = 0; i < (size_t)mAlpha.size(); ++i) {
     covariance(i, i) = mNumTrials * mAlpha(i) * (mNumTrials *
       (sum - mAlpha(i))) / (sum * sum * (sum + 1));
-    for (size_t j = i + 1; j < M; ++j) {
+    for (size_t j = i + 1; j < (size_t)mAlpha.size(); ++j) {
       covariance(i, j) = -mAlpha(i) * mAlpha(j) / (sum * sum * (sum + 1));
       covariance(j, i) = covariance(i, j);
     }

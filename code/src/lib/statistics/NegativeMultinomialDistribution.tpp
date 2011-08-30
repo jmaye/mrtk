@@ -187,7 +187,7 @@ double NegativeMultinomialDistribution<M>::logpmf(const
   double sum = lgamma(value.sum()) + value(0) *
     log(mSuccessProbabilities(0)) - lgamma(value(0));
   LogFactorialFunction lfactorial;
-  for (size_t i = 1; i < M; ++i)
+  for (size_t i = 1; i < (size_t)mSuccessProbabilities.size(); ++i)
     sum += value(i) *
       log(mSuccessProbabilities(i)) - lfactorial(value(i));
   return sum;
@@ -203,7 +203,7 @@ template <size_t M>
 Eigen::Matrix<size_t, M, 1> NegativeMultinomialDistribution<M>::getSample()
   const {
   // TODO: NOT IMPLEMENTED!
-  return Eigen::Matrix<size_t, M, 1>::Zero();
+  return Eigen::Matrix<size_t, M, 1>::Zero(mSuccessProbabilities.size());
 }
 
 template <size_t M>
@@ -215,16 +215,6 @@ Eigen::Matrix<double, M, 1> NegativeMultinomialDistribution<M>::getMean()
 template <size_t M>
 Eigen::Matrix<double, M, M> NegativeMultinomialDistribution<M>::getCovariance()
   const {
-/*  Eigen::Matrix<double, M, M> covariance;*/
-/*  for (size_t i = 0; i < M; ++i) {*/
-/*    covariance(i, i) = mNumTrials * mSuccessProbabilities(i) * (1 -*/
-/*      mSuccessProbabilities(i));*/
-/*    for (size_t j = i + 1; j < M; ++j) {*/
-/*      covariance(i, j) = -1.0 * mNumTrials * mSuccessProbabilities(i) **/
-/*        mSuccessProbabilities(j);*/
-/*      covariance(j, i) = covariance(i, j);*/
-/*    }*/
-/*  }*/
   return mNumTrials / mSuccessProbabilities(0) / mSuccessProbabilities(0) *
     mSuccessProbabilities * mSuccessProbabilities.transpose() + mNumTrials /
     mSuccessProbabilities(0) * mSuccessProbabilities.asDiagonal();

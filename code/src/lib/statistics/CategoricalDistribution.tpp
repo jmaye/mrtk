@@ -168,7 +168,7 @@ double CategoricalDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
       "CategoricalDistribution<M>::logpmf(): 1-of-K encoding required",
       __FILE__, __LINE__);
   double sum = 0.0;
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < (size_t)mSuccessProbabilities.size(); ++i)
     sum += value(i) * log(mSuccessProbabilities(i));
   return sum;
 }
@@ -192,11 +192,12 @@ Eigen::Matrix<double, M, 1> CategoricalDistribution<M>::getMean() const {
 
 template <size_t M>
 Eigen::Matrix<double, M, M> CategoricalDistribution<M>::getCovariance() const {
-  Eigen::Matrix<double, M, M> covariance;
-  for (size_t i = 0; i < M; ++i) {
+  Eigen::Matrix<double, M, M> covariance(mSuccessProbabilities.size(),
+    mSuccessProbabilities.size());
+  for (size_t i = 0; i < (size_t)mSuccessProbabilities.size(); ++i) {
     covariance(i, i) = mSuccessProbabilities(i) * (1 -
       mSuccessProbabilities(i));
-    for (size_t j = i + 1; j < M; ++j) {
+    for (size_t j = i + 1; j < (size_t)mSuccessProbabilities.size(); ++j) {
       covariance(i, j) = -mSuccessProbabilities(i) * mSuccessProbabilities(j);
       covariance(j, i) = covariance(i, j);
     }

@@ -135,5 +135,15 @@ int main(int argc, char** argv) {
   std::cout << "dist2.getSample(): " << std::endl << dist2.getSample()
     << std::endl << std::endl;
 
+  std::cout << "Testing Dirichlet distribution M-D" << std::endl;
+  DirichletDistribution<Eigen::Dynamic> distMd(Eigen::Matrix<double,
+    Eigen::Dynamic, 1>::Constant(5, 1.0));
+  std::cout << "distMd.getSample(): " << distMd.getSample().transpose()
+    << std::endl;
+  std::cout << "distMd.getMean(): " << distMd.getMean().transpose()
+    << std::endl;
+  std::cout << "distMd.getCovariance(): " << std::endl << distMd.getCovariance()
+    << std::endl;
+
   return 0;
 }

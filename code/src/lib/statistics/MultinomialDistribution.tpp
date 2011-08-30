@@ -190,7 +190,7 @@ double MultinomialDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
       __FILE__, __LINE__);
   LogFactorialFunction logFactorialFunction;
   double sum = logFactorialFunction(mNumTrials);
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < (size_t)mSuccessProbabilities.size(); ++i)
     sum += value(i) * log(mSuccessProbabilities(i)) -
       logFactorialFunction(value(i));
   return sum;
@@ -206,7 +206,7 @@ template <size_t M>
 Eigen::Matrix<size_t, M, 1> MultinomialDistribution<M>::getSample() const {
   static Randomizer<double, M> randomizer;
   Eigen::Matrix<size_t, M, 1> sampleVector =
-    Eigen::Matrix<size_t, M, 1>::Zero();
+    Eigen::Matrix<size_t, M, 1>::Zero(mSuccessProbabilities.size());
   for (size_t i = 0; i < mNumTrials; ++i) {
     sampleVector += randomizer.sampleCategorical(mSuccessProbabilities);
   }
@@ -220,11 +220,12 @@ Eigen::Matrix<double, M, 1> MultinomialDistribution<M>::getMean() const {
 
 template <size_t M>
 Eigen::Matrix<double, M, M> MultinomialDistribution<M>::getCovariance() const {
-  Eigen::Matrix<double, M, M> covariance;
-  for (size_t i = 0; i < M; ++i) {
+  Eigen::Matrix<double, M, M> covariance(mSuccessProbabilities.size(),
+    mSuccessProbabilities.size());
+  for (size_t i = 0; i < (size_t)mSuccessProbabilities.size(); ++i) {
     covariance(i, i) = mNumTrials * mSuccessProbabilities(i) * (1 -
       mSuccessProbabilities(i));
-    for (size_t j = i + 1; j < M; ++j) {
+    for (size_t j = i + 1; j < (size_t)mSuccessProbabilities.size(); ++j) {
       covariance(i, j) = -1.0 * mNumTrials * mSuccessProbabilities(i) *
         mSuccessProbabilities(j);
       covariance(j, i) = covariance(i, j);

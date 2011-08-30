@@ -93,7 +93,7 @@ void UniformDistribution<X, M>::setSupport(const Eigen::Matrix<X, M, 1>&
   mMinSupport = minSupport;
   mMaxSupport = maxSupport;
   mSupportArea = 1;
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < (size_t)mMinSupport.size(); ++i)
     mSupportArea *= mMaxSupport(i) - mMinSupport(i);
 }
 
@@ -138,7 +138,7 @@ double UniformDistribution<X, M>::Traits<U, D>::pmf(const
   UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>&
   value) {
   U supportArea = 1;
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < (size_t)distribution.mMinSupport.size(); ++i)
     supportArea *= distribution.mMaxSupport(i) -
       distribution.mMinSupport(i) + 1;
   if ((value.cwise() >= distribution.mMinSupport).all() &&
@@ -203,7 +203,7 @@ double UniformDistribution<X, M>::pmf(const Eigen::Matrix<X, M, 1>& value)
 template <typename X, size_t M>
 Eigen::Matrix<X, M, 1> UniformDistribution<X, M>::getSample() const {
   static Randomizer<X> randomizer;
-  Eigen::Matrix<X, M, 1> sample = Eigen::Matrix<X, M, 1>::Zero();
+  Eigen::Matrix<X, M, 1> sample(mMinSupport.size());
   for (size_t i = 0; i < M; ++i)
     sample(i) = randomizer.sampleUniform(mMinSupport(i), mMaxSupport(i));
   return sample;

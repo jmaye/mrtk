@@ -114,7 +114,8 @@ void NormalDistribution<M>::setCovariance(const Eigen::Matrix<double, M, M>&
       __FILE__, __LINE__);
   mDeterminant = covariance.determinant();
   mPrecision = covariance.inverse();
-  mNormalizer = 0.5 * M * log(2.0 * M_PI) + 0.5 * log(mDeterminant);
+  mNormalizer = 0.5 * mMean.size() * log(2.0 * M_PI) + 0.5 *
+    log(mDeterminant);
   mCovariance = covariance;
 }
 
@@ -159,9 +160,9 @@ double NormalDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
 
 template <size_t M>
 Eigen::Matrix<double, M, 1> NormalDistribution<M>::getSample() const {
-  Eigen::Matrix<double, M, 1> sample;
+  Eigen::Matrix<double, M, 1> sample(mMean.size());
   static Randomizer<double> randomizer;
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < (size_t)mMean.size(); ++i)
     sample(i) = randomizer.sampleNormal();
   return mMean + mTransformation.matrixL() * sample;
 }
@@ -170,7 +171,7 @@ template <size_t M>
 double NormalDistribution<M>::KLDivergence(const NormalDistribution<M>& other)
   const {
   return 0.5 * (log(other.mDeterminant / mDeterminant) +
-    (other.mPrecision * mCovariance).trace() - M +
+    (other.mPrecision * mCovariance).trace() - mMean.size() +
     ((mMean - other.mMean).transpose() * other.mPrecision *
     (mMean - other.mMean))(0, 0));
 }

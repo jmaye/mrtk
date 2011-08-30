@@ -86,7 +86,7 @@ void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DirichletDistribution<M>::setAlpha(): alpha must be strictly positive",
       __FILE__, __LINE__);
-  if (M < 2)
+  if (alpha.size() < 2)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DirichletDistribution<M>::setAlpha(): alpha must contain at least 2 "
       "values",
@@ -174,7 +174,7 @@ double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
       "positive",
       __FILE__, __LINE__);
   double returnValue = 0;
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < (size_t)mAlpha.size(); ++i)
     returnValue += (mAlpha(i) - 1) * log(value(i));
   return returnValue - mNormalizer;
 }
@@ -188,8 +188,8 @@ double DirichletDistribution<M>::logpdf(const typename
 template <size_t M>
 Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
   static Randomizer<double> randomizer;
-  Eigen::Matrix<double, M, 1> sampleGammaVector;
-  for (size_t i = 0; i < M; ++i)
+  Eigen::Matrix<double, M, 1> sampleGammaVector(mAlpha.size());
+  for (size_t i = 0; i < (size_t)mAlpha.size(); ++i)
     sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1.0);
   return sampleGammaVector / sampleGammaVector.sum();
 }
@@ -201,11 +201,11 @@ Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getMean() const {
 
 template <size_t M>
 Eigen::Matrix<double, M, M> DirichletDistribution<M>::getCovariance() const {
-  Eigen::Matrix<double, M, M> covariance = Eigen::Matrix<double, M, M>::Zero();
+  Eigen::Matrix<double, M, M> covariance(mAlpha.size(), mAlpha.size());
   double sum = mAlpha.sum();
-  for (size_t i = 0; i < M; ++i) {
+  for (size_t i = 0; i < (size_t)mAlpha.size(); ++i) {
     covariance(i, i) = mAlpha(i) * (sum - mAlpha(i)) / (sum * sum * (sum + 1));
-    for (size_t j = i + 1; j < M; ++j) {
+    for (size_t j = i + 1; j < (size_t)mAlpha.size(); ++j) {
       covariance(i, j) = -mAlpha(i) * mAlpha(j) / (sum * sum * (sum + 1));
       covariance(j, i) = covariance(i, j);
     }

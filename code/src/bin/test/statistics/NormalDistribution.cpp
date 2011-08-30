@@ -143,5 +143,16 @@ int main(int argc, char** argv) {
     std::cout << e.what() << std::endl;
   }
 
+  std::cout << "Testing normal distribution M-D" << std::endl;
+  NormalDistribution<Eigen::Dynamic> distMd(Eigen::Matrix<double,
+    Eigen::Dynamic, 1>::Zero(5), Eigen::Matrix<double, Eigen::Dynamic,
+    Eigen::Dynamic>::Identity(5, 5));
+  std::cout << "distMd.getSample(): " << distMd.getSample().transpose()
+    << std::endl;
+  std::cout << "distMd.getMean(): " << distMd.getMean().transpose()
+    << std::endl;
+  std::cout << "distMd.getCovariance(): " << std::endl << distMd.getCovariance()
+    << std::endl;
+
   return 0;
 }

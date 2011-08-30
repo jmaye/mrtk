@@ -61,7 +61,7 @@ void MixtureDistribution<D, M>::write(std::ostream& stream) const {
   stream << "assignments distribution: " << std::endl
     << mAssignDistribution << std::endl
     << "components distributions: " << std::endl;
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < mCompDistributions.size(); ++i)
     stream <<std::endl << mCompDistributions[i] << std::endl;
 }
 
@@ -84,12 +84,7 @@ const std::vector<D>& MixtureDistribution<D, M>::getCompDistributions() const {
 
 template <typename D, size_t M>
 void MixtureDistribution<D, M>::setCompDistributions(const std::vector<D>&
-  compDistributions) throw (BadArgumentException<size_t>) {
-  if (compDistributions.size() != M)
-    throw BadArgumentException<size_t>(compDistributions.size(),
-      "MixtureDistribution<D, M>::setCompDistributions(): wrong number of "
-      "components",
-      __FILE__, __LINE__);
+  compDistributions) {
   mCompDistributions = compDistributions;
 }
 
@@ -129,8 +124,9 @@ template <typename D, size_t M>
 double MixtureDistribution<D, M>::pdf(const VariableType& value) const {
   double probability = 0.0;
 
-  for (size_t i = 0; i < M; ++i) {
-    Eigen::Matrix<size_t, M, 1> component = Eigen::Matrix<size_t, M, 1>::Zero();
+  for (size_t i = 0; i < mCompDistributions.size(); ++i) {
+    Eigen::Matrix<size_t, M, 1> component =
+      Eigen::Matrix<size_t, M, 1>::Zero(mCompDistributions.size());
     component(i) = 1.0;
     probability += mAssignDistribution(component) *
       mCompDistributions[i](value);

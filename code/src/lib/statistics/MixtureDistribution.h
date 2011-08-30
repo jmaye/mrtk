@@ -67,8 +67,7 @@ public:
   /// Returns the components distributions
   const std::vector<D>& getCompDistributions() const;
   /// Sets the components distributions
-  void setCompDistributions(const std::vector<D>& distributions)
-    throw (BadArgumentException<size_t>);
+  void setCompDistributions(const std::vector<D>& distributions);
   /// Returns a particular component distribution
   const D& getCompDistribution(size_t idx) const
     throw (BadArgumentException<size_t>);

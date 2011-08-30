@@ -159,5 +159,15 @@ int main(int argc, char** argv) {
   std::cout << "dist2.getSample(): " << std::endl << dist2.getSample()
     << std::endl << std::endl;
 
+  std::cout << "Testing multinomial distribution M-D" << std::endl;
+  MultinomialDistribution<Eigen::Dynamic> distMd(20, Eigen::Matrix<double,
+    Eigen::Dynamic, 1>::Constant(5, 1.0 / 5.0));
+  std::cout << "distMd.getSample(): " << distMd.getSample().transpose()
+    << std::endl;
+  std::cout << "distMd.getMean(): " << distMd.getMean().transpose()
+    << std::endl;
+  std::cout << "distMd.getCovariance(): " << std::endl << distMd.getCovariance()
+    << std::endl;
+
   return 0;
 }

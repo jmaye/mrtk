@@ -134,26 +134,29 @@ Eigen::Matrix<size_t, M, 1> Randomizer<T, M>::sampleCategorical(const
   if (fabs(successProbabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(successProbabilities,
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
+      successProbabilities,
       "Randomizer<T, M>::sampleCategorical: success probabilities must sum "
       "to 1 and probabilities bigger or equal to 0",
       __FILE__, __LINE__);
-  Eigen::Matrix<double, M + 1, 1> cumProbabilities =
-    Eigen::Matrix<double, M + 1, 1>::Zero();
+  Eigen::Matrix<double, Eigen::Dynamic, 1> cumProbabilities =
+    Eigen::Matrix<double, Eigen::Dynamic, 1>::Zero(successProbabilities.size()
+      + 1);
   double sum = 0.0;
-  for (size_t i = 1; i < M + 1; ++i) {
+  for (size_t i = 1; i < (size_t)successProbabilities.size() + 1; ++i) {
     sum += successProbabilities(i - 1);
     cumProbabilities(i) += sum;
   }
   double u = sampleUniform();
-  Eigen::Matrix<size_t, M, 1> sample = Eigen::Matrix<size_t, M, 1>::Zero();
-  for (size_t i = 1; i < M + 1; ++i) {
+  Eigen::Matrix<size_t, M, 1> sample =
+    Eigen::Matrix<size_t, M, 1>::Zero(successProbabilities.size());
+  for (size_t i = 1; i < (size_t)cumProbabilities.size(); ++i) {
     if (u > cumProbabilities(i - 1) && u <= cumProbabilities(i)) {
       sample(i - 1)++;
       return sample;
     }
   }
-  sample(M - 1)++;
+  sample(successProbabilities.size() - 1)++;
   return sample;
 }
 

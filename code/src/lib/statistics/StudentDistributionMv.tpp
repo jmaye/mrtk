@@ -124,8 +124,9 @@ void StudentDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
   mDeterminant = scale.determinant();
   mInverseScale = scale.inverse();
   LogGammaFunction<double> logGammaFunction;
-  mNormalizer = logGammaFunction(mDegrees * 0.5) + M * 0.5 * log(mDegrees *
-    M_PI) + 0.5 * log(mDeterminant) - logGammaFunction(0.5 * (mDegrees + M));
+  mNormalizer = logGammaFunction(mDegrees * 0.5) + mLocation.size() * 0.5 *
+    log(mDegrees * M_PI) + 0.5 * log(mDeterminant) - logGammaFunction(0.5 *
+    (mDegrees + mLocation.size()));
   mScale = scale;
 }
 
@@ -144,8 +145,9 @@ void StudentDistribution<M>::setDegrees(double degrees)
       __FILE__, __LINE__);
   mDegrees = degrees;
   LogGammaFunction<double> logGammaFunction;
-  mNormalizer = logGammaFunction(mDegrees * 0.5) + M * 0.5 * log(mDegrees *
-    M_PI) + 0.5 * log(mDeterminant) - logGammaFunction(0.5 * (mDegrees + M));
+  mNormalizer = logGammaFunction(mDegrees * 0.5) + mLocation.size() * 0.5 *
+    log(mDegrees * M_PI) + 0.5 * log(mDeterminant) - logGammaFunction(0.5 *
+    (mDegrees + mLocation.size()));
 }
 
 template <size_t M>
@@ -184,7 +186,7 @@ double StudentDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
 template <size_t M>
 double StudentDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
   const {
-  return -0.5 * (M + mDegrees) * log(1.0 + 1.0 / mDegrees *
+  return -0.5 * (mLocation.size() + mDegrees) * log(1.0 + 1.0 / mDegrees *
     mahalanobisDistance(value)) - mNormalizer;
 }
 
@@ -220,5 +222,6 @@ Eigen::Matrix<double, M, M> StudentDistribution<M>::getCovariance()
   const {
   if (mDegrees > 2)
     return mDegrees / (mDegrees - 2) * mScale;
-  return Eigen::Matrix<double, M, M>::Identity();
+  return Eigen::Matrix<double, M, M>::Identity(mLocation.size(),
+    mLocation.size());
 }
