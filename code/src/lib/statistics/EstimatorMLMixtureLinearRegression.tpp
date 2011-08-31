@@ -18,6 +18,8 @@
 
 #include <Eigen/QR>
 
+#include <limits>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -191,26 +193,24 @@ size_t EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>::
       designMatrix(i, 0) = 1.0;
       designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
     }
-    double oldLogLikelihood = 0;
-    for (size_t i = 0; i < points.size(); ++i) {
-      double probability = 0.0;
-      for (size_t j = 0; j < N; ++j)
-        probability += mWeights(j) *
-          NormalDistribution<1>((mCoefficients.row(j) * designMatrix.row(i).
-            transpose())(0), mVariances(j))(targets(i));
-      oldLogLikelihood += log(probability);
-    }
-    std::cout << "ll: " << oldLogLikelihood << std::endl;
+    double oldLogLikelihood = -std::numeric_limits<double>::infinity();
     mResponsibilities.resize(points.size(), N);
     while (numIter != mMaxNumIter) {
+      double newLogLikelihood = 0.0;
       for (size_t i = 0; i < points.size(); ++i) {
+        double probability = 0.0;
         for (size_t j = 0; j < N; ++j) {
           mResponsibilities(i, j) = mWeights(j) *
             NormalDistribution<1>((mCoefficients.row(j) * designMatrix.row(i).
               transpose())(0), mVariances(j))(targets(i));
+          probability += mResponsibilities(i, j);
         }
+        newLogLikelihood += log(probability);
         mResponsibilities.row(i) /= mResponsibilities.row(i).sum();
       }
+      if (fabs(oldLogLikelihood - newLogLikelihood) < mTol)
+        break;
+      oldLogLikelihood = newLogLikelihood;
       Eigen::Matrix<double, N, 1> numPoints;
       for (size_t j = 0; j < N; ++j)
         numPoints(j) = mResponsibilities.col(j).sum();
@@ -229,19 +229,6 @@ size_t EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>::
             mCoefficients.row(j).transpose()))(0) / numPoints(j);
         }
       }
-      double newLogLikelihood = 0.0;
-      for (size_t i = 0; i < points.size(); ++i) {
-        double probability = 0.0;
-        for (size_t j = 0; j < N; ++j) {
-          probability += mWeights(j) *
-            NormalDistribution<1>((mCoefficients.row(j) * designMatrix.row(i).
-            transpose())(0), mVariances(j))(targets(i));
-        }
-        newLogLikelihood += log(probability);
-      }
-      if (fabs(oldLogLikelihood - newLogLikelihood) < mTol)
-        break;
-      oldLogLikelihood = newLogLikelihood;
       numIter++;
     }
     mValid = true;

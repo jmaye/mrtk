@@ -92,7 +92,7 @@ const Eigen::Matrix<double, M, 1>& LinearRegression<M>::getCoefficients()
 
 template <size_t M>
 void LinearRegression<M>::setBasis(const Eigen::Matrix<double, M, 1>& basis) {
-  setMean((mCoefficients.transpose() * mBasis)(0));
+  setMean((mCoefficients.transpose() * basis)(0));
   mBasis = basis;
 }
 

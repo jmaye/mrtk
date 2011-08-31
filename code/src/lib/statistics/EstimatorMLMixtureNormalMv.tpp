@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <limits>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -189,23 +191,23 @@ addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points) {
     return numIter;
   if (points.size()) {
     mNumPoints += points.size();
-    double oldLogLikelihood = 0;
     mResponsibilities.resize(points.size(), N);
-    for (size_t i = 0; i < points.size(); ++i) {
-      double probability = 0.0;
-      for (size_t j = 0; j < N; ++j)
-        probability += mWeights(j) *
-          NormalDistribution<M>(mMeans[i], mCovariances[j])(points[i]);
-      oldLogLikelihood += log(probability);
-    }
+    double oldLogLikelihood = -std::numeric_limits<double>::infinity();
     while (numIter != mMaxNumIter) {
+      double newLogLikelihood = 0;
       for (size_t i = 0; i < points.size(); ++i) {
+        double probability = 0.0;
         for (size_t j = 0; j < N; ++j) {
           mResponsibilities(i, j) = mWeights(j) *
             NormalDistribution<M>(mMeans[j], mCovariances[j])(points[i]);
+          probability += mResponsibilities(i, j);
         }
+        newLogLikelihood += log(probability);
         mResponsibilities.row(i) /= mResponsibilities.row(i).sum();
       }
+      if (fabs(oldLogLikelihood - newLogLikelihood) < mTol)
+        break;
+      oldLogLikelihood = newLogLikelihood;
       Eigen::Matrix<double, N, 1> numPoints;
       for (size_t j = 0; j < N; ++j)
         numPoints(j) = mResponsibilities.col(j).sum();
@@ -229,17 +231,6 @@ addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points) {
         for (size_t i = 0; i < M; ++i)
           for (size_t j = i + 1; j < M; ++j)
             mCovariances[k](i, j) = mCovariances[k](j, i);
-      double newLogLikelihood = 0;
-      for (size_t i = 0; i < points.size(); ++i) {
-        double probability = 0.0;
-        for (size_t j = 0; j < N; ++j)
-          probability += mWeights(j) *
-            NormalDistribution<M>(mMeans[j], mCovariances[j])(points[i]);
-        newLogLikelihood += log(probability);
-      }
-      if (fabs(oldLogLikelihood - newLogLikelihood) < mTol)
-        break;
-      oldLogLikelihood = newLogLikelihood;
       numIter++;
     }
     mValid = true;
