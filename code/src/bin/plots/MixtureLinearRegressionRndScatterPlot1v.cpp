@@ -31,20 +31,20 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
   std::vector<LinearRegression<2> > distributions;
   distributions.push_back(LinearRegression<2>(
-    Eigen::Matrix<double, 2, 1>(1, 1), 0.0, 1.0));
+    Eigen::Matrix<double, 2, 1>(1, 1), 1.0));
   distributions.push_back(LinearRegression<2>(
-    Eigen::Matrix<double, 2, 1>(2, 2), 0.0, 1.0));
+    Eigen::Matrix<double, 2, 1>(2, 2), 1.0));
   distributions.push_back(LinearRegression<2>(
-    Eigen::Matrix<double, 2, 1>(-1, -1), 0.0, 1.0));
+    Eigen::Matrix<double, 2, 1>(-1, -1), 1.0));
   distributions.push_back(LinearRegression<2>(
-    Eigen::Matrix<double, 2, 1>(-2, -2), 0.0, 1.0));
+    Eigen::Matrix<double, 2, 1>(-2, -2), 1.0));
   MixtureSampleDistribution<LinearRegression<2>, 4> dist(distributions,
     CategoricalDistribution<4>());
   std::vector<Eigen::Matrix<double, 2, 1> > data;
   for (size_t i = 0; i < 100; ++i)
     for (double x = -10; x < 10; x += 0.01) {
       for (size_t j = 0; j < distributions.size(); ++j)
-        distributions[j].setBasis(x);
+        distributions[j].setBasis(Eigen::Matrix<double, 2, 1>(1.0, x));
       dist.setCompDistributions(distributions);
       data.push_back(Eigen::Matrix<double, 2, 1>(x, dist.getSample()));
     }

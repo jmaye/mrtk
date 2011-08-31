@@ -66,21 +66,21 @@ int main(int argc, char** argv) {
   EstimatorML<PoissonDistribution> estPois;
   estPois.addPoints(samplesPois);
   std::cout << "Estimation7: " << std::endl << estPois << std::endl;
-  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 0.0, 2.0);
+  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);
   std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
   for (double x = -10; x < 10; x += 0.01) {
-    distLine.setBasis(x);
+    distLine.setBasis(Eigen::Matrix<double, 2, 1>(1.0, x));
     samplesLine.push_back(Eigen::Matrix<double, 2, 1>(x, distLine.getSample()));
   }
   EstimatorML<LinearRegression<2>, 2> estLine;
   estLine.addPoints(samplesLine);
   std::cout << "Estimation8: " << std::endl << estLine << std::endl;
   LinearRegression<3> distPlane(Eigen::Matrix<double, 3, 1>(2.0, 2.0, 2.0),
-    Eigen::Matrix<double, 2, 1>(0.0, 0.0), 2.0);
+    2.0);
   std::vector<Eigen::Matrix<double, 3, 1> > samplesPlane;
   for (double x = -10; x < 10; x += 0.1)
     for (double y = -10; y < 10; y += 0.1) {
-      distPlane.setBasis(Eigen::Matrix<double, 2, 1>(x, y));
+      distPlane.setBasis(Eigen::Matrix<double, 3, 1>(1.0, x, y));
       samplesPlane.push_back(Eigen::Matrix<double, 3, 1>(x, y,
         distPlane.getSample()));
      }
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
   for (double x = -10; x < 10; x += 0.1)
     for (double y = -10; y < 10; y += 0.1) {
       for (size_t j = 0; j < distributionsLin3.size(); ++j)
-        distributionsLin3[j].setBasis(Eigen::Matrix<double, 2, 1>(x, y));
+        distributionsLin3[j].setBasis(Eigen::Matrix<double, 3, 1>(1.0, x, y));
       distMixtLin3.setCompDistributions(distributionsLin3);
       samplesMixtLin3.push_back(Eigen::Matrix<double, 3, 1>(x, y,
         distMixtLin3.getSample()));

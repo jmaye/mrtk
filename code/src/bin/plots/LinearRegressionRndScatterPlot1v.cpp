@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
   std::vector<Eigen::Matrix<double, 2, 1> > data;
   LinearRegression<2> dist;
   for (double x = -10; x < 10; x += 0.01) {
-    dist.setBasis(x);
+    dist.setBasis(Eigen::Matrix<double, 2, 1>(1.0, x));
     data.push_back(Eigen::Matrix<double, 2, 1>(x, dist.getSample()));
   }
   ScatterPlot<2> plot("LinearRegressionRndScatterPlot1v", data);

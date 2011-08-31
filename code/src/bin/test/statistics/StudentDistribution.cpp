@@ -95,47 +95,34 @@ int main(int argc, char** argv) {
   std::cout << "Distribution new parameters: " << std::endl << dist2D
     << std::endl << std::endl;
 
-  std::cout << "pdf((1, 1)): " << std::fixed << dist2D(Eigen::Matrix<double, 2, 1>(1, 1)) << std::endl
-    << std::endl;
+  std::cout << "pdf((1, 1)): " << std::fixed <<
+    dist2D(Eigen::Matrix<double, 2, 1>(1, 1)) << std::endl << std::endl;
   if (fabs(dist2D(Eigen::Matrix<double, 2, 1>(1, 1)) - 0.07957747) > 1e-4)
     return 1;
 
-  std::cout << "pdf((3, 3)): " << std::fixed << dist2D(Eigen::Matrix<double, 2, 1>(3, 3)) << std::endl
-    << std::endl;
+  std::cout << "pdf((3, 3)): " << std::fixed
+    << dist2D(Eigen::Matrix<double, 2, 1>(3, 3)) << std::endl << std::endl;
   if (fabs(dist2D(Eigen::Matrix<double, 2, 1>(3, 3)) - 0.008841941) > 1e-4)
     return 1;
 
-  std::cout << "pdf((-1, -1)): " << std::fixed << dist2D(Eigen::Matrix<double, 2, 1>(-1, -1)) << std::endl
-    << std::endl;
+  std::cout << "pdf((-1, -1)): " << std::fixed
+    << dist2D(Eigen::Matrix<double, 2, 1>(-1, -1)) << std::endl << std::endl;
   if (fabs(dist2D(Eigen::Matrix<double, 2, 1>(-1, -1)) - 0.008841941) > 1e-4)
     return 1;
 
   std::cout << "dist.getSample(): " << std::endl << dist2D.getSample()
     << std::endl << std::endl;
 
-//  try {
-//    dist2D.setCovariance((Eigen::Matrix<double, 2, 2>() << 2, 3, 0, 2).
-//      finished());
-//  }
-//  catch (BadArgumentException<Eigen::Matrix<double, 2, 2> >& e) {
-//    std::cout << e.what() << std::endl;
-//  }
-
-//  try {
-//    dist2D.setCovariance((Eigen::Matrix<double, 2, 2>() << -2, 0, 0, -2).
-//      finished());
-//  }
-//  catch (BadArgumentException<Eigen::Matrix<double, 2, 2> >& e) {
-//    std::cout << e.what() << std::endl;
-//  }
-
-//  try {
-//    dist2D.setCovariance((Eigen::Matrix<double, 2, 2>() << 1, -1.2, -1.2, 1).
-//      finished());
-//  }
-//  catch (BadArgumentException<Eigen::Matrix<double, 2, 2> >& e) {
-//    std::cout << e.what() << std::endl;
-//  }
+  std::cout << "Testing Student distribution M-D" << std::endl;
+  StudentDistribution<Eigen::Dynamic> distMd(10, Eigen::Matrix<double,
+    Eigen::Dynamic, 1>::Zero(5), Eigen::Matrix<double, Eigen::Dynamic,
+    Eigen::Dynamic>::Identity(5, 5));
+  std::cout << "distMd.getSample(): " << distMd.getSample().transpose()
+    << std::endl;
+  std::cout << "distMd.getMean(): " << distMd.getMean().transpose()
+    << std::endl;
+  std::cout << "distMd.getCovariance(): " << std::endl << distMd.getCovariance()
+    << std::endl;
 
   return 0;
 }

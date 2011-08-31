@@ -35,10 +35,10 @@ int main(int argc, char** argv) {
   EstimatorBayesImproper<NormalDistribution<2>, 2> estNorm2;
   estNorm2.addPoints(samplesNorm2);
   std::cout << "Estimation2: " << std::endl << estNorm2 << std::endl;
-  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 0.0, 2.0);
+  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);
   std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
   for (double x = -10; x < 10; x += 0.01) {
-    distLine.setBasis(x);
+    distLine.setBasis(Eigen::Matrix<double, 2, 1>(1.0, x));
     samplesLine.push_back(Eigen::Matrix<double, 2, 1>(x, distLine.getSample()));
   }
   EstimatorBayesImproper<LinearRegression<2>, 2> estLine;

@@ -53,13 +53,13 @@ int main(int argc, char** argv) {
   if (fabs(dist(-10) - 0.07979) > 1e-4)
     return 1;
 
-  try {
-    distributions.push_back(NormalDistribution<1>(0, 1));
-    dist.setCompDistributions(distributions);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
+  std::cout << "Testing M-d mixtures" << std::endl;
+  MixtureDistribution<NormalDistribution<1>, Eigen::Dynamic> distMd(
+    distributions, CategoricalDistribution<Eigen::Dynamic>(Eigen::Matrix<double,
+    Eigen::Dynamic, 1>::Constant(5, 1.0 / 5.0)));
+  std::cout << "dist.pdf(0): " << distMd(0) << std::endl;
+  if (fabs(distMd(0) - 0.07979) > 1e-4)
+    return 1;
 
   return 0;
 }

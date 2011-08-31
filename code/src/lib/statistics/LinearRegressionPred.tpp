@@ -21,12 +21,13 @@
 /******************************************************************************/
 
 template <size_t M>
-LinearRegressionPred<M>::LinearRegressionPred(const Eigen::Matrix<double, M, 1>&
-  coefficients, const Eigen::Matrix<double, M, M>& coeffCovariance, double
-  regressionVariance, const Eigen::Matrix<double, M, 1>& basis) :
-  StudentDistribution<1>(degrees, (mCoefficients.transpose() * basisTrans)(0),
-  mRegressionVariance * (1 + (basisTrans.transpose() * mCoeffCovariance *
-  basisTrans)(0))),
+LinearRegressionPred<M>::LinearRegressionPred(double degrees, const
+  Eigen::Matrix<double, M, 1>& coefficients, const Eigen::Matrix<double, M, M>&
+  coeffCovariance, double regressionVariance, const Eigen::Matrix<double, M, 1>&
+  basis) :
+  StudentDistribution<1>(degrees, (mCoefficients.transpose() * basis)(0),
+  mRegressionVariance * (1 + (basis.transpose() * mCoeffCovariance *
+  basis)(0))),
   mCoefficients(coefficients),
   mCoeffCovariance(coeffCovariance),
   mRegressionVariance(regressionVariance),

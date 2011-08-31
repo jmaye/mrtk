@@ -183,26 +183,31 @@ size_t EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>::
   reset();
   if (points.size()) {
     mNumPoints += points.size();
-    double oldLogLikelihood = 0;
-    mResponsibilities.resize(points.size(), N);
+    Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
+    Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
+      (int)M);
     for (size_t i = 0; i < points.size(); ++i) {
-      Eigen::Matrix<double, M, 1> basisTrans;
-      basisTrans << 1, points[i].segment(0, M - 1);
+      targets(i) = points[i](M - 1);
+      designMatrix(i, 0) = 1.0;
+      designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
+    }
+    double oldLogLikelihood = 0;
+    for (size_t i = 0; i < points.size(); ++i) {
       double probability = 0.0;
       for (size_t j = 0; j < N; ++j)
         probability += mWeights(j) *
-          NormalDistribution<1>((mCoefficients.row(j) * basisTrans)(0),
-          mVariances(j))(points[i](M - 1));
+          NormalDistribution<1>((mCoefficients.row(j) * designMatrix.row(i).
+            transpose())(0), mVariances(j))(targets(i));
       oldLogLikelihood += log(probability);
     }
+    std::cout << "ll: " << oldLogLikelihood << std::endl;
+    mResponsibilities.resize(points.size(), N);
     while (numIter != mMaxNumIter) {
       for (size_t i = 0; i < points.size(); ++i) {
-        Eigen::Matrix<double, M, 1> basisTrans;
-        basisTrans << 1, points[i].segment(0, M - 1);
         for (size_t j = 0; j < N; ++j) {
           mResponsibilities(i, j) = mWeights(j) *
-            NormalDistribution<1>((mCoefficients.row(j) * basisTrans)(0),
-            mVariances(j))(points[i](M - 1));
+            NormalDistribution<1>((mCoefficients.row(j) * designMatrix.row(i).
+              transpose())(0), mVariances(j))(targets(i));
         }
         mResponsibilities.row(i) /= mResponsibilities.row(i).sum();
       }
@@ -210,14 +215,6 @@ size_t EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>::
       for (size_t j = 0; j < N; ++j)
         numPoints(j) = mResponsibilities.col(j).sum();
       mWeights = numPoints / points.size();
-      Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
-      Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
-        (int)M);
-      for (size_t i = 0; i < points.size(); ++i) {
-        targets(i) = points[i](M - 1);
-        designMatrix(i, 0) = 1.0;
-        designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
-      }
       for (size_t j = 0; j < N; ++j) {
         Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =
           (mResponsibilities.col(j).asDiagonal() * designMatrix).qr();
@@ -234,13 +231,11 @@ size_t EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>::
       }
       double newLogLikelihood = 0.0;
       for (size_t i = 0; i < points.size(); ++i) {
-        Eigen::Matrix<double, M, 1> basisTrans;
-        basisTrans << 1, points[i].segment(0, M - 1);
         double probability = 0.0;
         for (size_t j = 0; j < N; ++j) {
           probability += mWeights(j) *
-            NormalDistribution<1>((mCoefficients.row(j) * basisTrans)(0),
-            mVariances(j))(points[i](M - 1));
+            NormalDistribution<1>((mCoefficients.row(j) * designMatrix.row(i).
+            transpose())(0), mVariances(j))(targets(i));
         }
         newLogLikelihood += log(probability);
       }
