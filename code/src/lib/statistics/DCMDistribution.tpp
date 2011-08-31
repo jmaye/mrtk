@@ -87,11 +87,6 @@ void DCMDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DCMDistribution<M>::setAlpha(): alpha must be strictly positive",
       __FILE__, __LINE__);
-  if (alpha.size() < 2)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
-      "DCMDistribution<M>::setAlpha(): alpha must contain at least 2 "
-      "values",
-      __FILE__, __LINE__);
   mAlpha = alpha;
 }
 

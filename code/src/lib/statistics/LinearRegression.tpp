@@ -20,23 +20,23 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-LinearRegression<2>::LinearRegression(const Eigen::Matrix<double, 2, 1>&
-  coefficients, double basis, double variance) :
+template <size_t M>
+LinearRegression<M>::LinearRegression(const Eigen::Matrix<double, M, 1>&
+  coefficients, double variance, const Eigen::Matrix<double, M, 1>& basis) :
+  NormalDistribution<1>((mCoefficients.transpose() * mBasis)(0), variance),
   mCoefficients(coefficients),
   mBasis(basis) {
-  Eigen::Matrix<double, 2, 1> basisTrans;
-  basisTrans << 1, basis;
-  setMean((mCoefficients.transpose() * basisTrans)(0));
-  setVariance(variance);
 }
 
-LinearRegression<2>::LinearRegression(const LinearRegression<2>& other) :
+template <size_t M>
+LinearRegression<M>::LinearRegression(const LinearRegression<M>& other) :
   NormalDistribution<1>(other),
   mCoefficients(other.mCoefficients),
   mBasis(other.mBasis) {
 }
 
-LinearRegression<2>& LinearRegression<2>::operator = (const LinearRegression<2>&
+template <size_t M>
+LinearRegression<M>& LinearRegression<M>::operator = (const LinearRegression<M>&
   other) {
   if (this != &other) {
     this->NormalDistribution<1>::operator=(other);
@@ -46,52 +46,57 @@ LinearRegression<2>& LinearRegression<2>::operator = (const LinearRegression<2>&
   return *this;
 }
 
-LinearRegression<2>::~LinearRegression() {
+template <size_t M>
+LinearRegression<M>::~LinearRegression() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void LinearRegression<2>::read(std::istream& stream) {
+template <size_t M>
+void LinearRegression<M>::read(std::istream& stream) {
 }
 
-void LinearRegression<2>::write(std::ostream& stream) const {
+template <size_t M>
+void LinearRegression<M>::write(std::ostream& stream) const {
   stream << "coefficients: " << std::endl << mCoefficients << std::endl
-    << "basis: " << mBasis << std::endl
+    << "basis: " << std::endl << mBasis << std::endl
     << "variance: " << mVariance;
 }
 
-void LinearRegression<2>::read(std::ifstream& stream) {
+template <size_t M>
+void LinearRegression<M>::read(std::ifstream& stream) {
 }
 
-void LinearRegression<2>::write(std::ofstream& stream) const {
+template <size_t M>
+void LinearRegression<M>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void LinearRegression<2>::setCoefficients(const Eigen::Matrix<double, 2, 1>&
+template <size_t M>
+void LinearRegression<M>::setCoefficients(const Eigen::Matrix<double, M, 1>&
   coefficients) {
-  Eigen::Matrix<double, 2, 1> basisTrans;
-  basisTrans << 1, mBasis;
-  setMean((coefficients.transpose() * basisTrans)(0));
+  setMean((coefficients.transpose() * mBasis)(0));
   mCoefficients = coefficients;
 }
 
-const Eigen::Matrix<double, 2, 1>& LinearRegression<2>::getCoefficients()
+template <size_t M>
+const Eigen::Matrix<double, M, 1>& LinearRegression<M>::getCoefficients()
   const {
   return mCoefficients;
 }
 
-void LinearRegression<2>::setBasis(double basis) {
-  Eigen::Matrix<double, 2, 1> basisTrans;
-  basisTrans << 1, basis;
-  setMean((mCoefficients.transpose() * basisTrans)(0));
+template <size_t M>
+void LinearRegression<M>::setBasis(const Eigen::Matrix<double, M, 1>& basis) {
+  setMean((mCoefficients.transpose() * mBasis)(0));
   mBasis = basis;
 }
 
-double LinearRegression<2>::getBasis() const {
+template <size_t M>
+const Eigen::Matrix<double, M, 1>& LinearRegression<M>::getBasis() const {
   return mBasis;
 }

@@ -23,8 +23,8 @@
 template <typename D, size_t M>
 MixtureDistribution<D, M>::MixtureDistribution(const std::vector<D>&
   compDistributions, const CategoricalDistribution<M> assignDistribution) :
+  mCompDistributions(compDistributions),
   mAssignDistribution(assignDistribution) {
-  setCompDistributions(compDistributions);
 }
 
 template <typename D, size_t M>
@@ -123,7 +123,6 @@ void MixtureDistribution<D, M>::setAssignDistribution(const
 template <typename D, size_t M>
 double MixtureDistribution<D, M>::pdf(const VariableType& value) const {
   double probability = 0.0;
-
   for (size_t i = 0; i < mCompDistributions.size(); ++i) {
     Eigen::Matrix<size_t, M, 1> component =
       Eigen::Matrix<size_t, M, 1>::Zero(mCompDistributions.size());
@@ -131,7 +130,6 @@ double MixtureDistribution<D, M>::pdf(const VariableType& value) const {
     probability += mAssignDistribution(component) *
       mCompDistributions[i](value);
   }
-
   return probability;
 }
 

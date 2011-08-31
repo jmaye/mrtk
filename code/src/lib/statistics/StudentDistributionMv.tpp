@@ -192,7 +192,7 @@ double StudentDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
 
 template <size_t M>
 Eigen::Matrix<double, M, 1> StudentDistribution<M>::getSample() const {
-  static NormalDistribution<M> normalDist;
+  static NormalDistribution<M> normalDist(mLocation, mScale);
   static ChiSquareDistribution chi2Dist;
   normalDist.setMean(mLocation);
   normalDist.setCovariance(mScale);

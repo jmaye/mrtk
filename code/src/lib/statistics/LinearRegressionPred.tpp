@@ -21,36 +21,43 @@
 /******************************************************************************/
 
 template <size_t M>
-LinearRegression<M>::LinearRegression(const Eigen::Matrix<double, M, 1>&
-  coefficients, const Eigen::Matrix<double, M - 1, 1>& basis, double variance) :
+LinearRegressionPred<M>::LinearRegressionPred(const Eigen::Matrix<double, M, 1>&
+  coefficients, const Eigen::Matrix<double, M, M>& coeffCovariance, double
+  regressionVariance, const Eigen::Matrix<double, M, 1>& basis) :
+  StudentDistribution<1>(degrees, (mCoefficients.transpose() * basisTrans)(0),
+  mRegressionVariance * (1 + (basisTrans.transpose() * mCoeffCovariance *
+  basisTrans)(0))),
   mCoefficients(coefficients),
+  mCoeffCovariance(coeffCovariance),
+  mRegressionVariance(regressionVariance),
   mBasis(basis) {
-  Eigen::Matrix<double, M, 1> basisTrans;
-  basisTrans << 1, basis;
-  setMean((mCoefficients.transpose() * basisTrans)(0));
-  setVariance(variance);
 }
 
 template <size_t M>
-LinearRegression<M>::LinearRegression(const LinearRegression<M>& other) :
-  NormalDistribution<1>(other),
+LinearRegressionPred<M>::LinearRegressionPred(const LinearRegressionPred<M>&
+  other) :
+  StudentDistribution<1>(other),
   mCoefficients(other.mCoefficients),
+  mCoeffCovariance(other.mCoeffCovariance),
+  mRegressionVariance(other.mRegressionVariance),
   mBasis(other.mBasis) {
 }
 
 template <size_t M>
-LinearRegression<M>& LinearRegression<M>::operator = (const LinearRegression<M>&
-  other) {
+LinearRegressionPred<M>& LinearRegressionPred<M>::operator = (const
+  LinearRegressionPred<M>& other) {
   if (this != &other) {
-    this->NormalDistribution<1>::operator=(other);
+    this->StudentDistribution<1>::operator=(other);
     mCoefficients = other.mCoefficients;
+    mCoeffCovariance = other.mCoeffCovariance;
+    mRegressionVariance = other.mRegressionVariance;
     mBasis = other.mBasis;
   }
   return *this;
 }
 
 template <size_t M>
-LinearRegression<M>::~LinearRegression() {
+LinearRegressionPred<M>::~LinearRegressionPred() {
 }
 
 /******************************************************************************/
@@ -58,22 +65,23 @@ LinearRegression<M>::~LinearRegression() {
 /******************************************************************************/
 
 template <size_t M>
-void LinearRegression<M>::read(std::istream& stream) {
+void LinearRegressionPred<M>::read(std::istream& stream) {
 }
 
 template <size_t M>
-void LinearRegression<M>::write(std::ostream& stream) const {
+void LinearRegressionPred<M>::write(std::ostream& stream) const {
   stream << "coefficients: " << std::endl << mCoefficients << std::endl
+    << "coefficients covariance: " << std::endl << mCoeffCovariance << std::endl
     << "basis: " << std::endl << mBasis << std::endl
-    << "variance: " << mVariance;
+    << "regression variance: " << mRegressionVariance;
 }
 
 template <size_t M>
-void LinearRegression<M>::read(std::ifstream& stream) {
+void LinearRegressionPred<M>::read(std::ifstream& stream) {
 }
 
 template <size_t M>
-void LinearRegression<M>::write(std::ofstream& stream) const {
+void LinearRegressionPred<M>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -81,30 +89,54 @@ void LinearRegression<M>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 template <size_t M>
-void LinearRegression<M>::setCoefficients(const Eigen::Matrix<double, M, 1>&
+void LinearRegressionPred<M>::setCoefficients(const Eigen::Matrix<double, M, 1>&
   coefficients) {
-  Eigen::Matrix<double, M, 1> basisTrans;
-  basisTrans << 1, mBasis;
-  setMean((coefficients.transpose() * basisTrans)(0));
+  setLocation((coefficients.transpose() * mBasis)(0));
   mCoefficients = coefficients;
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& LinearRegression<M>::getCoefficients()
+const Eigen::Matrix<double, M, 1>& LinearRegressionPred<M>::getCoefficients()
   const {
   return mCoefficients;
 }
 
 template <size_t M>
-void LinearRegression<M>::setBasis(const Eigen::Matrix<double, M - 1, 1>&
+void LinearRegressionPred<M>::setCoeffCovariance(const
+  Eigen::Matrix<double, M, M>& coeffCovariance) {
+  mCoeffCovariance = coeffCovariance;
+  setScale(mRegressionVariance * (1 + (mBasis.transpose() *
+    mCoeffCovariance * mBasis)(0)));
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M, M>& LinearRegressionPred<M>::getCoeffCovariance()
+  const {
+  return mCoeffCovariance;
+}
+
+template <size_t M>
+void LinearRegressionPred<M>::setRegressionVariance(double variance) {
+  mRegressionVariance = variance;
+  setScale(mRegressionVariance * (1 + (mBasis.transpose() * mCoeffCovariance *
+    mBasis)(0)));
+}
+
+template <size_t M>
+double LinearRegressionPred<M>::getRegressionVariance() const {
+  return mRegressionVariance;
+}
+
+template <size_t M>
+void LinearRegressionPred<M>::setBasis(const Eigen::Matrix<double, M, 1>&
   basis) {
-  Eigen::Matrix<double, M, 1> basisTrans;
-  basisTrans << 1, basis;
-  setMean((mCoefficients.transpose() * basisTrans)(0));
+  setLocation((mCoefficients.transpose() * mBasis)(0));
+  setScale(mRegressionVariance * (1 + (mBasis.transpose() *
+    mCoeffCovariance * mBasis)(0)));
   mBasis = basis;
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M - 1, 1>& LinearRegression<M>::getBasis() const {
+const Eigen::Matrix<double, M, 1>& LinearRegressionPred<M>::getBasis() const {
   return mBasis;
 }

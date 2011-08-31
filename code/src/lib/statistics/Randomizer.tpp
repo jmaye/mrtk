@@ -80,16 +80,12 @@ void Randomizer<T, M>::setSeed(const T& seed) {
 template <typename T, size_t M>
 T Randomizer<T, M>::getSeed() {
   static bool seeded = false;
-
   if (!seeded) {
     double time = Timestamp::now();
     T seed = (time - floor(time)) * 1e6;
-
     srandom(seed);
-
     seeded = true;
   }
-
   return random();
 }
 
