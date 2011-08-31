@@ -56,16 +56,10 @@ public:
   const GammaDistribution<double>& getPostMeanDist() const;
   /// Returns the posterior predictive distribution
   const NegativeBinomialDistribution& getPostPredDist() const;
-  /// Returns the number of points
-  size_t getNumPoints() const;
-  /// Returns the validity state of the estimator
-  bool getValid() const;
   /// Add a point to the estimator
   void addPoint(size_t point);
   /// Add points to the estimator
   void addPoints(const std::vector<size_t>& points);
-  /// Reset the estimator
-  void reset();
   /** @}
     */
 
@@ -95,10 +89,6 @@ protected:
   double mAlpha;
   /// Hyperparameter beta (beta prior observations)
   double mBeta;
-  /// Number of points in the estimator
-  size_t mNumPoints;
-  /// Valid flag
-  bool mValid;
   /** @}
     */
 

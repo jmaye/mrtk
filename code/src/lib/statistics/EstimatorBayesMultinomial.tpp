@@ -26,10 +26,9 @@ template <size_t M>
 EstimatorBayes<MultinomialDistribution<M>, M>::EstimatorBayes(size_t numTrials,
   const Eigen::Matrix<double, M, 1>& alpha) :
   mNumTrials(numTrials),
+  mPostSuccessDist(alpha),
   mPostPredDist(numTrials, alpha),
-  mAlpha(alpha),
-  mNumPoints(0),
-  mValid(false) {
+  mAlpha(alpha) {
 }
 
 template <size_t M>
@@ -38,9 +37,7 @@ EstimatorBayes<MultinomialDistribution<M>, M>::EstimatorBayes(const
   mNumTrials(other.mNumTrials),
   mPostSuccessDist(other.mPostSuccessDist),
   mPostPredDist(other.mPostPredDist),
-  mAlpha(other.mAlpha),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+  mAlpha(other.mAlpha) {
 }
 
 template <size_t M>
@@ -52,8 +49,6 @@ EstimatorBayes<MultinomialDistribution<M>, M>&
     mPostSuccessDist = other.mPostSuccessDist;
     mPostPredDist = other.mPostPredDist;
     mAlpha = other.mAlpha;
-    mNumPoints = other.mNumPoints;
-    mValid = other.mValid;
   }
   return *this;
 }
@@ -76,9 +71,7 @@ const {
   stream << "trials number: " << mNumTrials << std::endl
     << "posterior success probablities distribution: " << std::endl
     << mPostSuccessDist << std::endl
-    << "posterior predictive distribution: " << std::endl << mPostPredDist
-    << std::endl << "number of points: " << mNumPoints << std::endl
-    << "valid: " << mValid;
+    << "posterior predictive distribution: " << std::endl << mPostPredDist;
 }
 
 template <size_t M>
@@ -113,30 +106,12 @@ getPostPredDist() const {
 }
 
 template <size_t M>
-size_t EstimatorBayes<MultinomialDistribution<M>, M>::getNumPoints() const {
-  return mNumPoints;
-}
-
-template <size_t M>
-bool EstimatorBayes<MultinomialDistribution<M>, M>::getValid() const {
-  return mValid;
-}
-
-template <size_t M>
-void EstimatorBayes<MultinomialDistribution<M>, M>::reset() {
-  mNumPoints = 0;
-  mValid = false;
-}
-
-template <size_t M>
 void EstimatorBayes<MultinomialDistribution<M>, M>::addPoint(const
   Eigen::Matrix<size_t, M, 1>& point) {
-  mNumPoints++;
   for (size_t i = 0; i < M; ++i)
     mAlpha(i) += point(i);
   mPostSuccessDist.setAlpha(mAlpha);
   mPostPredDist.setAlpha(mAlpha);
-  mValid = true;
 }
 
 template <size_t M>

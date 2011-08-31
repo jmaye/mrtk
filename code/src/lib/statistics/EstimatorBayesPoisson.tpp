@@ -21,10 +21,10 @@
 /******************************************************************************/
 
 EstimatorBayes<PoissonDistribution>::EstimatorBayes(double alpha, double beta) :
+  mPostMeanDist(alpha, beta),
+  mPostPredDist(alpha, 1.0 / (beta + 1)),
   mAlpha(alpha),
-  mBeta(beta),
-  mNumPoints(0),
-  mValid(false) {
+  mBeta(beta) {
 }
 
 EstimatorBayes<PoissonDistribution>::EstimatorBayes(const
@@ -32,9 +32,7 @@ EstimatorBayes<PoissonDistribution>::EstimatorBayes(const
   mPostMeanDist(other.mPostMeanDist),
   mPostPredDist(other.mPostPredDist),
   mAlpha(other.mAlpha),
-  mBeta(other.mBeta),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+  mBeta(other.mBeta) {
 }
 
 EstimatorBayes<PoissonDistribution>&
@@ -45,8 +43,6 @@ EstimatorBayes<PoissonDistribution>&
     mPostPredDist = other.mPostPredDist;
     mAlpha = other.mAlpha;
     mBeta = other.mBeta;
-    mNumPoints = other.mNumPoints;
-    mValid = other.mValid;
   }
   return *this;
 }
@@ -64,9 +60,7 @@ void EstimatorBayes<PoissonDistribution>::read(std::istream& stream) {
 void EstimatorBayes<PoissonDistribution>::write(std::ostream& stream) const {
   stream << "posterior mean distribution: " << std::endl << mPostMeanDist
     << std::endl << "posterior predictive distribution: " << std::endl
-    << mPostPredDist << std::endl
-    << "number of points: " << mNumPoints << std::endl
-    << "valid: " << mValid;
+    << mPostPredDist;
 }
 
 void EstimatorBayes<PoissonDistribution>::read(std::ifstream& stream) {
@@ -89,28 +83,13 @@ getPostPredDist() const {
   return mPostPredDist;
 }
 
-size_t EstimatorBayes<PoissonDistribution>::getNumPoints() const {
-  return mNumPoints;
-}
-
-bool EstimatorBayes<PoissonDistribution>::getValid() const {
-  return mValid;
-}
-
-void EstimatorBayes<PoissonDistribution>::reset() {
-  mNumPoints = 0;
-  mValid = false;
-}
-
 void EstimatorBayes<PoissonDistribution>::addPoint(size_t point) {
-  mNumPoints++;
   mAlpha += point;
   mBeta += 1;
   mPostMeanDist.setShape(mAlpha);
   mPostMeanDist.setInvScale(mBeta);
   mPostPredDist.setSuccessProbability(1.0 / (mBeta + 1));
   mPostPredDist.setNumTrials(mAlpha);
-  mValid = true;
 }
 
 void EstimatorBayes<PoissonDistribution>::addPoints(const

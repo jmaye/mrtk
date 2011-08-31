@@ -59,16 +59,10 @@ public:
   const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
   /// Returns the posterior predictive distribution
   const StudentDistribution<1>& getPostPredDist() const;
-  /// Returns the number of points
-  size_t getNumPoints() const;
-  /// Returns the validity state of the estimator
-  bool getValid() const;
   /// Add a point to the estimator
   void addPoint(double point);
   /// Add points to the estimator
   void addPoints(const std::vector<double>& points);
-  /// Reset the estimator
-  void reset();
   /** @}
     */
 
@@ -104,10 +98,6 @@ protected:
   double mNu;
   /// Hyperparameter sigma (scale of the variance)
   double mSigma;
-  /// Number of points in the estimator
-  size_t mNumPoints;
-  /// Valid flag
-  bool mValid;
   /** @}
     */
 

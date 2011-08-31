@@ -23,6 +23,7 @@
 
 #include "statistics/LinearRegression.h"
 #include "statistics/LinearRegressionPred.h"
+#include "statistics/StudentDistribution.h"
 #include "statistics/ScaledInvChiSquareDistribution.h"
 
 #include <vector>
@@ -61,23 +62,11 @@ public:
   const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
   /// Returns the posterior predictive distribution
   const LinearRegressionPred<M>& getPostPredDist() const;
-  /// Returns the sample coefficients
-  const Eigen::Matrix<double, M, 1>& getSampleCoeff() const;
-  /// Returns the sample coefficients covariance
-  const Eigen::Matrix<double, M, M>& getSampleCoeffCovariance() const;
-  /// Returns the sample regression variance
-  double getSampleRegressionVariance() const;
-  /// Returns the number of points
-  size_t getNumPoints() const;
-  /// Returns the validity state of the estimator
-  bool getValid() const;
   /// Add points to the estimator
   void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
   /// Add points to the estimator with weights
   void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points,
     const Eigen::Matrix<double, Eigen::Dynamic, 1>& weights);
-  /// Reset the estimator
-  void reset();
   /** @}
     */
 
@@ -113,16 +102,6 @@ protected:
   double mNu;
   /// Hyperparameter sigma: prior regression variance
   double mSigma;
-  /// Sample coefficients
-  Eigen::Matrix<double, M, 1> mSampleCoeff;
-  /// Sample coefficients covariance
-  Eigen::Matrix<double, M, M> mSampleCoeffCovariance;
-  /// Sample regression variance
-  double mSampleRegressionVariance;
-  /// Number of points in the estimator
-  size_t mNumPoints;
-  /// Valid flag
-  bool mValid;
   /** @}
     */
 

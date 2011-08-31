@@ -22,10 +22,10 @@
 
 EstimatorBayes<ExponentialDistribution>::EstimatorBayes(double alpha, double
   beta) :
+  mPostRateDist(alpha, beta),
+  mPostPredDist(alpha, 1.0 / (beta + 1)),
   mAlpha(alpha),
-  mBeta(beta),
-  mNumPoints(0),
-  mValid(false) {
+  mBeta(beta) {
 }
 
 EstimatorBayes<ExponentialDistribution>::EstimatorBayes(const
@@ -33,9 +33,7 @@ EstimatorBayes<ExponentialDistribution>::EstimatorBayes(const
   mPostRateDist(other.mPostRateDist),
   mPostPredDist(other.mPostPredDist),
   mAlpha(other.mAlpha),
-  mBeta(other.mBeta),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+  mBeta(other.mBeta) {
 }
 
 EstimatorBayes<ExponentialDistribution>&
@@ -46,8 +44,6 @@ EstimatorBayes<ExponentialDistribution>&
     mPostPredDist = other.mPostPredDist;
     mAlpha = other.mAlpha;
     mBeta = other.mBeta;
-    mNumPoints = other.mNumPoints;
-    mValid = other.mValid;
   }
   return *this;
 }
@@ -66,9 +62,7 @@ void EstimatorBayes<ExponentialDistribution>::write(std::ostream& stream)
   const {
   stream << "posterior rate distribution: " << std::endl << mPostRateDist
     << std::endl << "posterior predictive distribution: " << std::endl
-    << mPostPredDist << std::endl
-    << "number of points: " << mNumPoints << std::endl
-    << "valid: " << mValid;
+    << mPostPredDist;
 }
 
 void EstimatorBayes<ExponentialDistribution>::read(std::ifstream& stream) {
@@ -92,21 +86,7 @@ getPostPredDist() const {
   return mPostPredDist;
 }
 
-size_t EstimatorBayes<ExponentialDistribution>::getNumPoints() const {
-  return mNumPoints;
-}
-
-bool EstimatorBayes<ExponentialDistribution>::getValid() const {
-  return mValid;
-}
-
-void EstimatorBayes<ExponentialDistribution>::reset() {
-  mNumPoints = 0;
-  mValid = false;
-}
-
 void EstimatorBayes<ExponentialDistribution>::addPoint(double point) {
-  mNumPoints++;
   mAlpha += 1;
   mBeta += point;
   mPostRateDist.setShape(mAlpha);
@@ -114,12 +94,10 @@ void EstimatorBayes<ExponentialDistribution>::addPoint(double point) {
   // TODO: POST PRED DIST CHECK
   mPostPredDist.setSuccessProbability(1.0 / (mBeta + 1));
   mPostPredDist.setNumTrials(mAlpha);
-  mValid = true;
 }
 
 void EstimatorBayes<ExponentialDistribution>::addPoints(const
   std::vector<double>& points) {
   for (size_t i = 0; i < points.size(); ++i)
     addPoint(points[i]);
-  std::cout << mPostRateDist.getMean() << std::endl;
 }

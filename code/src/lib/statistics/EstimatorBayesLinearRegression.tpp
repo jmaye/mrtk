@@ -29,12 +29,7 @@ EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes(const
   mMu(mu),
   mV(V),
   mNu(nu),
-  mSigma(sigma),
-  mSampleCoeff(Eigen::Matrix<double, M, 1>::Zero()),
-  mSampleCoeffCovariance(Eigen::Matrix<double, M, M>::Identity()),
-  mSampleRegressionVariance(0),
-  mNumPoints(0),
-  mValid(false) {
+  mSigma(sigma) {
 }
 
 template <size_t M>
@@ -42,12 +37,7 @@ EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes(const
   EstimatorBayes<LinearRegression<M>, M>& other) :
   mPostCoeffDist(other.mPostCoeffDist),
   mPostVarianceDist(other.mPostVarianceDist),
-  mPostPredDist(other.mPostPredDist),
-  mSampleCoeff(other.mSampleCoeff),
-  mSampleCoeffCovariance(other.mSampleCoeffCovariance),
-  mSampleRegressionVariance(other.mSampleRegressionVariance),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+  mPostPredDist(other.mPostPredDist) {
 }
 
 template <size_t M>
@@ -58,11 +48,6 @@ EstimatorBayes<LinearRegression<M>, M>&
     mPostCoeffDist = other.mPostCoeffDist;
     mPostVarianceDist = other.mPostVarianceDist;
     mPostPredDist = other.mPostPredDist;
-    mSampleCoeff = other.mSampleCoeff;
-    mSampleCoeffCovariance = other.mSampleCoeffCovariance;
-    mSampleRegressionVariance = other.mSampleRegressionVariance;
-    mNumPoints = other.mNumPoints;
-    mValid = other.mValid;
   }
   return *this;
 }
@@ -85,14 +70,7 @@ void EstimatorBayes<LinearRegression<M>, M>::write(std::ostream& stream) const {
     << mPostCoeffDist
     << std::endl << "posterior variance distribution: " << std::endl
     << mPostVarianceDist << std::endl
-    << "posterior predictive distribution: " << std::endl << mPostPredDist
-    << std::endl
-    << "sample coefficients: " << mSampleCoeff.transpose() << std::endl
-    << "sample coefficients covariance: " << std::endl
-    << mSampleCoeffCovariance << std::endl
-    << "sample regression variance: " << mSampleRegressionVariance << std::endl
-    << "number of points: " << mNumPoints << std::endl
-    << "valid: " << mValid;
+    << "posterior predictive distribution: " << std::endl << mPostPredDist;
 }
 
 template <size_t M>
@@ -124,43 +102,6 @@ template <size_t M>
 const LinearRegressionPred<M>& EstimatorBayes<LinearRegression<M>, M>::
 getPostPredDist() const {
   return mPostPredDist;
-}
-
-template <size_t M>
-const Eigen::Matrix<double, M, 1>&
-EstimatorBayes<LinearRegression<M>, M>::getSampleCoeff() const {
-  return mSampleCoeff;
-}
-
-template <size_t M>
-const Eigen::Matrix<double, M, M>&
-EstimatorBayes<LinearRegression<M>, M>::getSampleCoeffCovariance() const {
-  return mSampleCoeffCovariance;
-}
-
-template <size_t M>
-double EstimatorBayes<LinearRegression<M>, M>::getSampleRegressionVariance()
-  const {
-  return mSampleRegressionVariance;
-}
-
-template <size_t M>
-size_t EstimatorBayes<LinearRegression<M>, M>::getNumPoints() const {
-  return mNumPoints;
-}
-
-template <size_t M>
-bool EstimatorBayes<LinearRegression<M>, M>::getValid() const {
-  return mValid;
-}
-
-template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::reset() {
-  mSampleCoeff = Eigen::Matrix<double, M, 1>::Zero();
-  mSampleCoeffCovariance = Eigen::Matrix<double, M, M>::Identity();
-  mSampleRegressionVariance = 0;
-  mNumPoints = 0;
-  mValid = false;
 }
 
 template <size_t M>
@@ -198,10 +139,16 @@ void EstimatorBayes<LinearRegression<M>, M>::addPoints(const
     Eigen::Matrix<double, M, M> invR = qrDecomp.matrixR().inverse();
     mSampleCoeffCovariance = invR * invR.transpose();
 
+/*    Eigen::Matrix<double, M, 1> mNewMu = (mV.inverse() + designMatrix **/
+/*      designMatrix.transpose()).inverse() * (mV.inverse() * mMu +*/
+/*      designMatrix.transpose() * targets);*/
     Eigen::Matrix<double, M, 1> mNewMu = mMu;
-    Eigen::Matrix<double, M, M> mNewV = mV;
-    double mNewNu;
-    double mNewSigma;
+    Eigen::Matrix<double, M, M> mNewV = (mV.inverse() + designMatrix *
+      designMatrix.transpose()).inverse();
+    double mNewNu = mNu + mNumPoints;
+    double mNewSigma = mSigma + ((targets.transpose() * targets)(0) +
+      (mMu.transpose() * mV.inverse() * mMu)(0) - (mNewMu.transpose() *
+      mNewV.inverse() * mNewMu)(0));
     mMu = mNewMu;
     mV = mNewV;
     mNu = mNewNu;

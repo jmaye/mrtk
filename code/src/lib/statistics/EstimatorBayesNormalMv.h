@@ -39,8 +39,8 @@ public:
     */
   /// Constructs estimator with hyperparameters prior
   EstimatorBayes(const Eigen::Matrix<double, M, 1>& mu =
-    Eigen::Matrix<double, M, 1>::Zero(), double kappa = 1.0, double nu = 1.0,
-    const Eigen::Matrix<double, M, M>& sigma =
+    Eigen::Matrix<double, M, 1>::Zero(), double kappa = 1.0, double nu =
+    M + 1.0, const Eigen::Matrix<double, M, M>& sigma =
     Eigen::Matrix<double, M, M>::Identity());
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes<NormalDistribution<M>, M>& other);
@@ -61,16 +61,10 @@ public:
   const InvWishartDistribution<M>& getPostCovarianceDist() const;
   /// Returns the posterior predictive distribution
   const StudentDistribution<M>& getPostPredDist() const;
-  /// Returns the number of points
-  size_t getNumPoints() const;
-  /// Returns the validity state of the estimator
-  bool getValid() const;
   /// Add a point to the estimator
   void addPoint(const Eigen::Matrix<double, M, 1>& point);
   /// Add points to the estimator
   void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
-  /// Reset the estimator
-  void reset();
   /** @}
     */
 
@@ -106,10 +100,6 @@ protected:
   double mNu;
   /// Hyperparameter sigma (scale of the variance)
   Eigen::Matrix<double, M, M> mSigma;
-  /// Number of points in the estimator
-  size_t mNumPoints;
-  /// Valid flag
-  bool mValid;
   /** @}
     */
 

@@ -59,16 +59,12 @@ public:
   const DirichletDistribution<M>& getPostSuccessDist() const;
   /// Returns the posterior predictive distribution
   const DCMDistribution<M>& getPostPredDist() const;
-  /// Returns the number of points
-  size_t getNumPoints() const;
   /// Returns the validity state of the estimator
   bool getValid() const;
   /// Add a point to the estimator
   void addPoint(const Eigen::Matrix<size_t, M, 1>& point);
   /// Add points to the estimator
   void addPoints(const std::vector<Eigen::Matrix<size_t, M, 1> >& points);
-  /// Reset the estimator
-  void reset();
   /** @}
     */
 
@@ -98,10 +94,6 @@ protected:
   DCMDistribution<M> mPostPredDist;
   /// Hyperparameter alpha (alpha_i - 1 pseudo-counts for i, alpha.sum = conf.)
   Eigen::Matrix<double, M, 1> mAlpha;
-  /// Number of points in the estimator
-  size_t mNumPoints;
-  /// Valid flag
-  bool mValid;
   /** @}
     */
 

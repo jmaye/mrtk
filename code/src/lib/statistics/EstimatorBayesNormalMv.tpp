@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <Eigen/QR>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -26,12 +24,13 @@ template <size_t M>
 EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
   Eigen::Matrix<double, M, 1>& mu, double kappa, double nu, const
   Eigen::Matrix<double, M, M>& sigma) :
+  mPostMeanDist(nu - M + 1, mu, sigma / kappa / (nu - M + 1)),
+  mPostCovarianceDist(nu, sigma / nu),
+  mPostPredDist(nu - M + 1, mu, sigma * (kappa + 1) / kappa / (nu - M + 1)),
   mMu(mu),
   mKappa(kappa),
   mNu(nu),
-  mSigma(sigma),
-  mNumPoints(0),
-  mValid(false) {
+  mSigma(sigma){
 }
 
 template <size_t M>
@@ -43,9 +42,7 @@ EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
   mMu(other.mMu),
   mKappa(other.mKappa),
   mNu(other.mNu),
-  mSigma(other.mSigma),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+  mSigma(other.mSigma) {
 }
 
 template <size_t M>
@@ -60,8 +57,6 @@ EstimatorBayes<NormalDistribution<M>, M>&
     mKappa = other.mKappa;
     mNu = other.mNu;
     mSigma = other.mSigma;
-    mNumPoints = other.mNumPoints;
-    mValid = other.mValid;
   }
   return *this;
 }
@@ -85,9 +80,7 @@ const {
     << std::endl << "posterior covariance distribution: " << std::endl
     << mPostCovarianceDist
     << std::endl << "posterior predictive distribution: " << std::endl
-    << mPostPredDist << std::endl
-    << "number of points: " << mNumPoints << std::endl
-    << "valid: " << mValid;
+    << mPostPredDist;
 }
 
 template <size_t M>
@@ -122,25 +115,8 @@ getPostPredDist() const {
 }
 
 template <size_t M>
-size_t EstimatorBayes<NormalDistribution<M>, M>::getNumPoints() const {
-  return mNumPoints;
-}
-
-template <size_t M>
-bool EstimatorBayes<NormalDistribution<M>, M>::getValid() const {
-  return mValid;
-}
-
-template <size_t M>
-void EstimatorBayes<NormalDistribution<M>, M>::reset() {
-  mNumPoints = 0;
-  mValid = false;
-}
-
-template <size_t M>
 void EstimatorBayes<NormalDistribution<M>, M>::addPoint(const
   Eigen::Matrix<double, M, 1>& point) {
-  mNumPoints++;
   Eigen::Matrix<double, M, 1> newMu = (mKappa * mMu + point) / (mKappa + 1);
   double newKappa = mKappa + 1;
   double newNu = mNu + 1;
@@ -153,20 +129,14 @@ void EstimatorBayes<NormalDistribution<M>, M>::addPoint(const
   for (size_t i = 0; i < M; ++i)
     for (size_t j = i + 1; j < M; ++j)
       mSigma(i, j) = mSigma(j, i);
-  Eigen::QR<Eigen::Matrix<double, M, M> > qrDecomp = mSigma.qr();
-  if (qrDecomp.rank() == M) {
-    mPostMeanDist.setDegrees(mNu - M + 1);
-    mPostMeanDist.setLocation(mMu);
-    mPostMeanDist.setScale(mSigma / mKappa / (mNu - M + 1));
-    mPostCovarianceDist.setDegrees(mNu);
-    mPostCovarianceDist.setScale(mSigma / mNu);
-    mPostPredDist.setDegrees(mNu - M + 1);
-    mPostPredDist.setLocation(mMu);
-    mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / (mNu - M + 1));
-    mValid = true;
-  }
-  else
-    mValid = false;
+  mPostMeanDist.setDegrees(mNu - M + 1);
+  mPostMeanDist.setLocation(mMu);
+  mPostMeanDist.setScale(mSigma / mKappa / (mNu - M + 1));
+  mPostCovarianceDist.setDegrees(mNu);
+  mPostCovarianceDist.setScale(mSigma / mNu);
+  mPostPredDist.setDegrees(mNu - M + 1);
+  mPostPredDist.setLocation(mMu);
+  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / (mNu - M + 1));
 }
 
 template <size_t M>
@@ -174,4 +144,6 @@ void EstimatorBayes<NormalDistribution<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points) {
   for (size_t i = 0; i < points.size(); ++i)
     addPoint(points[i]);
+  std::cout << "Pred mean: " << mPostPredDist.getMean() << std::endl;
+  std::cout << "Pred cov: " << mPostPredDist.getCovariance() << std::endl;
 }

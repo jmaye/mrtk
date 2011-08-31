@@ -22,12 +22,13 @@
 
 EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(double mu, double kappa,
   double nu, double sigma) :
+  mPostMeanDist(nu, mu, sigma / kappa / nu),
+  mPostVarianceDist(nu, sigma / nu),
+  mPostPredDist(nu, mu, sigma * (kappa + 1) / kappa / nu),
   mMu(mu),
   mKappa(kappa),
   mNu(nu),
-  mSigma(sigma),
-  mNumPoints(0),
-  mValid(false) {
+  mSigma(sigma) {
 }
 
 EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(const
@@ -38,9 +39,7 @@ EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(const
   mMu(other.mMu),
   mKappa(other.mKappa),
   mNu(other.mNu),
-  mSigma(other.mSigma),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+  mSigma(other.mSigma) {
 }
 
 EstimatorBayes<NormalDistribution<1> >&
@@ -54,8 +53,6 @@ EstimatorBayes<NormalDistribution<1> >&
     mKappa = other.mKappa;
     mNu = other.mNu;
     mSigma = other.mSigma;
-    mNumPoints = other.mNumPoints;
-    mValid = other.mValid;
   }
   return *this;
 }
@@ -75,9 +72,7 @@ void EstimatorBayes<NormalDistribution<1> >::write(std::ostream& stream) const {
     << std::endl << "posterior variance distribution: " << std::endl
     << mPostVarianceDist
     << std::endl << "posterior predictive distribution: " << std::endl
-    << mPostPredDist << std::endl
-    << "number of points: " << mNumPoints << std::endl
-    << "valid: " << mValid;
+    << mPostPredDist;
 }
 
 void EstimatorBayes<NormalDistribution<1> >::read(std::ifstream& stream) {
@@ -106,21 +101,7 @@ getPostPredDist() const {
   return mPostPredDist;
 }
 
-size_t EstimatorBayes<NormalDistribution<1> >::getNumPoints() const {
-  return mNumPoints;
-}
-
-bool EstimatorBayes<NormalDistribution<1> >::getValid() const {
-  return mValid;
-}
-
-void EstimatorBayes<NormalDistribution<1> >::reset() {
-  mNumPoints = 0;
-  mValid = false;
-}
-
 void EstimatorBayes<NormalDistribution<1> >::addPoint(double point) {
-  mNumPoints++;
   double newMu = (mKappa * mMu + point) / (mKappa + 1);
   double newKappa = mKappa + 1;
   double newNu = mNu + 1;
@@ -130,19 +111,14 @@ void EstimatorBayes<NormalDistribution<1> >::addPoint(double point) {
   mKappa = newKappa;
   mNu = newNu;
   mSigma = newSigma;
-  if (mSigma != 0) {
-    mPostMeanDist.setDegrees(mNu);
-    mPostMeanDist.setLocation(mMu);
-    mPostMeanDist.setScale(mSigma / mKappa / mNu);
-    mPostVarianceDist.setDegrees(mNu);
-    mPostVarianceDist.setScale(mSigma / mNu);
-    mPostPredDist.setDegrees(mNu);
-    mPostPredDist.setLocation(mMu);
-    mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / mNu);
-    mValid = true;
-  }
-  else
-    mValid = false;
+  mPostMeanDist.setDegrees(mNu);
+  mPostMeanDist.setLocation(mMu);
+  mPostMeanDist.setScale(mSigma / mKappa / mNu);
+  mPostVarianceDist.setDegrees(mNu);
+  mPostVarianceDist.setScale(mSigma / mNu);
+  mPostPredDist.setDegrees(mNu);
+  mPostPredDist.setLocation(mMu);
+  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / mNu);
 }
 
 void EstimatorBayes<NormalDistribution<1> >::addPoints(const
