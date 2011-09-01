@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 /** \file MainWindow.h
-    \brief MainWindow
+    \brief This file contains a main window for Qt
   */
 
 #ifndef MAINWINDOW_H
@@ -27,24 +27,41 @@
 
 class Ui_MainWindow;
 
-/** MainWindow
+/** The MainWindow class is a main window for Qt.
+    \brief Qt main window
   */
 class MainWindow :
   public QMainWindow {
 Q_OBJECT
-
-  Ui_MainWindow* mpUi;
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  MainWindow(const MainWindow& other);
+  /// Assignment operator
+  MainWindow& operator = (const MainWindow& other);
+  /** @}
+    */
 
 public:
-  /** Constructors
+  /** \name Constructors/destructor
+    @{
     */
+  /// Default constructor
   MainWindow();
-
-  /** Destructor
-    */
+  /// Destructor
   ~MainWindow();
+  /** @}
+    */
 
 protected:
+  /** \name Protected members
+    @{
+    */
+  /// Qt user interface
+  Ui_MainWindow* mpUi;
+  /** @}
+    */
 
 };
 

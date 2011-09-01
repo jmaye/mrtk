@@ -27,9 +27,9 @@
 /******************************************************************************/
 
 Scene::Scene() :
-  mTranslationVector(3, 0.0),
-  mRotationVector(3, 0.0),
-  mf64Scale(1.0) {
+  mTranslation(3, 0.0),
+  mRotation(3, 0.0),
+  mScale(1.0) {
   setTranslation(0.0, 0.0, 0.0);
   setRotation(-10.0 * M_PI / 180.0, -5.0 * M_PI / 180.0, 0.0);
   setScale(1.0);
@@ -42,46 +42,43 @@ Scene::~Scene() {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void Scene::setTranslation(double f64X, double f64Y, double f64Z) {
-  if ((f64X != mTranslationVector[0]) || (f64Y != mTranslationVector[1]) ||
-      (f64Z != mTranslationVector[2])) {
-    mTranslationVector[0] = f64X;
-    mTranslationVector[1] = f64Y;
-    mTranslationVector[2] = f64Z;
-
-    emit translationChanged(mTranslationVector);
+void Scene::setTranslation(double x, double y, double z) {
+  if ((x != mTranslation[0]) || (y != mTranslation[1]) ||
+    (z != mTranslation[2])) {
+    mTranslation[0] = x;
+    mTranslation[1] = y;
+    mTranslation[2] = z;
+    emit translationChanged(mTranslation);
   }
 }
 
 const std::vector<double>& Scene::getTranslation() const {
-  return mTranslationVector;
+  return mTranslation;
 }
 
-void Scene::setRotation(double f64Yaw, double f64Pitch, double f64Roll) {
-  if ((f64Yaw != mRotationVector[0]) || (f64Pitch != mRotationVector[1]) ||
-      (f64Roll != mRotationVector[2])) {
-    mRotationVector[0] = correctAngle(f64Yaw);
-    mRotationVector[1] = correctAngle(f64Pitch);
-    mRotationVector[2] = correctAngle(f64Roll);
-
-    emit rotationChanged(mRotationVector);
+void Scene::setRotation(double yaw, double pitch, double roll) {
+  if ((yaw != mRotation[0]) || (pitch != mRotation[1]) ||
+    (roll != mRotation[2])) {
+    mRotation[0] = correctAngle(yaw);
+    mRotation[1] = correctAngle(pitch);
+    mRotation[2] = correctAngle(roll);
+    emit rotationChanged(mRotation);
   }
 }
 
 const std::vector<double>& Scene::getRotation() const {
-  return mRotationVector;
+  return mRotation;
 }
 
-void Scene::setScale(double f64Scale) {
-  if (this->mf64Scale != f64Scale) {
-    this->mf64Scale = f64Scale;
-
-    emit scaleChanged(this->mf64Scale);
+void Scene::setScale(double scale) {
+  if (mScale != scale) {
+    mScale = scale;
+    emit scaleChanged(mScale);
   }
 }
 
 double Scene::getScale() const {
-  return mf64Scale;
+  return mScale;
 }
 
 /******************************************************************************/
@@ -90,23 +87,21 @@ double Scene::getScale() const {
 
 void Scene::setup(GLView& view) {
   glMatrixMode(GL_MODELVIEW);
-  glScalef(mf64Scale, mf64Scale, mf64Scale);
-  glRotatef(mRotationVector[2] * 180.0 / M_PI, 1, 0, 0);
-  glRotatef(mRotationVector[1] * 180.0 / M_PI, 0, 1, 0);
-  glRotatef(mRotationVector[0] * 180.0 / M_PI, 0, 0, 1);
-  glTranslatef(mTranslationVector[0], mTranslationVector[1],
-    mTranslationVector[2]);
+  glScalef(mScale, mScale, mScale);
+  glRotatef(mRotation[2] * 180.0 / M_PI, 1, 0, 0);
+  glRotatef(mRotation[1] * 180.0 / M_PI, 0, 1, 0);
+  glRotatef(mRotation[0] * 180.0 / M_PI, 0, 0, 1);
+  glTranslatef(mTranslation[0], mTranslation[1], mTranslation[2]);
 }
 
 void Scene::render(GLView& view) {
   emit render(view, *this);
 }
 
-double Scene::correctAngle(double f64Angle) const {
-  if (f64Angle >= 0.0)
-    while (f64Angle >= M_PI) f64Angle -= 2.0 * M_PI;
+double Scene::correctAngle(double angle) const {
+  if (angle >= 0.0)
+    while (angle >= M_PI) angle -= 2.0 * M_PI;
   else
-    while (f64Angle < -M_PI) f64Angle += 2.0 * M_PI;
-
-  return f64Angle;
+    while (angle < -M_PI) angle += 2.0 * M_PI;
+  return angle;
 }

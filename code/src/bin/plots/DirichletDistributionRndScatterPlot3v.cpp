@@ -28,13 +28,12 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  std::vector<Eigen::Matrix<double, 3, 1> > data;
   DirichletDistribution<3> dist;
   std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;
-  for (size_t i = 0; i < 100000; ++i)
-    data.push_back(dist.getSample());
+  std::vector<Eigen::Matrix<double, 3, 1> > data;
+  dist.getSamples(data, 100000);
   ScatterPlot<3> plot("DirichletDistributionRndScatterPlot3v", data);
   plot.show();
   return app.exec();

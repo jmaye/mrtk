@@ -16,6 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+/** \file Scene.h
+    \brief This file contains a scene implementation for OpenGL
+  */
+
 #ifndef SCENE_H
 #define SCENE_H
 
@@ -25,37 +29,97 @@
 
 class GLView;
 
+/** The Scene class represents a scene in OpenGL.
+    \brief Scene for OpenGL
+  */
 class Scene :
   public QObject {
 Q_OBJECT
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Scene(const Scene& other);
+  /// Assignment operator
+  Scene& operator = (const Scene& other);
+  /** @}
+    */
 
 public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
   Scene();
+  /// Destructor
   ~Scene();
+  /** @}
+    */
 
-  void setTranslation(double f64X, double f64Y, double f64Z);
+  /** \name Accessors
+    @{
+    */
+  /// Sets the scene translation
+  void setTranslation(double x, double y, double z);
+  /// Returns the scene translation
   const std::vector<double>& getTranslation() const;
-  void setRotation(double f64Yaw, double f64Pitch, double f64Roll);
+  /// Sets the scene rotation
+  void setRotation(double yaw, double pitch, double roll);
+  /// Returns the scene rotation
   const std::vector<double>& getRotation() const;
-  void setScale(double f64Scale);
+  /// Sets the scene scale
+  void setScale(double scale);
+  /// Returns the scene scale
   double getScale() const;
+  /** @}
+    */
 
+  /** \name Methods
+    @{
+    */
+  /// Setup OpenGL
   void setup(GLView& view);
+  /// Render the scene
   void render(GLView& view);
+  /** @}
+    */
 
 protected:
-  double correctAngle(double f64Angle) const;
+  /** \name Protected methods
+    @{
+    */
+  /// Correct angles
+  double correctAngle(double angle) const;
+  /** @}
+    */
 
-  std::vector<double> mTranslationVector;
-  std::vector<double> mRotationVector;
-  double mf64Scale;
+  /** \name Protected members
+    @{
+    */
+  /// Scene translation
+  std::vector<double> mTranslation;
+  /// Scene rotation
+  std::vector<double> mRotation;
+  /// Scene scale
+  double mScale;
+  /** @}
+    */
 
 signals:
-  void translationChanged(const std::vector<double>& translationVector);
-  void rotationChanged(const std::vector<double>& rotationVector);
-  void scaleChanged(double f64Scale);
+  /** \name Qt signals
+    @{
+    */
+  /// Translation has changed
+  void translationChanged(const std::vector<double>& translation);
+  /// Rotation has changed
+  void rotationChanged(const std::vector<double>& rotation);
+  /// Scale has changed
+  void scaleChanged(double scale);
+  /// Render the scene
   void render(GLView& view, Scene& scene);
+  /** @}
+    */
 
 };
 
-#endif
+#endif // SCENE_H

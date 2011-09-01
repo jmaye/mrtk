@@ -346,9 +346,16 @@ void Histogram<T, 1>::Traits<double, D>::addSample(Histogram<double, 1>& hist,
     hist.mBins((size_t)floor((sample - hist.mMinValue) / hist.mBinWidth))++;
 }
 
+
 template <typename T>
 void Histogram<T, 1>::addSample(T sample) {
   Traits<T>::addSample(*this, sample);
+}
+
+template <typename T>
+void Histogram<T, 1>::addSamples(const std::vector<T>& samples) {
+  for (size_t i = 0; i < samples.size(); ++i)
+    addSample(samples[i]);
 }
 
 template <typename T>

@@ -111,11 +111,10 @@ void EstimatorBayes<LinearRegression<M>, M>::addPoint(const
   Eigen::Matrix<double, M, 1> inputPoint(mMu.size());
   inputPoint(0) = 1.0;
   inputPoint.segment(1, mMu.size() - 1) = point.segment(0, mMu.size() - 1);
-  Eigen::Matrix<double, M, 1> newMu = (mV.inverse() + inputPoint *
-    inputPoint.transpose()).inverse() * (mV.inverse() * mMu +
-    inputPoint * point(mMu.size() - 1));
   Eigen::Matrix<double, M, M> newV = (mV.inverse() + inputPoint *
     inputPoint.transpose()).inverse();
+  Eigen::Matrix<double, M, 1> newMu = newV * (mV.inverse() * mMu +
+    inputPoint * point(mMu.size() - 1));
   double newNu = mNu + 1;
   double newSigma = mSigma + (point(mMu.size() - 1) * point(mMu.size() - 1)
     + (mMu.transpose() * mV.inverse() * mMu)(0) - (newMu.transpose() *

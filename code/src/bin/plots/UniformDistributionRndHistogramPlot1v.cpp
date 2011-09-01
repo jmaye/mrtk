@@ -30,8 +30,9 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<double, 1> hist(-5, 5, 0.05);
   UniformDistribution<double> dist;
-  for (size_t i = 0; i < 100000; ++i)
-    hist.addSample(dist.getSample());
+  std::vector<double> data;
+  dist.getSamples(data, 100000);
+  hist.addSamples(data);
   std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
   std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
   std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())

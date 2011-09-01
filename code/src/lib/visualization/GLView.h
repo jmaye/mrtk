@@ -16,6 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+/** \file GLView.h
+    \brief This file contains the base OpenGL viewer
+  */
+
 #ifndef GLVIEW_H
 #define GLVIEW_H
 
@@ -33,57 +37,140 @@
 
 class FTPolygonFont;
 
+/** The GLView class represents the base OpenGL viewer.
+    \brief Base OpenGL viewer
+  */
 class GLView :
   public QGLWidget,
   public Singleton<GLView> {
 Q_OBJECT
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  GLView(const GLView& other);
+  /// Assignment operator
+  GLView& operator = (const GLView& other);
+  /** @}
+    */
 
 public:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Constructs the viewer
   GLView(QWidget* pParent = 0);
+  /// Destructor
   ~GLView();
+  /** @}
+    */
 
+  /** \name Accessors
+    @{
+    */
+  /// Returns the camera
   Camera& getCamera();
+  /// Returns the camera
   const Camera& getCamera() const;
+  /// Returns the scene
   Scene& getScene();
+  /// Returns the scene
   const Scene& getScene() const;
+  /// Sets a color
   void setColor(const QColor& color);
+  /// Sets a color
   void setColor(const Palette& palette, const QString& role);
+  /// Sets the font
   void setFont(const QString& filename);
+  /// Returns the font
   const QString& getFont() const;
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Unproject a point
   std::vector<double> unproject(const QPoint& point, double distance);
-  void render(double f64X, double f64Y, double f64Z, const QString& text,
-    double f64Scale = 1.0, bool bFaceX = false, bool bFaceY = false,
-    bool bFaceZ = false);
+  /// Render the scene
+  void render(double x, double y, double z, const QString& text,
+    double scale = 1.0, bool faceX = false, bool faceY = false,
+    bool faceZ = false);
+  /** @}
+    */
 
 protected:
+  /** \name Protected methods
+    @{
+    */
+  /// Mouse press event
   virtual void mousePressEvent(QMouseEvent* event);
+  /// Mouse move event
   virtual void mouseMoveEvent(QMouseEvent* event);
+  /// Mouse wheel event
   virtual void wheelEvent(QWheelEvent* event);
+  /// Init the OpenGL engine
   virtual void initializeGL();
-  virtual void resizeGL(int i32Width, int i32Height);
+  /// Resize the OpenGL engine
+  virtual void resizeGL(int width, int height);
+  /// Paint the OpenGL engine
   virtual void paintGL();
+  /// Paint event
   virtual void paintEvent(QPaintEvent* event);
+  /** @}
+    */
 
+  /** \name Protected members
+    @{
+    */
+  /// Filename for the font
   QString mFontFilename;
+  /// Font object
   FTPolygonFont* mpFont;
+  /// Camera
   Camera mCamera;
+  /// Scene
   Scene mScene;
-  std::vector<int> mMouseVector;
-  std::vector<int> mViewportVector;
-  std::vector<double> mProjectionVector;
-  std::vector<double> mModelviewVector;
+  /// Mouse
+  std::vector<int> mMouse;
+  /// Viewport
+  std::vector<int> mViewport;
+  /// Projection
+  std::vector<double> mProjection;
+  /// Model view
+  std::vector<double> mModelview;
+  /** @}
+    */
 
 protected slots:
-  void cameraPositionChanged(const std::vector<double>& positionVector);
-  void cameraViewpointChanged(const std::vector<double>& viewpointVector);
-  void cameraRangeChanged(const std::vector<double>& rangeVector);
-  void sceneTranslationChanged(const std::vector<double>& translationVector);
-  void sceneRotationChanged(const std::vector<double>& rotationVector);
-  void sceneScaleChanged(double f64Scale);
+  /** \name Qt slots
+    @{
+    */
+  /// Camera position changed
+  void cameraPositionChanged(const std::vector<double>& position);
+  /// Camera viewpoint changed
+  void cameraViewpointChanged(const std::vector<double>& viewpoint);
+  /// Camera range changed
+  void cameraRangeChanged(const std::vector<double>& range);
+  /// Scene translation changed
+  void sceneTranslationChanged(const std::vector<double>& translation);
+  /// Scene rotation changed
+  void sceneRotationChanged(const std::vector<double>& rotation);
+  /// Scene scale changed
+  void sceneScaleChanged(double scale);
+  /** @}
+    */
 
 signals:
+  /** \name Qt signals
+    @{
+    */
+  /// Font changed
   void fontChanged(const QString& filename);
+  /// Updated signal
   void updated();
+  /** @}
+    */
 
 };
 

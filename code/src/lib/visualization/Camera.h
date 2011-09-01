@@ -16,6 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+/** \file Camera.h
+    \brief This file contains a camera implementation for OpenGL
+  */
+
 #ifndef CAMERA_H
 #define CAMERA_H
 
@@ -25,37 +29,92 @@
 
 class GLView;
 
+/** The Camera class represents a camera in OpenGL.
+    \brief Camera for OpenGL
+  */
 class Camera :
   public QObject {
 Q_OBJECT
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Camera(const Camera& other);
+  /// Assignment operator
+  Camera& operator = (const Camera& other);
+  /** @}
+    */
 
 public:
-  Camera(double f64X = -20.0, double f64Y = 0.0, double f64Z = 0.0,
-    double f64Near = 0.1, double f64Far = 1000.0);
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Constructs camera from parameters
+  Camera(double x = -20.0, double y = 0.0, double z = 0.0, double near = 0.1,
+    double far = 1000.0);
+  /// Destructor
   ~Camera();
+  /** @}
+    */
 
-  void setPosition(double f64X, double f64Y, double f64Z);
+  /** \name Accessors
+    @{
+    */
+  /// Sets position of the camera
+  void setPosition(double x, double y, double z);
+  /// Returns position of the camera
   const std::vector<double>& getPosition() const;
-  void setViewpoint(double f64X, double f64Y, double f64Z);
+  /// Sets viewpoint of the camera
+  void setViewpoint(double x, double y, double z);
+  /// Returns viewpoint of the camera
   const std::vector<double>& getViewpoint() const;
-  void setRange(double f64Near, double f64Far);
+  /// Sets range of the camera
+  void setRange(double near, double far);
+  /// Returns range of the camera
   const std::vector<double>& getRange() const;
+  /// Returns projection of the camera
   const std::vector<double>& getProjection() const;
+  /// Returns viewpoint distance of the camera
   double getViewpointDistance() const;
+  /** @}
+    */
 
-  void setup(GLView& view, double f64Width, double f64Height);
+  /** \name Methods
+    @{
+    */
+  /// Setup the camera
+  void setup(GLView& view, double width, double height);
+  /** @}
+    */
 
 protected:
-  std::vector<double> mPositionVector;
-  std::vector<double> mViewpointVector;
-  std::vector<double> mRangeVector;
-  std::vector<double> mProjectionVector;
+  /** \name Protected members
+    @{
+    */
+  /// Position of the camera
+  std::vector<double> mPosition;
+  /// Viewpoint of the camera
+  std::vector<double> mViewpoint;
+  /// Range of the camera
+  std::vector<double> mRange;
+  /// Projection of the camera
+  std::vector<double> mProjection;
+  /** @}
+    */
 
 signals:
-  void positionChanged(const std::vector<double>& positionVector);
-  void viewpointChanged(const std::vector<double>& viewpointVector);
-  void rangeChanged(const std::vector<double>& rangeVector);
+  /** \name Qt signals
+    @{
+    */
+  /// Camera position updated
+  void positionChanged(const std::vector<double>& position);
+  /// Camera viewpoint updated
+  void viewpointChanged(const std::vector<double>& viewpoint);
+  /// Camera range updated
+  void rangeChanged(const std::vector<double>& range);
+  /** @}
+    */
 
 };
 
-#endif
+#endif // CAMERA_H

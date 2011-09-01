@@ -33,8 +33,9 @@ int main(int argc, char** argv) {
     Eigen::Matrix<double, 2, 1>(0.05, 0.05));
   StudentDistribution<2> dist(3.0, Eigen::Matrix<double, 2, 1>::Zero(),
     Eigen::Matrix<double, 2, 2>::Identity());
-  for (size_t i = 0; i < 100000; ++i)
-    hist.addSample(dist.getSample());
+  std::vector<Eigen::Matrix<double, 2, 1> > data;
+  dist.getSamples(data, 100000);
+  hist.addSamples(data);
   std::cout << "Sample mean: " << std::endl << hist.getSampleMean()
     << std::endl;
   std::cout << "Sample mode: " << std::endl

@@ -401,6 +401,13 @@ void Histogram<T, 2>::addSample(const Eigen::Matrix<T, 2, 1>& sample) {
 }
 
 template <typename T>
+void Histogram<T, 2>::addSamples(const std::vector<Eigen::Matrix<T, 2, 1> >&
+  samples) {
+  for (size_t i = 0; i < samples.size(); ++i)
+    addSample(samples[i]);
+}
+
+template <typename T>
 void Histogram<T, 2>::normalize(double norm) {
   mNormFactor = norm;
   if (mBins.sum() != 0)

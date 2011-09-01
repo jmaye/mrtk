@@ -16,6 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+/** \file Palette.h
+    \brief This file contains a palette implementation for OpenGL
+  */
+
 #ifndef PALETTE_H
 #define PALETTE_H
 
@@ -27,28 +31,77 @@
 
 #include <map>
 
+/** The Palette class represents a palette in OpenGL.
+    \brief Palette for OpenGL
+  */
 class Palette :
   public QObject {
 Q_OBJECT
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Palette(const Palette& other);
+  /// Assignment operator
+  Palette& operator = (const Palette& other);
+  /** @}
+    */
 
 public:
+  /** \name Type definitions
+    @{
+    */
+  /// Iterator for the palette
   typedef std::map<QString, QColor>::const_iterator Iterator;
+  /** @}
+    */
 
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Default constructor
   Palette();
+  /// Destructor
   ~Palette();
+  /** @}
+    */
 
+  /** \name Accessors
+    @{
+    */
+  /// Returns iterator at the start of the map
   Iterator getColorBegin() const;
+  /// Returns iterator at the end of the map
   Iterator getColorEnd() const;
+  /// Returns color role
   const QString& getRole(const Iterator& it) const;
+  /// Sets color role
   void setColor(const QString& role, const QColor& color);
+  /// Returns a color
   const QColor& getColor(const Iterator& it) const;
-  const QColor& getColor(const QString& role) const throw (OutOfBoundException<std::string>);
+  /// Returns a color
+  const QColor& getColor(const QString& role) const
+    throw (OutOfBoundException<std::string>);
+  /** @}
+    */
 
 protected:
-  std::map<QString, QColor> mColorsMap;
+  /** \name Protected members
+    @{
+    */
+  /// Mapping between colors and role
+  std::map<QString, QColor> mColors;
+  /** @}
+    */
 
 signals:
+  /** \name Qt signals
+    @{
+    */
+  /// Color has changed
   void colorChanged(const QString& role, const QColor& color);
+  /** @}
+    */
 
 };
 

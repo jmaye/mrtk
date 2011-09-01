@@ -23,8 +23,8 @@
 #include "statistics/BetaDistribution.h"
 
 int main(int argc, char** argv) {
-  double f64Alpha = 0.1;
-  double f64Beta = 0.9;
+  double alpha = 0.1;
+  double beta = 0.9;
   BetaDistribution dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
@@ -32,8 +32,8 @@ int main(int argc, char** argv) {
   std::cout << "dist.getBeta(): " << dist.getBeta() << std::endl << std::endl;
   std::cout << "dist.setAlpha(0.1)" << std::endl << std::endl;
   std::cout << "dist.setBeta(0.9)" << std::endl << std::endl;
-  dist.setAlpha(f64Alpha);
-  dist.setBeta(f64Beta);
+  dist.setAlpha(alpha);
+  dist.setBeta(beta);
   std::cout << "Distribution new parameters: " << std::endl << dist
     << std::endl << std::endl;
   std::cout << "dist.getAlpha(): " << dist.getAlpha() << std::endl << std::endl;
@@ -57,8 +57,8 @@ int main(int argc, char** argv) {
     << std::endl << std::endl;
 
   try {
-    f64Alpha = 0.0;
-    dist.setAlpha(f64Alpha);
+    alpha = 0.0;
+    dist.setAlpha(alpha);
   }
   catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
     std::cout << e.what() << std::endl;

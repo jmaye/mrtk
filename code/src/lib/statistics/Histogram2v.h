@@ -29,6 +29,8 @@
 
 #include <utils/SizeTSupport.h>
 
+#include <vector>
+
 /** The Histogram2v class defines bivariate histograms
     \brief 2-v histogram
   */
@@ -154,6 +156,8 @@ public:
     */
   /// Add a sample to the histogram
   void addSample(const Eigen::Matrix<T, 2, 1>& sample);
+  /// Add samples to the histogram
+  void addSamples(const std::vector<Eigen::Matrix<T, 2, 1> >& samples);
   /// Normalize the histogram
   void normalize(double norm = 1.0);
   /// Scale the histogram

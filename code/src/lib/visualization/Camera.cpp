@@ -26,14 +26,13 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Camera::Camera(double f64X, double f64Y, double f64Z, double f64Near,
-  double f64Far) :
-  mPositionVector(3, 0.0),
-  mViewpointVector(3, 0.0),
-  mRangeVector(2, 0.0),
-  mProjectionVector(2, 0.0) {
-  setPosition(f64X, f64Y, f64Z);
-  setRange(f64Near, f64Far);
+Camera::Camera(double x, double y, double z, double near, double far) :
+  mPosition(3, 0.0),
+  mViewpoint(3, 0.0),
+  mRange(2, 0.0),
+  mProjection(2, 0.0) {
+  setPosition(x, y, z);
+  setRange(near, far);
 }
 
 Camera::~Camera() {
@@ -43,88 +42,75 @@ Camera::~Camera() {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void Camera::setPosition(double f64X, double f64Y, double f64Z) {
-  if ((f64X != mPositionVector[0]) || (f64Y != mPositionVector[1]) ||
-    (f64Z != mPositionVector[2])) {
-    mPositionVector[0] = f64X;
-    mPositionVector[1] = f64Y;
-    mPositionVector[2] = f64Z;
-
-    emit positionChanged(mPositionVector);
+void Camera::setPosition(double x, double y, double z) {
+  if ((x != mPosition[0]) || (y != mPosition[1]) || (z != mPosition[2])) {
+    mPosition[0] = x;
+    mPosition[1] = y;
+    mPosition[2] = z;
+    emit positionChanged(mPosition);
   }
 }
 
 const std::vector<double>& Camera::getPosition() const {
-  return mPositionVector;
+  return mPosition;
 }
 
-void Camera::setViewpoint(double f64X, double f64Y, double f64Z) {
-  if ((f64X != mViewpointVector[0]) || (f64Y != mViewpointVector[1]) ||
-    (f64Z != mViewpointVector[2])) {
-    mViewpointVector[0] = f64X;
-    mViewpointVector[1] = f64Y;
-    mViewpointVector[2] = f64Z;
-
-    emit viewpointChanged(mViewpointVector);
+void Camera::setViewpoint(double x, double y, double z) {
+  if ((x != mViewpoint[0]) || (y != mViewpoint[1]) || (z != mViewpoint[2])) {
+    mViewpoint[0] = x;
+    mViewpoint[1] = y;
+    mViewpoint[2] = z;
+    emit viewpointChanged(mViewpoint);
   }
 }
 
 const std::vector<double>& Camera::getViewpoint() const {
-  return mViewpointVector;
+  return mViewpoint;
 }
 
-void Camera::setRange(double f64Near, double f64Far) {
-  if ((f64Near != mRangeVector[0]) || (f64Far != mRangeVector[1])) {
-    mRangeVector[0] = f64Near;
-    mRangeVector[1] = f64Far;
-
-    emit rangeChanged(mRangeVector);
+void Camera::setRange(double near, double far) {
+  if ((near != mRange[0]) || (far != mRange[1])) {
+    mRange[0] = near;
+    mRange[1] = far;
+    emit rangeChanged(mRange);
   }
 }
 
 const std::vector<double>& Camera::getRange() const {
-  return mRangeVector;
+  return mRange;
 }
 
 double Camera::getViewpointDistance() const {
-  std::vector<double> lookatVector(3, 0.0);
-
-  lookatVector[0] = mPositionVector[0] - mViewpointVector[0];
-  lookatVector[1] = mPositionVector[1] - mViewpointVector[1];
-  lookatVector[2] = mPositionVector[2] - mViewpointVector[2];
-  
-  return sqrt(lookatVector[0] * lookatVector[0] + lookatVector[1] *
-    lookatVector[1] + lookatVector[2] * lookatVector[2]);
+  std::vector<double> lookat(3, 0.0);
+  lookat[0] = mPosition[0] - mViewpoint[0];
+  lookat[1] = mPosition[1] - mViewpoint[1];
+  lookat[2] = mPosition[2] - mViewpoint[2];
+  return sqrt(lookat[0] * lookat[0] + lookat[1] * lookat[1] + lookat[2] *
+    lookat[2]);
 }
 
 const std::vector<double>& Camera::getProjection() const {
-  return mProjectionVector;
+  return mProjection;
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-void Camera::setup(GLView& view, double f64Width, double f64Height) {
-  double f64Aspect = f64Width / f64Height;
-  double f64Near = mRangeVector[0];
-  double f64Far = mRangeVector[1];
-  double f64Fov = 45.0 * M_PI / 180.0;
-
-  double f64Top = tan(f64Fov * 0.5) * f64Near;
-  double f64Bottom = -f64Top;
-  double f64Left = f64Aspect * f64Bottom;
-  double f64Right = f64Aspect * f64Top;
-
-  mProjectionVector[0] = 2.0 * f64Near / (f64Right - f64Left);
-  mProjectionVector[1] = 2.0 * f64Near / (f64Top - f64Bottom);
-
+void Camera::setup(GLView& view, double width, double height) {
+  double aspect = width / height;
+  double near = mRange[0];
+  double far = mRange[1];
+  double fov = 45.0 * M_PI / 180.0;
+  double top = tan(fov * 0.5) * near;
+  double bottom = -top;
+  double left = aspect * bottom;
+  double right = aspect * top;
+  mProjection[0] = 2.0 * near / (right - left);
+  mProjection[1] = 2.0 * near / (top - bottom);
   glMatrixMode(GL_PROJECTION);
-  glFrustum(f64Left, f64Right, f64Bottom, f64Top, f64Near, f64Far);
-
+  glFrustum(left, right, bottom, top, near, far);
   glMatrixMode(GL_MODELVIEW);
-  gluLookAt(
-    mPositionVector[0], mPositionVector[1], mPositionVector[2],
-    mViewpointVector[0], mViewpointVector[1], mViewpointVector[2],
-    0.0, 0.0, 1.0);
+  gluLookAt(mPosition[0], mPosition[1], mPosition[2], mViewpoint[0],
+    mViewpoint[1], mViewpoint[2], 0.0, 0.0, 1.0);
 }

@@ -38,8 +38,9 @@ int main(int argc, char** argv) {
   MixtureSampleDistribution<NormalDistribution<1>, 5> dist(distributions,
     CategoricalDistribution<5>());
   Histogram<double, 1> hist(-20, 20, 0.05);
-  for (size_t i = 0; i < 100000; ++i)
-    hist.addSample(dist.getSample());
+  std::vector<double> data;
+  dist.getSamples(data, 100000);
+  hist.addSamples(data);
   hist.normalize();
   HistogramPlot<double, 1> plot("MixtureNormalDistributionRndHistogramPlot1v",
     hist);

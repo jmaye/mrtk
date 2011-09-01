@@ -29,6 +29,8 @@
 
 #include <Eigen/Core>
 
+#include <vector>
+
 template <typename T, size_t M = 1> class Histogram;
 
 /** The Histogram1v class defines univariate histograms
@@ -142,6 +144,8 @@ public:
     */
   /// Add a sample to the histogram
   void addSample(T sample);
+  /// Add samples to the histogram
+  void addSamples(const std::vector<T>& samples);
   /// Normalize the histogram
   void normalize(double norm = 1.0);
   /// Scale the histogram

@@ -33,10 +33,10 @@
 GLView::GLView(QWidget* pParent) :
   QGLWidget(pParent),
   mpFont(0),
-  mMouseVector(2, 0),
-  mViewportVector(4, 0),
-  mProjectionVector(16, 0.0),
-  mModelviewVector(16, 0.0) {
+  mMouse(2, 0),
+  mViewport(4, 0),
+  mProjection(16, 0.0),
+  mModelview(16, 0.0) {
   setFont("/usr/share/fonts/truetype/msttcorefonts/Arial.ttf");
 
   connect(&mCamera, SIGNAL(positionChanged(const std::vector<double>&)), this,
@@ -94,8 +94,7 @@ void GLView::setFont(const QString& filename) {
       delete mpFont;
       mpFont = 0;
     }
-    this->mFontFilename = filename;
-
+    mFontFilename = filename;
     emit fontChanged(mFontFilename);
     update();
   }
@@ -109,23 +108,18 @@ const QString& GLView::getFont() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-std::vector<double> GLView::unproject(const QPoint& point, double f64Distance) {
-  std::vector<double> resultVector(3, 0.0);
-
-  double f64Near = mCamera.getRange()[0];
-  double f64Far = mCamera.getRange()[1];
-  double f64Z = (1.0 / f64Near - 1.0 / f64Distance) / (1.0 / f64Near - 1.0 /
-    f64Far);
-
-  gluUnProject(point.x(), -point.y(), f64Z,
-    &mModelviewVector[0], &mProjectionVector[0], &mViewportVector[0],
-    &resultVector[0], &resultVector[1], &resultVector[2]);
-
-  return resultVector;
+std::vector<double> GLView::unproject(const QPoint& point, double distance) {
+  std::vector<double> result(3, 0.0);
+  double near = mCamera.getRange()[0];
+  double far = mCamera.getRange()[1];
+  double z = (1.0 / near - 1.0 / distance) / (1.0 / near - 1.0 / far);
+  gluUnProject(point.x(), -point.y(), z, &mModelview[0], &mProjection[0],
+    &mViewport[0], &result[0], &result[1], &result[2]);
+  return result;
 }
 
-void GLView::render(double f64X, double f64Y, double f64Z, const QString& text,
-  double f64Scale, bool bFaceX, bool bFaceY, bool bFaceZ) {
+void GLView::render(double x, double y, double z, const QString& text,
+  double scale, bool faceX, bool faceY, bool faceZ) {
   if (!mpFont) {
     QFileInfo fileInfo(mFontFilename);
     if (fileInfo.isFile() && fileInfo.isReadable()) {
@@ -134,15 +128,14 @@ void GLView::render(double f64X, double f64Y, double f64Z, const QString& text,
       mpFont->FaceSize(100);
     }
   }
-
   if (mpFont) {
     glPushMatrix();
-    glTranslatef(f64X, f64Y, f64Z);
-    if (bFaceZ)
+    glTranslatef(x, y, z);
+    if (faceZ)
       glRotatef(-mScene.getRotation()[0] * 180.0 / M_PI, 0, 0, 1);
-    if (bFaceY)
+    if (faceY)
       glRotatef(-mScene.getRotation()[1] * 180.0 / M_PI, 0, 1, 0);
-    if (bFaceX)
+    if (faceX)
       glRotatef(-mScene.getRotation()[2] * 180.0 / M_PI, 1, 0, 0);
     glRotatef(90.0, 1, 0, 0);
     glRotatef(-90.0, 0, 1, 0);
@@ -154,59 +147,52 @@ void GLView::render(double f64X, double f64Y, double f64Z, const QString& text,
 }
 
 void GLView::mousePressEvent(QMouseEvent* event) {
-  mMouseVector[0] = event->globalX();
-  mMouseVector[1] = event->globalY();
+  mMouse[0] = event->globalX();
+  mMouse[1] = event->globalY();
 }
 
 void GLView::mouseMoveEvent(QMouseEvent* event) {
-  int i32DeltaX = event->globalX() - mMouseVector[0];
-  int i32DeltaY = event->globalY() - mMouseVector[1];
-
+  int deltaX = event->globalX() - mMouse[0];
+  int deltaY = event->globalY() - mMouse[1];
   if (event->buttons() == Qt::LeftButton) {
     mScene.setRotation(
-      mScene.getRotation()[0] - M_PI / width() * i32DeltaX,
-      mScene.getRotation()[1] + M_PI / height() * i32DeltaY,
+      mScene.getRotation()[0] - M_PI / width() * deltaX,
+      mScene.getRotation()[1] + M_PI / height() * deltaY,
       mScene.getRotation()[2]);
   }
   else if (event->buttons() == Qt::RightButton) {
-    QPoint mouseLocal = mapFromGlobal(QPoint(mMouseVector[0], mMouseVector[1]));
+    QPoint mouseLocal = mapFromGlobal(QPoint(mMouse[0], mMouse[1]));
     QPoint eventLocal = mapFromGlobal(QPoint(event->globalPos()));
-
-    double f64Distance = mCamera.getViewpointDistance();
-    std::vector<double> mouseUnprojectedVector = unproject(mouseLocal,
-      f64Distance);
-    std::vector<double> eventUnprojectedVector = unproject(eventLocal,
-      f64Distance);
-
+    double distance = mCamera.getViewpointDistance();
+    std::vector<double> mouseUnprojected = unproject(mouseLocal, distance);
+    std::vector<double> eventUnprojected = unproject(eventLocal, distance);
     mScene.setTranslation(
-      mScene.getTranslation()[0] + (eventUnprojectedVector[0] -
-        mouseUnprojectedVector[0]),
-      mScene.getTranslation()[1] + (eventUnprojectedVector[1] -
-        mouseUnprojectedVector[1]),
-      mScene.getTranslation()[2] + (eventUnprojectedVector[2] -
-        mouseUnprojectedVector[2]));
+      mScene.getTranslation()[0] + (eventUnprojected[0] -
+        mouseUnprojected[0]),
+      mScene.getTranslation()[1] + (eventUnprojected[1] -
+        mouseUnprojected[1]),
+      mScene.getTranslation()[2] + (eventUnprojected[2] -
+        mouseUnprojected[2]));
   }
-
-  mMouseVector[0] = event->globalX();
-  mMouseVector[1] = event->globalY();
+  mMouse[0] = event->globalX();
+  mMouse[1] = event->globalY();
 }
 
 void GLView::wheelEvent(QWheelEvent* event) {
-  double f64DeltaScale = 1e-2;
-  mScene.setScale(mScene.getScale() * (1.0 + f64DeltaScale * event->delta() /
+  double deltaScale = 1e-2;
+  mScene.setScale(mScene.getScale() * (1.0 + deltaScale * event->delta() /
     8.0));
 }
 
 void GLView::initializeGL() {
   glEnable(GL_DEPTH_TEST);
-
   glEnable (GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void GLView::resizeGL(int i32Width, int i32Height) {
-  glViewport(0, 0, i32Width, i32Height);
-  mCamera.setup(*this, i32Width, i32Height);
+void GLView::resizeGL(int width, int height) {
+  glViewport(0, 0, width, height);
+  mCamera.setup(*this, width, height);
 }
 
 void GLView::paintGL() {
@@ -214,14 +200,11 @@ void GLView::paintGL() {
   glLoadIdentity();
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-
   mCamera.setup(*this, width(), height());
   mScene.setup(*this);
-
-  glGetIntegerv(GL_VIEWPORT, &mViewportVector[0]);
-  glGetDoublev(GL_PROJECTION_MATRIX, &mProjectionVector[0]);
-  glGetDoublev(GL_MODELVIEW_MATRIX, &mModelviewVector[0]);
-
+  glGetIntegerv(GL_VIEWPORT, &mViewport[0]);
+  glGetDoublev(GL_PROJECTION_MATRIX, &mProjection[0]);
+  glGetDoublev(GL_MODELVIEW_MATRIX, &mModelview[0]);
   mScene.render(*this);
 }
 
@@ -230,28 +213,26 @@ void GLView::paintEvent(QPaintEvent* event) {
   emit updated();
 }
 
-void GLView::cameraPositionChanged(const std::vector<double>& positionVector) {
+void GLView::cameraPositionChanged(const std::vector<double>& position) {
   update();
 }
 
-void GLView::cameraViewpointChanged(const std::vector<double>&
-  viewpointVector) {
+void GLView::cameraViewpointChanged(const std::vector<double>& viewpoint) {
   update();
 }
 
-void GLView::cameraRangeChanged(const std::vector<double>& rangeVector) {
+void GLView::cameraRangeChanged(const std::vector<double>& range) {
   update();
 }
 
-void GLView::sceneTranslationChanged(const std::vector<double>&
-  translationVector) {
+void GLView::sceneTranslationChanged(const std::vector<double>& translation) {
   update();
 }
 
-void GLView::sceneRotationChanged(const std::vector<double>& rotationVector) {
+void GLView::sceneRotationChanged(const std::vector<double>& rotation) {
   update();
 }
 
-void GLView::sceneScaleChanged(double f64Scale) {
+void GLView::sceneScaleChanged(double scale) {
   update();
 }

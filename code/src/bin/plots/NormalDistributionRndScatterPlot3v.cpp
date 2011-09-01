@@ -30,8 +30,7 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
   std::vector<Eigen::Matrix<double, 3, 1> > data;
   NormalDistribution<3> dist;
-  for (size_t i = 0; i < 100000; ++i)
-    data.push_back(dist.getSample());
+  dist.getSamples(data, 100000);
   ScatterPlot<3> plot("NormalDistributionRndScatterPlot3v", data);
   plot.show();
   return app.exec();

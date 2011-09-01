@@ -31,8 +31,7 @@ int main(int argc, char** argv) {
   std::vector<Eigen::Matrix<double, 3, 1> > data;
   StudentDistribution<3> dist(3.0, Eigen::Matrix<double, 3, 1>::Zero(),
     Eigen::Matrix<double, 3, 3>::Identity());
-  for (size_t i = 0; i < 100000; ++i)
-    data.push_back(dist.getSample());
+  dist.getSamples(data, 100000);
   ScatterPlot<3> plot("StudentDistributionRndScatterPlot3v", data);
   plot.show();
   return app.exec();
