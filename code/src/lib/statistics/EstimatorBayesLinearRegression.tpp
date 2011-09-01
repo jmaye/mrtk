@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <Eigen/QR>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -27,8 +25,8 @@ EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes(const
   Eigen::Matrix<double, M, 1>& mu , const Eigen::Matrix<double, M, M>& V,
   double nu, double sigma) :
   mPostCoeffDist(nu, mu, sigma * V),
-  mPostVarianceDist(nu, sigma),
-  //mPostPredDist(mu, ),
+  mPostVarianceDist(nu, sigma / nu),
+  mPostPredDist(nu, mu, V, sigma / nu),
   mMu(mu),
   mV(V),
   mNu(nu),
@@ -108,66 +106,44 @@ getPostPredDist() const {
 }
 
 template <size_t M>
+void EstimatorBayes<LinearRegression<M>, M>::addPoint(const
+  Eigen::Matrix<double, M, 1>& point) {
+  Eigen::Matrix<double, M, 1> inputPoint;
+  inputPoint(0) = 1.0;
+  inputPoint.segment(1, M - 1) = point.segment(0, M - 1);
+  Eigen::Matrix<double, M, 1> newMu = (mV.inverse() + inputPoint *
+    inputPoint.transpose()).inverse() * (mV.inverse() * mMu +
+    inputPoint * point(M - 1));
+  Eigen::Matrix<double, M, M> newV = (mV.inverse() + inputPoint *
+    inputPoint.transpose()).inverse();
+  double newNu = mNu + 1;
+  double newSigma = mSigma + (point(M - 1) * point(M - 1) +
+    (mMu.transpose() * mV.inverse() * mMu)(0) - (newMu.transpose() *
+    newV.inverse() * newMu)(0));
+  mMu = newMu;
+  mV = newV;
+  mNu = newNu;
+  mSigma = newSigma;
+  mPostVarianceDist.setDegrees(mNu);
+  mPostVarianceDist.setScale(mSigma / mNu);
+  mPostCoeffDist.setDegrees(mNu);
+  mPostCoeffDist.setLocation(mMu);
+  mPostCoeffDist.setScale(mSigma * mV / mNu);
+  mPostPredDist.setDegrees(mNu);
+  mPostPredDist.setCoefficients(mMu);
+  mPostPredDist.setCoeffCovariance(mV);
+  mPostPredDist.setRegressionVariance(mSigma / mNu);
+}
+
+template <size_t M>
 void EstimatorBayes<LinearRegression<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points) {
-  Eigen::Matrix<double, Eigen::Dynamic, 1> weights =
-    Eigen::Matrix<double, Eigen::Dynamic, 1>::Ones(points.size());
-  return addPoints(points, weights);
+  for (size_t i = 0; i < points.size(); ++i)
+    addPoint(points[i]);
 }
 
 template <size_t M>
 void EstimatorBayes<LinearRegression<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points, const
   Eigen::Matrix<double, Eigen::Dynamic, 1>& weights) {
-/*  reset();*/
-/*  mNumPoints = points.size();*/
-/*  if ((size_t)weights.size() != mNumPoints)*/
-/*    return;*/
-/*  Eigen::Matrix<double, Eigen::Dynamic, 1> targets(mNumPoints);*/
-/*  Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(mNumPoints, (int)M);*/
-/*  for (size_t i = 0; i < mNumPoints; ++i) {*/
-/*    targets(i) = points[i](M - 1);*/
-/*    designMatrix(i, 0) = 1.0;*/
-/*    designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);*/
-/*  }*/
-/*  Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =*/
-/*    (weights.asDiagonal() * designMatrix).qr();*/
-/*  if (mNumPoints > M && qrDecomp.rank() == M) {*/
-/*    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coeff;*/
-/*    qrDecomp.solve(weights.asDiagonal() * targets, &coeff);*/
-/*    mSampleCoeff = coeff;*/
-/*    mSampleRegressionVariance = ((targets - designMatrix **/
-/*      mSampleCoeff).transpose() * weights.asDiagonal() * (targets -*/
-/*      designMatrix * mSampleCoeff))(0) / (points.size() - M);*/
-/*    Eigen::Matrix<double, M, M> invR = qrDecomp.matrixR().inverse();*/
-/*    mSampleCoeffCovariance = invR * invR.transpose();*/
-
-/*    Eigen::Matrix<double, M, 1> mNewMu = (mV.inverse() + designMatrix **/
-/*      designMatrix.transpose()).inverse() * (mV.inverse() * mMu +*/
-/*      designMatrix.transpose() * targets);*/
-/*    Eigen::Matrix<double, M, 1> mNewMu = mMu;*/
-/*    Eigen::Matrix<double, M, M> mNewV = (mV.inverse() + designMatrix **/
-/*      designMatrix.transpose()).inverse();*/
-/*    double mNewNu = mNu + mNumPoints;*/
-/*    double mNewSigma = mSigma + ((targets.transpose() * targets)(0) +*/
-/*      (mMu.transpose() * mV.inverse() * mMu)(0) - (mNewMu.transpose() **/
-/*      mNewV.inverse() * mNewMu)(0));*/
-/*    mMu = mNewMu;*/
-/*    mV = mNewV;*/
-/*    mNu = mNewNu;*/
-/*    mSigma = mNewSigma;*/
-
-/*    mPostVarianceDist.setDegrees(mNumPoints - M);*/
-/*    mPostVarianceDist.setScale(mSampleRegressionVariance);*/
-/*    mPostCoeffDist.setDegrees(mNumPoints - M);*/
-/*    mPostCoeffDist.setLocation(mSampleCoeff);*/
-/*    mPostCoeffDist.setScale(mSampleRegressionVariance * mSampleCoeffCovariance);*/
-/*    mPostPredDist.setDegrees(mNumPoints - M);*/
-/*    mPostPredDist.setCoefficients(mSampleCoeff);*/
-/*    mPostPredDist.setCoeffCovariance(mSampleCoeffCovariance);*/
-/*    mPostPredDist.setRegressionVariance(mSampleRegressionVariance);*/
-/*    mValid = true;*/
-/*  }*/
-/*  else*/
-/*    mValid = false;*/
 }

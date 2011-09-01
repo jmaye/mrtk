@@ -62,6 +62,8 @@ public:
   const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
   /// Returns the posterior predictive distribution
   const LinearRegressionPred<M>& getPostPredDist() const;
+  /// Add point to the estimator
+  void addPoint(const Eigen::Matrix<double, M, 1>& point);
   /// Add points to the estimator
   void addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points);
   /// Add points to the estimator with weights
