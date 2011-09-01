@@ -183,15 +183,16 @@ size_t EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
 addPoints(const std::vector<double>& points) {
   size_t numIter = 0;
   reset();
+  size_t K = mWeights.size();
   if (points.size()) {
     mNumPoints += points.size();
-    mResponsibilities.resize(points.size(), N);
+    mResponsibilities.resize(points.size(), K);
     double oldLogLikelihood = -std::numeric_limits<double>::infinity();
     while (numIter != mMaxNumIter) {
       double newLogLikelihood = 0;
       for (size_t i = 0; i < points.size(); ++i) {
         double probability = 0.0;
-        for (size_t j = 0; j < N; ++j) {
+        for (size_t j = 0; j < K; ++j) {
           mResponsibilities(i, j) = mWeights(j) *
             NormalDistribution<1>(mMeans(j), mVariances(j))(points[i]);
           probability += mResponsibilities(i, j);
@@ -203,17 +204,17 @@ addPoints(const std::vector<double>& points) {
         break;
       oldLogLikelihood = newLogLikelihood;
       Eigen::Matrix<double, N, 1> numPoints;
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < K; ++j)
         numPoints(j) = mResponsibilities.col(j).sum();
       mWeights = numPoints / points.size();
-      mMeans = Eigen::Matrix<double, N, 1>::Zero();
+      mMeans = Eigen::Matrix<double, N, 1>::Zero(K);
       for (size_t i = 0; i < points.size(); ++i)
-        for (size_t j = 0; j < N; ++j)
+        for (size_t j = 0; j < K; ++j)
           mMeans(j) += mResponsibilities(i, j) * points[i];
       mMeans.cwise() /= numPoints;
-      mVariances = Eigen::Matrix<double, N, 1>::Zero();
+      mVariances = Eigen::Matrix<double, N, 1>::Zero(K);
       for (size_t i = 0; i < points.size(); ++i)
-        for (size_t j = 0; j < N; ++j)
+        for (size_t j = 0; j < K; ++j)
           mVariances(j) += mResponsibilities(i, j) * (points[i] - mMeans(j)) *
             (points[i] - mMeans(j));
       mVariances.cwise() /= numPoints;

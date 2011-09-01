@@ -22,7 +22,6 @@
 
 template <size_t M>
 EstimatorML<MultinomialDistribution<M>, M>::EstimatorML(size_t numTrials) :
-  mSuccessProbabilities(Eigen::Matrix<double, M, 1>::Zero()),
   mNumTrials(numTrials),
   mNumPoints(0),
   mValid(false) {
@@ -109,22 +108,23 @@ template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::reset() {
   mNumPoints = 0;
   mValid = false;
-  mSuccessProbabilities = Eigen::Matrix<double, M, 1>::Zero();
 }
 
 template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::addPoint(const
   Eigen::Matrix<size_t, M, 1>& point) {
+  if (mNumPoints == 0)
+    mSuccessProbabilities = Eigen::Matrix<double, M, 1>::Zero(point.size(), 1);
   if (point.sum() != mNumTrials)
     return;
   mNumPoints++;
   if (mNumPoints == 1) {
-    for (size_t i = 0; i < M; ++i)
+    for (size_t i = 0; i < (size_t)point.size(); ++i)
       mSuccessProbabilities(i) += point(i) / (double)mNumTrials;
     mValid = true;
   }
   else {
-    for (size_t i = 0; i < M; ++i)
+    for (size_t i = 0; i < (size_t)point.size(); ++i)
       mSuccessProbabilities(i) += 1.0 / mNumPoints * (point(i) /
         (double)mNumTrials - mSuccessProbabilities(i));
   }

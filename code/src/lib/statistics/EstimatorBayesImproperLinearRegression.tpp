@@ -24,9 +24,6 @@
 
 template <size_t M>
 EstimatorBayesImproper<LinearRegression<M>, M>::EstimatorBayesImproper() :
-  mSampleCoeff(Eigen::Matrix<double, M, 1>::Zero()),
-  mSampleCoeffCovariance(Eigen::Matrix<double, M, M>::Identity()),
-  mSampleRegressionVariance(0),
   mNumPoints(0),
   mValid(false) {
 }
@@ -155,9 +152,6 @@ bool EstimatorBayesImproper<LinearRegression<M>, M>::getValid() const {
 
 template <size_t M>
 void EstimatorBayesImproper<LinearRegression<M>, M>::reset() {
-  mSampleCoeff = Eigen::Matrix<double, M, 1>::Zero();
-  mSampleCoeffCovariance = Eigen::Matrix<double, M, M>::Identity();
-  mSampleRegressionVariance = 0;
   mNumPoints = 0;
   mValid = false;
 }
@@ -176,32 +170,37 @@ void EstimatorBayesImproper<LinearRegression<M>, M>::addPoints(const
   Eigen::Matrix<double, Eigen::Dynamic, 1>& weights) {
   reset();
   mNumPoints = points.size();
+  size_t dim;
+  if (mNumPoints != 0)
+    dim = points[0].size();
+  else
+    return;
   if ((size_t)weights.size() != mNumPoints)
     return;
   Eigen::Matrix<double, Eigen::Dynamic, 1> targets(mNumPoints);
-  Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(mNumPoints, (int)M);
+  Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(mNumPoints, (int)dim);
   for (size_t i = 0; i < mNumPoints; ++i) {
-    targets(i) = points[i](M - 1);
+    targets(i) = points[i](dim - 1);
     designMatrix(i, 0) = 1.0;
-    designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
+    designMatrix.row(i).segment(1, dim - 1) = points[i].segment(0, dim - 1);
   }
   Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =
     (weights.asDiagonal() * designMatrix).qr();
-  if (mNumPoints > M && qrDecomp.rank() == M) {
+  if (mNumPoints > dim && (size_t)qrDecomp.rank() == dim) {
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coeff;
     qrDecomp.solve(weights.asDiagonal() * targets, &coeff);
     mSampleCoeff = coeff;
     mSampleRegressionVariance = ((targets - designMatrix *
       mSampleCoeff).transpose() * weights.asDiagonal() * (targets -
-      designMatrix * mSampleCoeff))(0) / (points.size() - M);
+      designMatrix * mSampleCoeff))(0) / (points.size() - dim);
     Eigen::Matrix<double, M, M> invR = qrDecomp.matrixR().inverse();
     mSampleCoeffCovariance = invR * invR.transpose();
-    mPostVarianceDist.setDegrees(mNumPoints - M);
+    mPostVarianceDist.setDegrees(mNumPoints - dim);
     mPostVarianceDist.setScale(mSampleRegressionVariance);
-    mPostCoeffDist.setDegrees(mNumPoints - M);
+    mPostCoeffDist.setDegrees(mNumPoints - dim);
     mPostCoeffDist.setLocation(mSampleCoeff);
     mPostCoeffDist.setScale(mSampleRegressionVariance * mSampleCoeffCovariance);
-    mPostPredDist.setDegrees(mNumPoints - M);
+    mPostPredDist.setDegrees(mNumPoints - dim);
     mPostPredDist.setCoefficients(mSampleCoeff);
     mPostPredDist.setCoeffCovariance(mSampleCoeffCovariance);
     mPostPredDist.setRegressionVariance(mSampleRegressionVariance);

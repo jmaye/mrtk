@@ -24,8 +24,6 @@
 
 template <size_t M>
 EstimatorML<LinearRegression<M>, M>::EstimatorML() :
-  mCoefficients(Eigen::Matrix<double, M, 1>::Zero()),
-  mVariance(0),
   mNumPoints(0),
   mValid(false) {
 }
@@ -107,8 +105,6 @@ double EstimatorML<LinearRegression<M>, M>::getVariance() const {
 
 template <size_t M>
 void EstimatorML<LinearRegression<M>, M>::reset() {
-  mCoefficients = Eigen::Matrix<double, M, 1>::Zero();
-  mVariance = 0;
   mNumPoints = 0;
   mValid = false;
 }
@@ -127,18 +123,23 @@ void EstimatorML<LinearRegression<M>, M>::addPoints(const
   Eigen::Matrix<double, Eigen::Dynamic, 1>& weights) {
   reset();
   mNumPoints = points.size();
+  size_t dim;
+  if (mNumPoints != 0)
+    dim = points[0].size();
+  else
+    return;
   if ((size_t)weights.size() != mNumPoints)
     return;
   Eigen::Matrix<double, Eigen::Dynamic, 1> targets(mNumPoints);
-  Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(mNumPoints, (int)M);
+  Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(mNumPoints, (int)dim);
   for (size_t i = 0; i < mNumPoints; ++i) {
-    targets(i) = points[i](M - 1);
+    targets(i) = points[i](dim - 1);
     designMatrix(i, 0) = 1.0;
-    designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
+    designMatrix.row(i).segment(1, dim - 1) = points[i].segment(0, dim - 1);
   }
   Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =
     (weights.asDiagonal() * designMatrix).qr();
-  if (mNumPoints > M && qrDecomp.rank() == M) {
+  if (mNumPoints > dim && (size_t)qrDecomp.rank() == dim) {
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coeff;
     qrDecomp.solve(weights.asDiagonal() * targets, &coeff);
     mCoefficients = coeff;

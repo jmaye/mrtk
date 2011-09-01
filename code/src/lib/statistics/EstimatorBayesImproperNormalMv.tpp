@@ -24,8 +24,6 @@
 
 template <size_t M>
 EstimatorBayesImproper<NormalDistribution<M>, M>::EstimatorBayesImproper() :
-  mSampleMean(Eigen::Matrix<double, M, 1>::Zero()),
-  mSampleCovariance(Eigen::Matrix<double, M, M>::Zero()),
   mNumPoints(0),
   mValid(false) {
 }
@@ -144,26 +142,29 @@ template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M>, M>::reset() {
   mNumPoints = 0;
   mValid = false;
-  mSampleMean = Eigen::Matrix<double, M, 1>::Zero();
-  mSampleCovariance = Eigen::Matrix<double, M, M>::Zero();
 }
 
 template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M>, M>::addPoint(const
   Eigen::Matrix<double, M, 1>& point) {
+  if (mNumPoints == 0) {
+    mSampleMean = Eigen::Matrix<double, M, 1>::Zero(point.size());
+    mSampleCovariance = Eigen::Matrix<double, M, M>::Zero(point.size(),
+      point.size());
+  }
   mNumPoints++;
   mSampleMean += 1.0 / mNumPoints * (point - mSampleMean);
   if (mNumPoints > 1)
     mSampleCovariance += 1.0 / (mNumPoints - 1) * ((point - mSampleMean) *
       (point - mSampleMean).transpose() - mSampleCovariance);
   Eigen::QR<Eigen::Matrix<double, M, M> > qrDecomp = mSampleCovariance.qr();
-  if (qrDecomp.rank() == M) {
-    mPostMeanDist.setDegrees(mNumPoints - M);
+  if (qrDecomp.rank() == mSampleMean.size()) {
+    mPostMeanDist.setDegrees(mNumPoints - mSampleMean.size());
     mPostMeanDist.setLocation(mSampleMean);
     mPostMeanDist.setScale(mSampleCovariance / mNumPoints);
     mPostCovarianceDist.setDegrees(mNumPoints - 1);
     mPostCovarianceDist.setScale(mSampleCovariance);
-    mPostPredDist.setDegrees(mNumPoints - M);
+    mPostPredDist.setDegrees(mNumPoints - mSampleMean.size());
     mPostPredDist.setLocation(mSampleMean);
     mPostPredDist.setScale(mSampleCovariance * (1 + 1.0 / mNumPoints));
     mValid = true;

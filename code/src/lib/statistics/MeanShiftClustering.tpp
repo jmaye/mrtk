@@ -45,20 +45,22 @@ void MeanShiftClustering<T, M>::cluster(const
       "MeanShiftClustering::cluster(): input points vector is empty",
       __FILE__, __LINE__);
 
+  size_t dim = data[0].size();
+
   std::list<size_t> activePoints;
   for (size_t i = 0; i < data.size(); ++i)
     activePoints.push_back(i);
 
   Randomizer<size_t> randomizer;
 
-  ANNpointArray annPoints = annAllocPts(data.size(), M);
+  ANNpointArray annPoints = annAllocPts(data.size(), dim);
 
   for (size_t i = 0; i < data.size(); ++i) {
-    for (size_t j = 0; j < M; ++j)
+    for (size_t j = 0; j < dim; ++j)
       annPoints[i][j] = data[i](j);
   }
 
-  ANNkd_tree* pKdTree =  new ANNkd_tree(annPoints, data.size(), M);
+  ANNkd_tree* pKdTree =  new ANNkd_tree(annPoints, data.size(), dim);
   std::vector<Eigen::Matrix<size_t, Eigen::Dynamic, 1> > clusterVotes;
   while (activePoints.size()) {
     size_t idx = 0;
@@ -72,8 +74,8 @@ void MeanShiftClustering<T, M>::cluster(const
     Eigen::Matrix<size_t, Eigen::Dynamic, 1> currentClusterVotes =
       Eigen::Matrix<size_t, Eigen::Dynamic, 1>::Zero(data.size());
     while (true) {
-      ANNpoint point = annAllocPt(M);
-      for (size_t i = 0; i < M; ++i)
+      ANNpoint point = annAllocPt(dim);
+      for (size_t i = 0; i < dim; ++i)
         point[i] = mean(i);
       int numPoints = pKdTree->annkFRSearch(point, bandwidth * bandwidth, 0);
       ANNidxArray idx = new ANNidx[numPoints];

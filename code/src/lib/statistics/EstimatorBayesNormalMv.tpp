@@ -24,9 +24,10 @@ template <size_t M>
 EstimatorBayes<NormalDistribution<M>, M>::EstimatorBayes(const
   Eigen::Matrix<double, M, 1>& mu, double kappa, double nu, const
   Eigen::Matrix<double, M, M>& sigma) :
-  mPostMeanDist(nu - M + 1, mu, sigma / kappa / (nu - M + 1)),
+  mPostMeanDist(nu - mu.size() + 1, mu, sigma / kappa / (nu - mu.size() + 1)),
   mPostCovarianceDist(nu, sigma / nu),
-  mPostPredDist(nu - M + 1, mu, sigma * (kappa + 1) / kappa / (nu - M + 1)),
+  mPostPredDist(nu - mu.size() + 1, mu, sigma * (kappa + 1) / kappa /
+    (nu - mu.size() + 1)),
   mMu(mu),
   mKappa(kappa),
   mNu(nu),
@@ -126,17 +127,18 @@ void EstimatorBayes<NormalDistribution<M>, M>::addPoint(const
   mKappa = newKappa;
   mNu = newNu;
   mSigma = newSigma;
-  for (size_t i = 0; i < M; ++i)
-    for (size_t j = i + 1; j < M; ++j)
+  for (size_t i = 0; i < (size_t)mMu.size(); ++i)
+    for (size_t j = i + 1; j < (size_t)mMu.size(); ++j)
       mSigma(i, j) = mSigma(j, i);
-  mPostMeanDist.setDegrees(mNu - M + 1);
+  mPostMeanDist.setDegrees(mNu - mMu.size() + 1);
   mPostMeanDist.setLocation(mMu);
-  mPostMeanDist.setScale(mSigma / mKappa / (mNu - M + 1));
+  mPostMeanDist.setScale(mSigma / mKappa / (mNu - mMu.size() + 1));
   mPostCovarianceDist.setDegrees(mNu);
   mPostCovarianceDist.setScale(mSigma / mNu);
-  mPostPredDist.setDegrees(mNu - M + 1);
+  mPostPredDist.setDegrees(mNu - mMu.size() + 1);
   mPostPredDist.setLocation(mMu);
-  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / (mNu - M + 1));
+  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa /
+    (mNu - mMu.size() + 1));
 }
 
 template <size_t M>
@@ -144,6 +146,4 @@ void EstimatorBayes<NormalDistribution<M>, M>::addPoints(const
   std::vector<Eigen::Matrix<double, M, 1> >& points) {
   for (size_t i = 0; i < points.size(); ++i)
     addPoint(points[i]);
-  std::cout << "Pred mean: " << mPostPredDist.getMean() << std::endl;
-  std::cout << "Pred cov: " << mPostPredDist.getCovariance() << std::endl;
 }

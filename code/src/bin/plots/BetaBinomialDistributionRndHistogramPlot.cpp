@@ -29,7 +29,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<size_t, 1> hist(0, 20, 1);
-  DCMDistribution<2> dist(20, Eigen::Matrix<double, 2, 1>(10, 10));
+  DCMDistribution<2> dist(20, Eigen::Matrix<double, 2, 1>(5, 5));
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample()(1));
   std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;

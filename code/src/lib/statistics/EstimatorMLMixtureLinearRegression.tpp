@@ -183,23 +183,25 @@ size_t EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>::
   addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points) {
   size_t numIter = 0;
   reset();
+  size_t K = mWeights.size();
+  size_t dim = mCoefficients.cols();
   if (points.size()) {
     mNumPoints += points.size();
     Eigen::Matrix<double, Eigen::Dynamic, 1> targets(points.size());
     Eigen::Matrix<double, Eigen::Dynamic, M> designMatrix(points.size(),
-      (int)M);
+      (int)dim);
     for (size_t i = 0; i < points.size(); ++i) {
-      targets(i) = points[i](M - 1);
+      targets(i) = points[i](dim - 1);
       designMatrix(i, 0) = 1.0;
-      designMatrix.row(i).segment(1, M - 1) = points[i].segment(0, M - 1);
+      designMatrix.row(i).segment(1, dim - 1) = points[i].segment(0, dim - 1);
     }
     double oldLogLikelihood = -std::numeric_limits<double>::infinity();
-    mResponsibilities.resize(points.size(), N);
+    mResponsibilities.resize(points.size(), K);
     while (numIter != mMaxNumIter) {
       double newLogLikelihood = 0.0;
       for (size_t i = 0; i < points.size(); ++i) {
         double probability = 0.0;
-        for (size_t j = 0; j < N; ++j) {
+        for (size_t j = 0; j < K; ++j) {
           mResponsibilities(i, j) = mWeights(j) *
             NormalDistribution<1>((mCoefficients.row(j) * designMatrix.row(i).
               transpose())(0), mVariances(j))(targets(i));
@@ -212,13 +214,13 @@ size_t EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N>::
         break;
       oldLogLikelihood = newLogLikelihood;
       Eigen::Matrix<double, N, 1> numPoints;
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < K; ++j)
         numPoints(j) = mResponsibilities.col(j).sum();
       mWeights = numPoints / points.size();
-      for (size_t j = 0; j < N; ++j) {
+      for (size_t j = 0; j < K; ++j) {
         Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =
           (mResponsibilities.col(j).asDiagonal() * designMatrix).qr();
-        if (numPoints(j) > M && qrDecomp.rank() == M) {
+        if (numPoints(j) > dim && (size_t)qrDecomp.rank() == dim) {
           Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coeff;
           qrDecomp.solve(mResponsibilities.col(j).asDiagonal() * targets,
             &coeff);

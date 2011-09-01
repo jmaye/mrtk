@@ -42,13 +42,15 @@ size_t KMeansClustering<T, M>::cluster(const
       "KMeansClustering::cluster(): input points vector is empty",
       __FILE__, __LINE__);
 
-  ANNpointArray clusterCentersANN = annAllocPts(k, M);
+  size_t dim = data[0].size();
+
+  ANNpointArray clusterCentersANN = annAllocPts(k, dim);
 
   Randomizer<size_t> randomizer;
 
   for (size_t i = 0; i < k; ++i) {
     size_t idx = randomizer.sampleUniform(0, data.size() - 1);
-    for (size_t j = 0; j < M; ++j)
+    for (size_t j = 0; j < dim; ++j)
       clusterCentersANN[i][j] = data[idx](j);
   }
 
@@ -64,7 +66,7 @@ size_t KMeansClustering<T, M>::cluster(const
   clusterCentersOld.resize(k);
 
   while (iteration != maxIterations) {
-    ANNkd_tree* pKdTree =  new ANNkd_tree(clusterCentersANN, k, M);
+    ANNkd_tree* pKdTree =  new ANNkd_tree(clusterCentersANN, k, dim);
 
     clusterToData.clear();
     clusterToData.resize(k);
@@ -72,8 +74,8 @@ size_t KMeansClustering<T, M>::cluster(const
     dataToCluster.resize(data.size());
 
     for (size_t i = 0; i < data.size(); ++i) {
-      ANNpoint point = annAllocPt(M);
-      for (size_t j = 0; j < M; j++)
+      ANNpoint point = annAllocPt(dim);
+      for (size_t j = 0; j < dim; j++)
         point[j] = data[i](j);
       pKdTree->annkSearch(point, 1, idx, dist, 0);
       clusterToData[idx[0]].push_back(i);
@@ -91,7 +93,7 @@ size_t KMeansClustering<T, M>::cluster(const
       }
       if (clusterToData[i].size())
         clusterCenters[i] /= clusterToData[i].size();
-      for (size_t j = 0; j < M; ++j) {
+      for (size_t j = 0; j < dim; ++j) {
         clusterCentersANN[i][j] = clusterCenters[i](j);
         if (iteration)
           dist += (clusterCenters[i] - clusterCentersOld[i]).norm();

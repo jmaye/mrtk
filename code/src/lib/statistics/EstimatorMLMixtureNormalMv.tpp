@@ -187,17 +187,19 @@ size_t EstimatorML<MixtureDistribution<NormalDistribution<M>, N>, M, N>::
 addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points) {
   size_t numIter = 0;
   reset();
-  if (mMeans.size() != N || mCovariances.size() != N)
+  size_t K = mWeights.size();
+  if (mMeans.size() != K || mCovariances.size() != K)
     return numIter;
+  size_t dim = mMeans[0].size();
   if (points.size()) {
     mNumPoints += points.size();
-    mResponsibilities.resize(points.size(), N);
+    mResponsibilities.resize(points.size(), K);
     double oldLogLikelihood = -std::numeric_limits<double>::infinity();
     while (numIter != mMaxNumIter) {
       double newLogLikelihood = 0;
       for (size_t i = 0; i < points.size(); ++i) {
         double probability = 0.0;
-        for (size_t j = 0; j < N; ++j) {
+        for (size_t j = 0; j < K; ++j) {
           mResponsibilities(i, j) = mWeights(j) *
             NormalDistribution<M>(mMeans[j], mCovariances[j])(points[i]);
           probability += mResponsibilities(i, j);
@@ -209,27 +211,27 @@ addPoints(const std::vector<Eigen::Matrix<double, M, 1> >& points) {
         break;
       oldLogLikelihood = newLogLikelihood;
       Eigen::Matrix<double, N, 1> numPoints;
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < K; ++j)
         numPoints(j) = mResponsibilities.col(j).sum();
       mWeights = numPoints / points.size();
-      for (size_t j = 0; j < N; ++j) {
-        mMeans[j] = Eigen::Matrix<double, M, 1>::Zero();
-        mCovariances[j] = Eigen::Matrix<double, M, M>::Zero();
+      for (size_t j = 0; j < K; ++j) {
+        mMeans[j] = Eigen::Matrix<double, M, 1>::Zero(dim);
+        mCovariances[j] = Eigen::Matrix<double, M, M>::Zero(dim, dim);
       }
       for (size_t i = 0; i < points.size(); ++i)
-        for (size_t j = 0; j < N; ++j)
+        for (size_t j = 0; j < K; ++j)
           mMeans[j] += mResponsibilities(i, j) * points[i];
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < K; ++j)
         mMeans[j] /= numPoints(j);
       for (size_t i = 0; i < points.size(); ++i)
-        for (size_t j = 0; j < N; ++j)
+        for (size_t j = 0; j < K; ++j)
           mCovariances[j] += mResponsibilities(i, j) * (points[i] - mMeans[j]) *
             (points[i] - mMeans[j]).transpose();
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < K; ++j)
         mCovariances[j] /= numPoints(j);
-      for (size_t k = 0; k < N; ++k)
-        for (size_t i = 0; i < M; ++i)
-          for (size_t j = i + 1; j < M; ++j)
+      for (size_t k = 0; k < K; ++k)
+        for (size_t i = 0; i < dim; ++i)
+          for (size_t j = i + 1; j < dim; ++j)
             mCovariances[k](i, j) = mCovariances[k](j, i);
       numIter++;
     }

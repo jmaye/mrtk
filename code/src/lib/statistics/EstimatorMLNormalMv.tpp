@@ -24,8 +24,6 @@
 
 template <size_t M>
 EstimatorML<NormalDistribution<M>, M>::EstimatorML() :
-  mMean(Eigen::Matrix<double, M, 1>::Zero()),
-  mCovariance(Eigen::Matrix<double, M, M>::Zero()),
   mNumPoints(0),
   mValid(false) {
 }
@@ -118,12 +116,17 @@ void EstimatorML<NormalDistribution<M>, M>::reset() {
 template <size_t M>
 void EstimatorML<NormalDistribution<M>, M>::addPoint(const
   Eigen::Matrix<double, M, 1>& point) {
+  if (mNumPoints == 0) {
+    mMean = Eigen::Matrix<double, M, 1>::Zero(point.size());
+    mCovariance = Eigen::Matrix<double, M, M>::Zero(point.size(),
+      point.size());
+  }
   mNumPoints++;
   mMean += 1.0 / mNumPoints * (point - mMean);
   mCovariance += 1.0 / mNumPoints * ((point - mMean) *
     (point - mMean).transpose() - mCovariance);
   Eigen::QR<Eigen::Matrix<double, M, M> > qrDecomp = mCovariance.qr();
-  if (qrDecomp.rank() == M)
+  if (qrDecomp.rank() == mMean.size())
     mValid = true;
   else
     mValid = false;
