@@ -68,5 +68,22 @@ int main(int argc, char** argv) {
   std::cout << "dist.getSample(): " << std::endl << dist.getSample()
     << std::endl << std::endl;
 
+  std::cout << "Testing Wishart distribution M-D" << std::endl;
+  WishartDistribution<Eigen::Dynamic> distMd(6,
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Identity(4, 4));
+  std::cout << "distMd.getSample(): " << std::endl << distMd.getSample()
+    << std::endl;
+  std::cout << "distMd.getMean(): " << std::endl << distMd.getMean()
+    << std::endl;
+  std::cout << "distMd.getMode(): " << std::endl << distMd.getMode()
+    << std::endl;
+
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> sampleMean =
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Zero(4, 4);
+  for (size_t i = 0; i < 1000; ++i)
+    sampleMean += distMd.getSample();
+  sampleMean /= 1000;
+  std::cout << "sample mean: " << std::endl << sampleMean << std::endl;
+
   return 0;
 }

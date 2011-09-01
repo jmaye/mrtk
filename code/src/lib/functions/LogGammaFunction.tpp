@@ -22,38 +22,84 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename X, size_t M>
-LogGammaFunction<X, M>::LogGammaFunction() {
+template <typename X>
+LogGammaFunction<X>::LogGammaFunction(size_t dim) :
+  mDim(dim) {
 }
 
-LogGammaFunction<size_t, 1>::LogGammaFunction() {
+LogGammaFunction<size_t>::LogGammaFunction() {
 }
 
-template <typename X, size_t M>
-LogGammaFunction<X, M>::~LogGammaFunction() {
+template <typename X>
+LogGammaFunction<X>::LogGammaFunction(const LogGammaFunction<X>& other) :
+  mDim(other.mDim) {
 }
 
-LogGammaFunction<size_t, 1>::~LogGammaFunction() {
+template <typename X>
+LogGammaFunction<X>& LogGammaFunction<X>::operator = (const LogGammaFunction<X>&
+  other) {
+  if (this != &other) {
+    mDim = other.mDim;
+  }
+  return *this;
+}
+
+template <typename X>
+LogGammaFunction<X>::~LogGammaFunction() {
+}
+
+LogGammaFunction<size_t>::~LogGammaFunction() {
+}
+
+/******************************************************************************/
+/* Stream operations                                                          */
+/******************************************************************************/
+
+template <typename X>
+void LogGammaFunction<X>::read(std::istream& stream) {
+}
+
+template <typename X>
+void LogGammaFunction<X>::write(std::ostream& stream) const {
+  stream << "dimension: " << mDim;
+}
+
+template <typename X>
+void LogGammaFunction<X>::read(std::ifstream& stream) {
+}
+
+template <typename X>
+void LogGammaFunction<X>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename X, size_t M>
-double LogGammaFunction<X, M>::getValue(const X& argument) const {
+template <typename X>
+double LogGammaFunction<X>::getValue(const X& argument) const {
   double sum = 0.0;
-  for (size_t i = 0; i < M; ++i) {
+  for (size_t i = 0; i < mDim; ++i) {
     sum += lgamma(argument - 0.5 * i);
   }
-  return sum + M * (M - 1) * 0.25 * log(M_PI);
+  return sum + mDim * (mDim - 1) * 0.25 * log(M_PI);
 }
 
-double LogGammaFunction<size_t, 1>::getValue(const size_t& argument) const
+double LogGammaFunction<size_t>::getValue(const size_t& argument) const
   throw (BadArgumentException<size_t>) {
   if (argument)
     return LogFactorialFunction::getValue(argument - 1);
   else throw BadArgumentException<size_t>(argument,
     "LogGammaFunction<size_t>::getValue(): argument must be strictly positive",
     __FILE__, __LINE__);
+}
+
+template <typename X>
+size_t LogGammaFunction<X>::getDim() const {
+  return mDim;
+}
+
+template <typename X>
+void LogGammaFunction<X>::setDim(size_t dim) {
+  mDim = dim;
 }

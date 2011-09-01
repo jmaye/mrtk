@@ -27,28 +27,24 @@
 #include "functions/ContinuousFunction.h"
 #include "functions/FactorialFunction.h"
 #include "exceptions/BadArgumentException.h"
+#include "base/Serializable.h"
 
 /** The GammaFunction class represents the gamma function for real numbers.
     \brief Gamma function for real numbers
   */
-template <typename X = size_t, size_t M = 1> class GammaFunction :
-  public ContinuousFunction<double, X> {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  GammaFunction(const GammaFunction<X, M>& other);
-  /// Assignment operator
-  GammaFunction& operator = (const GammaFunction<X, M>& other);
-  /** @}
-    */
-
+template <typename X = size_t> class GammaFunction :
+  public ContinuousFunction<double, X>,
+  public virtual Serializable {
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Default constructor
-  GammaFunction();
+  /// Constructs gamma function with parameter
+  GammaFunction(size_t dim = 1.0);
+  /// Copy constructor
+  GammaFunction(const GammaFunction<X>& other);
+  /// Assignment operator
+  GammaFunction& operator = (const GammaFunction<X>& other);
   /// Destructor
   virtual ~GammaFunction();
   /** @}
@@ -57,19 +53,44 @@ public:
   /** \name Accessors
     @{
     */
+  /// Returns the dimension
+  size_t getDim() const;
+  /// Sets the dimension
+  void setDim(size_t dim);
   /// Access the function value for the given argument
   virtual double getValue(const X& argument) const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
+  /** \name Protected members
+    @{
+    */
+  /// Dimensionality parameter
+  size_t mDim;
+  /** @}
+    */
 
 };
 
 /** The GammaFunction class represents the gamma function for integer numbers.
     \brief Gamma function for integer numbers
   */
-template <> class GammaFunction<size_t, 1> :
+template <> class GammaFunction<size_t> :
   public FactorialFunction {
   /** \name Private constructors
     @{

@@ -22,38 +22,83 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename X, size_t M>
-GammaFunction<X, M>::GammaFunction() {
+template <typename X>
+GammaFunction<X>::GammaFunction(size_t dim) :
+  mDim(dim) {
 }
 
-GammaFunction<size_t, 1>::GammaFunction() {
+GammaFunction<size_t>::GammaFunction() {
 }
 
-template <typename X, size_t M>
-GammaFunction<X, M>::~GammaFunction() {
+template <typename X>
+GammaFunction<X>::GammaFunction(const GammaFunction<X>& other) :
+  mDim(other.mDim) {
 }
 
-GammaFunction<size_t, 1>::~GammaFunction() {
+template <typename X>
+GammaFunction<X>& GammaFunction<X>::operator = (const GammaFunction<X>& other) {
+  if (this != &other) {
+    mDim = other.mDim;
+  }
+  return *this;
+}
+
+template <typename X>
+GammaFunction<X>::~GammaFunction() {
+}
+
+GammaFunction<size_t>::~GammaFunction() {
+}
+
+/******************************************************************************/
+/* Stream operations                                                          */
+/******************************************************************************/
+
+template <typename X>
+void GammaFunction<X>::read(std::istream& stream) {
+}
+
+template <typename X>
+void GammaFunction<X>::write(std::ostream& stream) const {
+  stream << "dimension: " << mDim;
+}
+
+template <typename X>
+void GammaFunction<X>::read(std::ifstream& stream) {
+}
+
+template <typename X>
+void GammaFunction<X>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename X, size_t M>
-double GammaFunction<X, M>::getValue(const X& argument) const {
+template <typename X>
+double GammaFunction<X>::getValue(const X& argument) const {
   double prod = 1.0;
-  for (size_t i = 0; i < M; ++i) {
+  for (size_t i = 0; i < mDim; ++i) {
     prod *= tgamma(argument - 0.5 * i);
   }
-  return prod * pow(M_PI, M * (M - 1) * 0.25);
+  return prod * pow(M_PI, mDim * (mDim - 1) * 0.25);
 }
 
-size_t GammaFunction<size_t, 1>::getValue(const size_t& argument) const
+size_t GammaFunction<size_t>::getValue(const size_t& argument) const
   throw (BadArgumentException<size_t>) {
   if (argument)
     return FactorialFunction::getValue(argument - 1);
   else throw BadArgumentException<size_t>(argument,
     "GammaFunction<size_t>::getValue(): argument must be strictly positive",
     __FILE__, __LINE__);
+}
+
+template <typename X>
+size_t GammaFunction<X>::getDim() const {
+  return mDim;
+}
+
+template <typename X>
+void GammaFunction<X>::setDim(size_t dim) {
+  mDim = dim;
 }

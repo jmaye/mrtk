@@ -26,7 +26,9 @@
 
 template <size_t M>
 InvWishartDistribution<M>::InvWishartDistribution(double degrees, const
-  Eigen::Matrix<double, M, M>& scale) {
+  Eigen::Matrix<double, M, M>& scale) :
+  mDegrees(degrees),
+  mScale(scale) {
   setDegrees(degrees);
   setScale(scale);
 }
@@ -87,7 +89,7 @@ void InvWishartDistribution<M>::write(std::ofstream& stream) const {
 template <size_t M>
 void InvWishartDistribution<M>::setDegrees(double degrees)
   throw (BadArgumentException<double>) {
-  if (degrees < M)
+  if (degrees < (size_t)mScale.rows())
     throw BadArgumentException<double>(degrees,
       "InvWishartDistribution<M>::setDegrees(): degrees must be strictly "
       "bigger than the dimension",
@@ -109,9 +111,9 @@ void InvWishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
       "InvWishartDistribution<M>::setScale(): scale must be positive definite",
       __FILE__, __LINE__);
   mDeterminant = scale.determinant();
-  LogGammaFunction<double, M> logGammaFunction;
-  mNormalizer = mDegrees * M * 0.5 * log(2) - mDegrees * 0.5 * log(mDeterminant)
-    + logGammaFunction(0.5 * mDegrees);
+  LogGammaFunction<double> logGammaFunction(mScale.rows());
+  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) - mDegrees * 0.5 *
+    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
   mScale = scale;
 }
 
@@ -138,12 +140,12 @@ const Eigen::LLT<Eigen::Matrix<double, M, M> >&
 
 template <size_t M>
 Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMean() const {
-  return mScale / (mDegrees - M - 1);
+  return mScale / (mDegrees - mScale.rows() - 1);
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMode() const {
-  return mScale / (mDegrees + M + 1);
+  return mScale / (mDegrees + mScale.rows() + 1);
 }
 
 template <size_t M>
@@ -159,18 +161,20 @@ double InvWishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>&
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(value,
       "InvWishartDistribution<M>::pdf(): value must be positive definite",
       __FILE__, __LINE__);
-  return -(mDegrees + M + 1) * 0.5 * log(value.determinant())
+  return -(mDegrees + mScale.rows() + 1) * 0.5 * log(value.determinant())
     - 0.5 * (mScale * value.inverse()).trace() - mNormalizer;
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getSample() const {
-  static NormalDistribution<M> normalDist;
+  static NormalDistribution<M> normalDist(
+    Eigen::Matrix<double, M, 1>::Zero(mScale.rows()), mScale);
   normalDist.setCovariance(mScale);
-  Eigen::Matrix<double, M, M> sample  = Eigen::Matrix<double, M, M>::Zero();
+  Eigen::Matrix<double, M, M> sample =
+    Eigen::Matrix<double, M, M>::Zero(mScale.rows(), mScale.rows());
   for (size_t i = 0; i < mDegrees; ++i) {
     Eigen::Matrix<double, M, 1> normSample = normalDist.getSample();
     sample += normSample * normSample.transpose();
   }
-  return sample;
+  return sample.inverse();
 }
