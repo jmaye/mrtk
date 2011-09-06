@@ -52,7 +52,8 @@ Grid<T, C, M>::Grid(const Grid& other) :
   mMinimum(other.mMinimum),
   mMaximum(other.mMaximum),
   mResolution(other.mResolution),
-  mNumCells(other.mNumCells) {
+  mNumCells(other.mNumCells),
+  mNumCellsTot(other.mNumCellsTot) {
 }
 
 template <typename T, typename C, size_t M>
@@ -63,6 +64,7 @@ Grid<T, C, M>& Grid<T, C, M>::operator = (const Grid<T, C, M>& other) {
     mMaximum = other.mMaximum;
     mResolution = other.mResolution;
     mNumCells = other.mNumCells;
+    mNumCellsTot = other.mNumCellsTot;
   }
   return *this;
 }
@@ -84,7 +86,7 @@ void Grid<T, C, M>::write(std::ostream& stream) const {
   stream << "minimum: " << mMinimum.transpose() << std::endl
     << "maximum: " << mMaximum.transpose() << std::endl
     << "resolution: " << mResolution.transpose() << std::endl
-    << "number of cells per dim: " << mNumCells.transpose() << std::endl
+    << "number of cells per dim: " << mNumCells.transpose() << std:: endl
     << "total number of cells: " << mNumCellsTot;
 }
 
