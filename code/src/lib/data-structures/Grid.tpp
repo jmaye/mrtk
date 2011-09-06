@@ -84,8 +84,9 @@ void Grid<T, C, M>::write(std::ostream& stream) const {
   stream << "minimum: " << mMinimum.transpose() << std::endl
     << "maximum: " << mMaximum.transpose() << std::endl
     << "resolution: " << mResolution.transpose() << std::endl
-    << "number of cells per dim: " << mNumCells.transpose() << std:: endl
-    << "total number of cells: " << mNumCellsTot;
+    << "number of cells per dim: " << mNumCells.transpose() << std::endl
+    << "total number of cells: " << mNumCellsTot << std::endl
+    << "content: " << std::endl << mCells;
 }
 
 template <typename T, typename C, size_t M>
@@ -174,13 +175,12 @@ typename Grid<T, C, M>::IndexType Grid<T, C, M>::getIndex(const
   if ((point.cwise() > mMaximum).any() || (point.cwise() < mMinimum).any())
     throw OutOfBoundException<CoordinateType>(point,
       "Grid<T, C, M>::operator (): point out of range", __FILE__, __LINE__);
-  IndexType idx(mResolution.size());
-  for (size_t i = 0; i < (size_t)mResolution.size(); ++i) {
+  IndexType idx(point.size());
+  for (size_t i = 0; i < (size_t)point.size(); ++i)
     if (point(i) == mMaximum(i))
       idx(i) = mNumCells(i) - 1;
     else
       idx(i) = (point(i) - mMinimum(i)) / mResolution(i);
-  }
   return idx;
 }
 
@@ -193,6 +193,19 @@ const C& Grid<T, C, M>::operator () (const Grid<T, C, M>::CoordinateType& point)
 template <typename T, typename C, size_t M>
 C& Grid<T, C, M>::operator () (const Grid<T, C, M>::CoordinateType& point) {
   return operator[](getIndex(point));
+}
+
+template <typename T, typename C, size_t M>
+typename Grid<T, C, M>::CoordinateType Grid<T, C, M>::getCoordinates(const
+  Grid<T, C, M>::IndexType& idx) const throw (OutOfBoundException<IndexType>) {
+  if ((idx.cwise() > mNumCells).any())
+    throw OutOfBoundException<IndexType>(idx,
+      "Grid<T, C, M>::getCoordinates(): index out of range",
+      __FILE__, __LINE__);
+  CoordinateType point(idx.size());
+  for (size_t i = 0; i < (size_t)idx.size(); ++i)
+    point[i] = mMinimum(i) + (idx(i) + 0.5) * mResolution(i);
+  return point;
 }
 
 template <typename T, typename C, size_t M>
