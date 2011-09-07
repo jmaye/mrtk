@@ -23,7 +23,7 @@
 template <size_t M>
 LinearRegression<M>::LinearRegression(const Eigen::Matrix<double, M, 1>&
   coefficients, double variance, const Eigen::Matrix<double, M, 1>& basis) :
-  NormalDistribution<1>((mCoefficients.transpose() * mBasis)(0), variance),
+  NormalDistribution<1>(mCoefficients.dot(mBasis), variance),
   mCoefficients(coefficients),
   mBasis(basis) {
 }
@@ -80,7 +80,7 @@ void LinearRegression<M>::write(std::ofstream& stream) const {
 template <size_t M>
 void LinearRegression<M>::setCoefficients(const Eigen::Matrix<double, M, 1>&
   coefficients) {
-  setMean((coefficients.transpose() * mBasis)(0));
+  setMean(coefficients.dot(mBasis));
   mCoefficients = coefficients;
 }
 
@@ -92,7 +92,7 @@ const Eigen::Matrix<double, M, 1>& LinearRegression<M>::getCoefficients()
 
 template <size_t M>
 void LinearRegression<M>::setBasis(const Eigen::Matrix<double, M, 1>& basis) {
-  setMean((mCoefficients.transpose() * basis)(0));
+  setMean(mCoefficients.dot(basis));
   mBasis = basis;
 }
 
