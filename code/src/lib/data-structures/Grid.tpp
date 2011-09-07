@@ -137,9 +137,8 @@ template <typename T, typename C, size_t M>
 size_t Grid<T, C, M>::computeLinearIndex(const Grid<T, C, M>::IndexType& idx)
   const {
   size_t linIdx = 0;
-  for (size_t i = 0; i < (size_t)idx.size(); ++i) {
+  for (size_t i = 0; i < (size_t)idx.size(); ++i)
     linIdx += mLinProd(i) * idx(i);
-  }
   return linIdx;
 }
 
