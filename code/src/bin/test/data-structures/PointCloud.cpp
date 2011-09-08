@@ -23,9 +23,13 @@
 #include "data-structures/PointCloud.h"
 
 int main (int argc, char** argv) {
-  PointCloud<double, 3> pointCloud;
+  PointCloud<double, 3> p1;
   std::cout << "Adding a point: " << std::endl;
-  pointCloud.addPoint(Eigen::Matrix<double, 3, 1>(0.0, 0.0, 0.1));
-  std::cout << "Number of points: " << pointCloud.getNumPoints() << std::endl;
+  p1.insertPoint(Eigen::Matrix<double, 3, 1>(0.0, 0.0, 0.1));
+  std::cout << "Initial number of points: " << p1.getNumPoints() << std::endl;
+  PointCloud<double, 3> p2;
+  p2.insertPoint(Eigen::Matrix<double, 3, 1>(1.0, 0.0, 0.1));
+  p1.merge(p2);
+  std::cout << "Final number of points: " << p1.getNumPoints() << std::endl;
   return 0;
 }
