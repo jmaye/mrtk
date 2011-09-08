@@ -42,13 +42,13 @@ public:
     @{
     */
   /// Point type
-  typedef Eigen::Matrix<X, M, 1> PointType;
+  typedef Eigen::Matrix<X, M, 1> Point;
   /// Constant iterator type
-  typedef typename std::vector<PointType>::const_iterator ConstIteratorType;
+  typedef typename std::vector<Point>::const_iterator ConstPointIterator;
   /// Iterator type
-  typedef typename std::vector<PointType>::iterator IteratorType;
+  typedef typename std::vector<Point>::iterator PointIterator;
   /// Container type
-  typedef std::vector<PointType> ContainerType;
+  typedef std::vector<Point> Container;
   /** @}
     */
 
@@ -70,28 +70,30 @@ public:
       @{
     */
   /// Returns a point using [] operator
-  const PointType& operator [] (size_t idx) const
-    throw (OutOfBoundException<size_t>);
+  const Point& operator [] (size_t idx) const throw
+    (OutOfBoundException<size_t>);
   /// Returns a point using [] operator
-  PointType& operator [] (size_t idx) throw (OutOfBoundException<size_t>);
+  Point& operator [] (size_t idx) throw (OutOfBoundException<size_t>);
+  /// Check if an index is valid
+  bool isValidIndex(size_t idx) const;
   /// Returns the size of the point cloud
   size_t getNumPoints() const;
   /// Clears the point cloud
   void clear();
   /// Adds a point to the point cloud
-  void addPoint(const PointType& point);
+  void addPoint(const Point& point);
   /// Adds a point cloud to the point cloud
   void addPointCloud(const PointCloud& pointCloud);
   /// Returns iterator at start of the container
-  ConstIteratorType getItBegin() const;
+  ConstPointIterator getPointBegin() const;
   /// Returns iterator at start of the container
-  IteratorType getItBegin();
+  PointIterator getPointBegin();
   /// Returns iterator at end of the container
-  ConstIteratorType getItEnd() const;
+  ConstPointIterator getPointEnd() const;
   /// Returns iterator at end of the container
-  IteratorType getItEnd();
+  PointIterator getPointEnd();
   /// Returns the container
-  const ContainerType& getPoints() const;
+  const Container& getPoints() const;
   /** @}
     */
 
@@ -114,7 +116,7 @@ protected:
     @{
     */
   /// Points container
-  ContainerType mPoints;
+  Container mPoints;
   /** @}
     */
 
