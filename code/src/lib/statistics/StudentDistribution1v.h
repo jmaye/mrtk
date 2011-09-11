@@ -20,15 +20,10 @@
     \brief This file defines the univariate Student distribution
   */
 
-#ifndef STUDENTDISTRIBUTION1V_H
-#define STUDENTDISTRIBUTION1V_H
-
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
-
-template <size_t M = 1> class StudentDistribution;
 
 /** The StudentDistribution1v class represents a univariate Student
     distribution.
@@ -128,5 +123,3 @@ protected:
 };
 
 #include "statistics/StudentDistribution1v.tpp"
-
-#endif // STUDENTDISTRIBUTION1V_H

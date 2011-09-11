@@ -21,9 +21,6 @@
            functions
   */
 
-#ifndef CONTINUOUSFUNCTIONPLOT2V_H
-#define CONTINUOUSFUNCTIONPLOT2V_H
-
 #include "functions/ContinuousFunction.h"
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
@@ -95,5 +92,3 @@ protected:
 };
 
 #include "visualization/ContinuousFunctionPlot2v.tpp"
-
-#endif // CONTINUOUSFUNCTIONPLOT2V_H

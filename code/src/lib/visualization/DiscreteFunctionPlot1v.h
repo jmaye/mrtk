@@ -21,9 +21,6 @@
            functions
   */
 
-#ifndef DISCRETEFUNCTIONPLOT1V_H
-#define DISCRETEFUNCTIONPLOT1V_H
-
 #include "functions/DiscreteFunction.h"
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
@@ -35,8 +32,6 @@
 #include <qwt-qt4/qwt_plot_grid.h>
 #include <qwt-qt4/qwt_plot_panner.h>
 #include <qwt-qt4/qwt_plot_magnifier.h>
-
-template <typename Y, typename X, size_t M = 1> class DiscreteFunctionPlot;
 
 /** The DiscreteFunctionPlot1v class is a plotting tool for univariate
     discrete functions.
@@ -99,5 +94,3 @@ protected:
 };
 
 #include "visualization/DiscreteFunctionPlot1v.tpp"
-
-#endif // DISCRETEFUNCTIONPLOT1V_H

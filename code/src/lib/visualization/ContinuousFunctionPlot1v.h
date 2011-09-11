@@ -21,9 +21,6 @@
            functions
   */
 
-#ifndef CONTINUOUSFUNCTIONPLOT1V_H
-#define CONTINUOUSFUNCTIONPLOT1V_H
-
 #include "functions/ContinuousFunction.h"
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
@@ -35,8 +32,6 @@
 #include <qwt-qt4/qwt_plot_grid.h>
 #include <qwt-qt4/qwt_plot_panner.h>
 #include <qwt-qt4/qwt_plot_magnifier.h>
-
-template <typename Y, typename X, size_t M = 1> class ContinuousFunctionPlot;
 
 /** The ContinuousFunctionPlot1v class is a plotting tool for univariate
     continuous functions.
@@ -109,5 +104,3 @@ protected:
 };
 
 #include "visualization/ContinuousFunctionPlot1v.tpp"
-
-#endif // CONTINUOUSFUNCTIONPLOT1V_H

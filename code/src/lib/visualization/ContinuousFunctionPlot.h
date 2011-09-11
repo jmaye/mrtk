@@ -23,6 +23,10 @@
 #ifndef CONTINUOUSFUNCTIONPLOT_H
 #define CONTINUOUSFUNCTIONPLOT_H
 
+#include <cstdlib>
+
+template <typename Y, typename X, size_t M = 1> class ContinuousFunctionPlot;
+
 #include "visualization/ContinuousFunctionPlot1v.h"
 #include "visualization/ContinuousFunctionPlot2v.h"
 

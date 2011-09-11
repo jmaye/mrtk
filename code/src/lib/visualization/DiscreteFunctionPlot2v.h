@@ -21,9 +21,6 @@
            functions
   */
 
-#ifndef DISCRETEFUNCTIONPLOT2V_H
-#define DISCRETEFUNCTIONPLOT2V_H
-
 #include "functions/DiscreteFunction.h"
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
@@ -84,5 +81,3 @@ protected:
 };
 
 #include "visualization/DiscreteFunctionPlot2v.tpp"
-
-#endif // DISCRETEFUNCTIONPLOT2V_H

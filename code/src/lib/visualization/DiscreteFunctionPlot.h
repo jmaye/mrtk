@@ -23,6 +23,10 @@
 #ifndef DISCRETEFUNCTIONPLOT_H
 #define DISCRETEFUNCTIONPLOT_H
 
+#include <cstdlib>
+
+template <typename Y, typename X, size_t M = 1> class DiscreteFunctionPlot;
+
 #include "visualization/DiscreteFunctionPlot1v.h"
 #include "visualization/DiscreteFunctionPlot2v.h"
 
