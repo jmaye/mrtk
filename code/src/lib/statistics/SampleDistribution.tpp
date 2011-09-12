@@ -36,7 +36,7 @@ template <typename X>
 void SampleDistribution<X>::getSamples(std::vector<X>& samples, size_t
   numSamples) const {
   samples.clear();
-  samples.resize(numSamples);
+  samples.reserve(numSamples);
   for (size_t i = 0; i < numSamples; ++i)
-    samples[i] = getSample();
+    samples.push_back(getSample());
 }
