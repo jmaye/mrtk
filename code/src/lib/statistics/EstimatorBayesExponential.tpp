@@ -86,7 +86,7 @@ getPostPredDist() const {
   return mPostPredDist;
 }
 
-void EstimatorBayes<ExponentialDistribution>::addPoint(double point) {
+void EstimatorBayes<ExponentialDistribution>::addPoint(const Point& point) {
   mAlpha += 1;
   mBeta += point;
   mPostRateDist.setShape(mAlpha);
@@ -97,7 +97,7 @@ void EstimatorBayes<ExponentialDistribution>::addPoint(double point) {
 }
 
 void EstimatorBayes<ExponentialDistribution>::addPoints(const
-  std::vector<double>& points) {
-  for (size_t i = 0; i < points.size(); ++i)
-    addPoint(points[i]);
+  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+    addPoint(*it);
 }

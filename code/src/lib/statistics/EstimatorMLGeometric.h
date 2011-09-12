@@ -31,6 +31,18 @@
 template <> class EstimatorML<GeometricDistribution> :
   public virtual Serializable {
 public:
+  /** \name Types definitions
+    @{
+    */
+  /// Point type
+  typedef size_t Point;
+  /// Points container
+  typedef std::vector<Point> Container;
+  /// Constant point iterator
+  typedef Container::const_iterator ConstPointIterator;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
@@ -56,9 +68,10 @@ public:
   /// Returns the estimated success probability
   double getSuccessProbability() const;
   /// Add a point to the estimator
-  void addPoint(size_t point);
+  void addPoint(const Point& point);
   /// Add points to the estimator
-  void addPoints(const std::vector<size_t>& points);
+  void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd);
   /// Reset the estimator
   void reset();
   /** @}

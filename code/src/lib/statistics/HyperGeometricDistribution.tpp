@@ -128,7 +128,7 @@ void HyperGeometricDistribution<M>::setNumTrials(size_t numTrials)
   mNumTrials = numTrials;
   Eigen::Matrix<size_t, 2, 1> argument;
   argument << mMarbles.sum(), mNumTrials;
-  LogBinomialFunction logBinomialFunction;
+  const LogBinomialFunction logBinomialFunction;
   mNormalizer = logBinomialFunction(argument);
 }
 
@@ -143,7 +143,7 @@ void HyperGeometricDistribution<M>::setMarbles(const
   mMarbles = marbles;
   Eigen::Matrix<size_t, 2, 1> argument;
   argument << marbles.sum(), mNumTrials;
-  LogBinomialFunction logBinomialFunction;
+  const LogBinomialFunction logBinomialFunction;
   mNormalizer = logBinomialFunction(argument);
 }
 
@@ -183,7 +183,7 @@ double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
       __FILE__, __LINE__);
   Eigen::Matrix<size_t, 2, 1> argument;
   double sum = 0.0;
-  LogBinomialFunction logBinomialFunction;
+  const LogBinomialFunction logBinomialFunction;
   for (size_t i = 0; i < (size_t)mMarbles.size(); ++i) {
     argument(0) = mMarbles(i);
     argument(1) = value(i);

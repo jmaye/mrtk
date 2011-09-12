@@ -91,7 +91,7 @@ double GeometricDistribution::cdf(const size_t& value) const {
 }
 
 size_t GeometricDistribution::getSample() const {
-  static Randomizer<double> randomizer;
+  const static Randomizer<double> randomizer;
   return randomizer.sampleGeometric(mSuccessProbability);
 }
 

@@ -106,8 +106,8 @@ getPostPredDist() const {
 }
 
 template <size_t M>
-void EstimatorBayes<MultinomialDistribution<M>, M>::addPoint(const
-  Eigen::Matrix<size_t, M, 1>& point) {
+void EstimatorBayes<MultinomialDistribution<M>, M>::addPoint(const Point&
+  point) {
   for (size_t i = 0; i < (size_t)mAlpha.size(); ++i)
     mAlpha(i) += point(i);
   mPostSuccessDist.setAlpha(mAlpha);
@@ -116,7 +116,7 @@ void EstimatorBayes<MultinomialDistribution<M>, M>::addPoint(const
 
 template <size_t M>
 void EstimatorBayes<MultinomialDistribution<M>, M>::addPoints(const
-  std::vector<Eigen::Matrix<size_t, M, 1> >& points) {
-  for (size_t i = 0; i < points.size(); ++i)
-    addPoint(points[i]);
+  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+    addPoint(*it);
 }

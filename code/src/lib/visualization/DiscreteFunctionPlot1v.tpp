@@ -34,7 +34,8 @@ DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(const std::string& title,
   mMagnifier(canvas()) {
   if (maximum < minimum)
     throw BadArgumentException<X>(maximum,
-      "DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(): maximum must be larger than minimum",
+      "DiscreteFunctionPlot<Y, X, 1>::DiscreteFunctionPlot(): "
+      "maximum must be larger than minimum",
       __FILE__, __LINE__);
   QwtPlot::setTitle(QString(title.c_str()));
   mXData.resize(maximum - minimum + 1);

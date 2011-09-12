@@ -39,7 +39,6 @@ template <size_t M> class DirichletDistribution :
   public ContinuousDistribution<double, M - 1>,
   public SampleDistribution<Eigen::Matrix<double, M, 1> >,
   public virtual Serializable {
-
 public:
   /** \name Traits
     @{

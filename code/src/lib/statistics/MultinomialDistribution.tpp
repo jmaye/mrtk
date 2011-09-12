@@ -188,7 +188,7 @@ double MultinomialDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
       "MultinomialDistribution<M>::logpmf(): sum of the input vector must be "
       "equal to the number of trials",
       __FILE__, __LINE__);
-  LogFactorialFunction logFactorialFunction;
+  const LogFactorialFunction logFactorialFunction;
   double sum = logFactorialFunction(mNumTrials);
   for (size_t i = 0; i < (size_t)mSuccessProbabilities.size(); ++i)
     sum += value(i) * log(mSuccessProbabilities(i)) -
@@ -207,9 +207,8 @@ Eigen::Matrix<size_t, M, 1> MultinomialDistribution<M>::getSample() const {
   static Randomizer<double, M> randomizer;
   Eigen::Matrix<size_t, M, 1> sampleVector =
     Eigen::Matrix<size_t, M, 1>::Zero(mSuccessProbabilities.size());
-  for (size_t i = 0; i < mNumTrials; ++i) {
+  for (size_t i = 0; i < mNumTrials; ++i)
     sampleVector += randomizer.sampleCategorical(mSuccessProbabilities);
-  }
   return sampleVector;
 }
 

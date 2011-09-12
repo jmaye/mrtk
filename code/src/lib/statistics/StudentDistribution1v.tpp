@@ -97,7 +97,7 @@ void StudentDistribution<1>::setScale(double scale)
       __FILE__, __LINE__);
   mInverseScale = 1.0 / scale;
   mScale = scale;
-  LogGammaFunction<double> logGammaFunction;
+  const LogGammaFunction<double> logGammaFunction;
   mNormalizer = logGammaFunction(mDegrees * 0.5) +  0.5 * log(mDegrees *
     M_PI) + 0.5 * log(mScale) - logGammaFunction(0.5 * (mDegrees + 1));
 }
@@ -113,7 +113,7 @@ void StudentDistribution<1>::setDegrees(double degrees)
       "StudentDistribution<1>::setDegrees(): degrees must be strictly positive",
       __FILE__, __LINE__);
   mDegrees = degrees;
-  LogGammaFunction<double> logGammaFunction;
+  const LogGammaFunction<double> logGammaFunction;
   mNormalizer = logGammaFunction(mDegrees * 0.5) +  0.5 * log(mDegrees *
     M_PI) + 0.5 * log(mScale) - logGammaFunction(0.5 * (mDegrees + 1));
 }
@@ -140,7 +140,7 @@ double StudentDistribution<1>::logpdf(const double& value) const {
 }
 
 double StudentDistribution<1>::cdf(const double& value) const {
-  GammaFunction<double> gammaFunction;
+  const GammaFunction<double> gammaFunction;
   return 0.5 + value * gammaFunction((mDegrees + 1) * 0.5) *
     gsl_sf_hyperg_2F1(0.5, 0.5 * (mDegrees + 1), 1.5, -value * value / mDegrees)
     / gammaFunction(0.5 * mDegrees) / sqrt(M_PI * mDegrees);

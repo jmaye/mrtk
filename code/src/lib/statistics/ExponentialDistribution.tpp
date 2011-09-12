@@ -95,7 +95,7 @@ double ExponentialDistribution::cdf(const double& value) const {
 }
 
 double ExponentialDistribution::getSample() const {
-  static Randomizer<double> randomizer;
+  const static Randomizer<double> randomizer;
   return randomizer.sampleExponential(mRate);
 }
 

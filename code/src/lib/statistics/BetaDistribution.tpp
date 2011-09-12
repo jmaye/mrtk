@@ -22,10 +22,7 @@
 
 BetaDistribution::BetaDistribution(double alpha, double beta) :
   DirichletDistribution<2>() {
-  Eigen::Matrix<double, 2, 1> alphaMat;
-  alphaMat(0) = alpha;
-  alphaMat(1) = beta;
-  DirichletDistribution<2>::setAlpha(alphaMat);
+  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(alpha, beta));
 }
 
 BetaDistribution::BetaDistribution(const BetaDistribution& other) :
@@ -64,10 +61,8 @@ void BetaDistribution::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 void BetaDistribution::setAlpha(double alpha) {
-  Eigen::Matrix<double, 2, 1> alphaMat;
-  alphaMat(0) = alpha;
-  alphaMat(1) = getBeta();
-  DirichletDistribution<2>::setAlpha(alphaMat);
+  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(alpha,
+    getBeta()));
 }
 
 double BetaDistribution::getAlpha() const {
@@ -75,10 +70,8 @@ double BetaDistribution::getAlpha() const {
 }
 
 void BetaDistribution::setBeta(double beta) {
-  Eigen::Matrix<double, 2, 1> alphaMat;
-  alphaMat(0) = getAlpha();
-  alphaMat(1) = beta;
-  DirichletDistribution<2>::setAlpha(alphaMat);
+  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(getAlpha(),
+    beta));
 }
 
 double BetaDistribution::getBeta() const {

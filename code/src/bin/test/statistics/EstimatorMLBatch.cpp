@@ -28,43 +28,43 @@ int main(int argc, char** argv) {
   std::vector<double> samplesNorm1;
   distNorm1.getSamples(samplesNorm1, 1000);
   EstimatorML<NormalDistribution<1> > estNorm1;
-  estNorm1.addPoints(samplesNorm1);
+  estNorm1.addPoints(samplesNorm1.begin(), samplesNorm1.end());
   std::cout << "Estimation1: " << std::endl << estNorm1 << std::endl;
   NormalDistribution<2> distNorm2(Eigen::Matrix<double, 2, 1>(5, 5));
   std::vector<Eigen::Matrix<double, 2, 1> > samplesNorm2;
   distNorm2.getSamples(samplesNorm2, 1000);
   EstimatorML<NormalDistribution<2>, 2> estNorm2;
-  estNorm2.addPoints(samplesNorm2);
+  estNorm2.addPoints(samplesNorm2.begin(), samplesNorm2.end());
   std::cout << "Estimation2: " << std::endl << estNorm2 << std::endl;
   CategoricalDistribution<4> distCat4;
   std::vector<Eigen::Matrix<size_t, 4, 1> > samplesCat4;
   distCat4.getSamples(samplesCat4, 1000);
   EstimatorML<CategoricalDistribution<4>, 4> estCat4;
-  estCat4.addPoints(samplesCat4);
+  estCat4.addPoints(samplesCat4.begin(), samplesCat4.end());
   std::cout << "Estimation3: " << std::endl << estCat4 << std::endl;
   MultinomialDistribution<4> distMult4(20);
   std::vector<Eigen::Matrix<size_t, 4, 1> > samplesMult4;
   distMult4.getSamples(samplesMult4, 1000);
   EstimatorML<MultinomialDistribution<4>, 4> estMult4(20);
-  estMult4.addPoints(samplesMult4);
+  estMult4.addPoints(samplesMult4.begin(), samplesMult4.end());
   std::cout << "Estimation4: " << std::endl << estMult4 << std::endl;
   ExponentialDistribution distExp(2);
   std::vector<double> samplesExp;
   distExp.getSamples(samplesExp, 1000);
   EstimatorML<ExponentialDistribution> estExp;
-  estExp.addPoints(samplesExp);
+  estExp.addPoints(samplesExp.begin(), samplesExp.end());
   std::cout << "Estimation5: " << std::endl << estExp << std::endl;
   GeometricDistribution distGeom(0.7);
   std::vector<size_t> samplesGeom;
   distGeom.getSamples(samplesGeom, 1000);
   EstimatorML<GeometricDistribution> estGeom;
-  estGeom.addPoints(samplesGeom);
+  estGeom.addPoints(samplesGeom.begin(), samplesGeom.end());
   std::cout << "Estimation6: " << std::endl << estGeom << std::endl;
   PoissonDistribution distPois(2.0);
   std::vector<size_t> samplesPois;
   distPois.getSamples(samplesPois, 1000);
   EstimatorML<PoissonDistribution> estPois;
-  estPois.addPoints(samplesPois);
+  estPois.addPoints(samplesPois.begin(), samplesPois.end());
   std::cout << "Estimation7: " << std::endl << estPois << std::endl;
   LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);
   std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
     samplesLine.push_back(Eigen::Matrix<double, 2, 1>(x, distLine.getSample()));
   }
   EstimatorML<LinearRegression<2>, 2> estLine;
-  estLine.addPoints(samplesLine);
+  estLine.addPoints(samplesLine.begin(), samplesLine.end());
   std::cout << "Estimation8: " << std::endl << estLine << std::endl;
   LinearRegression<3> distPlane(Eigen::Matrix<double, 3, 1>(2.0, 2.0, 2.0),
     2.0);
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
         distPlane.getSample()));
      }
   EstimatorML<LinearRegression<3>, 3> estPlane;
-  estPlane.addPoints(samplesPlane);
+  estPlane.addPoints(samplesPlane.begin(), samplesPlane.end());
   std::cout << "Estimation9: " << std::endl << estPlane << std::endl;
   std::vector<NormalDistribution<1> > distributionsNorm1;
   distributionsNorm1.push_back(NormalDistribution<1>(0, 1));
@@ -105,7 +105,8 @@ int main(int argc, char** argv) {
   initWeightsMixtNorm1 << 0.2, 0.3, 0.1, 0.3, 0.1;
   EstimatorML<MixtureDistribution<NormalDistribution<1>, 5>, 1, 5> estMixtNorm1(
     initMeansMixtNorm1, initVariancesMixtNorm1, initWeightsMixtNorm1);
-  size_t numIter = estMixtNorm1.addPoints(samplesMixtNorm1);
+  size_t numIter = estMixtNorm1.addPoints(samplesMixtNorm1.begin(),
+    samplesMixtNorm1.end());
   std::cout << "Estimation10: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   std::vector<NormalDistribution<3> > distributionsNorm3;
@@ -144,7 +145,8 @@ int main(int argc, char** argv) {
   initWeightsMixtNorm3 << 0.2, 0.3, 0.1, 0.3, 0.1;
   EstimatorML<MixtureDistribution<NormalDistribution<3>, 5>, 3, 5> estMixtNorm3(
     initMeansMixtNorm3, initCovariancesMixtNorm3, initWeightsMixtNorm3);
-  numIter = estMixtNorm3.addPoints(samplesMixtNorm3);
+  numIter = estMixtNorm3.addPoints(samplesMixtNorm3.begin(),
+    samplesMixtNorm3.end());
   std::cout << "Estimation11: " << std::endl << estMixtNorm3 << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   std::vector<LinearRegression<3> > distributionsLin3;
@@ -178,7 +180,8 @@ int main(int argc, char** argv) {
   initWeightsMixtLin << 0.2, 0.3, 0.1, 0.3, 0.1;
   EstimatorML<MixtureDistribution<LinearRegression<3>, 5>, 3, 5> estMixtLin(
     initCoefficientsMixtLin, initVariancesMixtLin, initWeightsMixtLin);
-  numIter = estMixtLin.addPoints(samplesMixtLin3);
+  numIter = estMixtLin.addPoints(samplesMixtLin3.begin(),
+    samplesMixtLin3.end());
   std::cout << "Estimation12: " << std::endl << estMixtLin << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   return 0;

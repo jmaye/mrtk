@@ -177,8 +177,8 @@ double DCMDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
       "DCMDistribution<M>::logpmf(): sum of the input vector must be "
       "equal to the number of trials",
       __FILE__, __LINE__);
-  LogGammaFunction<double> logGammaFunction;
-  LogFactorialFunction logFactorialFunction;
+  const LogGammaFunction<double> logGammaFunction;
+  const LogFactorialFunction logFactorialFunction;
   double returnValue = logGammaFunction(mAlpha.sum()) -
     logGammaFunction(mAlpha.sum() + mNumTrials) +
     logFactorialFunction(mNumTrials);

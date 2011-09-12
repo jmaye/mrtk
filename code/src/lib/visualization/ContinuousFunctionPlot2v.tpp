@@ -30,16 +30,19 @@ ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(const std::string&
   Qwt3D::SurfacePlot(0) {
   if (maximum(0) < minimum(0) || maximum(1) < minimum(1))
     throw BadArgumentException<Eigen::Matrix<X, 2, 1> >(maximum,
-      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): maximum must be larger than minimum",
+      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): "
+      "maximum must be larger than minimum",
       __FILE__, __LINE__);
   if (resolution(0) <= 0 || resolution(1) <= 0)
     throw BadArgumentException<Eigen::Matrix<X, 2, 1> >(resolution,
-      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): resolution must be strictly positive",
+      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): "
+      "resolution must be strictly positive",
       __FILE__, __LINE__);
   if (resolution(0) > maximum(0) - minimum(0) ||
     resolution(1) > maximum(1) - minimum(1))
     throw BadArgumentException<Eigen::Matrix<X, 2, 1> >(resolution,
-      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): resolution must be smaller than the range",
+      "ContinuousFunctionPlot<Y, X, 2>::ContinuousFunctionPlot(): "
+      "resolution must be smaller than the range",
       __FILE__, __LINE__);
   Qwt3D::SurfacePlot::setTitle(title.c_str());
   setRotation(30, 0, 15);

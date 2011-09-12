@@ -65,10 +65,8 @@ void BinomialDistribution::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 void BinomialDistribution::setSuccessProbability(double successProbability) {
-  Eigen::Matrix<double, 2, 1> successProbabilities;
-  successProbabilities(0) = 1.0 - successProbability;
-  successProbabilities(1) = successProbability;
-  MultinomialDistribution<2>::setSuccessProbabilities(successProbabilities);
+  MultinomialDistribution<2>::setSuccessProbabilities(
+    Eigen::Matrix<double, 2, 1>(1.0 - successProbability, successProbability));
 }
 
 double BinomialDistribution::getSuccessProbability() const {

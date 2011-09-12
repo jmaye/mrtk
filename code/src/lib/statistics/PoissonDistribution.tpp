@@ -82,21 +82,20 @@ double PoissonDistribution::pmf(const size_t& value) const {
 }
 
 double PoissonDistribution::logpmf(const size_t& value) const {
-  LogFactorialFunction lfactorial;
+  const LogFactorialFunction lfactorial;
   return value * log(mMean) - mMean - lfactorial(value);
 }
 
 double PoissonDistribution::cdf(const size_t& value) const {
-  FactorialFunction factorial;
+  const FactorialFunction factorial;
   double sum = 0.0;
-  for (size_t i = 0; i <= value; ++i) {
+  for (size_t i = 0; i <= value; ++i)
     sum += pow(mMean, i) / factorial(i);
-  }
   return exp(-mMean) * sum;
 }
 
 size_t PoissonDistribution::getSample() const {
-  static Randomizer<double> randomizer;
+  const static Randomizer<double> randomizer;
   return randomizer.samplePoisson(mMean);
 }
 

@@ -104,7 +104,7 @@ double LogisticDistribution::logpdf(const double& value) const {
 }
 
 double LogisticDistribution::cdf(const double& value) const {
-  LogisticFunction<double> logisticFunction;
+  const LogisticFunction<double> logisticFunction;
   return logisticFunction(-(value - mLocation) * mInverseScale);
 }
 

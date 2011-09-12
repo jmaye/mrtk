@@ -183,10 +183,10 @@ double NegativeMultinomialDistribution<M>::logpmf(const
       "NegativeMultinomialDistribution<M>::logpmf(): value(0) must contain the "
       "trial numbers",
       __FILE__, __LINE__);
-  LogGammaFunction<size_t> lgamma;
+  const LogGammaFunction<size_t> lgamma;
   double sum = lgamma(value.sum()) + value(0) *
     log(mSuccessProbabilities(0)) - lgamma(value(0));
-  LogFactorialFunction lfactorial;
+  const LogFactorialFunction lfactorial;
   for (size_t i = 1; i < (size_t)mSuccessProbabilities.size(); ++i)
     sum += value(i) *
       log(mSuccessProbabilities(i)) - lfactorial(value(i));

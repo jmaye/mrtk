@@ -28,7 +28,8 @@ DiscreteFunctionPlot<Y, X, 2>::DiscreteFunctionPlot(const std::string& title,
   FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >(title, minimum, maximum) {
   if (maximum(0) < minimum(0) || maximum(1) < minimum(1))
     throw BadArgumentException<Eigen::Matrix<X, 2, 1> >(maximum,
-      "DiscreteFunctionPlot<Y, X, 2>::DiscreteFunctionPlot(): maximum must be larger than minimum",
+      "DiscreteFunctionPlot<Y, X, 2>::DiscreteFunctionPlot(): "
+      "maximum must be larger than minimum",
       __FILE__, __LINE__);
   Qwt3D::SurfacePlot::setTitle(title.c_str());
   setRotation(30, 0, 15);

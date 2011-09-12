@@ -94,7 +94,7 @@ void EstimatorML<ExponentialDistribution>::reset() {
   mMean = 0;
 }
 
-void EstimatorML<ExponentialDistribution>::addPoint(double point) {
+void EstimatorML<ExponentialDistribution>::addPoint(const Point& point) {
   mNumPoints++;
   if (mNumPoints == 1)
     mMean = point;
@@ -108,8 +108,8 @@ void EstimatorML<ExponentialDistribution>::addPoint(double point) {
     mValid = false;
 }
 
-void EstimatorML<ExponentialDistribution>::addPoints(const std::vector<double>&
-  points) {
-  for (size_t i = 0; i < points.size(); ++i)
-    addPoint(points[i]);
+void EstimatorML<ExponentialDistribution>::addPoints(const
+  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+    addPoint(*it);
 }

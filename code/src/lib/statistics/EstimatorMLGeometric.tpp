@@ -92,7 +92,7 @@ void EstimatorML<GeometricDistribution>::reset() {
   mMean = 0;
 }
 
-void EstimatorML<GeometricDistribution>::addPoint(size_t point) {
+void EstimatorML<GeometricDistribution>::addPoint(const Point& point) {
   mNumPoints++;
   if (mNumPoints == 1) {
     mMean = point;
@@ -103,8 +103,8 @@ void EstimatorML<GeometricDistribution>::addPoint(size_t point) {
   mSuccessProbability = 1.0 / (1 + mMean);
 }
 
-void EstimatorML<GeometricDistribution>::addPoints(const std::vector<size_t>&
-  points) {
-  for (size_t i = 0; i < points.size(); ++i)
-    addPoint(points[i]);
+void EstimatorML<GeometricDistribution>::addPoints(const
+  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+    addPoint(*it);
 }

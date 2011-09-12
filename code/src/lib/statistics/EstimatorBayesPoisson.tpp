@@ -83,7 +83,7 @@ getPostPredDist() const {
   return mPostPredDist;
 }
 
-void EstimatorBayes<PoissonDistribution>::addPoint(size_t point) {
+void EstimatorBayes<PoissonDistribution>::addPoint(const Point& point) {
   mAlpha += point;
   mBeta += 1;
   mPostMeanDist.setShape(mAlpha);
@@ -92,8 +92,8 @@ void EstimatorBayes<PoissonDistribution>::addPoint(size_t point) {
   mPostPredDist.setNumTrials(mAlpha);
 }
 
-void EstimatorBayes<PoissonDistribution>::addPoints(const
-  std::vector<size_t>& points) {
-  for (size_t i = 0; i < points.size(); ++i)
-    addPoint(points[i]);
+void EstimatorBayes<PoissonDistribution>::addPoints(const ConstPointIterator&
+  itStart, const ConstPointIterator& itEnd) {
+  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+    addPoint(*it);
 }

@@ -87,7 +87,7 @@ void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
       "DirichletDistribution<M>::setAlpha(): alpha must be strictly positive",
       __FILE__, __LINE__);
   mAlpha = alpha;
-  LogBetaFunction<double, M> logBetaFunction;
+  const LogBetaFunction<double, M> logBetaFunction;
   mNormalizer = logBetaFunction(mAlpha);
 }
 
@@ -182,7 +182,7 @@ double DirichletDistribution<M>::logpdf(const typename
 
 template <size_t M>
 Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
-  static Randomizer<double> randomizer;
+  const static Randomizer<double> randomizer;
   Eigen::Matrix<double, M, 1> sampleGammaVector(mAlpha.size());
   for (size_t i = 0; i < (size_t)mAlpha.size(); ++i)
     sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1.0);

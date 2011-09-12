@@ -62,10 +62,8 @@ void BernoulliDistribution::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 void BernoulliDistribution::setSuccessProbability(double successProbability) {
-  Eigen::Matrix<double, 2, 1> successProbabilities;
-  successProbabilities(0) = 1.0 - successProbability;
-  successProbabilities(1) = successProbability;
-  CategoricalDistribution<2>::setSuccessProbabilities(successProbabilities);
+  CategoricalDistribution<2>::setSuccessProbabilities(
+    Eigen::Matrix<double, 2, 1>(1.0 - successProbability, successProbability));
 }
 
 double BernoulliDistribution::getSuccessProbability() const {

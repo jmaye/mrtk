@@ -35,15 +35,18 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
   mResolution(resolution) {
   if (maximum < minimum)
     throw BadArgumentException<X>(maximum,
-      "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): maximum must be larger than minimum",
+      "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): "
+      "maximum must be larger than minimum",
       __FILE__, __LINE__);
   if (resolution <= 0)
     throw BadArgumentException<X>(resolution,
-      "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): resolution must be strictly positive",
+      "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): "
+      "resolution must be strictly positive",
       __FILE__, __LINE__);
   if (resolution > maximum - minimum)
     throw BadArgumentException<X>(resolution,
-    "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): resolution must be smaller than the range",
+    "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): "
+    "resolution must be smaller than the range",
     __FILE__, __LINE__);
   QwtPlot::setTitle(QString(title.c_str()));
   mXData.resize(round((maximum - minimum) / resolution));

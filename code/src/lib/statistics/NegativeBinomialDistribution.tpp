@@ -104,7 +104,7 @@ Eigen::Matrix<size_t, 2, 1> NegativeBinomialDistribution::getSample() const {
   gammaDist.setShape(mNumTrials);
   gammaDist.setInvScale(1.0 / mSuccessProbabilities(1) - 1.0);
   poissonDist.setMean(gammaDist.getSample());
-  Eigen::Matrix<size_t, 2, 1> sample =  Eigen::Matrix<size_t, 2, 1>::Zero();
+  Eigen::Matrix<size_t, 2, 1> sample;
   sample(0) = mNumTrials;
   sample(1) = poissonDist.getSample();
   return sample;

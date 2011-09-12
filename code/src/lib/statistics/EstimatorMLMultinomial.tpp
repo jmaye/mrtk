@@ -111,8 +111,7 @@ void EstimatorML<MultinomialDistribution<M>, M>::reset() {
 }
 
 template <size_t M>
-void EstimatorML<MultinomialDistribution<M>, M>::addPoint(const
-  Eigen::Matrix<size_t, M, 1>& point) {
+void EstimatorML<MultinomialDistribution<M>, M>::addPoint(const Point& point) {
   if (mNumPoints == 0)
     mSuccessProbabilities = Eigen::Matrix<double, M, 1>::Zero(point.size(), 1);
   if (point.sum() != mNumTrials)
@@ -132,7 +131,7 @@ void EstimatorML<MultinomialDistribution<M>, M>::addPoint(const
 
 template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::addPoints(const
-  std::vector<Eigen::Matrix<size_t, M, 1> >& points) {
-  for (size_t i = 0; i < points.size(); ++i)
-    addPoint(points[i]);
+  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+    addPoint(*it);
 }
