@@ -32,8 +32,13 @@ int main(int argc, char** argv) {
   linearRegression.setVariance(2);
   std::cout << "l.setCoefficients(2, 2)" << std::endl;
   linearRegression.setCoefficients(Eigen::Matrix<double, 2, 1>(2, 2));
+  std::cout << "l.setBasis(1, 2)" << std::endl;
+  linearRegression.setBasis(Eigen::Matrix<double, 2, 1>(1, 2));
   std::cout << "New parameters: " << std::endl << linearRegression
     << std::endl;
   std::cout << "l.getValue(2):" << linearRegression(2) << std::endl;
+  std::cout << "l.getMean(): " << linearRegression.getMean() << std::endl;
+  std::cout << "l.getVariance(): " << linearRegression.getVariance()
+    << std::endl;
   return 0;
 }
