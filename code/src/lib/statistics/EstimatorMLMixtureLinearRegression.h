@@ -29,7 +29,6 @@
 /** The class EstimatorML is implemented for mixtures of linear regressions.
     \brief Mixture of linear regression ML estimator
   */
-
 template <size_t M, size_t N>
 class EstimatorML<MixtureDistribution<LinearRegression<M>, N>, M, N> :
   public virtual Serializable {
@@ -80,6 +79,8 @@ public:
   const Eigen::Matrix<double, Eigen::Dynamic, N>& getResponsibilities() const;
   /// Returns the estimated component weights
   const Eigen::Matrix<double, N, 1>& getWeights() const;
+  /// Returns the log-likelihood of the data
+  double getLogLikelihood() const;
   /// Returns the tolerance of the estimator
   double getTolerance() const;
   /// Sets the tolerance of the estimator
@@ -122,6 +123,8 @@ protected:
   Eigen::Matrix<double, Eigen::Dynamic, N> mResponsibilities;
   /// Estimated component weights
   Eigen::Matrix<double, N, 1> mWeights;
+  /// Log-likelihood of the data
+  double mLogLikelihood;
   /// Maximum number of iterations for EM
   size_t mMaxNumIter;
   /// Tolerance for the determinant
