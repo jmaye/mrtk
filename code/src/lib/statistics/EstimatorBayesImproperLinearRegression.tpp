@@ -175,7 +175,7 @@ void EstimatorBayesImproper<LinearRegression<M>, M>::addPoints(const
     dim = itStart->size();
   else
     return;
-  if (mNumPoints < dim)
+  if (mNumPoints <= dim)
     return;
   if ((size_t)weights.size() != mNumPoints)
     return;
@@ -198,7 +198,6 @@ void EstimatorBayesImproper<LinearRegression<M>, M>::addPoints(const
       designMatrix * mSampleCoeff))(0) / (mNumPoints - dim);
     const Eigen::Matrix<double, M, M> invR = qrDecomp.matrixR().inverse();
     mSampleCoeffCovariance = invR * invR.transpose();
-    std::cout << "Setting stuff" << std::endl;
     mPostVarianceDist.setDegrees(mNumPoints - dim);
     mPostVarianceDist.setScale(mSampleRegressionVariance);
     mPostCoeffDist.setDegrees(mNumPoints - dim);
