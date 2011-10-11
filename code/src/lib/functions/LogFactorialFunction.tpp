@@ -35,10 +35,8 @@ LogFactorialFunction::~LogFactorialFunction() {
 double LogFactorialFunction::getValue(const size_t& argument) const {
   if (argument) {
     double value = 0.0;
-
     for (size_t x = 1; x < argument; ++x)
       value += log(x + 1);
-
     return value;
   }
   else

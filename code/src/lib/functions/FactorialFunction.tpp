@@ -33,10 +33,8 @@ FactorialFunction::~FactorialFunction() {
 size_t FactorialFunction::getValue(const size_t& argument) const {
   if (argument) {
     size_t value = 1;
-
     for (size_t x = 1; x < argument; ++x)
       value *= x + 1;
-
     return value;
   }
   else

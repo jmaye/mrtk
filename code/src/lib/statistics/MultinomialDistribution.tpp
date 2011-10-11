@@ -204,7 +204,7 @@ double MultinomialDistribution<M>::logpmf(const typename
 
 template <size_t M>
 Eigen::Matrix<size_t, M, 1> MultinomialDistribution<M>::getSample() const {
-  static Randomizer<double, M> randomizer;
+  const static Randomizer<double, M> randomizer;
   Eigen::Matrix<size_t, M, 1> sampleVector =
     Eigen::Matrix<size_t, M, 1>::Zero(mSuccessProbabilities.size());
   for (size_t i = 0; i < mNumTrials; ++i)

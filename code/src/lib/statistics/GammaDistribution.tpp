@@ -145,7 +145,7 @@ double GammaDistribution<T>::cdf(const double& value) const {
 
 template <typename T>
 double GammaDistribution<T>::getSample() const {
-  static Randomizer<double> randomizer;
+  const static Randomizer<double> randomizer;
   return randomizer.sampleGamma(mShape, mInvScale);
 }
 
