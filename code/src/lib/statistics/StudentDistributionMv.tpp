@@ -223,5 +223,5 @@ Eigen::Matrix<double, M, M> StudentDistribution<M>::getCovariance()
   if (mDegrees > 2)
     return mDegrees / (mDegrees - 2) * mScale;
   else
-    return mScale;
+    return 4.0 * mScale;
 }
