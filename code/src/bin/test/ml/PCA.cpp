@@ -9,54 +9,45 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file PCA.h
-    \brief This file defines the PCA class, which implements a PCA algorithm
+/** \file PCA.cpp
+    \brief This file is a testing binary for the PCA class
   */
 
-#ifndef PCA_H
-#define PCA_H
+#include "ml/PCA.h"
+#include "statistics/NormalDistribution.h"
 
-#include "exceptions/BadArgumentException.h"
+int main(int argc, char** argv) {
+  NormalDistribution<2> dist;
+  std::vector<Eigen::Matrix<double, 2, 1> > samples;
+  dist.getSamples(samples, 10000);
 
-#include <Eigen/Core>
+  std::vector<Eigen::Matrix<double, 2, 1> > transformedSamples;
+  Eigen::Matrix<double, 2, 1> eigenValues;
+  Eigen::Matrix<double, 2, 2> eigenVectors;
 
-#include <vector>
+  PCA<double, 2, 2>::analyze(samples, transformedSamples, eigenValues,
+    eigenVectors);
 
-/** This class implements a Principal Component Analysis (PCA) algorithm.
-    \brief Principal Component Analysis (PCA)
-  */
-template <typename T, size_t D, size_t M> class PCA {
-  /** \name Private constructors
-    @{
-    */
-  /// Default constructor
-  PCA();
-  /** @}
-    */
+  std::cout << "Eigen values: " << std::endl << eigenValues << std::endl
+    << std::endl;
+  std::cout << "Eigen vectors: " << std::endl << eigenVectors << std::endl
+    << std::endl;
 
-public:
-  /** \name Methods
-    @{
-    */
-  /// Analyze the input data points
-  static void analyze(const std::vector<Eigen::Matrix<T, D, 1> >& data,
-    std::vector<Eigen::Matrix<T, M, 1> >& transformedData,
-    Eigen::Matrix<T, D, 1>& eigenValues, Eigen::Matrix<T, D, D>& eigenVectors)
-    throw (BadArgumentException<size_t>);
-  /** @}
-    */
+  try {
+    samples.clear();
+    PCA<double, 2, 2>::analyze(samples, transformedSamples, eigenValues,
+      eigenVectors);
+  }
+  catch (BadArgumentException<size_t>& e) {
+    std::cout << e.what() << std::endl;
+  }
 
-protected:
-
-};
-
-#include "statistics/PCA.tpp"
-
-#endif // PCA_H
+  return 0;
+}

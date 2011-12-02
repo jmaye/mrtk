@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file MeanShiftClustering.cpp
+/** \file KMeansClustering.cpp
     \brief This file is a testing binary for the KMeansClustering class
   */
 
-#include "statistics/MeanShiftClustering.h"
+#include "ml/KMeansClustering.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureSampleDistribution.h"
@@ -51,25 +51,27 @@ int main(int argc, char** argv) {
   std::vector<Eigen::Matrix<double, 2, 1> > clusterCenters;
   std::vector<std::vector<size_t> > clusterToData;
   std::vector<size_t> dataToCluster;
-  MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
-    clusterToData, dataToCluster, 5, 1e-6, true);
+  size_t numIter = KMeansClustering<double, 2>::cluster(samples, clusterCenters,
+    clusterToData, dataToCluster, 5, 1000, 1e-6, true);
 
   std::cout << "cluster centers: " << std::endl;
-  for (size_t i = 0; i < clusterCenters.size(); ++i)
+  for (size_t i = 0; i < 5; ++i)
     std::cout << clusterCenters[i] << std::endl << std::endl;
 
+  std::cout << "converged in: " << numIter << " iterations" << std::endl;
+
   try {
-    MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
-      clusterToData, dataToCluster, 0, 1e-6, true);
+    KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
+      dataToCluster, 0, 1000, 1e-6, true);
   }
-  catch (BadArgumentException<double>& e) {
+  catch (BadArgumentException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
 
   try {
     samples.clear();
-    MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
-      clusterToData, dataToCluster, 5, 1e-6, true);
+    KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
+      dataToCluster, 5, 1000, 1e-6, true);
   }
   catch (BadArgumentException<size_t>& e) {
     std::cout << e.what() << std::endl;

@@ -20,7 +20,7 @@
     \brief This file is a testing binary for plotting PCA result
   */
 
-#include "statistics/PCA.h"
+#include "ml/PCA.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureSampleDistribution.h"

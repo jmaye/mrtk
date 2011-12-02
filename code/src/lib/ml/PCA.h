@@ -16,13 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file KMeansClustering.h
-    \brief This file defines the KMeansClustering class, which implements a
-           K-Means clustering algorithm
+/** \file PCA.h
+    \brief This file defines the PCA class, which implements a PCA algorithm
   */
 
-#ifndef KMEANSCLUSTERING_H
-#define KMEANSCLUSTERING_H
+#ifndef PCA_H
+#define PCA_H
 
 #include "exceptions/BadArgumentException.h"
 
@@ -30,16 +29,15 @@
 
 #include <vector>
 
-/** This class implements a K-means clustering algorithm based on
-    Expectation-Maximization.
-    \brief K-Means clustering algorithm
+/** This class implements a Principal Component Analysis (PCA) algorithm.
+    \brief Principal Component Analysis (PCA)
   */
-template <typename T, size_t M> class KMeansClustering {
+template <typename T, size_t D, size_t M> class PCA {
   /** \name Private constructors
     @{
     */
   /// Default constructor
-  KMeansClustering();
+  PCA();
   /** @}
     */
 
@@ -47,12 +45,11 @@ public:
   /** \name Methods
     @{
     */
-  /// Clusters the input data points
-  static size_t cluster(const std::vector<Eigen::Matrix<T, M, 1> >& data,
-    std::vector<Eigen::Matrix<T, M, 1> >& clusterCenters,
-    std::vector<std::vector<size_t> >& clusterToData, std::vector<size_t>&
-    dataToCluster, size_t k, size_t maxIterations = 10000, double tol = 1e-6,
-    bool debug = false) throw (BadArgumentException<size_t>);
+  /// Analyze the input data points
+  static void analyze(const std::vector<Eigen::Matrix<T, D, 1> >& data,
+    std::vector<Eigen::Matrix<T, M, 1> >& transformedData,
+    Eigen::Matrix<T, D, 1>& eigenValues, Eigen::Matrix<T, D, D>& eigenVectors)
+    throw (BadArgumentException<size_t>);
   /** @}
     */
 
@@ -60,6 +57,6 @@ protected:
 
 };
 
-#include "statistics/KMeansClustering.tpp"
+#include "ml/PCA.tpp"
 
-#endif // KMEANSCLUSTERING_H
+#endif // PCA_H
