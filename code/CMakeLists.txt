@@ -30,3 +30,9 @@ remake_doc(
   html
   latex
 )
+
+remake_pack_deb(
+  COMPONENT doc
+  DESCRIPTION "Documentation"
+  online-recog
+)
