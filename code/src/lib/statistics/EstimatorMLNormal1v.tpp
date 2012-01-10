@@ -109,7 +109,7 @@ void EstimatorML<NormalDistribution<1> >::addPoint(const Point& point) {
   mMean = 1.0 / mNumPoints * mValuesSum;
   mVariance = 1.0 / mNumPoints * mSquaredValuesSum -
     2.0 / mNumPoints * mMean * mValuesSum + mMean * mMean;
-  if (mVariance != 0.0)
+  if (mVariance > 0.0)
     mValid = true;
   else
     mValid = false;

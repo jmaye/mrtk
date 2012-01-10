@@ -143,7 +143,7 @@ void EstimatorBayesImproper<NormalDistribution<1> >::addPoint(const Point&
   if (mNumPoints > 1)
     mSampleVariance = 1.0 / (mNumPoints - 1) * (mSquaredValuesSum -
     2.0 * mSampleMean * mValuesSum + mNumPoints * mSampleMean * mSampleMean);
-  if (mSampleVariance != 0.0) {
+  if (mSampleVariance > 0.0) {
     mPostMeanDist.setDegrees(mNumPoints - 1);
     mPostMeanDist.setLocation(mSampleMean);
     mPostMeanDist.setScale(mSampleVariance / mNumPoints);
