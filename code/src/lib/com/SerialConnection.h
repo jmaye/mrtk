@@ -24,12 +24,10 @@
 #ifndef SERIALCONNECTION_H
 #define SERIALCONNECTION_H
 
-#include "exceptions/IOException.h"
-#include "base/Serializable.h"
-
 #include <string>
 
-#include <stdint.h>
+#include "exceptions/IOException.h"
+#include "base/Serializable.h"
 
 /** The enum SerialParity represents the different kinds of serial parity.
     \brief Serial parity
@@ -126,10 +124,9 @@ public:
   /// Check if the port is open
   bool isOpen() const;
   /// Reads a buffer of bytes from the serial port
-  void readBuffer(uint8_t* au8Buffer, ssize_t nbBytes) throw (IOException);
+  void readBuffer(char* buffer, ssize_t numBytes) throw (IOException);
   /// Writes a buffer of bytes to the serial port
-  void writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
-    throw (IOException);
+  void writeBuffer(const char* buffer, ssize_t numBytes) throw (IOException);
   /** @}
     */
 

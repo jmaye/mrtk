@@ -33,16 +33,16 @@
 /******************************************************************************/
 
 SerialConnection::SerialConnection(const std::string& devicePathStr, size_t
-  baudrate, size_t databits, size_t stopbits, SerialParity parity, FlowControl
-  flowControl, double timeout) :
-  mDevicePathStr(devicePathStr),
-  mBaudrate(baudrate),
-  mDatabits(databits),
-  mStopbits(stopbits),
-  mSerialParity(parity),
-  mFlowControl(flowControl),
-  mTimeout(timeout),
-  mHandle(0) {
+    baudrate, size_t databits, size_t stopbits, SerialParity parity, FlowControl
+    flowControl, double timeout) :
+    mDevicePathStr(devicePathStr),
+    mBaudrate(baudrate),
+    mDatabits(databits),
+    mStopbits(stopbits),
+    mSerialParity(parity),
+    mFlowControl(flowControl),
+    mTimeout(timeout),
+    mHandle(0) {
 }
 
 SerialConnection::~SerialConnection() {
@@ -255,8 +255,8 @@ bool SerialConnection::isOpen() const {
   return (mHandle != 0);
 }
 
-void SerialConnection::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
-  throw (IOException) {
+void SerialConnection::readBuffer(char* au8Buffer, ssize_t nbBytes)
+    throw (IOException) {
   if (isOpen() == false)
     open();
   double intPart;
@@ -285,7 +285,7 @@ void SerialConnection::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
   }
 }
 
-void SerialConnection::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
+void SerialConnection::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();

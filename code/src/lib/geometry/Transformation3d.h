@@ -16,78 +16,62 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file UDPConnectionClient.h
-    \brief This file defines the UDPConnectionClient class, which is an
-           interface for a client UDP connection
+/** \file Transformation3d.h
+    \brief This file defines a transformation in 3d.
   */
 
-#ifndef UDPCONNECTIONCLIENT_H
-#define UDPCONNECTIONCLIENT_H
-
-#include <arpa/inet.h>
-#include <stdint.h>
-
-#include <string>
-
-#include "exceptions/IOException.h"
 #include "base/Serializable.h"
 
-/** The class UDPConnectionClient is an interface for a client UDP
-    communication.
-    \brief Client UDP communication interface
+/** The Transformation3d class represents a 3d transformation.
+    \brief 3d transformation
   */
-class UDPConnectionClient :
+template <typename T> class Transformation<T, 3> :
   public virtual Serializable {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  UDPConnectionClient(const UDPConnectionClient& other);
-  /// Assignment operator
-  UDPConnectionClient& operator = (const UDPConnectionClient& other);
-  /** @}
-    */
-
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs UDP connection from parameters
-  UDPConnectionClient(const std::string& serverIP, uint16_t port,
-    double timeout = 2.5);
+  /// Default constructor
+  Transformation();
+  /// Constructs from a given transformation matrix
+  Transformation(const Eigen::Matrix<double, 4, 4>& transformationMatrix);
+  /// Constructs from rotation and translation
+  Transformation(T x, T y, T z, T roll, T pitch, T yaw);
+  /// Copy constructor
+  Transformation(const Transformation<T, 3>& other);
+  /// Assignment operator
+  Transformation<T, 3>& operator = (const Transformation<T, 3>& other);
   /// Destructor
-  virtual ~UDPConnectionClient();
- /** @}
+  virtual ~Transformation();
+  /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the timeout of the connection
-  void setTimeout(double timeout);
-  /// Returns the timeout of the connection
-  double getTimeout() const;
-  /// Returns the port
-  uint16_t getPort() const;
-  /// Returns the server IP
-  const std::string& getServerIP() const;
- /** @}
+  /// Sets the transformation matrix
+  void setTransformationMatrix(const Eigen::Matrix<double, 4, 4>&
+    transformationMatrix);
+  /// Returns the transformation matrix
+  const Eigen::Matrix<double, 4, 4>& getTransformationMatrix();
+  /// Sets the transformation from translation and rotation
+  void setTransformation(T x, T y, T z, T roll, T pitch, T yaw);
+  /// Returns the inverse transformation
+  Transformation getInverse() const;
+  /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Open the connection
-  void open() throw (IOException);
-  /// Close the connection
-  void close() throw (IOException);
-  /// Test if the connection is open
-  bool isOpen() const;
-  /// Read buffer from UDP
-  void readBuffer(char* buffer, ssize_t numBytes) throw (IOException);
-  /// Write buffer to UDP
-  void writeBuffer(const char* buffer, ssize_t numBytes) throw (IOException);
- /** @}
+  /// Inverse the transformation
+  const Transformation& inverse();
+  /// Transform a point
+  void transform(const Eigen::Matrix<T, 3, 1>& src, Eigen::Matrix<T, 3, 1>&
+    dest) const;
+  /// Transform a point using operator
+  Eigen::Matrix<T, 3, 1> operator () (const Eigen::Matrix<T, 3, 1>& src) const;
+  /** @}
     */
 
 protected:
@@ -108,19 +92,15 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Server IP
-  std::string mServerIP;
-  /// Server network structure
-  struct sockaddr_in mServer;
-  /// UDP port
-  uint16_t mPort;
-  /// Timeout of the port
-  double mTimeout;
-  /// Socket for the port
-  ssize_t mSocket;
+  /// Transformation matrix
+  Eigen::Matrix<double, 4, 4> mTransformationMatrix;
+  /// Rotation matrix
+  Eigen::Matrix<double, 4, 4> mRotationMatrix;
+  /// Translation matrix
+  Eigen::Matrix<double, 4, 4> mTranslationMatrix;
   /** @}
     */
 
 };
 
-#endif // UDPCONNECTIONCLIENT_H
+#include "helpers/Transformation3d.tpp"

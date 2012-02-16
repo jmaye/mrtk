@@ -24,12 +24,12 @@
 #ifndef UDPCONNECTIONSERVER_H
 #define UDPCONNECTIONSERVER_H
 
-#include "exceptions/IOException.h"
-#include "base/Serializable.h"
+#include <stdint.h>
 
 #include <string>
 
-#include <stdint.h>
+#include "exceptions/IOException.h"
+#include "base/Serializable.h"
 
 /** The class UDPConnectionServer is an interface for a server UDP
     communication.
@@ -80,9 +80,9 @@ public:
   /// Test if the connection is open
   bool isOpen() const;
   /// Read buffer from UDP
-  ssize_t readBuffer(uint8_t* au8Buffer, ssize_t nbBytes) throw (IOException);
+  ssize_t readBuffer(char* buffer, ssize_t numBytes) throw (IOException);
   /// Write buffer to UDP
-  void writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
+  void writeBuffer(const char* buffer, ssize_t numBytes)
     throw (IOException);
  /** @}
     */

@@ -33,51 +33,51 @@ BinaryReader::~BinaryReader() {
 /******************************************************************************/
 
 BinaryReader& BinaryReader::operator >> (int8_t& value) {
-  readBuffer((uint8_t*)&value, sizeof(int8_t));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (uint8_t& value) {
-  readBuffer((uint8_t*)&value, sizeof(uint8_t));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (int16_t& value) {
-  readBuffer((uint8_t*)&value, sizeof(int16_t));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (uint16_t& value) {
-  readBuffer((uint8_t*)&value, sizeof(uint16_t));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (int32_t& value) {
-  readBuffer((uint8_t*)&value, sizeof(int32_t));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (uint32_t& value) {
-  readBuffer((uint8_t*)&value, sizeof(uint32_t));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (int64_t& value) {
-  readBuffer((uint8_t*)&value, sizeof(int64_t));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (uint64_t& value) {
-  readBuffer((uint8_t*)&value, sizeof(uint64_t));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (float& value) {
-  readBuffer((uint8_t*)&value, sizeof(float));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }
 
 BinaryReader& BinaryReader::operator >> (double& value) {
-  readBuffer((uint8_t*)&value, sizeof(double));
+  readBuffer(reinterpret_cast<char*>(&value), sizeof(value));
   return *this;
 }

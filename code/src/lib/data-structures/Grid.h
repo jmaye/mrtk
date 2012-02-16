@@ -24,12 +24,12 @@
 #ifndef GRID_H
 #define GRID_H
 
+#include <vector>
+
 #include "base/Serializable.h"
 #include "exceptions/OutOfBoundException.h"
 #include "exceptions/BadArgumentException.h"
 #include "utils/SizeTSupport.h"
-
-#include <vector>
 
 /** The class Grid represents an n-dimensional grid.
     \brief An n-dimensional grid

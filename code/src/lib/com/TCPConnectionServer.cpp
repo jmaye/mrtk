@@ -27,9 +27,9 @@
 /******************************************************************************/
 
 TCPConnectionServer::TCPConnectionServer(uint16_t port, double timeout) :
-  mPort(port),
-  mTimeout(timeout),
-  mSocket(0) {
+    mPort(port),
+    mTimeout(timeout),
+    mSocket(0) {
 }
 
 TCPConnectionServer::~TCPConnectionServer() {
@@ -103,7 +103,7 @@ bool TCPConnectionServer::isOpen() const {
   return (mSocket != 0);
 }
 
-void TCPConnectionServer::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
+void TCPConnectionServer::readBuffer(char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
 //newsockfd = accept(sockfd,
 //                 (struct sockaddr *) &cli_addr,
@@ -133,7 +133,7 @@ void TCPConnectionServer::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
 //    throw IOException("TCPConnectionServer::readBuffer(): read timeout");
 }
 
-void TCPConnectionServer::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
+void TCPConnectionServer::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
 //  if (isOpen() == false)
 //    open();

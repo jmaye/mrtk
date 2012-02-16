@@ -20,6 +20,7 @@ remake_pack_deb(
   COMPONENT dev
   DESCRIPTION "Development headers"
   online-recog
+  libdai-dev
   libann-dev
   libqwt5-qt4-dev
   libqt4-dev

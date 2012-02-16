@@ -74,7 +74,7 @@ void Factory<T, C>::clear() {
 
 template <typename T, typename C>
 C* Factory<T, C>::create(const T& typeID) const
-  throw (TypeCreationException<T>) {
+    throw (TypeCreationException<T>) {
   typename std::map<T, const C*>::const_iterator it = mTypesMap.find(typeID);
   if (it != mTypesMap.end())
     return it->second->clone();
@@ -86,7 +86,7 @@ C* Factory<T, C>::create(const T& typeID) const
 
 template <typename T, typename C>
 void Factory<T, C>::registerType(const C* object, const T& typeID)
-  throw (TypeCreationException<T>) {
+    throw (TypeCreationException<T>) {
   if (mTypesMap.find(typeID) == mTypesMap.end())
     mTypesMap[typeID] = object;
   else
@@ -97,11 +97,11 @@ void Factory<T, C>::registerType(const C* object, const T& typeID)
 
 template <typename T, typename C>
 void Factory<T, C>::unregisterType(const T& typeID)
-  throw (TypeCreationException<T>) {
+    throw (TypeCreationException<T>) {
   if (mTypesMap.find(typeID) == mTypesMap.end())
     throw TypeCreationException<T>(typeID,
-    "Factory<T, C>::unregisterType(): unregistered type",
-    __FILE__, __LINE__);
+      "Factory<T, C>::unregisterType(): unregistered type",
+      __FILE__, __LINE__);
   else
     mTypesMap.erase(typeID);
 }

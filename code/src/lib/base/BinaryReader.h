@@ -84,7 +84,7 @@ protected:
     @{
     */
   /// Reads a buffer of byte
-  virtual void readBuffer(uint8_t* au8Buffer, ssize_t nbBytes) = 0;
+  virtual void readBuffer(char* buffer, ssize_t numBytes) = 0;
   /** @}
     */
 

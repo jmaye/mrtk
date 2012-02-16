@@ -24,11 +24,11 @@
 
 template <typename T, typename C, size_t M>
 Grid<T, C, M>::Grid(const Coordinate& minimum, const Coordinate& maximum, const
-  Coordinate& resolution) throw
-  (BadArgumentException<Grid<T, C, M>::Coordinate>) :
-  mMinimum(minimum),
-  mMaximum(maximum),
-  mResolution(resolution) {
+    Coordinate& resolution) throw
+    (BadArgumentException<Grid<T, C, M>::Coordinate>) :
+    mMinimum(minimum),
+    mMaximum(maximum),
+    mResolution(resolution) {
   if ((resolution.cwise() <= 0).any())
     throw BadArgumentException<Coordinate>(resolution,
       "Grid<T, C, M>::Grid(): resolution must be strictly positive",

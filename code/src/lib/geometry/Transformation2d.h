@@ -16,78 +16,64 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file UDPConnectionClient.h
-    \brief This file defines the UDPConnectionClient class, which is an
-           interface for a client UDP connection
+/** \file Transformation2d.h
+    \brief This file defines a transformation in 2d.
   */
 
-#ifndef UDPCONNECTIONCLIENT_H
-#define UDPCONNECTIONCLIENT_H
+#include <Eigen/Core>
 
-#include <arpa/inet.h>
-#include <stdint.h>
-
-#include <string>
-
-#include "exceptions/IOException.h"
 #include "base/Serializable.h"
 
-/** The class UDPConnectionClient is an interface for a client UDP
-    communication.
-    \brief Client UDP communication interface
+/** The Transformation2d class represents a transformation in 2d.
+    \brief 2d transformation
   */
-class UDPConnectionClient :
+template <typename T> class Transformation<T, 2> :
   public virtual Serializable {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  UDPConnectionClient(const UDPConnectionClient& other);
-  /// Assignment operator
-  UDPConnectionClient& operator = (const UDPConnectionClient& other);
-  /** @}
-    */
-
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs UDP connection from parameters
-  UDPConnectionClient(const std::string& serverIP, uint16_t port,
-    double timeout = 2.5);
+  /// Default constructor
+  Transformation();
+  /// Constructs from a given transformation matrix
+  Transformation(const Eigen::Matrix<double, 3, 3>& transformationMatrix);
+  /// Constructs from rotation and translation
+  Transformation(T x, T y, T yaw);
+  /// Copy constructor
+  Transformation(const Transformation<T, 2>& other);
+  /// Assignment operator
+  Transformation& operator = (const Transformation<T, 2>& other);
   /// Destructor
-  virtual ~UDPConnectionClient();
- /** @}
+  virtual ~Transformation();
+  /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the timeout of the connection
-  void setTimeout(double timeout);
-  /// Returns the timeout of the connection
-  double getTimeout() const;
-  /// Returns the port
-  uint16_t getPort() const;
-  /// Returns the server IP
-  const std::string& getServerIP() const;
- /** @}
+  /// Sets the transformation matrix
+  void setTransformationMatrix(const Eigen::Matrix<double, 3, 3>&
+    transformationMatrix);
+  /// Returns the transformation matrix
+  const Eigen::Matrix<double, 3, 3>& getTransformationMatrix();
+  /// Sets the transformation from translation and rotation
+  void setTransformation(T x, T y, T yaw);
+  /// Returns the inverse transformation
+  Transformation getInverse() const;
+  /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Open the connection
-  void open() throw (IOException);
-  /// Close the connection
-  void close() throw (IOException);
-  /// Test if the connection is open
-  bool isOpen() const;
-  /// Read buffer from UDP
-  void readBuffer(char* buffer, ssize_t numBytes) throw (IOException);
-  /// Write buffer to UDP
-  void writeBuffer(const char* buffer, ssize_t numBytes) throw (IOException);
- /** @}
+  /// Inverse the transformation
+  const Transformation& inverse();
+  /// Transform a point
+  void transform(const Eigen::Matrix<T, 2, 1>& src, Eigen::Matrix<T, 2, 1>&
+    dest) const;
+  /// Transform a point using operator
+  Eigen::Matrix<T, 2, 1> operator () (const Eigen::Matrix<T, 2, 1>& src) const;
+  /** @}
     */
 
 protected:
@@ -108,19 +94,15 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Server IP
-  std::string mServerIP;
-  /// Server network structure
-  struct sockaddr_in mServer;
-  /// UDP port
-  uint16_t mPort;
-  /// Timeout of the port
-  double mTimeout;
-  /// Socket for the port
-  ssize_t mSocket;
+  /// Transformation matrix
+  Eigen::Matrix<double, 3, 3> mTransformationMatrix;
+  /// Rotation matrix
+  Eigen::Matrix<double, 3, 3> mRotationMatrix;
+  /// Translation matrix
+  Eigen::Matrix<double, 3, 3> mTranslationMatrix;
   /** @}
     */
 
 };
 
-#endif // UDPCONNECTIONCLIENT_H
+#include "helpers/Transformation2d.tpp"

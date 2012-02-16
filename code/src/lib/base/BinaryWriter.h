@@ -84,7 +84,7 @@ protected:
     @{
     */
   /// Writes a buffer of byte
-  virtual void writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes) = 0;
+  virtual void writeBuffer(const char* buffer, ssize_t numBytes) = 0;
   /** @}
     */
 

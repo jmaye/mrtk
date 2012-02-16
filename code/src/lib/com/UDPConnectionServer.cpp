@@ -27,9 +27,9 @@
 /******************************************************************************/
 
 UDPConnectionServer::UDPConnectionServer(uint16_t port, double timeout) :
-  mPort(port),
-  mTimeout(timeout),
-  mSocket(0) {
+    mPort(port),
+    mTimeout(timeout),
+    mSocket(0) {
 }
 
 UDPConnectionServer::~UDPConnectionServer() {
@@ -101,7 +101,7 @@ bool UDPConnectionServer::isOpen() const {
   return (mSocket != 0);
 }
 
-ssize_t UDPConnectionServer::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
+ssize_t UDPConnectionServer::readBuffer(char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();
@@ -131,7 +131,7 @@ ssize_t UDPConnectionServer::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
   return 0;
 }
 
-void UDPConnectionServer::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
+void UDPConnectionServer::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();
@@ -148,7 +148,8 @@ void UDPConnectionServer::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
     ssize_t res = select(mSocket + 1, (fd_set*)0, &writeFlags, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("UDPConnectionServer::writeBuffer(): write select failed");
+      throw IOException("UDPConnectionServer::writeBuffer(): write select "
+        "failed");
     if (FD_ISSET(mSocket, &writeFlags)) {
       FD_CLR(mSocket, &writeFlags);
       //TODO: MODIFY THIS PART

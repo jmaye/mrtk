@@ -30,7 +30,7 @@ template <class C>
 Singleton<C>::Singleton() throw (InvalidOperationException) {
   if (instance)
     throw InvalidOperationException("Singleton<C>::Singleton(): a singleton "
-    "cannot be instantiated");
+      "cannot be instantiated");
   instance = (C*)this;
 }
 

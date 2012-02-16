@@ -26,16 +26,17 @@
 /******************************************************************************/
 
 UDPConnectionClient::UDPConnectionClient(const std::string& serverIP, uint16_t
-  port, double timeout) :
-  mServerIP(serverIP),
-  mPort(port),
-  mTimeout(timeout),
-  mSocket(0) {
+    port, double timeout) :
+    mServerIP(serverIP),
+    mPort(port),
+    mTimeout(timeout),
+    mSocket(0) {
   memset(&mServer, 0, sizeof(mServer));
   mServer.sin_family = AF_INET;
   mServer.sin_port = htons(mPort);
   if (inet_aton(mServerIP.c_str(), &mServer.sin_addr) == 0)
-    throw IOException("UDPConnectionClient::UDPConnectionClient(): invalid IP address");
+    throw IOException("UDPConnectionClient::UDPConnectionClient(): "
+      "invalid IP address");
 }
 
 UDPConnectionClient::~UDPConnectionClient() {
@@ -104,7 +105,7 @@ bool UDPConnectionClient::isOpen() const {
   return (mSocket != 0);
 }
 
-void UDPConnectionClient::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
+void UDPConnectionClient::readBuffer(char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();
@@ -121,7 +122,8 @@ void UDPConnectionClient::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
     ssize_t res = select(mSocket + 1, &readFlags, (fd_set*)0, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("UDPConnectionClient::readBuffer(): read select failed");
+      throw IOException("UDPConnectionClient::readBuffer(): read select "
+        "failed");
     if (FD_ISSET(mSocket, &readFlags)) {
       FD_CLR(mSocket, &readFlags);
       struct sockaddr_in server;
@@ -137,7 +139,7 @@ void UDPConnectionClient::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
   }
 }
 
-void UDPConnectionClient::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
+void UDPConnectionClient::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();
@@ -154,7 +156,8 @@ void UDPConnectionClient::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
     ssize_t res = select(mSocket + 1, (fd_set*)0, &writeFlags, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("UDPConnectionClient::writeBuffer(): write select failed");
+      throw IOException("UDPConnectionClient::writeBuffer(): write select "
+        "failed");
     if (FD_ISSET(mSocket, &writeFlags)) {
       FD_CLR(mSocket, &writeFlags);
       res = sendto(mSocket, &au8Buffer[bytesWritten], nbBytes - bytesWritten, 0,

@@ -24,12 +24,12 @@
 #ifndef TCPCONNECTIONCLIENT_H
 #define TCPCONNECTIONCLIENT_H
 
-#include "exceptions/IOException.h"
-#include "base/Serializable.h"
+#include <stdint.h>
 
 #include <string>
 
-#include <stdint.h>
+#include "exceptions/IOException.h"
+#include "base/Serializable.h"
 
 /** The class TCPConnectionClient is an interface for a client TCP
     communication.
@@ -83,10 +83,9 @@ public:
   /// Test if the connection is open
   bool isOpen() const;
   /// Read buffer from UDP
-  void readBuffer(uint8_t* au8Buffer, ssize_t nbBytes) throw (IOException);
+  void readBuffer(char* buffer, ssize_t numBytes) throw (IOException);
   /// Write buffer to UDP
-  void writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
-    throw (IOException);
+  void writeBuffer(const char* buffer, ssize_t numBytes) throw (IOException);
  /** @}
     */
 

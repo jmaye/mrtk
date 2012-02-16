@@ -24,11 +24,11 @@
 #ifndef FACTORY_H
 #define FACTORY_H
 
+#include <map>
+
 #include "base/Singleton.h"
 #include "base/Serializable.h"
 #include "exceptions/TypeCreationException.h"
-
-#include <map>
 
 /** The class Factory implements the object factory design pattern.
     \brief Object factory design pattern

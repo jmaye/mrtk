@@ -27,11 +27,11 @@
 /******************************************************************************/
 
 TCPConnectionClient::TCPConnectionClient(const std::string& serverIP, uint16_t
-  port, double timeout) :
-  mServerIP(serverIP),
-  mPort(port),
-  mTimeout(timeout),
-  mSocket(0) {
+    port, double timeout) :
+    mServerIP(serverIP),
+    mPort(port),
+    mTimeout(timeout),
+    mSocket(0) {
 }
 
 TCPConnectionClient::~TCPConnectionClient() {
@@ -108,7 +108,7 @@ bool TCPConnectionClient::isOpen() const {
   return (mSocket != 0);
 }
 
-void TCPConnectionClient::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
+void TCPConnectionClient::readBuffer(char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();
@@ -125,7 +125,8 @@ void TCPConnectionClient::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
     ssize_t res = select(mSocket + 1, &readFlags, (fd_set*)0, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("TCPConnectionClient::readBuffer(): read select failed");
+      throw IOException("TCPConnectionClient::readBuffer(): read select "
+        "failed");
     if (FD_ISSET(mSocket, &readFlags)) {
       FD_CLR(mSocket, &readFlags);
       res = ::read(mSocket, &au8Buffer[bytesRead], nbBytes - bytesRead);
@@ -138,7 +139,7 @@ void TCPConnectionClient::readBuffer(uint8_t* au8Buffer, ssize_t nbBytes)
   }
 }
 
-void TCPConnectionClient::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
+void TCPConnectionClient::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
   throw (IOException) {
   if (isOpen() == false)
     open();
@@ -155,7 +156,8 @@ void TCPConnectionClient::writeBuffer(const uint8_t* au8Buffer, ssize_t nbBytes)
     ssize_t res = select(mSocket + 1, (fd_set*)0, &writeFlags, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("TCPConnectionClient::writeBuffer(): write select failed");
+      throw IOException("TCPConnectionClient::writeBuffer(): write select "
+        "failed");
     if (FD_ISSET(mSocket, &writeFlags)) {
       FD_CLR(mSocket, &writeFlags);
       res = ::write(mSocket, &au8Buffer[bytesWritten], nbBytes - bytesWritten);
