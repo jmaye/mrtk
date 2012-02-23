@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the MixtureSampleDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureSampleDistribution.h"

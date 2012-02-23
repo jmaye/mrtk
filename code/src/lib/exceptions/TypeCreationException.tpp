@@ -24,25 +24,25 @@
 
 template <typename X>
 TypeCreationException<X>::TypeCreationException(const X& argument,
-  const std::string& msg, const std::string& filename, size_t line) :
-  mMsg(msg),
-  mArg(argument),
-  mFilename(filename),
-  mLine(line) {
+    const std::string& msg, const std::string& filename, size_t line) :
+    mMsg(msg),
+    mArg(argument),
+    mFilename(filename),
+    mLine(line) {
 }
 
 template <typename X>
 TypeCreationException<X>::TypeCreationException(const TypeCreationException<X>&
-  other) throw () :
-  mMsg(other.mMsg),
-  mArg(other.mArg),
-  mFilename(other.mFilename),
-  mLine(other.mLine) {
+    other) throw () :
+    mMsg(other.mMsg),
+    mArg(other.mArg),
+    mFilename(other.mFilename),
+    mLine(other.mLine) {
 }
 
 template <typename X>
 TypeCreationException<X>& TypeCreationException<X>::operator =
-  (const TypeCreationException<X>& other) throw () {
+    (const TypeCreationException<X>& other) throw () {
   if (this != &other) {
     mMsg = other.mMsg;
     mArg = other.mArg;

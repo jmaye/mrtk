@@ -20,8 +20,18 @@
     \brief This file is a testing binary for the Factory class
   */
 
+#include <iostream>
+
 #include "base/Factory.h"
 
 int main(int argc, char** argv) {
+  Factory<size_t, size_t>& factory = Factory<size_t, size_t>::getInstance();
+  std::cout << "Number of types: " << factory.getNumTypes() << std::endl;
+  size_t type = 1;
+  std::cout << "Inserting an object in the factory" << std::endl;
+  factory.registerType(&type, 0);
+  std::cout << "Number of types: " << factory.getNumTypes() << std::endl;
+  std::cout << "Factory content: " << std::endl
+    << factory;
   return 0;
 }

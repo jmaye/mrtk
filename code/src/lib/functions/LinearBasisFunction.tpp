@@ -22,8 +22,8 @@
 
 template <typename X, size_t M>
 LinearBasisFunction<X, M>::LinearBasisFunction(const Eigen::Matrix<X, M, 1>&
-  coefficients) :
-  mCoefficients(coefficients) {
+    coefficients) :
+    mCoefficients(coefficients) {
 }
 
 template <typename X, size_t M>
@@ -36,18 +36,18 @@ LinearBasisFunction<X, M>::~LinearBasisFunction() {
 
 template <typename X, size_t M>
 double LinearBasisFunction<X, M>::getValue(const Eigen::Matrix<X, M, 1>&
-  argument) const {
+    argument) const {
   return (mCoefficients.transpose() * argument)(0);
 }
 
 template <typename X, size_t M>
 const Eigen::Matrix<X, M, 1>& LinearBasisFunction<X, M>::getCoefficients()
-  const {
+    const {
   return mCoefficients;
 }
 
 template <typename X, size_t M>
 void LinearBasisFunction<X, M>::setCoefficients(const Eigen::Matrix<X, M, 1>&
-  coefficients) {
+    coefficients) {
   mCoefficients = coefficients;
 }

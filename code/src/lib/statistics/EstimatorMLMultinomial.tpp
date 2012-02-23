@@ -22,24 +22,24 @@
 
 template <size_t M>
 EstimatorML<MultinomialDistribution<M>, M>::EstimatorML(size_t numTrials) :
-  mNumTrials(numTrials),
-  mNumPoints(0),
-  mValid(false) {
+    mNumTrials(numTrials),
+    mNumPoints(0),
+    mValid(false) {
 }
 
 template <size_t M>
 EstimatorML<MultinomialDistribution<M>, M>::EstimatorML(const
-  EstimatorML<MultinomialDistribution<M>, M>& other) :
-  mSuccessProbabilities(other.mSuccessProbabilities),
-  mNumTrials(other.mNumTrials),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+    EstimatorML<MultinomialDistribution<M>, M>& other) :
+    mSuccessProbabilities(other.mSuccessProbabilities),
+    mNumTrials(other.mNumTrials),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid) {
 }
 
 template <size_t M>
 EstimatorML<MultinomialDistribution<M>, M>&
-  EstimatorML<MultinomialDistribution<M>, M>::operator =
-  (const EstimatorML<MultinomialDistribution<M>, M>& other) {
+    EstimatorML<MultinomialDistribution<M>, M>::operator =
+    (const EstimatorML<MultinomialDistribution<M>, M>& other) {
   if (this != &other) {
     mSuccessProbabilities = other.mSuccessProbabilities;
     mNumTrials = other.mNumTrials;
@@ -63,7 +63,7 @@ void EstimatorML<MultinomialDistribution<M>, M>::read(std::istream& stream) {
 
 template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::write(std::ostream& stream)
-  const {
+    const {
   stream << "success probabilities: " << mSuccessProbabilities.transpose()
     << std::endl << "number of trials: " << mNumTrials << std::endl 
     << "number of points: " << mNumPoints << std::endl
@@ -76,7 +76,7 @@ void EstimatorML<MultinomialDistribution<M>, M>::read(std::ifstream& stream) {
 
 template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::write(std::ofstream& stream)
-  const {
+    const {
 }
 
 /******************************************************************************/
@@ -131,7 +131,13 @@ void EstimatorML<MultinomialDistribution<M>, M>::addPoint(const Point& point) {
 
 template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::addPoints(const
-  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
+}
+
+template <size_t M>
+void EstimatorML<MultinomialDistribution<M>, M>::addPoints(const Container&
+    points) {
+  addPoints(points.begin(), points.end());
 }

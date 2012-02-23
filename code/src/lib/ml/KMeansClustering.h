@@ -24,11 +24,11 @@
 #ifndef KMEANSCLUSTERING_H
 #define KMEANSCLUSTERING_H
 
-#include "exceptions/BadArgumentException.h"
+#include <vector>
 
 #include <Eigen/Core>
 
-#include <vector>
+#include "exceptions/BadArgumentException.h"
 
 /** This class implements a K-means clustering algorithm based on
     Expectation-Maximization.

@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the BinomialDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/BinomialDistribution.h"
 
 int main(int argc, char** argv) {

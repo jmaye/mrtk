@@ -21,6 +21,8 @@
            class
   */
 
+#include <iostream>
+
 #include "statistics/NegativeMultinomialDistribution.h"
 
 int main(int argc, char** argv) {

@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
-
 #include <limits>
+
+#include "statistics/Randomizer.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -26,12 +26,12 @@
 
 template <typename T>
 Histogram<T, 2>::Histogram(const Eigen::Matrix<T, 2, 1>& minValue, const
-  Eigen::Matrix<T, 2, 1>& maxValue, const Eigen::Matrix<T, 2, 1>& binWidth)
-  throw (BadArgumentException<Eigen::Matrix<T, 2, 1> >) :
-  mMinValue(minValue),
-  mMaxValue(maxValue),
-  mBinWidth(binWidth),
-  mNormFactor(1.0) {
+    Eigen::Matrix<T, 2, 1>& maxValue, const Eigen::Matrix<T, 2, 1>& binWidth)
+    throw (BadArgumentException<Eigen::Matrix<T, 2, 1> >) :
+    mMinValue(minValue),
+    mMaxValue(maxValue),
+    mBinWidth(binWidth),
+    mNormFactor(1.0) {
   if (minValue(0) >= maxValue(0) || minValue(1) >= maxValue(1))
     throw BadArgumentException<Eigen::Matrix<T, 2, 1> >(minValue,
       "Histogram<T, 2>::Histogram(): maximum value must be strictly larger "
@@ -50,17 +50,17 @@ Histogram<T, 2>::Histogram(const Eigen::Matrix<T, 2, 1>& minValue, const
 
 template <typename T>
 Histogram<T, 2>::Histogram(const Histogram<T, 2>& other) :
-  mMinValue(other.mMinValue),
-  mMaxValue(other.mMaxValue),
-  mBinWidth(other.mBinWidth),
-  mNumBins(other.mNumBins),
-  mBins(other.mBins),
-  mNormFactor(other.mNormFactor) {
+    mMinValue(other.mMinValue),
+    mMaxValue(other.mMaxValue),
+    mBinWidth(other.mBinWidth),
+    mNumBins(other.mNumBins),
+    mBins(other.mBins),
+    mNormFactor(other.mNormFactor) {
 }
 
 template <typename T>
 Histogram<T, 2>& Histogram<T, 2>::operator =
-  (const Histogram<T, 2>& other) {
+    (const Histogram<T, 2>& other) {
   if (this != &other) {
     mMinValue = other.mMinValue;
     mMaxValue = other.mMaxValue;
@@ -134,8 +134,8 @@ const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>&
 
 template <typename T>
 void Histogram<T, 2>::setBinContent(const Eigen::Matrix<size_t, 2, 1>& bin,
-  double value)
-  throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
+    double value)
+    throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
   if (bin(0) >= (size_t)mBins.rows() || bin(1) >= (size_t)mBins.cols())
     throw OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >(bin,
       "Histogram<T, 2>::setBinContent(): wrong bin number",
@@ -145,7 +145,7 @@ void Histogram<T, 2>::setBinContent(const Eigen::Matrix<size_t, 2, 1>& bin,
 
 template <typename T>
 double Histogram<T, 2>::getBinContent(const Eigen::Matrix<size_t, 2, 1>& bin)
-  const throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
+    const throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
   if (bin(0) >= (size_t)mBins.rows() || bin(1) >= (size_t)mBins.cols())
     throw OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >(bin,
       "Histogram<T, 2>::getBinContent(): wrong bin number",
@@ -155,7 +155,7 @@ double Histogram<T, 2>::getBinContent(const Eigen::Matrix<size_t, 2, 1>& bin)
 
 template <typename T>
 void Histogram<T, 2>::addBinContent(const Eigen::Matrix<size_t, 2, 1>& bin)
-  throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
+    throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
   if (bin(0) >= (size_t)mBins.rows() || bin(1) >= (size_t)mBins.cols())
     throw OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >(bin,
       "Histogram<T, 2>::addBinContent(): wrong bin number",
@@ -256,7 +256,7 @@ void Histogram<T, 2>::clear() {
 template <typename T>
 template <typename U, size_t D>
 Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<U, D>::getBinCenter(const
-  Histogram<U, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
+    Histogram<U, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
   Eigen::Matrix<double, 2, 1> returnValue;
   if (hist.mBinWidth(0) == 1 && hist.mBinWidth(1) == 1) {
     returnValue(0) = hist.getBinStart(bin)(0);
@@ -272,7 +272,7 @@ Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<U, D>::getBinCenter(const
 template <typename T>
 template <size_t D>
 Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<float, D>::getBinCenter(
-  const Histogram<float, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
+    const Histogram<float, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
   Eigen::Matrix<double, 2, 1> returnValue;
   returnValue(0) = hist.getBinStart(bin)(0) + hist.mBinWidth(0) / 2.0;
   returnValue(1) = hist.getBinStart(bin)(1) + hist.mBinWidth(1) / 2.0;
@@ -282,7 +282,7 @@ Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<float, D>::getBinCenter(
 template <typename T>
 template <size_t D>
 Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<double, D>::getBinCenter(
-  const Histogram<double, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
+    const Histogram<double, 2>& hist, const Eigen::Matrix<size_t, 2, 1>& bin) {
   Eigen::Matrix<double, 2, 1> returnValue;
   returnValue(0) = hist.getBinStart(bin)(0) + hist.mBinWidth(0) / 2.0;
   returnValue(1) = hist.getBinStart(bin)(1) + hist.mBinWidth(1) / 2.0;
@@ -291,8 +291,8 @@ Eigen::Matrix<double, 2, 1> Histogram<T, 2>::Traits<double, D>::getBinCenter(
 
 template <typename T>
 Eigen::Matrix<double, 2, 1> Histogram<T, 2>::getBinCenter(const
-  Eigen::Matrix<size_t, 2, 1>& bin) const
-  throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
+    Eigen::Matrix<size_t, 2, 1>& bin) const
+    throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
   if (bin(0) >= (size_t)mBins.rows() || bin(1) >= (size_t)mBins.cols())
     throw OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >(bin,
       "Histogram<T, 2>::getBinCenter(): wrong bin number",
@@ -302,8 +302,8 @@ Eigen::Matrix<double, 2, 1> Histogram<T, 2>::getBinCenter(const
 
 template <typename T>
 Eigen::Matrix<T, 2, 1> Histogram<T, 2>::getBinStart(const
-  Eigen::Matrix<size_t, 2, 1>& bin) const
-  throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
+    Eigen::Matrix<size_t, 2, 1>& bin) const
+    throw (OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >) {
   if (bin(0) >= (size_t)mBins.rows() || bin(1) >= (size_t)mBins.cols())
     throw OutOfBoundException<Eigen::Matrix<size_t, 2, 1> >(bin,
       "Histogram<T, 2>::getBinStart(): wrong bin number",
@@ -350,7 +350,7 @@ Eigen::Matrix<double, 2, 2> Histogram<T, 2>::getSampleCovariance() const {
 template <typename T>
 template <typename U, size_t D>
 Eigen::Matrix<size_t, 2, 1> Histogram<T, 2>::Traits<U, D>::computeNumBins(const
-  Histogram<U, 2>& hist) {
+    Histogram<U, 2>& hist) {
   return Eigen::Matrix<size_t, 2, 1>(floor((hist.mMaxValue(0) -
     hist.mMinValue(0)) / (double)hist.mBinWidth(0)) + 1,
     floor((hist.mMaxValue(1) - hist.mMinValue(1)) / (double)hist.mBinWidth(1)) +
@@ -360,7 +360,7 @@ Eigen::Matrix<size_t, 2, 1> Histogram<T, 2>::Traits<U, D>::computeNumBins(const
 template <typename T>
 template <size_t D>
 Eigen::Matrix<size_t, 2, 1> Histogram<T, 2>::Traits<float, D>::computeNumBins(
-  const Histogram<float, 2>& hist) {
+    const Histogram<float, 2>& hist) {
   return Eigen::Matrix<size_t, 2, 1>(ceil((hist.mMaxValue(0) -
     hist.mMinValue(0)) / hist.mBinWidth(0)),
     ceil((hist.mMaxValue(1) - hist.mMinValue(1)) / hist.mBinWidth(1)));
@@ -369,7 +369,7 @@ Eigen::Matrix<size_t, 2, 1> Histogram<T, 2>::Traits<float, D>::computeNumBins(
 template <typename T>
 template <size_t D>
 Eigen::Matrix<size_t, 2, 1> Histogram<T, 2>::Traits<double, D>::computeNumBins(
-  const Histogram<double, 2>& hist) {
+    const Histogram<double, 2>& hist) {
   return Eigen::Matrix<size_t, 2, 1>(ceil((hist.mMaxValue(0) -
     hist.mMinValue(0)) / hist.mBinWidth(0)),
     ceil((hist.mMaxValue(1) - hist.mMinValue(1)) / hist.mBinWidth(1)));
@@ -378,7 +378,7 @@ Eigen::Matrix<size_t, 2, 1> Histogram<T, 2>::Traits<double, D>::computeNumBins(
 template <typename T>
 template <typename U, size_t D>
 void Histogram<T, 2>::Traits<U, D>::addSample(Histogram<U, 2>& hist, const
-  Eigen::Matrix<U, 2, 1>& sample) {
+    Eigen::Matrix<U, 2, 1>& sample) {
   if (sample(0) >= hist.mMinValue(0) && sample(0) <= hist.mMaxValue(0) &&
       sample(1) >= hist.mMinValue(1) && sample(1) <= hist.mMaxValue(1))
     hist.mBins((size_t)floor((sample(0) - hist.mMinValue(0)) /
@@ -389,7 +389,7 @@ void Histogram<T, 2>::Traits<U, D>::addSample(Histogram<U, 2>& hist, const
 template <typename T>
 template <size_t D>
 void Histogram<T, 2>::Traits<float, D>::addSample(Histogram<float, 2>& hist,
-  const Eigen::Matrix<float, 2, 1>& sample) {
+    const Eigen::Matrix<float, 2, 1>& sample) {
   if (sample(0) >= hist.mMinValue(0) && sample(0) < hist.mMaxValue(0) &&
       sample(1) >= hist.mMinValue(1) && sample(1) < hist.mMaxValue(1))
     hist.mBins((size_t)floor((sample(0) - hist.mMinValue(0)) /
@@ -400,7 +400,7 @@ void Histogram<T, 2>::Traits<float, D>::addSample(Histogram<float, 2>& hist,
 template <typename T>
 template <size_t D>
 void Histogram<T, 2>::Traits<double, D>::addSample(Histogram<double, 2>& hist,
-  const Eigen::Matrix<double, 2, 1>& sample) {
+    const Eigen::Matrix<double, 2, 1>& sample) {
   if (sample(0) >= hist.mMinValue(0) && sample(0) < hist.mMaxValue(0) &&
       sample(1) >= hist.mMinValue(1) && sample(1) < hist.mMaxValue(1))
     hist.mBins((size_t)floor((sample(0) - hist.mMinValue(0)) /
@@ -415,7 +415,7 @@ void Histogram<T, 2>::addSample(const Eigen::Matrix<T, 2, 1>& sample) {
 
 template <typename T>
 void Histogram<T, 2>::addSamples(const std::vector<Eigen::Matrix<T, 2, 1> >&
-  samples) {
+    samples) {
   for (size_t i = 0; i < samples.size(); ++i)
     addSample(samples[i]);
 }

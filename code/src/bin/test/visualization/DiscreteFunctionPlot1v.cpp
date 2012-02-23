@@ -20,10 +20,12 @@
     \brief This file is a testing binary for the DiscreteFunctionPlot1v class
   */
 
-#include "visualization/DiscreteFunctionPlot.h"
-#include "functions/FactorialFunction.h"
+#include <iostream>
 
 #include <QtGui/QApplication>
+
+#include "visualization/DiscreteFunctionPlot.h"
+#include "functions/FactorialFunction.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

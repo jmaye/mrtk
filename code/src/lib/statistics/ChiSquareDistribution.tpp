@@ -21,18 +21,18 @@
 /******************************************************************************/
 
 ChiSquareDistribution::ChiSquareDistribution(size_t degrees) :
-  GammaDistribution<>(0.5 * degrees, 0.5) {
+    GammaDistribution<>(0.5 * degrees, 0.5) {
 }
 
 ChiSquareDistribution::ChiSquareDistribution(const ChiSquareDistribution&
-  other) :
-  GammaDistribution<>(other) {
+    other) :
+    GammaDistribution<>(other) {
 }
 
 ChiSquareDistribution& ChiSquareDistribution::operator =
-  (const ChiSquareDistribution& other) {
+    (const ChiSquareDistribution& other) {
   if (this != &other) {
-    this->GammaDistribution<>::operator=(other);
+    GammaDistribution<>::operator=(other);
   }
   return *this;
 }

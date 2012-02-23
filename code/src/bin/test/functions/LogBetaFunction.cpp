@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the LogBetaFunction class
   */
 
-#include "functions/LogBetaFunction.h"
-
 #include <iostream>
+
+#include "functions/LogBetaFunction.h"
 
 int main(int argc, char** argv) {
   LogBetaFunction<size_t, 2> lB_1;

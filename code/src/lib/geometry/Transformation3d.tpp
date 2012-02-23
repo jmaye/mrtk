@@ -96,7 +96,7 @@ const Eigen::Matrix<double, 4, 4>&
 
 template <typename T>
 void Transformation<T, 3>::setTransformation(T x, T y, T z, T roll, T pitch,
-  T yaw) {
+    T yaw) {
   double sinRoll = sin(roll);
   double cosRoll = cos(roll);
   double sinPitch = sin(pitch);

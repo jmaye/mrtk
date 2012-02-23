@@ -21,10 +21,10 @@
            normal distributions
   */
 
+#include <vector>
+
 #include "statistics/NormalDistribution.h"
 #include "statistics/MixtureDistribution.h"
-
-#include <vector>
 
 /** The class EstimatorML is implemented for mixtures of multivariate
     normal distributions.
@@ -94,6 +94,8 @@ public:
   /// Add points to the estimator / Returns number of EM iterationss
   size_t addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator
+  void addPoints(const Container& points);
   /// Reset the estimator
   void reset();
   /** @}

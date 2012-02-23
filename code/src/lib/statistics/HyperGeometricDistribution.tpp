@@ -25,22 +25,22 @@
 
 template <size_t M>
 HyperGeometricDistribution<M>::HyperGeometricDistribution(size_t numTrials,
-  const Eigen::Matrix<size_t, M, 1>&  marbles) :
-  mMarbles(marbles) {
+    const Eigen::Matrix<size_t, M, 1>&  marbles) :
+    mMarbles(marbles) {
   setNumTrials(numTrials);
 }
 
 template <size_t M>
 HyperGeometricDistribution<M>::HyperGeometricDistribution(const
-  HyperGeometricDistribution& other) :
-  mMarbles(other.mMarbles),
-  mNumTrials(other.mNumTrials),
-  mNormalizer(other.mNormalizer) {
+    HyperGeometricDistribution& other) :
+    mMarbles(other.mMarbles),
+    mNumTrials(other.mNumTrials),
+    mNormalizer(other.mNormalizer) {
 }
 
 template <size_t M>
 HyperGeometricDistribution<M>& HyperGeometricDistribution<M>::operator =
-  (const HyperGeometricDistribution<M>& other) {
+    (const HyperGeometricDistribution<M>& other) {
   if (this != &other) {
     mMarbles = other.mMarbles;
     mNumTrials = other.mNumTrials;
@@ -82,8 +82,8 @@ void HyperGeometricDistribution<M>::write(std::ofstream& stream) const {
 template <size_t M>
 template <size_t N, size_t D>
 double HyperGeometricDistribution<M>::Traits<N, D>::pmf(const
-  HyperGeometricDistribution<N>& distribution, const
-  Eigen::Matrix<size_t, N - 1, 1>& value) {
+    HyperGeometricDistribution<N>& distribution, const
+    Eigen::Matrix<size_t, N - 1, 1>& value) {
   Eigen::Matrix<size_t, M, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.pmf(valueMat);
@@ -92,7 +92,7 @@ double HyperGeometricDistribution<M>::Traits<N, D>::pmf(const
 template <size_t M>
 template <size_t D>
 double HyperGeometricDistribution<M>::Traits<2, D>::pmf(const
-  HyperGeometricDistribution<2>& distribution, const size_t& value) {
+    HyperGeometricDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value;
   return distribution.pmf(valueMat);
@@ -101,8 +101,8 @@ double HyperGeometricDistribution<M>::Traits<2, D>::pmf(const
 template <size_t M>
 template <size_t N, size_t D>
 double HyperGeometricDistribution<M>::Traits<N, D>::logpmf(const
-  HyperGeometricDistribution<N>& distribution, const
-  Eigen::Matrix<size_t, N - 1, 1>& value) {
+    HyperGeometricDistribution<N>& distribution, const
+    Eigen::Matrix<size_t, N - 1, 1>& value) {
   Eigen::Matrix<size_t, M, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.logpmf(valueMat);
@@ -111,7 +111,7 @@ double HyperGeometricDistribution<M>::Traits<N, D>::logpmf(const
 template <size_t M>
 template <size_t D>
 double HyperGeometricDistribution<M>::Traits<2, D>::logpmf(const
-  HyperGeometricDistribution<2>& distribution, const size_t& value) {
+    HyperGeometricDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value;
   return distribution.logpmf(valueMat);
@@ -119,7 +119,7 @@ double HyperGeometricDistribution<M>::Traits<2, D>::logpmf(const
 
 template <size_t M>
 void HyperGeometricDistribution<M>::setNumTrials(size_t numTrials)
-  throw (BadArgumentException<size_t>) {
+    throw (BadArgumentException<size_t>) {
   if (numTrials > mMarbles.sum())
     throw BadArgumentException<size_t>(numTrials,
       "HyperGeometricDistribution<M>::setNumTrials(): trials number must be "
@@ -139,7 +139,7 @@ size_t HyperGeometricDistribution<M>::getNumTrials() const {
 
 template <size_t M>
 void HyperGeometricDistribution<M>::setMarbles(const
-  Eigen::Matrix<size_t, M, 1>& marbles) {
+    Eigen::Matrix<size_t, M, 1>& marbles) {
   mMarbles = marbles;
   Eigen::Matrix<size_t, 2, 1> argument;
   argument << marbles.sum(), mNumTrials;
@@ -149,7 +149,7 @@ void HyperGeometricDistribution<M>::setMarbles(const
 
 template <size_t M>
 const Eigen::Matrix<size_t, M, 1>& HyperGeometricDistribution<M>::getMarbles()
-  const {
+    const {
   return mMarbles;
 }
 
@@ -160,7 +160,7 @@ double HyperGeometricDistribution<M>::getNormalizer() const {
 
 template <size_t M>
 double HyperGeometricDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>&
-  value) const {
+    value) const {
   if (value.sum() != mNumTrials)
     return 0.0;
   else
@@ -169,13 +169,13 @@ double HyperGeometricDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>&
 
 template <size_t M>
 double HyperGeometricDistribution<M>::pmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>
 double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
-  value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+    value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != mNumTrials)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
       "HyperGeometricDistribution<M>::logpmf(): value has to sum to the trials "
@@ -194,7 +194,7 @@ double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
 
 template <size_t M>
 double HyperGeometricDistribution<M>::logpmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::logpmf(*this, value);
 }
 

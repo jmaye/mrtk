@@ -29,11 +29,11 @@ PoissonDistribution::PoissonDistribution(double mean) {
 }
 
 PoissonDistribution::PoissonDistribution(const PoissonDistribution& other) : 
-  mMean(other.mMean) {
+    mMean(other.mMean) {
 }
 
 PoissonDistribution& PoissonDistribution::operator = (const
-  PoissonDistribution& other) {
+    PoissonDistribution& other) {
   if (this != &other) {
     mMean = other.mMean;
   }
@@ -65,7 +65,7 @@ void PoissonDistribution::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 void PoissonDistribution::setMean(double mean)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (mean <= 0)
     throw BadArgumentException<double>(mean,
       "PoissonDistribution::setMean(): mean must be strictly positive",
@@ -112,6 +112,6 @@ double PoissonDistribution::getVariance() const {
 }
 
 double PoissonDistribution::KLDivergence(const PoissonDistribution& other)
-  const {
+    const {
   return mMean - other.mMean + other.mMean * log(other.mMean / mMean);
 }

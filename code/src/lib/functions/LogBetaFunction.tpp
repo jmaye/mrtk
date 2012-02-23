@@ -36,7 +36,7 @@ LogBetaFunction<X, M>::~LogBetaFunction() {
 
 template <typename X, size_t M>
 double LogBetaFunction<X, M>::getValue(const Eigen::Matrix<X, M, 1>& argument)
-  const {
+    const {
   const LogGammaFunction<X> logGamma;
   X sum = X(0);
   X logSumGamma = X(0);

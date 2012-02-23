@@ -21,6 +21,8 @@
            class
   */
 
+#include <iostream>
+
 #include "statistics/HyperGeometricDistribution.h"
 
 int main(int argc, char** argv) {

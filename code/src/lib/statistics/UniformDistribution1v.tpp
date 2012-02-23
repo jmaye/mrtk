@@ -24,20 +24,20 @@
 
 template <typename X>
 UniformDistribution<X>::UniformDistribution(const X& minSupport,
-  const X& maxSupport) {
+    const X& maxSupport) {
   setSupport(minSupport, maxSupport);
 }
 
 template <typename X>
 UniformDistribution<X>::UniformDistribution(const UniformDistribution<X>&
-  other) :
-  mMinSupport(other.mMinSupport),
-  mMaxSupport(other.mMaxSupport) {
+    other) :
+    mMinSupport(other.mMinSupport),
+    mMaxSupport(other.mMaxSupport) {
 }
 
 template <typename X>
 UniformDistribution<X>& UniformDistribution<X>::operator =
-  (const UniformDistribution<X>& other) {
+    (const UniformDistribution<X>& other) {
   if (this != &other) {
     mMaxSupport = other.mMaxSupport;
     mMinSupport = other.mMinSupport;
@@ -77,7 +77,7 @@ void UniformDistribution<X>::write(std::ofstream& stream) const {
 
 template <typename X>
 void UniformDistribution<X>::setSupport(const X& minSupport, const X&
-  maxSupport) throw (BadArgumentException<X>) {
+    maxSupport) throw (BadArgumentException<X>) {
   if (minSupport >= maxSupport)
     throw BadArgumentException<X>(minSupport,
       "UniformDistribution<X>::setSupport(): minimum support must be smaller "
@@ -110,14 +110,14 @@ const X& UniformDistribution<X>::getMaxSupport() const {
 template <typename X>
 template <typename U, size_t D>
 double UniformDistribution<X>::Traits<U, D>::pdf(const UniformDistribution<U>&
-  distribution, U value) {
+    distribution, U value) {
   return Traits<U>::pmf(distribution, value);
 }
 
 template <typename X>
 template <typename U, size_t D>
 double UniformDistribution<X>::Traits<U, D>::pmf(const UniformDistribution<U>&
-  distribution, U value) {
+    distribution, U value) {
   if (value >= distribution.mMinSupport && value <= distribution.mMaxSupport)
     return 1.0 / (distribution.mMaxSupport - distribution.mMinSupport + 1);
   else
@@ -127,7 +127,7 @@ double UniformDistribution<X>::Traits<U, D>::pmf(const UniformDistribution<U>&
 template <typename X>
 template <typename U, size_t D>
 double UniformDistribution<X>::Traits<U, D>::getVariance(const
-  UniformDistribution<U>& distribution) {
+    UniformDistribution<U>& distribution) {
   return ((distribution.mMaxSupport - distribution.mMinSupport + 1) *
     (distribution.mMaxSupport - distribution.mMinSupport + 1) - 1) / 12.0 - 1.0;
 }
@@ -135,7 +135,7 @@ double UniformDistribution<X>::Traits<U, D>::getVariance(const
 template <typename X>
 template <size_t D>
 double UniformDistribution<X>::Traits<float, D>::pdf(const
-  UniformDistribution<float>& distribution, float value) {
+    UniformDistribution<float>& distribution, float value) {
   if (value >= distribution.mMinSupport && value <= distribution.mMaxSupport)
     return 1.0 / (distribution.mMaxSupport - distribution.mMinSupport);
   else
@@ -145,14 +145,14 @@ double UniformDistribution<X>::Traits<float, D>::pdf(const
 template <typename X>
 template <size_t D>
 double UniformDistribution<X>::Traits<float, D>::pmf(const
-  UniformDistribution<float>& distribution, float value) {
+    UniformDistribution<float>& distribution, float value) {
   return Traits<float>::pdf(distribution, value);
 }
 
 template <typename X>
 template <size_t D>
 double UniformDistribution<X>::Traits<float, D>::getVariance(const
-  UniformDistribution<float>& distribution) {
+    UniformDistribution<float>& distribution) {
   return ((distribution.mMaxSupport - distribution.mMinSupport) *
     (distribution.mMaxSupport - distribution.mMinSupport)) / 12.0;
 }
@@ -160,7 +160,7 @@ double UniformDistribution<X>::Traits<float, D>::getVariance(const
 template <typename X>
 template <size_t D>
 double UniformDistribution<X>::Traits<double, D>::pdf(const
-  UniformDistribution<double>& distribution, double value) {
+    UniformDistribution<double>& distribution, double value) {
   if (value >= distribution.mMinSupport && value <= distribution.mMaxSupport)
     return 1.0 / (distribution.mMaxSupport - distribution.mMinSupport);
   else
@@ -170,14 +170,14 @@ double UniformDistribution<X>::Traits<double, D>::pdf(const
 template <typename X>
 template <size_t D>
 double UniformDistribution<X>::Traits<double, D>::pmf(const
-  UniformDistribution<double>& distribution, double value) {
+    UniformDistribution<double>& distribution, double value) {
   return Traits<double>::pdf(distribution, value);
 }
 
 template <typename X>
 template <size_t D>
 double UniformDistribution<X>::Traits<double, D>::getVariance(const
-  UniformDistribution<double>& distribution) {
+    UniformDistribution<double>& distribution) {
   return ((distribution.mMaxSupport - distribution.mMinSupport) *
     (distribution.mMaxSupport - distribution.mMinSupport)) / 12.0;
 }

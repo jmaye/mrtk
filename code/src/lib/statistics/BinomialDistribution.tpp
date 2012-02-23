@@ -21,8 +21,8 @@
 /******************************************************************************/
 
 BinomialDistribution::BinomialDistribution(size_t numTrials, double
-  successProbability) :
-  MultinomialDistribution<2>(numTrials) {
+    successProbability) :
+    MultinomialDistribution<2>(numTrials) {
   setSuccessProbability(successProbability);
 }
 
@@ -33,7 +33,7 @@ BinomialDistribution::BinomialDistribution(const BinomialDistribution& other) :
 BinomialDistribution& BinomialDistribution::operator =
   (const BinomialDistribution& other) {
   if (this != &other) {
-    this->MultinomialDistribution<2>::operator=(other);
+    MultinomialDistribution<2>::operator=(other);
   }
   return *this;
 }

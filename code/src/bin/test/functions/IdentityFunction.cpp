@@ -20,12 +20,12 @@
     \brief This file is a testing binary for the IdentityFunction class
   */
 
-#include "functions/IdentityFunction.h"
-
 #include <iostream>
 
 #include <Eigen/Core>
 #include <Eigen/Array>
+
+#include "functions/IdentityFunction.h"
 
 int main(int argc, char** argv) {
   IdentityFunction<double> i1;

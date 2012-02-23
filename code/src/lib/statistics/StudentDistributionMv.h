@@ -21,15 +21,16 @@
            multivariate Student distribution
   */
 
+#include <Eigen/Cholesky>
+
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 
-#include <Eigen/Cholesky>
-
 /** The StudentDistributionMv class represents a multivariate Student
-    distribution.
+    distribution, i.e., a predictive distribution for a normal with unknown
+    mean and covariance matrix.
     \brief Multivariate Student distribution
   */
 template <size_t M> class StudentDistribution :

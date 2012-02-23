@@ -26,7 +26,8 @@
 #include "exceptions/BadArgumentException.h"
 
 /** The StudentDistribution1v class represents a univariate Student
-    distribution.
+    distribution, i.e., a predictive distribution for a normal with unknown mean
+    and variance.
     \brief Univariate Student distribution
   */
 template <> class StudentDistribution<1> :

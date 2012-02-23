@@ -16,30 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
+#include <limits>
 
 #include <Eigen/Array>
 
-#include <limits>
+#include "statistics/Randomizer.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 template <size_t M>
 CategoricalDistribution<M>::CategoricalDistribution(const
-  Eigen::Matrix<double, M, 1>& successProbabilities) {
+    Eigen::Matrix<double, M, 1>& successProbabilities) {
   setSuccessProbabilities(successProbabilities);
 }
 
 template <size_t M>
 CategoricalDistribution<M>::CategoricalDistribution(const
-  CategoricalDistribution<M>& other) :
-  mSuccessProbabilities(other.mSuccessProbabilities) {
+    CategoricalDistribution<M>& other) :
+    mSuccessProbabilities(other.mSuccessProbabilities) {
 }
 
 template <size_t M>
 CategoricalDistribution<M>& CategoricalDistribution<M>::operator = (const
-  CategoricalDistribution<M>& other) {
+    CategoricalDistribution<M>& other) {
   if (this != &other) {
     mSuccessProbabilities = other.mSuccessProbabilities;
   }
@@ -77,12 +77,13 @@ void CategoricalDistribution<M>::write(std::ofstream& stream) const {
 
 template <size_t M>
 void CategoricalDistribution<M>::setSuccessProbabilities(const
-  Eigen::Matrix<double, M, 1>& successProbabilities) throw
-  (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
+    Eigen::Matrix<double, M, 1>& successProbabilities) throw
+    (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(successProbabilities.sum() - 1.0) >
-    std::numeric_limits<double>::epsilon() ||
-    (successProbabilities.cwise() < 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(successProbabilities,
+      std::numeric_limits<double>::epsilon() ||
+      (successProbabilities.cwise() < 0).any() == true)
+    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
+      successProbabilities,
       "CategoricalDistribution::setSuccessProbabilities(): success "
       "probabilities must sum to 1 and probabilities bigger or equal to 0",
       __FILE__, __LINE__);
@@ -91,15 +92,15 @@ void CategoricalDistribution<M>::setSuccessProbabilities(const
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>&
-  CategoricalDistribution<M>::getSuccessProbabilities() const {
+    CategoricalDistribution<M>::getSuccessProbabilities() const {
   return mSuccessProbabilities;
 }
 
 template <size_t M>
 template <size_t N, size_t D>
 double CategoricalDistribution<M>::Traits<N, D>::pmf(const
-  CategoricalDistribution<N>& distribution, const
-  Eigen::Matrix<size_t, N - 1, 1>& value) {
+    CategoricalDistribution<N>& distribution, const
+    Eigen::Matrix<size_t, N - 1, 1>& value) {
   Eigen::Matrix<size_t, M, 1> valueMat;
   if ((value.cwise() == 1).any() == true)
     valueMat << 0, value;
@@ -111,7 +112,7 @@ double CategoricalDistribution<M>::Traits<N, D>::pmf(const
 template <size_t M>
 template <size_t D>
 double CategoricalDistribution<M>::Traits<2, D>::pmf(const
-  CategoricalDistribution<2>& distribution, const size_t& value) {
+    CategoricalDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
   if (value)
     valueMat << 0, value;
@@ -123,8 +124,8 @@ double CategoricalDistribution<M>::Traits<2, D>::pmf(const
 template <size_t M>
 template <size_t N, size_t D>
 double CategoricalDistribution<M>::Traits<N, D>::logpmf(const
-  CategoricalDistribution<N>& distribution, const
-  Eigen::Matrix<size_t, N - 1, 1>& value) {
+    CategoricalDistribution<N>& distribution, const
+    Eigen::Matrix<size_t, N - 1, 1>& value) {
   Eigen::Matrix<size_t, M, 1> valueMat;
   if ((value.cwise() == 1).any() == true)
     valueMat << 0, value;
@@ -136,7 +137,7 @@ double CategoricalDistribution<M>::Traits<N, D>::logpmf(const
 template <size_t M>
 template <size_t D>
 double CategoricalDistribution<M>::Traits<2, D>::logpmf(const
-  CategoricalDistribution<2>& distribution, const size_t& value) {
+    CategoricalDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
   if (value)
     valueMat << 0, value;
@@ -147,13 +148,13 @@ double CategoricalDistribution<M>::Traits<2, D>::logpmf(const
 
 template <size_t M>
 double CategoricalDistribution<M>::pmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>
 double CategoricalDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
-  const {
+    const {
   if (value.sum() != 1)
     return 0.0;
   else
@@ -162,7 +163,7 @@ double CategoricalDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
 
 template <size_t M>
 double CategoricalDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
-  value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+    value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != 1)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
       "CategoricalDistribution<M>::logpmf(): 1-of-K encoding required",
@@ -175,7 +176,7 @@ double CategoricalDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
 
 template <size_t M>
 double CategoricalDistribution<M>::logpmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::logpmf(*this, value);
 }
 

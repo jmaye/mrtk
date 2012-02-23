@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the GeometricDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/GeometricDistribution.h"
 
 int main(int argc, char** argv) {

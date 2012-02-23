@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the Timestamp class
   */
 
-#include "base/Timestamp.h"
-
 #include <iostream>
+
+#include "base/Timestamp.h"
 
 int main(int argc, char** argv) {
   std::cout << "Timestamp::now(): " << std::fixed << Timestamp::now()

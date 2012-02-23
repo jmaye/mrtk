@@ -24,9 +24,9 @@
 
 template <typename T, size_t D, size_t M>
 void PCA<T, D, M>::analyze(const std::vector<Eigen::Matrix<T, D, 1> >& data,
-  std::vector<Eigen::Matrix<T, M, 1> >& transformedData, Eigen::Matrix<T, D, 1>&
-  eigenValues, Eigen::Matrix<T, D, D>& eigenVectors)
-  throw (BadArgumentException<size_t>) {
+    std::vector<Eigen::Matrix<T, M, 1> >& transformedData,
+    Eigen::Matrix<T, D, 1>& eigenValues, Eigen::Matrix<T, D, D>& eigenVectors)
+    throw (BadArgumentException<size_t>) {
 
   if (data.size() == 0)
     throw BadArgumentException<size_t>(data.size(),

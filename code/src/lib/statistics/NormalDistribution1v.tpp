@@ -23,20 +23,20 @@
 /******************************************************************************/
 
 NormalDistribution<1>::NormalDistribution(double mean, double variance) :
-  mMean(mean) {
+    mMean(mean) {
   setVariance(variance);
 }
 
 NormalDistribution<1>::NormalDistribution(const NormalDistribution<1>& other) :
-  mMean(other.mMean),
-  mVariance(other.mVariance),
-  mPrecision(other.mPrecision),
-  mStandardDeviation(other.mStandardDeviation),
-  mNormalizer(other.mNormalizer) {
+    mMean(other.mMean),
+    mVariance(other.mVariance),
+    mPrecision(other.mPrecision),
+    mStandardDeviation(other.mStandardDeviation),
+    mNormalizer(other.mNormalizer) {
 }
 
 NormalDistribution<1>& NormalDistribution<1>::operator =
-  (const NormalDistribution<1>& other) {
+    (const NormalDistribution<1>& other) {
   if (this != &other) {
     mMean = other.mMean;
     mVariance = other.mVariance;
@@ -81,7 +81,7 @@ double NormalDistribution<1>::getMean() const {
 }
 
 void NormalDistribution<1>::setVariance(double variance)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   mVariance = variance;
   if (mVariance <= 0.0)
     throw BadArgumentException<double>(variance,
@@ -127,7 +127,7 @@ double NormalDistribution<1>::getSample() const {
 }
 
 double NormalDistribution<1>::KLDivergence(const NormalDistribution<1>& other)
-  const {
+    const {
   return 0.5 * (log(other.mVariance * mPrecision) +
     other.mPrecision * mVariance - 1.0 +
     (mMean - other.mMean) * other.mPrecision * (mMean - other.mMean));

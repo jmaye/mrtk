@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the UniformDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/UniformDistribution.h"
 
 int main(int argc, char** argv) {

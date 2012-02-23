@@ -36,7 +36,7 @@ LogFunction<X>::~LogFunction() {
 
 template <typename X>
 double LogFunction<X>::getValue(const X& argument) const
-  throw (BadArgumentException<X>) {
+    throw (BadArgumentException<X>) {
   if (argument > X(0))
     return log(argument);
   else

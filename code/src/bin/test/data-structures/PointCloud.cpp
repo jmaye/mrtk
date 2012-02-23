@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the PointCloud class.
   */
 
+#include <iostream>
+
 #include "data-structures/PointCloud.h"
 
 int main (int argc, char** argv) {

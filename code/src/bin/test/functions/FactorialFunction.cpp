@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the FactorialFunction class
   */
 
-#include "functions/FactorialFunction.h"
-
 #include <iostream>
+
+#include "functions/FactorialFunction.h"
 
 int main(int argc, char** argv) {
   FactorialFunction f;

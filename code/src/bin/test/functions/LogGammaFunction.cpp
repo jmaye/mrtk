@@ -20,10 +20,10 @@
     \brief This file is a testing binary for the LogGammaFunction class
   */
 
-#include "functions/LogGammaFunction.h"
-
 #include <iostream>
 #include <limits>
+
+#include "functions/LogGammaFunction.h"
 
 int main(int argc, char** argv) {
   LogGammaFunction<size_t> lG_1;

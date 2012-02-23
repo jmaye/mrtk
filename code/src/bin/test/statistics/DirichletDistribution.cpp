@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the DirichletDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/DirichletDistribution.h"
 
 int main(int argc, char** argv) {

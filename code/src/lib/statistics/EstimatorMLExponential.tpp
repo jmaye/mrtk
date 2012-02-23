@@ -21,23 +21,23 @@
 /******************************************************************************/
 
 EstimatorML<ExponentialDistribution>::EstimatorML() :
-  mRate(0.0),
-  mMean(0.0),
-  mNumPoints(0),
-  mValid(false) {
+    mRate(0.0),
+    mMean(0.0),
+    mNumPoints(0),
+    mValid(false) {
 }
 
 EstimatorML<ExponentialDistribution>::EstimatorML(const
-  EstimatorML<ExponentialDistribution>& other) :
-  mRate(other.mRate),
-  mMean(other.mMean),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+    EstimatorML<ExponentialDistribution>& other) :
+    mRate(other.mRate),
+    mMean(other.mMean),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid) {
 }
 
 EstimatorML<ExponentialDistribution>&
-  EstimatorML<ExponentialDistribution>::operator =
-  (const EstimatorML<ExponentialDistribution>& other) {
+    EstimatorML<ExponentialDistribution>::operator =
+    (const EstimatorML<ExponentialDistribution>& other) {
   if (this != &other) {
     mRate = other.mRate;
     mMean = other.mMean;
@@ -58,7 +58,7 @@ void EstimatorML<ExponentialDistribution>::read(std::istream& stream) {
 }
 
 void EstimatorML<ExponentialDistribution>::write(std::ostream& stream)
-  const {
+    const {
   stream << "rate: " << mRate << std::endl
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
@@ -68,7 +68,7 @@ void EstimatorML<ExponentialDistribution>::read(std::ifstream& stream) {
 }
 
 void EstimatorML<ExponentialDistribution>::write(std::ofstream& stream)
-  const {
+    const {
 }
 
 /******************************************************************************/
@@ -109,7 +109,11 @@ void EstimatorML<ExponentialDistribution>::addPoint(const Point& point) {
 }
 
 void EstimatorML<ExponentialDistribution>::addPoints(const
-  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
+}
+
+void EstimatorML<ExponentialDistribution>::addPoints(const Container& points) {
+  addPoints(points.begin(), points.end());
 }

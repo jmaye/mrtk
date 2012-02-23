@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the LinearBasisFunction class
   */
 
-#include "functions/LinearBasisFunction.h"
-
 #include <iostream>
+
+#include "functions/LinearBasisFunction.h"
 
 int main(int argc, char** argv) {
   LinearBasisFunction<double, 2> lbf(Eigen::Matrix<double, 2, 1>(2.0, 1.0));

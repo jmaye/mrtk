@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the PCA class
   */
 
+#include <iostream>
+
 #include "ml/PCA.h"
 #include "statistics/NormalDistribution.h"
 

@@ -24,38 +24,38 @@
 
 template <size_t N>
 EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::EstimatorML(
-  const Eigen::Matrix<double, N, 1>& means,
-  const Eigen::Matrix<double, N, 1>& variances,
-  const Eigen::Matrix<double, N, 1>& weights, size_t maxNumIter, double tol) :
-  mMeans(means),
-  mVariances(variances),
-  mWeights(weights),
-  mLogLikelihood(0),
-  mMaxNumIter(maxNumIter),
-  mTol(tol),
-  mNumPoints(0),
-  mValid(false) {
+    const Eigen::Matrix<double, N, 1>& means,
+    const Eigen::Matrix<double, N, 1>& variances,
+    const Eigen::Matrix<double, N, 1>& weights, size_t maxNumIter, double tol) :
+    mMeans(means),
+    mVariances(variances),
+    mWeights(weights),
+    mLogLikelihood(0),
+    mMaxNumIter(maxNumIter),
+    mTol(tol),
+    mNumPoints(0),
+    mValid(false) {
 }
 
 template <size_t N>
 EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::EstimatorML(
-  const EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>&
-  other) :
-  mMeans(other.mMeans),
-  mVariances(other.mVariances),
-  mResponsibilities(other.mResponsibilities),
-  mWeights(other.mWeights),
-  mMaxNumIter(other.mMaxNumIter),
-  mTol(other.mTol),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+    const EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>&
+    other) :
+    mMeans(other.mMeans),
+    mVariances(other.mVariances),
+    mResponsibilities(other.mResponsibilities),
+    mWeights(other.mWeights),
+    mMaxNumIter(other.mMaxNumIter),
+    mTol(other.mTol),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid) {
 }
 
 template <size_t N>
 EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>&
-  EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::operator =
-  (const EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>&
-  other) {
+    EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::operator =
+    (const EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>&
+    other) {
   if (this != &other) {
     mMeans = other.mMeans;
     mVariances = other.mVariances;
@@ -71,7 +71,7 @@ EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>&
 
 template <size_t N>
 EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-~EstimatorML() {
+    ~EstimatorML() {
 }
 
 /******************************************************************************/
@@ -80,12 +80,12 @@ EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
 
 template <size_t N>
 void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::read(
-  std::istream& stream) {
+    std::istream& stream) {
 }
 
 template <size_t N>
 void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::write(
-  std::ostream& stream) const {
+    std::ostream& stream) const {
   stream << "means: " << mMeans.transpose() << std::endl
     << "variances: " << mVariances.transpose() << std::endl
     << "weights: " << mWeights.transpose() << std::endl
@@ -98,12 +98,12 @@ void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::write(
 
 template <size_t N>
 void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::read(
-  std::ifstream& stream) {
+    std::ifstream& stream) {
 }
 
 template <size_t N>
 void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::write(
-  std::ofstream& stream) const {
+    std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -112,41 +112,41 @@ void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::write(
 
 template <size_t N>
 size_t EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-getNumPoints() const {
+    getNumPoints() const {
   return mNumPoints;
 }
 
 template <size_t N>
 bool EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-getValid() const {
+    getValid() const {
   return mValid;
 }
 
 template <size_t N>
 const Eigen::Matrix<double, N, 1>&
 EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-getMeans() const {
+    getMeans() const {
   return mMeans;
 }
 
 template <size_t N>
 const Eigen::Matrix<double, N, 1>&
 EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-getVariances() const {
+    getVariances() const {
   return mVariances;
 }
 
 template <size_t N>
 const Eigen::Matrix<double, Eigen::Dynamic, N>&
 EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-getResponsibilities() const {
+    getResponsibilities() const {
   return mResponsibilities;
 }
 
 template <size_t N>
 const Eigen::Matrix<double, N, 1>&
 EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-getWeights() const {
+    getWeights() const {
   return mWeights;
 }
 
@@ -158,25 +158,25 @@ getLogLikelihood() const {
 
 template <size_t N>
 double EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-getTolerance() const {
+    getTolerance() const {
   return mTol;
 }
 
 template <size_t N>
 void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-setTolerance(double tol) {
+    setTolerance(double tol) {
   mTol = tol;
 }
 
 template <size_t N>
 size_t EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-getMaxNumIter() const {
+    getMaxNumIter() const {
   return mMaxNumIter;
 }
 
 template <size_t N>
 void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
-setMaxNumIter(size_t maxNumIter) {
+    setMaxNumIter(size_t maxNumIter) {
   mMaxNumIter = maxNumIter;
 }
 
@@ -237,4 +237,10 @@ addPoints(const ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   }
   mValid = true;
   return numIter;
+}
+
+template <size_t N>
+void EstimatorML<MixtureDistribution<NormalDistribution<1>, N>, 1, N>::
+    addPoints(const Container& points) {
+  addPoints(points.begin(), points.end());
 }

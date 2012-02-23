@@ -22,19 +22,19 @@
 
 template <typename D, size_t M>
 MixtureSampleDistribution<D, M>::MixtureSampleDistribution(const std::vector<D>&
-  compDistributions, const CategoricalDistribution<M> assignDistribution) :
-  MixtureDistribution<D, M>(compDistributions, assignDistribution) {
+    compDistributions, const CategoricalDistribution<M> assignDistribution) :
+    MixtureDistribution<D, M>(compDistributions, assignDistribution) {
 }
 
 template <typename D, size_t M>
 MixtureSampleDistribution<D, M>::MixtureSampleDistribution(const
-  MixtureSampleDistribution<D, M>& other) :
-  MixtureDistribution<D, M>(other) {
+    MixtureSampleDistribution<D, M>& other) :
+    MixtureDistribution<D, M>(other) {
 }
 
 template <typename D, size_t M>
 MixtureSampleDistribution<D, M>& MixtureSampleDistribution<D, M>::operator =
-  (const MixtureSampleDistribution<D, M>& other) {
+    (const MixtureSampleDistribution<D, M>& other) {
   if (this != &other) {
     this->MixtureDistribution<D, M>::operator=(other);
   }
@@ -51,7 +51,7 @@ MixtureSampleDistribution<D, M>::~MixtureSampleDistribution() {
 
 template <typename D, size_t M>
 typename MixtureSampleDistribution<D, M>::VariableType
-  MixtureSampleDistribution<D, M>::getSample() const {
+    MixtureSampleDistribution<D, M>::getSample() const {
   Eigen::Matrix<size_t, M, 1> component = this->mAssignDistribution.getSample();
   for (size_t i = 0; i < (size_t)component.size(); ++i)
     if (component(i) == 1)
@@ -61,7 +61,7 @@ typename MixtureSampleDistribution<D, M>::VariableType
 
 template <typename D, size_t M>
 void MixtureSampleDistribution<D, M>::getSamples(std::vector<VariableType>&
-  samples, size_t numSamples) const {
+    samples, size_t numSamples) const {
   samples.clear();
   samples.reserve(numSamples);
   for (size_t i = 0; i < numSamples; ++i)

@@ -22,22 +22,22 @@
 
 template <size_t M>
 LinearRegression<M>::LinearRegression(const Eigen::Matrix<double, M, 1>&
-  coefficients, double variance, const Eigen::Matrix<double, M, 1>& basis) :
-  NormalDistribution<1>(coefficients.dot(basis), variance),
-  mCoefficients(coefficients),
-  mBasis(basis) {
+    coefficients, double variance, const Eigen::Matrix<double, M, 1>& basis) :
+    NormalDistribution<1>(coefficients.dot(basis), variance),
+    mCoefficients(coefficients),
+    mBasis(basis) {
 }
 
 template <size_t M>
 LinearRegression<M>::LinearRegression(const LinearRegression<M>& other) :
-  NormalDistribution<1>(other),
-  mCoefficients(other.mCoefficients),
-  mBasis(other.mBasis) {
+    NormalDistribution<1>(other),
+    mCoefficients(other.mCoefficients),
+    mBasis(other.mBasis) {
 }
 
 template <size_t M>
 LinearRegression<M>& LinearRegression<M>::operator = (const LinearRegression<M>&
-  other) {
+    other) {
   if (this != &other) {
     this->NormalDistribution<1>::operator=(other);
     mCoefficients = other.mCoefficients;
@@ -79,14 +79,14 @@ void LinearRegression<M>::write(std::ofstream& stream) const {
 
 template <size_t M>
 void LinearRegression<M>::setCoefficients(const Eigen::Matrix<double, M, 1>&
-  coefficients) {
+    coefficients) {
   setMean(coefficients.dot(mBasis));
   mCoefficients = coefficients;
 }
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>& LinearRegression<M>::getCoefficients()
-  const {
+    const {
   return mCoefficients;
 }
 

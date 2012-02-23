@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the Grid class.
   */
 
+#include <iostream>
+
 #include "data-structures/Grid.h"
 
 int main (int argc, char** argv) {

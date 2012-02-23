@@ -24,12 +24,12 @@
 #ifndef INVWISHARTDISTRIBUTION_H
 #define INVWISHARTDISTRIBUTION_H
 
+#include <Eigen/Cholesky>
+
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
-
-#include <Eigen/Cholesky>
 
 /** The InvWishartDistribution class represents an inverse Wishart distribution.
     \brief Inverse Wishart distribution

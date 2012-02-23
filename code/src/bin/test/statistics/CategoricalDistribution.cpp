@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the CategoricalDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/CategoricalDistribution.h"
 
 int main(int argc, char** argv) {

@@ -21,11 +21,11 @@
            distribution with conjugate prior
   */
 
+#include <vector>
+
 #include "statistics/ExponentialDistribution.h"
 #include "statistics/GammaDistribution.h"
 #include "statistics/NegativeBinomialDistribution.h"
-
-#include <vector>
 
 /** The class EstimatorBayes is implemented for exponential distributions with
     conjugate prior.
@@ -73,6 +73,8 @@ public:
   /// Add points to the estimator
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator
+  void addPoints(const Container& points);
   /** @}
     */
 

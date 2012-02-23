@@ -21,11 +21,11 @@
            distributions with improper prior.
   */
 
+#include <vector>
+
 #include "statistics/NormalDistribution.h"
 #include "statistics/StudentDistribution.h"
 #include "statistics/InvWishartDistribution.h"
-
-#include <vector>
 
 /** The class EstimatorBayesImproper is implemented for multivariate normal
     distributions.
@@ -85,6 +85,8 @@ public:
   /// Add points to the estimator
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator
+  void addPoints(const Container& points);
   /// Reset the estimator
   void reset();
   /** @}

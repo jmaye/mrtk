@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the OutOfBoundException class
   */
 
-#include "exceptions/OutOfBoundException.h"
-
 #include <iostream>
+
+#include "exceptions/OutOfBoundException.h"
 
 int main(int argc, char** argv) {
   return 0;

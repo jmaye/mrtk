@@ -20,13 +20,13 @@
     \brief This file contains the definition of an univariate histogram
   */
 
-#include "base/Serializable.h"
-#include "exceptions/BadArgumentException.h"
-#include "exceptions/OutOfBoundException.h"
+#include <vector>
 
 #include <Eigen/Core>
 
-#include <vector>
+#include "base/Serializable.h"
+#include "exceptions/BadArgumentException.h"
+#include "exceptions/OutOfBoundException.h"
 
 /** The Histogram1v class defines univariate histograms
     \brief 1-v histogram

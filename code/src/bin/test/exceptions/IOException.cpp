@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the IOException class
   */
 
-#include "exceptions/IOException.h"
-
 #include <iostream>
+
+#include "exceptions/IOException.h"
 
 int main(int argc, char** argv) {
   return 0;

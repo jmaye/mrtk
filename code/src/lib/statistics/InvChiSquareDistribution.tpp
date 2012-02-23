@@ -21,16 +21,16 @@
 /******************************************************************************/
 
 InvChiSquareDistribution::InvChiSquareDistribution(size_t degrees) :
-  InvGammaDistribution<>(0.5 * degrees, 0.5) {
+    InvGammaDistribution<>(0.5 * degrees, 0.5) {
 }
 
 InvChiSquareDistribution::InvChiSquareDistribution(const
-  InvChiSquareDistribution& other) :
-  InvGammaDistribution<>(other) {
+    InvChiSquareDistribution& other) :
+    InvGammaDistribution<>(other) {
 }
 
 InvChiSquareDistribution& InvChiSquareDistribution::operator =
-  (const InvChiSquareDistribution& other) {
+    (const InvChiSquareDistribution& other) {
   if (this != &other) {
     this->InvGammaDistribution<>::operator=(other);
   }

@@ -25,14 +25,14 @@ BernoulliDistribution::BernoulliDistribution(double successProbability) {
 }
 
 BernoulliDistribution::BernoulliDistribution(const BernoulliDistribution&
-  other) : 
-  CategoricalDistribution<2>(other) {
+    other) : 
+    CategoricalDistribution<2>(other) {
 }
 
 BernoulliDistribution& BernoulliDistribution::operator =
-  (const BernoulliDistribution& other) {
+    (const BernoulliDistribution& other) {
   if (this != &other) {
-    this->CategoricalDistribution<2>::operator=(other);
+    CategoricalDistribution<2>::operator=(other);
   }
   return *this;
 }

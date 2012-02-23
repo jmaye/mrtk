@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the Histogram class
   */
 
+#include <iostream>
+
 #include "statistics/Histogram.h"
 
 int main(int argc, char** argv) {

@@ -24,11 +24,11 @@
 #ifndef MEANSHIFTCLUSTERING_H
 #define MEANSHIFTCLUSTERING_H
 
-#include "exceptions/BadArgumentException.h"
+#include <vector>
 
 #include <Eigen/Core>
 
-#include <vector>
+#include "exceptions/BadArgumentException.h"
 
 /** This class implements a mean-shift clustering algorithm.
     \brief Mean-shift clustering algorithm

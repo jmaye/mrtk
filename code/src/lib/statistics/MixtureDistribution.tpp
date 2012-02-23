@@ -22,21 +22,21 @@
 
 template <typename D, size_t M>
 MixtureDistribution<D, M>::MixtureDistribution(const std::vector<D>&
-  compDistributions, const CategoricalDistribution<M> assignDistribution) :
-  mCompDistributions(compDistributions),
-  mAssignDistribution(assignDistribution) {
+    compDistributions, const CategoricalDistribution<M> assignDistribution) :
+    mCompDistributions(compDistributions),
+    mAssignDistribution(assignDistribution) {
 }
 
 template <typename D, size_t M>
 MixtureDistribution<D, M>::MixtureDistribution(const MixtureDistribution<D, M>&
-  other) :
-  mCompDistributions(other.mCompDistributions),
-  mAssignDistribution(other.mAssignDistribution) {
+    other) :
+    mCompDistributions(other.mCompDistributions),
+    mAssignDistribution(other.mAssignDistribution) {
 }
 
 template <typename D, size_t M>
 MixtureDistribution<D, M>& MixtureDistribution<D, M>::operator =
-  (const MixtureDistribution<D, M>& other) {
+    (const MixtureDistribution<D, M>& other) {
   if (this != &other) {
     mCompDistributions = other.mCompDistributions;
     mAssignDistribution = other.mAssignDistribution;
@@ -84,13 +84,13 @@ const std::vector<D>& MixtureDistribution<D, M>::getCompDistributions() const {
 
 template <typename D, size_t M>
 void MixtureDistribution<D, M>::setCompDistributions(const std::vector<D>&
-  compDistributions) {
+    compDistributions) {
   mCompDistributions = compDistributions;
 }
 
 template <typename D, size_t M>
 const D& MixtureDistribution<D, M>::getCompDistribution(size_t idx) const
-  throw (BadArgumentException<size_t>) {
+    throw (BadArgumentException<size_t>) {
   if (idx >= mCompDistributions.size())
     throw BadArgumentException<size_t>(idx,
       "MixtureDistribution<D, M>::getCompDistribution(): invalid index",
@@ -100,7 +100,7 @@ const D& MixtureDistribution<D, M>::getCompDistribution(size_t idx) const
 
 template <typename D, size_t M>
 void MixtureDistribution<D, M>::setCompDistribution(const D& distribution,
-  size_t idx) throw (BadArgumentException<size_t>) {
+    size_t idx) throw (BadArgumentException<size_t>) {
   if (idx >= mCompDistributions.size())
     throw BadArgumentException<size_t>(idx,
       "MixtureDistribution<D, M>::setCompDistribution(): invalid index",
@@ -110,13 +110,13 @@ void MixtureDistribution<D, M>::setCompDistribution(const D& distribution,
 
 template <typename D, size_t M>
 const CategoricalDistribution<M>& MixtureDistribution<D, M>::
-  getAssignDistribution() const {
+    getAssignDistribution() const {
   return mAssignDistribution;
 }
 
 template <typename D, size_t M>
 void MixtureDistribution<D, M>::setAssignDistribution(const
-  CategoricalDistribution<M>& assignDistribution) {
+    CategoricalDistribution<M>& assignDistribution) {
   mAssignDistribution = assignDistribution;
 }
 

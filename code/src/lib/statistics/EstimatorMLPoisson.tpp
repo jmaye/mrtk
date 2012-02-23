@@ -21,21 +21,21 @@
 /******************************************************************************/
 
 EstimatorML<PoissonDistribution>::EstimatorML() :
-  mMean(0.0),
-  mNumPoints(0),
-  mValid(false) {
+    mMean(0.0),
+    mNumPoints(0),
+    mValid(false) {
 }
 
 EstimatorML<PoissonDistribution>::EstimatorML(const
-  EstimatorML<PoissonDistribution>& other) :
-  mMean(other.mMean),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+    EstimatorML<PoissonDistribution>& other) :
+    mMean(other.mMean),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid) {
 }
 
 EstimatorML<PoissonDistribution>&
-  EstimatorML<PoissonDistribution>::operator =
-  (const EstimatorML<PoissonDistribution>& other) {
+    EstimatorML<PoissonDistribution>::operator =
+    (const EstimatorML<PoissonDistribution>& other) {
   if (this != &other) {
     mMean = other.mMean;
     mNumPoints = other.mNumPoints;
@@ -99,7 +99,11 @@ void EstimatorML<PoissonDistribution>::addPoint(const Point& point) {
 }
 
 void EstimatorML<PoissonDistribution>::addPoints(const
-  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
+}
+
+void EstimatorML<PoissonDistribution>::addPoints(const Container& points) {
+  addPoints(points.begin(), points.end());
 }

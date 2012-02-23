@@ -23,18 +23,18 @@
 /******************************************************************************/
 
 LogisticDistribution::LogisticDistribution(double location, double scale) :
-  mLocation(location) {
+    mLocation(location) {
   setScale(scale);
 }
 
 LogisticDistribution::LogisticDistribution(const LogisticDistribution& other) :
-  mLocation(other.mLocation),
-  mScale(other.mScale),
-  mInverseScale(other.mInverseScale) {
+    mLocation(other.mLocation),
+    mScale(other.mScale),
+    mInverseScale(other.mInverseScale) {
 }
 
 LogisticDistribution& LogisticDistribution::operator =
-  (const LogisticDistribution& other) {
+    (const LogisticDistribution& other) {
   if (this != &other) {
     mLocation = other.mLocation;
     mScale = other.mScale;
@@ -77,7 +77,7 @@ double LogisticDistribution::getLocation() const {
 }
 
 void LogisticDistribution::setScale(double scale)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (scale <= 0)
     throw BadArgumentException<double>(scale,
       "LogisticDistribution<1>::setScale(): scale must be strictly positive",

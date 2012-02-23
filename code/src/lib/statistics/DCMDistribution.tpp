@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <Eigen/Array>
+
 #include "functions/LogGammaFunction.h"
 #include "functions/LogFactorialFunction.h"
 #include "statistics/DirichletDistribution.h"
 #include "statistics/MultinomialDistribution.h"
-
-#include <Eigen/Array>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -29,20 +29,20 @@
 
 template <size_t M>
 DCMDistribution<M>::DCMDistribution(size_t numTrials, const
-  Eigen::Matrix<double, M, 1>& alpha) {
+    Eigen::Matrix<double, M, 1>& alpha) {
   setAlpha(alpha);
   setNumTrials(numTrials);
 }
 
 template <size_t M>
 DCMDistribution<M>::DCMDistribution(const DCMDistribution<M>& other) :
-  mAlpha(other.mAlpha),
-  mNumTrials(other.mNumTrials) {
+    mAlpha(other.mAlpha),
+    mNumTrials(other.mNumTrials) {
 }
 
 template <size_t M>
 DCMDistribution<M>& DCMDistribution<M>::operator =
-  (const DCMDistribution<M>& other) {
+    (const DCMDistribution<M>& other) {
   if (this != &other) {
     mAlpha = other.mAlpha;
     mNumTrials = other.mNumTrials;
@@ -82,7 +82,7 @@ void DCMDistribution<M>::write(std::ofstream& stream) const {
 
 template <size_t M>
 void DCMDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
-  alpha) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
+    alpha) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if ((alpha.cwise() <= 0).any() == true)
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DCMDistribution<M>::setAlpha(): alpha must be strictly positive",
@@ -97,7 +97,7 @@ const Eigen::Matrix<double, M, 1>& DCMDistribution<M>::getAlpha() const {
 
 template <size_t M>
 void DCMDistribution<M>::setNumTrials(size_t numTrials)
-  throw (BadArgumentException<size_t>) {
+    throw (BadArgumentException<size_t>) {
   if (numTrials == 0)
     throw BadArgumentException<size_t>(numTrials,
       "DCMDistribution<M>::setNumTrials(): number of trials must be "
@@ -114,7 +114,7 @@ size_t DCMDistribution<M>::getNumTrials() const {
 template <size_t M>
 template <size_t N, size_t D>
 double DCMDistribution<M>::Traits<N, D>::pmf(const DCMDistribution<N>&
-  distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
+    distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
   if (value.sum() > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
@@ -125,7 +125,7 @@ double DCMDistribution<M>::Traits<N, D>::pmf(const DCMDistribution<N>&
 template <size_t M>
 template <size_t D>
 double DCMDistribution<M>::Traits<2, D>::pmf(const DCMDistribution<2>&
-  distribution, const size_t& value) {
+    distribution, const size_t& value) {
   if (value > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
@@ -136,7 +136,7 @@ double DCMDistribution<M>::Traits<2, D>::pmf(const DCMDistribution<2>&
 template <size_t M>
 template <size_t N, size_t D>
 double DCMDistribution<M>::Traits<N, D>::logpmf(const DCMDistribution<N>&
-  distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
+    distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
   if (value.sum() > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
@@ -147,7 +147,7 @@ double DCMDistribution<M>::Traits<N, D>::logpmf(const DCMDistribution<N>&
 template <size_t M>
 template <size_t D>
 double DCMDistribution<M>::Traits<2, D>::logpmf(const DCMDistribution<2>&
-  distribution, const size_t& value) {
+    distribution, const size_t& value) {
   if (value > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
@@ -165,13 +165,13 @@ double DCMDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value) const {
 
 template <size_t M>
 double DCMDistribution<M>::pmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>
 double DCMDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
-  value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+    value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != mNumTrials)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
       "DCMDistribution<M>::logpmf(): sum of the input vector must be "
@@ -190,7 +190,7 @@ double DCMDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
 
 template <size_t M>
 double DCMDistribution<M>::logpmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::logpmf(*this, value);
 }
 

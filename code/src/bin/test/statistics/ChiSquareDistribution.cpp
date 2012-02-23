@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the ChiSquareDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/ChiSquareDistribution.h"
 
 int main(int argc, char** argv) {

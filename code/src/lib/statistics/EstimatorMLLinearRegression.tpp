@@ -24,23 +24,23 @@
 
 template <size_t M>
 EstimatorML<LinearRegression<M>, M>::EstimatorML() :
-  mNumPoints(0),
-  mValid(false) {
+    mNumPoints(0),
+    mValid(false) {
 }
 
 template <size_t M>
 EstimatorML<LinearRegression<M>, M>::EstimatorML(const
-  EstimatorML<LinearRegression<M>, M>& other) :
-  mCoefficients(other.mCoefficients),
-  mVariance(other.mVariance),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+    EstimatorML<LinearRegression<M>, M>& other) :
+    mCoefficients(other.mCoefficients),
+    mVariance(other.mVariance),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid) {
 }
 
 template <size_t M>
 EstimatorML<LinearRegression<M>, M>&
-  EstimatorML<LinearRegression<M>, M>::operator =
-  (const EstimatorML<LinearRegression<M>, M>& other) {
+    EstimatorML<LinearRegression<M>, M>::operator =
+    (const EstimatorML<LinearRegression<M>, M>& other) {
   if (this != &other) {
     mCoefficients = other.mCoefficients;
     mVariance = other.mVariance;
@@ -111,7 +111,7 @@ void EstimatorML<LinearRegression<M>, M>::reset() {
 
 template <size_t M>
 void EstimatorML<LinearRegression<M>, M>::addPoints(const ConstPointIterator&
-  itStart, const ConstPointIterator& itEnd) {
+    itStart, const ConstPointIterator& itEnd) {
   Eigen::Matrix<double, Eigen::Dynamic, 1> weights =
     Eigen::Matrix<double, Eigen::Dynamic, 1>::Ones(itEnd - itStart);
   return addPoints(itStart, itEnd, weights);
@@ -119,7 +119,7 @@ void EstimatorML<LinearRegression<M>, M>::addPoints(const ConstPointIterator&
 
 template <size_t M>
 void EstimatorML<LinearRegression<M>, M>::addPoints(const ConstPointIterator&
-  itStart, const ConstPointIterator& itEnd, const
+    itStart, const ConstPointIterator& itEnd, const
   Eigen::Matrix<double, Eigen::Dynamic, 1>& weights) {
   reset();
   mNumPoints = itEnd - itStart;
@@ -153,4 +153,9 @@ void EstimatorML<LinearRegression<M>, M>::addPoints(const ConstPointIterator&
   }
   else
     mValid = false;
+}
+
+template <size_t M>
+void  EstimatorML<LinearRegression<M>, M>::addPoints(const Container& points) {
+  addPoints(points.begin(), points.end());
 }

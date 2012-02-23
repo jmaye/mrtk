@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the InvalidOperationException class
   */
 
-#include "exceptions/InvalidOperationException.h"
-
 #include <iostream>
+
+#include "exceptions/InvalidOperationException.h"
 
 int main(int argc, char** argv) {
   return 0;

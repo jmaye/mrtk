@@ -21,11 +21,11 @@
            to the multivariate discrete functions
   */
 
+#include <Eigen/Core>
+
 #include "functions/Function.h"
 #include "utils/SizeTSupport.h"
 #include "utils/SsizeTSupport.h"
-
-#include <Eigen/Core>
 
 /** The DiscreteFunctionMv class is an interface to the multivariate discrete
     functions.

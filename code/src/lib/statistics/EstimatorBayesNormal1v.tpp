@@ -21,30 +21,30 @@
 /******************************************************************************/
 
 EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(double mu, double kappa,
-  double nu, double sigma) :
-  mPostMeanDist(nu, mu, sigma / kappa / nu),
-  mPostVarianceDist(nu, sigma / nu),
-  mPostPredDist(nu, mu, sigma * (kappa + 1) / kappa / nu),
-  mMu(mu),
-  mKappa(kappa),
-  mNu(nu),
-  mSigma(sigma) {
+    double nu, double sigma) :
+    mPostMeanDist(nu, mu, sigma / kappa / nu),
+    mPostVarianceDist(nu, sigma / nu),
+    mPostPredDist(nu, mu, sigma * (kappa + 1) / kappa / nu),
+    mMu(mu),
+    mKappa(kappa),
+    mNu(nu),
+    mSigma(sigma) {
 }
 
 EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(const
-  EstimatorBayes<NormalDistribution<1> >& other) :
-  mPostMeanDist(other.mPostMeanDist),
-  mPostVarianceDist(other.mPostVarianceDist),
-  mPostPredDist(other.mPostPredDist),
-  mMu(other.mMu),
-  mKappa(other.mKappa),
-  mNu(other.mNu),
-  mSigma(other.mSigma) {
+    EstimatorBayes<NormalDistribution<1> >& other) :
+    mPostMeanDist(other.mPostMeanDist),
+    mPostVarianceDist(other.mPostVarianceDist),
+    mPostPredDist(other.mPostPredDist),
+    mMu(other.mMu),
+    mKappa(other.mKappa),
+    mNu(other.mNu),
+    mSigma(other.mSigma) {
 }
 
 EstimatorBayes<NormalDistribution<1> >&
-  EstimatorBayes<NormalDistribution<1> >::operator =
-  (const EstimatorBayes<NormalDistribution<1> >& other) {
+    EstimatorBayes<NormalDistribution<1> >::operator =
+    (const EstimatorBayes<NormalDistribution<1> >& other) {
   if (this != &other) {
     mPostMeanDist = other.mPostMeanDist;
     mPostVarianceDist = other.mPostVarianceDist;
@@ -79,7 +79,7 @@ void EstimatorBayes<NormalDistribution<1> >::read(std::ifstream& stream) {
 }
 
 void EstimatorBayes<NormalDistribution<1> >::write(std::ofstream& stream)
-  const {
+    const {
 }
 
 /******************************************************************************/
@@ -87,7 +87,7 @@ void EstimatorBayes<NormalDistribution<1> >::write(std::ofstream& stream)
 /******************************************************************************/
 
 const StudentDistribution<1>& EstimatorBayes<NormalDistribution<1> >::
-getPostMeanDist() const {
+    getPostMeanDist() const {
   return mPostMeanDist;
 }
 
@@ -97,7 +97,7 @@ EstimatorBayes<NormalDistribution<1> >::getPostVarianceDist() const {
 }
 
 const StudentDistribution<1>& EstimatorBayes<NormalDistribution<1> >::
-getPostPredDist() const {
+    getPostPredDist() const {
   return mPostPredDist;
 }
 
@@ -122,7 +122,7 @@ void EstimatorBayes<NormalDistribution<1> >::addPoint(const Point& point) {
 }
 
 void EstimatorBayes<NormalDistribution<1> >::addPoints(const ConstPointIterator&
-  itStart, const ConstPointIterator& itEnd) {
+    itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

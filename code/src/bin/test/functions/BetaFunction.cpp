@@ -20,10 +20,10 @@
     \brief This file is a testing binary for the BetaFunction class
   */
 
-#include "functions/BetaFunction.h"
-
 #include <iostream>
 #include <limits>
+
+#include "functions/BetaFunction.h"
 
 int main(int argc, char** argv) {
   BetaFunction<size_t, 2> B_1;

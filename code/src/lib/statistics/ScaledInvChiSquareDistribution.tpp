@@ -21,17 +21,17 @@
 /******************************************************************************/
 
 ScaledInvChiSquareDistribution::ScaledInvChiSquareDistribution(size_t degrees,
-  double scale) :
+    double scale) :
   InvGammaDistribution<>(0.5 * degrees, 0.5 * degrees * scale) {
 }
 
 ScaledInvChiSquareDistribution::ScaledInvChiSquareDistribution(const
-  ScaledInvChiSquareDistribution& other) :
-  InvGammaDistribution<>(other) {
+    ScaledInvChiSquareDistribution& other) :
+    InvGammaDistribution<>(other) {
 }
 
 ScaledInvChiSquareDistribution& ScaledInvChiSquareDistribution::operator =
-  (const ScaledInvChiSquareDistribution& other) {
+    (const ScaledInvChiSquareDistribution& other) {
   if (this != &other) {
     this->InvGammaDistribution<>::operator=(other);
   }

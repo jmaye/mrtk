@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the BinomialFunction class
   */
 
-#include "functions/BinomialFunction.h"
-
 #include <iostream>
+
+#include "functions/BinomialFunction.h"
 
 int main(int argc, char** argv) {
   BinomialFunction b;

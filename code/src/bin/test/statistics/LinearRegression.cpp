@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the LinearRegression class
   */
 
+#include <iostream>
+
 #include "statistics/LinearRegression.h"
 
 int main(int argc, char** argv) {

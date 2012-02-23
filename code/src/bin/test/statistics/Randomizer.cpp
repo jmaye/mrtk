@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the Randomizer class
   */
 
+#include <iostream>
+
 #include "statistics/Randomizer.h"
 
 int main(int argc, char** argv) {

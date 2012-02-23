@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the TypeCastException class
   */
 
-#include "exceptions/TypeCastException.h"
-
 #include <iostream>
+
+#include "exceptions/TypeCastException.h"
 
 int main(int argc, char** argv) {
   return 0;

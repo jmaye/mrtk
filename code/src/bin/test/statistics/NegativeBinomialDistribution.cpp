@@ -21,6 +21,8 @@
            class
   */
 
+#include <iostream>
+
 #include "statistics/NegativeBinomialDistribution.h"
 
 int main(int argc, char** argv) {

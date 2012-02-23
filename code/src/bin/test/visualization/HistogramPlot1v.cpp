@@ -20,9 +20,11 @@
     \brief This file is a testing binary for the HistogramPlot1v class
   */
 
-#include "visualization/HistogramPlot.h"
+#include <iostream>
 
 #include <QtGui/QApplication>
+
+#include "visualization/HistogramPlot.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

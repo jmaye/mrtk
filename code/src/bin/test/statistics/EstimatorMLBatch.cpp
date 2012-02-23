@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the EstimatorML class in batch
   */
 
+#include <iostream>
+
 #include "statistics/EstimatorML.h"
 #include "statistics/MixtureSampleDistribution.h"
 

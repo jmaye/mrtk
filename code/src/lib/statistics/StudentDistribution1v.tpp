@@ -16,35 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <gsl/gsl_sf_hyperg.h>
+
 #include "statistics/ChiSquareDistribution.h"
 #include "statistics/NormalDistribution.h"
 #include "functions/LogGammaFunction.h"
 #include "functions/GammaFunction.h"
-
-#include <gsl/gsl_sf_hyperg.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
 StudentDistribution<1>::StudentDistribution(double degrees, double location,
-  double scale) :
-  mLocation(location) {
+    double scale) :
+    mLocation(location) {
   setScale(scale);
   setDegrees(degrees);
 }
 
 StudentDistribution<1>::StudentDistribution(const StudentDistribution<1>&
-  other) :
-  mLocation(other.mLocation),
-  mScale(other.mScale),
-  mDegrees(other.mDegrees),
-  mInverseScale(other.mInverseScale),
-  mNormalizer(other.mNormalizer) {
+    other) :
+    mLocation(other.mLocation),
+    mScale(other.mScale),
+    mDegrees(other.mDegrees),
+    mInverseScale(other.mInverseScale),
+    mNormalizer(other.mNormalizer) {
 }
 
 StudentDistribution<1>& StudentDistribution<1>::operator =
-  (const StudentDistribution<1>& other) {
+    (const StudentDistribution<1>& other) {
   if (this != &other) {
     mLocation = other.mLocation;
     mScale = other.mScale;
@@ -90,7 +90,7 @@ double StudentDistribution<1>::getLocation() const {
 }
 
 void StudentDistribution<1>::setScale(double scale)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (scale <= 0)
     throw BadArgumentException<double>(scale,
       "StudentDistribution<1>::setScale(): scale must be strictly positive",
@@ -107,7 +107,7 @@ double StudentDistribution<1>::getScale() const {
 }
 
 void StudentDistribution<1>::setDegrees(double degrees)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (degrees <= 0)
     throw BadArgumentException<double>(degrees,
       "StudentDistribution<1>::setDegrees(): degrees must be strictly positive",

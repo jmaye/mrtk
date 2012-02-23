@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
-
 #include <Eigen/LU>
+
+#include "statistics/Randomizer.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -26,24 +26,24 @@
 
 template <size_t M>
 NormalDistribution<M>::NormalDistribution(const Eigen::Matrix<double, M, 1>&
-  mean, const Eigen::Matrix<double, M, M>& covariance):
-  mMean(mean) {
+    mean, const Eigen::Matrix<double, M, M>& covariance):
+    mMean(mean) {
   setCovariance(covariance);
 }
 
 template <size_t M>
 NormalDistribution<M>::NormalDistribution(const NormalDistribution<M>& other) :
-  mMean(other.mMean),
-  mCovariance(other.mCovariance),
-  mPrecision(other.mPrecision),
-  mDeterminant(other.mDeterminant),
-  mNormalizer(other.mNormalizer),
-  mTransformation(other.mTransformation) {
+    mMean(other.mMean),
+    mCovariance(other.mCovariance),
+    mPrecision(other.mPrecision),
+    mDeterminant(other.mDeterminant),
+    mNormalizer(other.mNormalizer),
+    mTransformation(other.mTransformation) {
 }
 
 template <size_t M>
 NormalDistribution<M>& NormalDistribution<M>::operator = (const
-  NormalDistribution<M>& other) {
+    NormalDistribution<M>& other) {
   if (this != &other) {
     mMean = other.mMean;
     mCovariance = other.mCovariance;
@@ -97,7 +97,7 @@ const Eigen::Matrix<double, M, 1>& NormalDistribution<M>::getMean() const {
 
 template <size_t M>
 void NormalDistribution<M>::setCovariance(const Eigen::Matrix<double, M, M>&
-  covariance) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
+    covariance) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
   if (covariance.transpose() != covariance)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(covariance,
       "NormalDistribution<M>::setCovariance(): covariance must be symmetric",
@@ -121,7 +121,7 @@ void NormalDistribution<M>::setCovariance(const Eigen::Matrix<double, M, M>&
 
 template <size_t M>
 const Eigen::Matrix<double, M, M>& NormalDistribution<M>::getCovariance()
-  const {
+    const {
   return mCovariance;
 }
 
@@ -142,19 +142,19 @@ double NormalDistribution<M>::getNormalizer() const {
 
 template <size_t M>
 const Eigen::LLT<Eigen::Matrix<double, M, M> >&
-  NormalDistribution<M>::getTransformation() const {
+    NormalDistribution<M>::getTransformation() const {
   return mTransformation;
 }
 
 template <size_t M>
 double NormalDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
-  const {
+    const {
   return exp(logpdf(value));
 }
 
 template <size_t M>
 double NormalDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
-  const {
+    const {
   return -0.5 * mahalanobisDistance(value) - mNormalizer;
 }
 
@@ -169,7 +169,7 @@ Eigen::Matrix<double, M, 1> NormalDistribution<M>::getSample() const {
 
 template <size_t M>
 double NormalDistribution<M>::KLDivergence(const NormalDistribution<M>& other)
-  const {
+    const {
   return 0.5 * (log(other.mDeterminant / mDeterminant) +
     (other.mPrecision * mCovariance).trace() - mMean.size() +
     ((mMean - other.mMean).transpose() * other.mPrecision *
@@ -178,7 +178,7 @@ double NormalDistribution<M>::KLDivergence(const NormalDistribution<M>& other)
 
 template <size_t M>
 double NormalDistribution<M>::mahalanobisDistance(const
-  Eigen::Matrix<double, M, 1>& value) const {
+    Eigen::Matrix<double, M, 1>& value) const {
   return ((value - mMean).transpose() * mPrecision *
     (value - mMean))(0, 0);
 }

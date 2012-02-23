@@ -20,11 +20,11 @@
     \brief This file is a testing binary for the LogFactorialFunction class
   */
 
-#include "functions/LogFactorialFunction.h"
-#include "functions/FactorialFunction.h"
-
 #include <limits>
 #include <iostream>
+
+#include "functions/LogFactorialFunction.h"
+#include "functions/FactorialFunction.h"
 
 int main(int argc, char** argv) {
   LogFactorialFunction lf;

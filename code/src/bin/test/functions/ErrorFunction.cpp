@@ -20,10 +20,10 @@
     \brief This file is a testing binary for the ErrorFunction class
   */
 
-#include "functions/ErrorFunction.h"
-
 #include <iostream>
 #include <limits>
+
+#include "functions/ErrorFunction.h"
 
 int main(int argc, char** argv) {
   ErrorFunction<double> l;

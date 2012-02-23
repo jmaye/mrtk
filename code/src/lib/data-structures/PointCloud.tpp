@@ -53,7 +53,7 @@ template <typename X, size_t M>
 void PointCloud<X, M>::write(std::ostream& stream) const {
   stream << "points: " << std::endl;
   for (ConstPointIterator it = getPointBegin(); it != getPointEnd(); ++it)
-    stream << *it << std::endl;
+    stream << it->transpose() << std::endl;
 }
 
 template <typename X, size_t M>
@@ -74,6 +74,10 @@ void PointCloud<X, M>::read(std::ifstream& stream) throw (IOException) {
 
 template <typename X, size_t M>
 void PointCloud<X, M>::write(std::ofstream& stream) const {
+  if (stream.is_open() == false)
+    throw IOException("PointCloud<X, M>::write(): could not open file");
+  for (ConstPointIterator it = getPointBegin(); it != getPointEnd(); ++it)
+    stream << it->transpose() << std::endl;
 }
 
 /******************************************************************************/
@@ -151,4 +155,40 @@ template <typename X, size_t M>
 const typename PointCloud<X, M>::Container& PointCloud<X, M>::getPoints()
   const {
   return mPoints;
+}
+
+template <typename X, size_t M>
+void PointCloud<X, M>::reserve(size_t numPoints) {
+  mPoints.reserve(numPoints);
+}
+
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
+template <typename X, size_t M>
+void PointCloud<X, M>::writeBinary(std::ostream& stream) const {
+  const size_t numPoints = mPoints.size();
+  stream.write(reinterpret_cast<const char*>(&numPoints), sizeof(numPoints));
+  for (ConstPointIterator it = getPointBegin(); it != getPointEnd(); ++it) {
+    for (size_t i = 0; i < M; ++i) {
+      X value = (*it)(i);
+      stream.write(reinterpret_cast<const char*>(&value), sizeof(value));
+    }
+  }
+}
+
+template <typename X, size_t M>
+void PointCloud<X, M>::readBinary(std::istream& stream) {
+  size_t numPoints;
+  stream.read(reinterpret_cast<char*>(&numPoints), sizeof(numPoints));
+  for (size_t i = 0; i < numPoints; ++i) {
+    Point point;
+    for (size_t j = 0; j < M; ++j) {
+      X value;
+      stream.read(reinterpret_cast<char*>(&value), sizeof(value));
+      point(j) = value;
+    }
+    mPoints.push_back(point);
+  }
 }

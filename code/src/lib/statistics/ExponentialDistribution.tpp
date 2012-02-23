@@ -27,12 +27,12 @@ ExponentialDistribution::ExponentialDistribution(double rate) {
 }
 
 ExponentialDistribution::ExponentialDistribution(const
-  ExponentialDistribution& other) :
-  mRate(other.mRate){
+    ExponentialDistribution& other) :
+    mRate(other.mRate){
 }
 
 ExponentialDistribution& ExponentialDistribution::operator =
-  (const ExponentialDistribution& other) {
+    (const ExponentialDistribution& other) {
   if (this != &other) {
     mRate = other.mRate;
   }
@@ -64,7 +64,7 @@ void ExponentialDistribution::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 void ExponentialDistribution::setRate(double rate)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (rate <= 0)
     throw BadArgumentException<double>(rate,
       "ExponentialDistribution::setRate(): rate must be strictly positive",
@@ -116,6 +116,6 @@ double ExponentialDistribution::getVariance() const {
 }
 
 double ExponentialDistribution::KLDivergence(const ExponentialDistribution&
-  other) const {
+    other) const {
   return log(mRate) - log(other.mRate) + other.mRate / mRate - 1.0;
 }

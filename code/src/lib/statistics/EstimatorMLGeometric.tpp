@@ -21,23 +21,23 @@
 /******************************************************************************/
 
 EstimatorML<GeometricDistribution>::EstimatorML() :
-  mSuccessProbability(0.0),
-  mMean(0.0),
-  mNumPoints(0),
-  mValid(false) {
+    mSuccessProbability(0.0),
+    mMean(0.0),
+    mNumPoints(0),
+    mValid(false) {
 }
 
 EstimatorML<GeometricDistribution>::EstimatorML(const
-  EstimatorML<GeometricDistribution>& other) :
-  mSuccessProbability(other.mSuccessProbability),
-  mMean(other.mMean),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+    EstimatorML<GeometricDistribution>& other) :
+    mSuccessProbability(other.mSuccessProbability),
+    mMean(other.mMean),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid) {
 }
 
 EstimatorML<GeometricDistribution>&
-  EstimatorML<GeometricDistribution>::operator =
-  (const EstimatorML<GeometricDistribution>& other) {
+    EstimatorML<GeometricDistribution>::operator =
+    (const EstimatorML<GeometricDistribution>& other) {
   if (this != &other) {
     mSuccessProbability = other.mSuccessProbability;
     mMean = other.mMean;
@@ -104,7 +104,11 @@ void EstimatorML<GeometricDistribution>::addPoint(const Point& point) {
 }
 
 void EstimatorML<GeometricDistribution>::addPoints(const
-  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
+}
+
+void EstimatorML<GeometricDistribution>::addPoints(const Container& points) {
+  addPoints(points.begin(), points.end());
 }

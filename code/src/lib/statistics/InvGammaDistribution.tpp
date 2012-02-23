@@ -35,15 +35,15 @@ InvGammaDistribution<T>::InvGammaDistribution(const T& shape, double scale) {
 
 template <typename T>
 InvGammaDistribution<T>::InvGammaDistribution(const InvGammaDistribution<T>&
-  other) :
-  mShape(other.mShape),
-  mScale(other.mScale),
-  mNormalizer(other.mNormalizer) {
+    other) :
+    mShape(other.mShape),
+    mScale(other.mScale),
+    mNormalizer(other.mNormalizer) {
 }
 
 template <typename T>
 InvGammaDistribution<T>& InvGammaDistribution<T>::operator =
-  (const InvGammaDistribution<T>& other) {
+    (const InvGammaDistribution<T>& other) {
   if (this != &other) {
     mShape = other.mShape;
     mScale = other.mScale;
@@ -84,7 +84,7 @@ void InvGammaDistribution<T>::write(std::ofstream& stream) const {
 
 template <typename T>
 void InvGammaDistribution<T>::setShape(const T& shape)
-  throw (BadArgumentException<T>) {
+    throw (BadArgumentException<T>) {
   if (shape <= 0)
     throw BadArgumentException<T>(shape,
       "InvGammaDistribution::setShape(): shape must be strictly positive",
@@ -101,7 +101,7 @@ const T& InvGammaDistribution<T>::getShape() const {
 
 template <typename T>
 void InvGammaDistribution<T>::setScale(double scale)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (scale <= 0)
     throw BadArgumentException<double>(scale,
       "InvGammaDistribution::setScale(): scale must be strictly positive",

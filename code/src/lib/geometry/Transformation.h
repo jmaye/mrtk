@@ -27,7 +27,7 @@
 
 template <typename T = double, size_t M = 2> class Transformation;
 
-#include "helpers/Transformation2d.h"
-#include "helpers/Transformation3d.h"
+#include "geometry/Transformation2d.h"
+#include "geometry/Transformation3d.h"
 
 #endif // TRANSFORMATION_H

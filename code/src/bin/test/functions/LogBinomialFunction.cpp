@@ -20,10 +20,10 @@
     \brief This file is a testing binary for the LogBinomialFunction class
   */
 
-#include "functions/LogBinomialFunction.h"
-
 #include <iostream>
 #include <limits>
+
+#include "functions/LogBinomialFunction.h"
 
 int main(int argc, char** argv) {
   LogBinomialFunction b;

@@ -27,12 +27,12 @@ GeometricDistribution::GeometricDistribution(double successProbability) {
 }
 
 GeometricDistribution::GeometricDistribution(const
-  GeometricDistribution& other) :
-  mSuccessProbability(other.mSuccessProbability) {
+    GeometricDistribution& other) :
+    mSuccessProbability(other.mSuccessProbability) {
 }
 
 GeometricDistribution& GeometricDistribution::operator =
-  (const GeometricDistribution& other) {
+    (const GeometricDistribution& other) {
   if (this != &other) {
     mSuccessProbability = other.mSuccessProbability;
   }
@@ -65,7 +65,7 @@ void GeometricDistribution::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 void GeometricDistribution::setSuccessProbability(double successProbability)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (successProbability <= 0.0 || successProbability > 1.0)
     throw BadArgumentException<double>(successProbability,
       "GeometricDistribution::setSuccessProbability(): success probability "

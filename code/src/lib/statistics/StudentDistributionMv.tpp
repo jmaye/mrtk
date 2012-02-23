@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <Eigen/LU>
+
 #include "functions/LogGammaFunction.h"
 #include "statistics/ChiSquareDistribution.h"
 #include "statistics/NormalDistribution.h"
-
-#include <Eigen/LU>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -28,28 +28,28 @@
 
 template <size_t M>
 StudentDistribution<M>::StudentDistribution(double degrees, const
-  Eigen::Matrix<double, M, 1>& location, const Eigen::Matrix<double, M, M>&
-  scale):
-  mLocation(location) {
+    Eigen::Matrix<double, M, 1>& location, const Eigen::Matrix<double, M, M>&
+    scale):
+    mLocation(location) {
   setDegrees(degrees);
   setScale(scale);
 }
 
 template <size_t M>
 StudentDistribution<M>::StudentDistribution(const StudentDistribution<M>&
-  other) :
-  mLocation(other.mLocation),
-  mScale(other.mScale),
-  mDegrees(other.mDegrees),
-  mInverseScale(other.mInverseScale),
-  mDeterminant(other.mDeterminant),
-  mNormalizer(other.mNormalizer),
-  mTransformation(other.mTransformation) {
+    other) :
+    mLocation(other.mLocation),
+    mScale(other.mScale),
+    mDegrees(other.mDegrees),
+    mInverseScale(other.mInverseScale),
+    mDeterminant(other.mDeterminant),
+    mNormalizer(other.mNormalizer),
+    mTransformation(other.mTransformation) {
 }
 
 template <size_t M>
 StudentDistribution<M>& StudentDistribution<M>::operator = (const
-  StudentDistribution<M>& other) {
+    StudentDistribution<M>& other) {
   if (this != &other) {
     mLocation = other.mLocation;
     mScale = other.mScale;
@@ -95,7 +95,7 @@ void StudentDistribution<M>::write(std::ofstream& stream) const {
 
 template <size_t M>
 void StudentDistribution<M>::setLocation(const Eigen::Matrix<double, M, 1>&
-  location) {
+    location) {
   mLocation = location;
 }
 
@@ -106,7 +106,7 @@ const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getLocation() const {
 
 template <size_t M>
 void StudentDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
-  scale) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
+    scale) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
   if (scale.transpose() != scale)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
       "StudentDistribution<M>::setScale(): scale must be symmetric",
@@ -132,13 +132,13 @@ void StudentDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
 
 template <size_t M>
 const Eigen::Matrix<double, M, M>& StudentDistribution<M>::getScale()
-  const {
+    const {
   return mScale;
 }
 
 template <size_t M>
 void StudentDistribution<M>::setDegrees(double degrees)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (degrees <= 0)
     throw BadArgumentException<double>(degrees,
       "StudentDistribution<M>::setDegrees(): degrees must be strictly positive",
@@ -157,7 +157,7 @@ double StudentDistribution<M>::getDegrees() const {
 
 template <size_t M>
 const Eigen::Matrix<double, M, M>& StudentDistribution<M>::getInverseScale()
-  const {
+    const {
   return mInverseScale;
 }
 
@@ -173,19 +173,19 @@ double StudentDistribution<M>::getNormalizer() const {
 
 template <size_t M>
 const Eigen::LLT<Eigen::Matrix<double, M, M> >&
-  StudentDistribution<M>::getTransformation() const {
+    StudentDistribution<M>::getTransformation() const {
   return mTransformation;
 }
 
 template <size_t M>
 double StudentDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
-  const {
+    const {
   return exp(logpdf(value));
 }
 
 template <size_t M>
 double StudentDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
-  const {
+    const {
   return -0.5 * (mLocation.size() + mDegrees) * log(1.0 + 1.0 / mDegrees *
     mahalanobisDistance(value)) - mNormalizer;
 }
@@ -202,7 +202,7 @@ Eigen::Matrix<double, M, 1> StudentDistribution<M>::getSample() const {
 
 template <size_t M>
 double StudentDistribution<M>::mahalanobisDistance(const
-  Eigen::Matrix<double, M, 1>& value) const {
+    Eigen::Matrix<double, M, 1>& value) const {
   return ((value - mLocation).transpose() * mInverseScale *
     (value - mLocation))(0, 0);
 }
@@ -219,7 +219,7 @@ Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMode() const {
 
 template <size_t M>
 Eigen::Matrix<double, M, M> StudentDistribution<M>::getCovariance()
-  const {
+    const {
   if (mDegrees > 2)
     return mDegrees / (mDegrees - 2) * mScale;
   else

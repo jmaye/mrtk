@@ -20,10 +20,12 @@
     \brief This file is a testing binary for the ContinuousFunctionPlot2v class
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/NormalDistribution.h"
+#include <iostream>
 
 #include <QtGui/QApplication>
+
+#include "visualization/ContinuousFunctionPlot.h"
+#include "statistics/NormalDistribution.h"
 
 int main(int argc, char** argv) {
   Eigen::Matrix<double, 2, 1> minimum(-2, -2);

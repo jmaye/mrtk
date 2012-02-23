@@ -20,10 +20,10 @@
     \brief This file implements an ML estimator for multinomial distributions.
   */
 
+#include <vector>
+
 #include "statistics/MultinomialDistribution.h"
 #include "base/Serializable.h"
-
-#include <vector>
 
 /** The class EstimatorML is implemented for multinomial distributions.
     \brief Multinomial distribution ML estimator
@@ -74,6 +74,8 @@ public:
   /// Add points to the estimator
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator
+  void addPoints(const Container& points);
   /// Reset the estimator
   void reset();
   /** @}

@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the NormalDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/NormalDistribution.h"
 
 int main(int argc, char** argv) {

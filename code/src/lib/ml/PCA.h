@@ -23,11 +23,11 @@
 #ifndef PCA_H
 #define PCA_H
 
-#include "exceptions/BadArgumentException.h"
+#include <vector>
 
 #include <Eigen/Core>
 
-#include <vector>
+#include "exceptions/BadArgumentException.h"
 
 /** This class implements a Principal Component Analysis (PCA) algorithm.
     \brief Principal Component Analysis (PCA)

@@ -16,10 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <Eigen/LU>
+
 #include "statistics/NormalDistribution.h"
 #include "functions/LogGammaFunction.h"
-
-#include <Eigen/LU>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -27,27 +27,27 @@
 
 template <size_t M>
 WishartDistribution<M>::WishartDistribution(double degrees, const
-  Eigen::Matrix<double, M, M>& scale) :
-  mDegrees(degrees),
-  mScale(scale) {
+    Eigen::Matrix<double, M, M>& scale) :
+    mDegrees(degrees),
+    mScale(scale) {
   setDegrees(degrees);
   setScale(scale);
 }
 
 template <size_t M>
 WishartDistribution<M>::WishartDistribution(const WishartDistribution<M>&
-  other) :
-  mDegrees(other.mDegrees),
-  mScale(other.mScale),
-  mInverseScale(other.mInverseScale),
-  mDeterminant(other.mDeterminant),
-  mNormalizer(other.mNormalizer),
-  mTransformation(other.mTransformation) {
+    other) :
+    mDegrees(other.mDegrees),
+    mScale(other.mScale),
+    mInverseScale(other.mInverseScale),
+    mDeterminant(other.mDeterminant),
+    mNormalizer(other.mNormalizer),
+    mTransformation(other.mTransformation) {
 }
 
 template <size_t M>
 WishartDistribution<M>& WishartDistribution<M>::operator = (const
-  WishartDistribution<M>& other) {
+    WishartDistribution<M>& other) {
   if (this != &other) {
     mDegrees = other.mDegrees;
     mScale = other.mScale;
@@ -91,7 +91,7 @@ void WishartDistribution<M>::write(std::ofstream& stream) const {
 
 template <size_t M>
 void WishartDistribution<M>::setDegrees(double degrees)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (degrees < (size_t)mScale.rows())
     throw BadArgumentException<double>(degrees,
       "WishartDistribution<M>::setDegrees(): degrees must be strictly bigger "
@@ -107,7 +107,7 @@ double WishartDistribution<M>::getDegrees() const {
 
 template <size_t M>
 void WishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
-  scale) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
+    scale) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
   mTransformation = scale.llt();
   if (mTransformation.isPositiveDefinite() == false)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
@@ -128,7 +128,7 @@ const Eigen::Matrix<double, M, M>& WishartDistribution<M>::getScale() const {
 
 template <size_t M>
 const Eigen::Matrix<double, M, M>& WishartDistribution<M>::getInverseScale()
-  const {
+    const {
   return mInverseScale;
 }
 
@@ -144,7 +144,7 @@ double WishartDistribution<M>::getNormalizer() const {
 
 template <size_t M>
 const Eigen::LLT<Eigen::Matrix<double, M, M> >&
-  WishartDistribution<M>::getTransformation() const {
+    WishartDistribution<M>::getTransformation() const {
   return mTransformation;
 }
 
@@ -162,13 +162,13 @@ Eigen::Matrix<double, M, M> WishartDistribution<M>::getMode() const {
 
 template <size_t M>
 double WishartDistribution<M>::pdf(const Eigen::Matrix<double, M, M>& value)
-  const {
+    const {
   return exp(logpdf(value));
 }
 
 template <size_t M>
 double WishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>& value)
-  const throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
+    const throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
   if (value.llt().isPositiveDefinite() == false)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(value,
       "WishartDistribution<M>::pdf(): value must be positive definite",

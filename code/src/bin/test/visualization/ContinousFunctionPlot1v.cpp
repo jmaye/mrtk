@@ -20,10 +20,12 @@
     \brief This file is a testing binary for the ContinuousFunctionPlot1v class
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "functions/LogFunction.h"
+#include <iostream>
 
 #include <QtGui/QApplication>
+
+#include "visualization/ContinuousFunctionPlot.h"
+#include "functions/LogFunction.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

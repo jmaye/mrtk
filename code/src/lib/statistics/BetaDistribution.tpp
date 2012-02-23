@@ -21,17 +21,17 @@
 /******************************************************************************/
 
 BetaDistribution::BetaDistribution(double alpha, double beta) :
-  DirichletDistribution<2>() {
+    DirichletDistribution<2>() {
   DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(alpha, beta));
 }
 
 BetaDistribution::BetaDistribution(const BetaDistribution& other) :
-  DirichletDistribution<2>(other) {
+    DirichletDistribution<2>(other) {
 }
 
 BetaDistribution& BetaDistribution::operator = (const BetaDistribution& other) {
   if (this != &other) {
-    this->DirichletDistribution<2>::operator=(other);
+    DirichletDistribution<2>::operator=(other);
   }
   return *this;
 }

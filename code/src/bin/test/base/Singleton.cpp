@@ -20,8 +20,16 @@
     \brief This file is a testing binary for the Singleton class
   */
 
+#include <iostream>
+
 #include "base/Singleton.h"
 
+class TestSingleton :
+  public Singleton<TestSingleton> {
+};
+
 int main(int argc, char** argv) {
+  TestSingleton& singleton = TestSingleton::getInstance();
+  std::cout << "Object exists?: " << singleton.exists() << std::endl;
   return 0;
 }

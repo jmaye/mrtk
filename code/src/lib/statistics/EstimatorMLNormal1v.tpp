@@ -21,25 +21,25 @@
 /******************************************************************************/
 
 EstimatorML<NormalDistribution<1> >::EstimatorML() :
-  mNumPoints(0),
-  mValid(false),
-  mValuesSum(0),
-  mSquaredValuesSum(0) {
+    mNumPoints(0),
+    mValid(false),
+    mValuesSum(0),
+    mSquaredValuesSum(0) {
 }
 
 EstimatorML<NormalDistribution<1> >::EstimatorML(const
-  EstimatorML<NormalDistribution<1> >& other) :
-  mMean(other.mMean),
-  mVariance(other.mVariance),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid),
-  mValuesSum(other.mValuesSum),
-  mSquaredValuesSum(other.mSquaredValuesSum) {
+    EstimatorML<NormalDistribution<1> >& other) :
+    mMean(other.mMean),
+    mVariance(other.mVariance),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid),
+    mValuesSum(other.mValuesSum),
+    mSquaredValuesSum(other.mSquaredValuesSum) {
 }
 
 EstimatorML<NormalDistribution<1> >&
-  EstimatorML<NormalDistribution<1> >::operator =
-  (const EstimatorML<NormalDistribution<1> >& other) {
+    EstimatorML<NormalDistribution<1> >::operator =
+    (const EstimatorML<NormalDistribution<1> >& other) {
   if (this != &other) {
     mMean = other.mMean;
     mVariance = other.mVariance;
@@ -62,7 +62,7 @@ void EstimatorML<NormalDistribution<1> >::read(std::istream& stream) {
 }
 
 void EstimatorML<NormalDistribution<1> >::write(std::ostream& stream)
-  const {
+    const {
   stream << "mean: " << mMean << std::endl
     << "variance: " << mVariance << std::endl
     << "valid: " << mValid;
@@ -72,7 +72,7 @@ void EstimatorML<NormalDistribution<1> >::read(std::ifstream& stream) {
 }
 
 void EstimatorML<NormalDistribution<1> >::write(std::ofstream& stream)
-  const {
+    const {
 }
 
 /******************************************************************************/
@@ -116,7 +116,11 @@ void EstimatorML<NormalDistribution<1> >::addPoint(const Point& point) {
 }
 
 void EstimatorML<NormalDistribution<1> >::addPoints(const ConstPointIterator&
-  itStart, const ConstPointIterator& itEnd) {
+    itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
+}
+
+void EstimatorML<NormalDistribution<1> >::addPoints(const Container& points) {
+  addPoints(points.begin(), points.end());
 }

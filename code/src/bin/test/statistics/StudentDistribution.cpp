@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the StudentDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/StudentDistribution.h"
 
 int main(int argc, char** argv) {

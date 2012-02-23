@@ -16,12 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
+#include <gsl/gsl_sf_gamma.h>
 
+#include "statistics/Randomizer.h"
 #include "functions/LogGammaFunction.h"
 #include "functions/GammaFunction.h"
-
-#include <gsl/gsl_sf_gamma.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -35,14 +34,14 @@ GammaDistribution<T>::GammaDistribution(const T& shape, double invScale) {
 
 template <typename T>
 GammaDistribution<T>::GammaDistribution(const GammaDistribution<T>& other) :
-  mShape(other.mShape),
-  mInvScale(other.mInvScale),
-  mNormalizer(other.mNormalizer) {
+    mShape(other.mShape),
+    mInvScale(other.mInvScale),
+    mNormalizer(other.mNormalizer) {
 }
 
 template <typename T>
 GammaDistribution<T>& GammaDistribution<T>::operator =
-  (const GammaDistribution<T>& other) {
+    (const GammaDistribution<T>& other) {
   if (this != &other) {
     mShape = other.mShape;
     mInvScale = other.mInvScale;
@@ -83,7 +82,7 @@ void GammaDistribution<T>::write(std::ofstream& stream) const {
 
 template <typename T>
 void GammaDistribution<T>::setShape(const T& shape)
-  throw (BadArgumentException<T>) {
+    throw (BadArgumentException<T>) {
   if (shape <= 0)
     throw BadArgumentException<T>(shape,
       "GammaDistribution::setShape(): shape must be strictly positive",
@@ -100,7 +99,7 @@ const T& GammaDistribution<T>::getShape() const {
 
 template <typename T>
 void GammaDistribution<T>::setInvScale(double invScale)
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (invScale <= 0)
     throw BadArgumentException<double>(invScale,
       "GammaDistribution::setScale(): inverse scale must be strictly positive",

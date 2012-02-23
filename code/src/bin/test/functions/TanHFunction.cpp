@@ -20,10 +20,10 @@
     \brief This file is a testing binary for the TanHFunction class
   */
 
-#include "functions/TanHFunction.h"
-
 #include <iostream>
 #include <limits>
+
+#include "functions/TanHFunction.h"
 
 int main(int argc, char** argv) {
   TanHFunction<double> l;

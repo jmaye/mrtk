@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the EstimatorBayes class
   */
 
+#include <iostream>
+
 #include "statistics/EstimatorBayes.h"
 
 int main(int argc, char** argv) {

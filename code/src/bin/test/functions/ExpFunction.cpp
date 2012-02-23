@@ -20,10 +20,10 @@
     \brief This file is a testing binary for the ExpFunction class
   */
 
-#include "functions/ExpFunction.h"
-
 #include <iostream>
 #include <limits>
+
+#include "functions/ExpFunction.h"
 
 int main(int argc, char** argv) {
   ExpFunction<double> e;

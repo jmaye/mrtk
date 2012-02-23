@@ -21,10 +21,10 @@
            distributions.
   */
 
+#include <vector>
+
 #include "statistics/NormalDistribution.h"
 #include "base/Serializable.h"
-
-#include <vector>
 
 /** The class EstimatorML is implemented for univariate normal distributions.
     \brief Univariate normal distribution ML estimator
@@ -75,6 +75,8 @@ public:
   /// Add points to the estimator
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator
+  void addPoints(const Container& points);
   /// Reset the estimator
   void reset();
   /** @}

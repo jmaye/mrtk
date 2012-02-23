@@ -22,22 +22,22 @@
 
 template <size_t M>
 EstimatorML<CategoricalDistribution<M>, M>::EstimatorML() :
-  mNumPoints(0),
-  mValid(false) {
+    mNumPoints(0),
+    mValid(false) {
 }
 
 template <size_t M>
 EstimatorML<CategoricalDistribution<M>, M>::EstimatorML(const
-  EstimatorML<CategoricalDistribution<M>, M>& other) :
-  mSuccessProbabilities(other.mSuccessProbabilities),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid) {
+    EstimatorML<CategoricalDistribution<M>, M>& other) :
+    mSuccessProbabilities(other.mSuccessProbabilities),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid) {
 }
 
 template <size_t M>
 EstimatorML<CategoricalDistribution<M>, M>&
-  EstimatorML<CategoricalDistribution<M>, M>::operator =
-  (const EstimatorML<CategoricalDistribution<M>, M>& other) {
+    EstimatorML<CategoricalDistribution<M>, M>::operator =
+    (const EstimatorML<CategoricalDistribution<M>, M>& other) {
   if (this != &other) {
     mSuccessProbabilities = other.mSuccessProbabilities;
     mNumPoints = other.mNumPoints;
@@ -60,7 +60,7 @@ void EstimatorML<CategoricalDistribution<M>, M>::read(std::istream& stream) {
 
 template <size_t M>
 void EstimatorML<CategoricalDistribution<M>, M>::write(std::ostream& stream)
-  const {
+    const {
   stream << "success probabilities: " << mSuccessProbabilities.transpose()
     << std::endl << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
@@ -72,7 +72,7 @@ void EstimatorML<CategoricalDistribution<M>, M>::read(std::ifstream& stream) {
 
 template <size_t M>
 void EstimatorML<CategoricalDistribution<M>, M>::write(std::ofstream& stream)
-  const {
+    const {
 }
 
 /******************************************************************************/
@@ -119,7 +119,13 @@ void EstimatorML<CategoricalDistribution<M>, M>::addPoint(const Point& point) {
 
 template <size_t M>
 void EstimatorML<CategoricalDistribution<M>, M>::addPoints(const
-  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
+}
+
+template <size_t M>
+void EstimatorML<CategoricalDistribution<M>, M>::addPoints(const Container&
+    points) {
+  addPoints(points.begin(), points.end());
 }

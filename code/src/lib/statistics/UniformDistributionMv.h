@@ -46,9 +46,11 @@ public:
   template <typename U, size_t D = 0> struct Traits {
   public:
     /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>& value);
+    static double pdf(const UniformDistribution<U, M>& distribution,
+      const Eigen::Matrix<U, M, 1>& value);
     /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>& value);
+    static double pmf(const UniformDistribution<U, M>& distribution,
+      const Eigen::Matrix<U, M, 1>& value);
   };
   /// Mapping in case one calls the pmf instead of pdf
   template <size_t D> struct Traits<float, D> {

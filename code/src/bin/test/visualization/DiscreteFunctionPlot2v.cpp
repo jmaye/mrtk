@@ -20,10 +20,12 @@
     \brief This file is a testing binary for the DiscreteFunctionPlot2v class
   */
 
-#include "visualization/DiscreteFunctionPlot.h"
-#include "statistics/CategoricalDistribution.h"
+#include <iostream>
 
 #include <QtGui/QApplication>
+
+#include "visualization/DiscreteFunctionPlot.h"
+#include "statistics/CategoricalDistribution.h"
 
 int main(int argc, char** argv) {
   Eigen::Matrix<size_t, 2, 1> minimum(0, 0);

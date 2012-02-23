@@ -26,12 +26,12 @@
 
 template <typename T, size_t M>
 Randomizer<T, M>::Randomizer(const T& seed) :
-  mSeed(seed) {
+    mSeed(seed) {
 }
 
 template <typename T, size_t M>
 Randomizer<T, M>::Randomizer(const Randomizer<T, M>& other) :
-  mSeed(other.mSeed) {
+    mSeed(other.mSeed) {
 }
 
 template <typename T, size_t M>
@@ -95,7 +95,7 @@ T Randomizer<T, M>::getSeed() {
 
 template <typename T, size_t M>
 T Randomizer<T, M>::sampleUniform(const T& minSupport, const T& maxSupport)
-  const throw (BadArgumentException<T>) {
+    const throw (BadArgumentException<T>) {
   if (minSupport >= maxSupport)
     throw BadArgumentException<T>(minSupport,
       "Randomizer<T, M>::sampleUniform(): minimum support must be smaller "
@@ -107,7 +107,7 @@ T Randomizer<T, M>::sampleUniform(const T& minSupport, const T& maxSupport)
 
 template <typename T, size_t M>
 T Randomizer<T, M>::sampleNormal(const T& mean, const T& variance) const
-  throw (BadArgumentException<T>) {
+    throw (BadArgumentException<T>) {
   if (variance <= 0)
     throw BadArgumentException<T>(variance,
       "Randomizer<T, M>::sampleNormal(): variance must be strictly positive",
@@ -124,8 +124,8 @@ T Randomizer<T, M>::sampleNormal(const T& mean, const T& variance) const
 
 template <typename T, size_t M>
 Eigen::Matrix<size_t, M, 1> Randomizer<T, M>::sampleCategorical(const
-  Eigen::Matrix<double, M, 1>& successProbabilities) const
-  throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
+    Eigen::Matrix<double, M, 1>& successProbabilities) const
+    throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(successProbabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
@@ -157,7 +157,7 @@ Eigen::Matrix<size_t, M, 1> Randomizer<T, M>::sampleCategorical(const
 
 template <typename T, size_t M>
 size_t Randomizer<T, M>::samplePoisson(double mean) const
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (mean <= 0)
     throw BadArgumentException<double>(mean,
       "Randomizer<T, M>::samplePoisson(): mean must be strictly positive",
@@ -175,7 +175,7 @@ size_t Randomizer<T, M>::samplePoisson(double mean) const
 
 template <typename T, size_t M>
 double Randomizer<T, M>::sampleExponential(double rate) const
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (rate <= 0)
     throw BadArgumentException<double>(rate,
       "Randomizer<T, M>::sampleExponential(): rate must be strictly positive",
@@ -190,7 +190,7 @@ double Randomizer<T, M>::sampleExponential(double rate) const
 
 template <typename T, size_t M>
 size_t Randomizer<T, M>::sampleGeometric(double successProbability) const
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (successProbability <= 0.0 || successProbability > 1.0)
     throw BadArgumentException<double>(successProbability,
       "Randomizer<T, M>::sampleGeometric(): success probability must be "
@@ -206,7 +206,7 @@ size_t Randomizer<T, M>::sampleGeometric(double successProbability) const
 
 template <typename T, size_t M>
 double Randomizer<T, M>::sampleGamma(double shape, double invScale) const
-  throw (BadArgumentException<double>) {
+    throw (BadArgumentException<double>) {
   if (shape <= 0)
     throw BadArgumentException<double>(shape,
       "Randomizer<T, M>::sampleGamma(): shape must be strictly positive",

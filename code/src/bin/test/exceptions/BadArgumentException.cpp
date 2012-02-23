@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the BadArgumentException class
   */
 
-#include "exceptions/BadArgumentException.h"
-
 #include <iostream>
+
+#include "exceptions/BadArgumentException.h"
 
 int main(int argc, char** argv) {
   return 0;

@@ -24,18 +24,18 @@
 /******************************************************************************/
 
 NegativeBinomialDistribution::NegativeBinomialDistribution(size_t numTrials,
-  double successProbability) :
-  NegativeMultinomialDistribution<2>(numTrials) {
+    double successProbability) :
+    NegativeMultinomialDistribution<2>(numTrials) {
   setSuccessProbability(successProbability);
 }
 
 NegativeBinomialDistribution::NegativeBinomialDistribution(const
-  NegativeBinomialDistribution& other) :
-  NegativeMultinomialDistribution<2>(other) {
+    NegativeBinomialDistribution& other) :
+    NegativeMultinomialDistribution<2>(other) {
 }
 
 NegativeBinomialDistribution& NegativeBinomialDistribution::operator =
-  (const NegativeBinomialDistribution& other) {
+    (const NegativeBinomialDistribution& other) {
   if (this != &other) {
     this->NegativeMultinomialDistribution<2>::operator=(other);
   }
@@ -69,7 +69,7 @@ void NegativeBinomialDistribution::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 void NegativeBinomialDistribution::setSuccessProbability(double
-  successProbability) {
+    successProbability) {
   Eigen::Matrix<double, 2, 1> successProbabilities;
   successProbabilities(0) = 1.0 - successProbability;
   successProbabilities(1) = successProbability;

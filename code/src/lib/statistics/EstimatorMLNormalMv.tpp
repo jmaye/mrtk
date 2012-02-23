@@ -24,25 +24,25 @@
 
 template <size_t M>
 EstimatorML<NormalDistribution<M>, M>::EstimatorML() :
-  mNumPoints(0),
-  mValid(false) {
+    mNumPoints(0),
+    mValid(false) {
 }
 
 template <size_t M>
 EstimatorML<NormalDistribution<M>, M>::EstimatorML(const
-  EstimatorML<NormalDistribution<M>, M>& other) :
-  mMean(other.mMean),
-  mCovariance(other.mCovariance),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid),
-  mValuesSum(other.mValuesSum),
-  mSquaredValuesSum(other.mSquaredValuesSum) {
+    EstimatorML<NormalDistribution<M>, M>& other) :
+    mMean(other.mMean),
+    mCovariance(other.mCovariance),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid),
+    mValuesSum(other.mValuesSum),
+    mSquaredValuesSum(other.mSquaredValuesSum) {
 }
 
 template <size_t M>
 EstimatorML<NormalDistribution<M>, M>&
-  EstimatorML<NormalDistribution<M>, M>::operator =
-  (const EstimatorML<NormalDistribution<M>, M>& other) {
+    EstimatorML<NormalDistribution<M>, M>::operator =
+    (const EstimatorML<NormalDistribution<M>, M>& other) {
   if (this != &other) {
     mMean = other.mMean;
     mCovariance = other.mCovariance;
@@ -68,7 +68,7 @@ void EstimatorML<NormalDistribution<M>, M>::read(std::istream& stream) {
 
 template <size_t M>
 void EstimatorML<NormalDistribution<M>, M>::write(std::ostream& stream)
-  const {
+    const {
   stream << "mean: " << std::endl << mMean << std::endl
     << "covariance: " << std::endl << mCovariance << std::endl
     << "valid: " << mValid;
@@ -80,7 +80,7 @@ void EstimatorML<NormalDistribution<M>, M>::read(std::ifstream& stream) {
 
 template <size_t M>
 void EstimatorML<NormalDistribution<M>, M>::write(std::ofstream& stream)
-  const {
+    const {
 }
 
 /******************************************************************************/
@@ -142,7 +142,12 @@ void EstimatorML<NormalDistribution<M>, M>::addPoint(const Point& point) {
 
 template <size_t M>
 void EstimatorML<NormalDistribution<M>, M>::addPoints(const ConstPointIterator&
-  itStart, const ConstPointIterator& itEnd) {
+    itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
+}
+
+template <size_t M>
+void EstimatorML<NormalDistribution<M>, M>::addPoints(const Container& points) {
+  addPoints(points.begin(), points.end());
 }

@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the WishartDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/WishartDistribution.h"
 
 int main(int argc, char** argv) {

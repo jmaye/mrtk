@@ -9,39 +9,39 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogFunction.cpp
-    \brief This file is a testing binary for the LogFunction class
+/** \file Transformation.cpp
+    \brief This file is a testing binary for the Transformation class.
   */
 
 #include <iostream>
-#include <limits>
 
-#include "functions/LogFunction.h"
+#include "geometry/Transformation.h"
 
-int main(int argc, char** argv) {
-  LogFunction<double> l;
-
-  std::cout << "l(1): " << std::fixed << l(1) << std::endl;
-  if (fabs(l(1) - 0) > std::numeric_limits<double>::epsilon())
-    return 1;
-
-  std::cout << "l(e): " << std::fixed << l(M_E) << std::endl;
-  if (fabs(l(M_E) - 1.0) > std::numeric_limits<double>::epsilon())
-    return 1;
-
-  try {
-    std::cout << "l(0): " << std::fixed << l(0) << std::endl;
-  }
-  catch (BadArgumentException<double>& e) {
-    std::cout << e.what() << std::endl;
-  }
-
+int main (int argc, char** argv) {
+  Transformation<double, 2> trans2d;
+  trans2d.setTransformation(1.0, 2.0, 1.5);
+  Transformation<double, 3> trans3d;
+  trans3d.setTransformation(1.0, 2.0, 3.0, 1.5, 1.5, 1.5);
+  Eigen::Matrix<double, 2, 1> point2d(1.0, 2.0);
+  Eigen::Matrix<double, 3, 1> point3d(1.0, 2.0, 3.0);
+  Eigen::Matrix<double, 2, 1> point2dTrans;
+  Eigen::Matrix<double, 3, 1> point3dTrans;
+  trans2d.transform(point2d, point2dTrans);
+  std::cout << point2dTrans << std::endl << std::endl;
+  std::cout << trans2d(point2d) << std::endl << std::endl;
+  trans2d.inverse();
+  std::cout << trans2d(point2dTrans) << std::endl << std::endl;
+  trans3d.transform(point3d, point3dTrans);
+  std::cout << point3dTrans << std::endl << std::endl;
+  std::cout << trans3d(point3d) << std::endl << std::endl;
+  trans3d.inverse();
+  std::cout << trans3d(point3dTrans) << std::endl << std::endl;
   return 0;
 }

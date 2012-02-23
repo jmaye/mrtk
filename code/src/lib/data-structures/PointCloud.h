@@ -94,6 +94,18 @@ public:
   PointIterator getPointEnd();
   /// Returns the container
   const Container& getPoints() const;
+  /// Reserve memory for a point cloud
+  void reserve(size_t numPoints);
+  /** @}
+    */
+
+  /** \name Methods
+      @{
+    */
+  /// Writes into a output stream
+  void writeBinary(std::ostream& stream) const;
+  /// Reads from an input stream
+  void readBinary(std::istream& stream);
   /** @}
     */
 

@@ -24,12 +24,12 @@
 #ifndef WISHARTDISTRIBUTION_H
 #define WISHARTDISTRIBUTION_H
 
+#include <Eigen/Cholesky>
+
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
-
-#include <Eigen/Cholesky>
 
 /** The WishartDistribution class represents a Wishart distribution, i.e., a
     continuous distribution that is a conjugate prior for precision matrix in a

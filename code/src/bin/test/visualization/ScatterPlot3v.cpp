@@ -20,9 +20,11 @@
     \brief This file is a testing binary for the ScatterPlot3v class
   */
 
-#include "visualization/ScatterPlot.h"
+#include <iostream>
 
 #include <QtGui/QApplication>
+
+#include "visualization/ScatterPlot.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

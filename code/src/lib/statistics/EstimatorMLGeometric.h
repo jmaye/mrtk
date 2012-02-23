@@ -20,10 +20,10 @@
     \brief This file implements an ML estimator for geometric distributions.
   */
 
+#include <vector>
+
 #include "statistics/GeometricDistribution.h"
 #include "base/Serializable.h"
-
-#include <vector>
 
 /** The class EstimatorML is implemented for geometric distributions.
     \brief Geometric distribution ML estimator
@@ -72,6 +72,8 @@ public:
   /// Add points to the estimator
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator
+  void addPoints(const Container& points);
   /// Reset the estimator
   void reset();
   /** @}

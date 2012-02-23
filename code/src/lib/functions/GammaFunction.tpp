@@ -24,7 +24,7 @@
 
 template <typename X>
 GammaFunction<X>::GammaFunction(size_t dim) :
-  mDim(dim) {
+    mDim(dim) {
 }
 
 GammaFunction<size_t>::GammaFunction() {
@@ -32,7 +32,7 @@ GammaFunction<size_t>::GammaFunction() {
 
 template <typename X>
 GammaFunction<X>::GammaFunction(const GammaFunction<X>& other) :
-  mDim(other.mDim) {
+    mDim(other.mDim) {
 }
 
 template <typename X>
@@ -85,7 +85,7 @@ double GammaFunction<X>::getValue(const X& argument) const {
 }
 
 size_t GammaFunction<size_t>::getValue(const size_t& argument) const
-  throw (BadArgumentException<size_t>) {
+    throw (BadArgumentException<size_t>) {
   if (argument)
     return FactorialFunction::getValue(argument - 1);
   else throw BadArgumentException<size_t>(argument,

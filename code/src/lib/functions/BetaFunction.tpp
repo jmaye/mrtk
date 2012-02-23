@@ -36,7 +36,7 @@ BetaFunction<X, M>::~BetaFunction() {
 
 template <typename X, size_t M>
 double BetaFunction<X, M>::getValue(const Eigen::Matrix<X, M, 1>& argument)
-  const {
+    const {
   const GammaFunction<X> gamma;
   X sum = X(0);
   X productGamma = X(1);

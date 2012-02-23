@@ -20,11 +20,11 @@
     \brief This file is a testing binary for the GammaFunction class
   */
 
-#include "functions/GammaFunction.h"
-#include "functions/FactorialFunction.h"
-
 #include <iostream>
 #include <limits>
+
+#include "functions/GammaFunction.h"
+#include "functions/FactorialFunction.h"
 
 int main(int argc, char** argv) {
   GammaFunction<size_t> G_1;

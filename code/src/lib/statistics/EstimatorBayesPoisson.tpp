@@ -21,23 +21,23 @@
 /******************************************************************************/
 
 EstimatorBayes<PoissonDistribution>::EstimatorBayes(double alpha, double beta) :
-  mPostMeanDist(alpha, beta),
-  mPostPredDist(alpha, 1.0 / (beta + 1)),
-  mAlpha(alpha),
-  mBeta(beta) {
+    mPostMeanDist(alpha, beta),
+    mPostPredDist(alpha, 1.0 / (beta + 1)),
+    mAlpha(alpha),
+    mBeta(beta) {
 }
 
 EstimatorBayes<PoissonDistribution>::EstimatorBayes(const
-  EstimatorBayes<PoissonDistribution>& other) :
-  mPostMeanDist(other.mPostMeanDist),
-  mPostPredDist(other.mPostPredDist),
-  mAlpha(other.mAlpha),
-  mBeta(other.mBeta) {
+    EstimatorBayes<PoissonDistribution>& other) :
+    mPostMeanDist(other.mPostMeanDist),
+    mPostPredDist(other.mPostPredDist),
+    mAlpha(other.mAlpha),
+    mBeta(other.mBeta) {
 }
 
 EstimatorBayes<PoissonDistribution>&
-  EstimatorBayes<PoissonDistribution>::operator =
-  (const EstimatorBayes<PoissonDistribution>& other) {
+    EstimatorBayes<PoissonDistribution>::operator =
+    (const EstimatorBayes<PoissonDistribution>& other) {
   if (this != &other) {
     mPostMeanDist = other.mPostMeanDist;
     mPostPredDist = other.mPostPredDist;
@@ -74,7 +74,7 @@ void EstimatorBayes<PoissonDistribution>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 const GammaDistribution<double>& EstimatorBayes<PoissonDistribution>::
-getPostMeanDist() const {
+    getPostMeanDist() const {
   return mPostMeanDist;
 }
 
@@ -93,7 +93,7 @@ void EstimatorBayes<PoissonDistribution>::addPoint(const Point& point) {
 }
 
 void EstimatorBayes<PoissonDistribution>::addPoints(const ConstPointIterator&
-  itStart, const ConstPointIterator& itEnd) {
+    itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

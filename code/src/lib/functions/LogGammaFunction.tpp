@@ -24,7 +24,7 @@
 
 template <typename X>
 LogGammaFunction<X>::LogGammaFunction(size_t dim) :
-  mDim(dim) {
+    mDim(dim) {
 }
 
 LogGammaFunction<size_t>::LogGammaFunction() {
@@ -32,12 +32,12 @@ LogGammaFunction<size_t>::LogGammaFunction() {
 
 template <typename X>
 LogGammaFunction<X>::LogGammaFunction(const LogGammaFunction<X>& other) :
-  mDim(other.mDim) {
+    mDim(other.mDim) {
 }
 
 template <typename X>
 LogGammaFunction<X>& LogGammaFunction<X>::operator = (const LogGammaFunction<X>&
-  other) {
+    other) {
   if (this != &other) {
     mDim = other.mDim;
   }
@@ -86,7 +86,7 @@ double LogGammaFunction<X>::getValue(const X& argument) const {
 }
 
 double LogGammaFunction<size_t>::getValue(const size_t& argument) const
-  throw (BadArgumentException<size_t>) {
+    throw (BadArgumentException<size_t>) {
   if (argument)
     return LogFactorialFunction::getValue(argument - 1);
   else throw BadArgumentException<size_t>(argument,

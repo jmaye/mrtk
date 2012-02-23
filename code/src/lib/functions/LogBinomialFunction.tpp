@@ -33,7 +33,7 @@ LogBinomialFunction::~LogBinomialFunction() {
 /******************************************************************************/
 
 double LogBinomialFunction::getValue(const Eigen::Matrix<size_t, 2, 1>&
-  argument) const throw (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >) {
+    argument) const throw (BadArgumentException<Eigen::Matrix<size_t, 2, 1> >) {
   LogFactorialFunction logFactorial;
   if (argument(0) >= argument(1))
     return logFactorial(argument(0)) - (logFactorial(argument(1)) +

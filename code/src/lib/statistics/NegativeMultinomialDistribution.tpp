@@ -30,22 +30,22 @@
 
 template <size_t M>
 NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(size_t
-  numTrials, const Eigen::Matrix<double, M, 1>& successProbabilities) {
+    numTrials, const Eigen::Matrix<double, M, 1>& successProbabilities) {
   setSuccessProbabilities(successProbabilities);
   setNumTrials(numTrials);
 }
 
 template <size_t M>
 NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(const
-  NegativeMultinomialDistribution<M>& other) :
-  mSuccessProbabilities(other.mSuccessProbabilities),
-  mNumTrials(other.mNumTrials) {
+    NegativeMultinomialDistribution<M>& other) :
+    mSuccessProbabilities(other.mSuccessProbabilities),
+    mNumTrials(other.mNumTrials) {
 }
 
 template <size_t M>
 NegativeMultinomialDistribution<M>&
-  NegativeMultinomialDistribution<M>::operator =
-  (const NegativeMultinomialDistribution<M>& other) {
+    NegativeMultinomialDistribution<M>::operator =
+    (const NegativeMultinomialDistribution<M>& other) {
   if (this != &other) {
     mSuccessProbabilities = other.mSuccessProbabilities;
     mNumTrials = other.mNumTrials;
@@ -86,8 +86,8 @@ void NegativeMultinomialDistribution<M>::write(std::ofstream& stream) const {
 
 template <size_t M>
 void NegativeMultinomialDistribution<M>::setSuccessProbabilities(const
-  Eigen::Matrix<double, M, 1>& successProbabilities) throw
-  (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
+    Eigen::Matrix<double, M, 1>& successProbabilities) throw
+    (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(successProbabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
@@ -101,13 +101,13 @@ void NegativeMultinomialDistribution<M>::setSuccessProbabilities(const
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>&
-  NegativeMultinomialDistribution<M>::getSuccessProbabilities() const {
+    NegativeMultinomialDistribution<M>::getSuccessProbabilities() const {
   return mSuccessProbabilities;
 }
 
 template <size_t M>
 void NegativeMultinomialDistribution<M>::setNumTrials(size_t numTrials)
-  throw (BadArgumentException<size_t>) {
+    throw (BadArgumentException<size_t>) {
   if (numTrials == 0)
     throw BadArgumentException<size_t>(numTrials,
       "NegativeMultinomialDistribution<M>::setNumTrials(): number of trials "
@@ -124,8 +124,8 @@ size_t NegativeMultinomialDistribution<M>::getNumTrials() const {
 template <size_t M>
 template <size_t N, size_t D>
 double NegativeMultinomialDistribution<M>::Traits<N, D>::pmf(const
-  NegativeMultinomialDistribution<N>& distribution, const
-  Eigen::Matrix<size_t, N - 1, 1>& value) {
+    NegativeMultinomialDistribution<N>& distribution, const
+    Eigen::Matrix<size_t, N - 1, 1>& value) {
   Eigen::Matrix<size_t, M, 1> valueMat;
   valueMat << distribution.mNumTrials, value;
   return distribution.pmf(valueMat);
@@ -134,7 +134,7 @@ double NegativeMultinomialDistribution<M>::Traits<N, D>::pmf(const
 template <size_t M>
 template <size_t D>
 double NegativeMultinomialDistribution<M>::Traits<2, D>::pmf(const
-  NegativeMultinomialDistribution<2>& distribution, const size_t& value) {
+    NegativeMultinomialDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
   valueMat << distribution.mNumTrials, value;
   return distribution.pmf(valueMat);
@@ -143,8 +143,8 @@ double NegativeMultinomialDistribution<M>::Traits<2, D>::pmf(const
 template <size_t M>
 template <size_t N, size_t D>
 double NegativeMultinomialDistribution<M>::Traits<N, D>::logpmf(const
-  NegativeMultinomialDistribution<N>& distribution, const
-  Eigen::Matrix<size_t, N - 1, 1>& value) {
+    NegativeMultinomialDistribution<N>& distribution, const
+    Eigen::Matrix<size_t, N - 1, 1>& value) {
   Eigen::Matrix<size_t, M, 1> valueMat;
   valueMat << distribution.mNumTrials, value;
   return distribution.logpmf(valueMat);
@@ -153,7 +153,7 @@ double NegativeMultinomialDistribution<M>::Traits<N, D>::logpmf(const
 template <size_t M>
 template <size_t D>
 double NegativeMultinomialDistribution<M>::Traits<2, D>::logpmf(const
-  NegativeMultinomialDistribution<2>& distribution, const size_t& value) {
+    NegativeMultinomialDistribution<2>& distribution, const size_t& value) {
   Eigen::Matrix<size_t, 2, 1> valueMat;
   valueMat << distribution.mNumTrials, value;
   return distribution.logpmf(valueMat);
@@ -161,7 +161,7 @@ double NegativeMultinomialDistribution<M>::Traits<2, D>::logpmf(const
 
 template <size_t M>
 double NegativeMultinomialDistribution<M>::pmf(const
-  Eigen::Matrix<size_t, M, 1>& value) const {
+    Eigen::Matrix<size_t, M, 1>& value) const {
   if (value(0) != mNumTrials)
     return 0.0;
   else
@@ -170,14 +170,14 @@ double NegativeMultinomialDistribution<M>::pmf(const
 
 template <size_t M>
 double NegativeMultinomialDistribution<M>::pmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>
 double NegativeMultinomialDistribution<M>::logpmf(const
-  Eigen::Matrix<size_t, M, 1>& value) const
-  throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+    Eigen::Matrix<size_t, M, 1>& value) const
+    throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value(0) != mNumTrials)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
       "NegativeMultinomialDistribution<M>::logpmf(): value(0) must contain the "
@@ -195,26 +195,26 @@ double NegativeMultinomialDistribution<M>::logpmf(const
 
 template <size_t M>
 double NegativeMultinomialDistribution<M>::logpmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::logpmf(*this, value);
 }
 
 template <size_t M>
 Eigen::Matrix<size_t, M, 1> NegativeMultinomialDistribution<M>::getSample()
-  const {
+    const {
   // TODO: NOT IMPLEMENTED!
   return Eigen::Matrix<size_t, M, 1>::Zero(mSuccessProbabilities.size());
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, 1> NegativeMultinomialDistribution<M>::getMean()
-  const {
+    const {
   return mNumTrials * mSuccessProbabilities / mSuccessProbabilities(0);
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, M> NegativeMultinomialDistribution<M>::getCovariance()
-  const {
+    const {
   return mNumTrials / mSuccessProbabilities(0) / mSuccessProbabilities(0) *
     mSuccessProbabilities * mSuccessProbabilities.transpose() + mNumTrials /
     mSuccessProbabilities(0) * mSuccessProbabilities.asDiagonal();

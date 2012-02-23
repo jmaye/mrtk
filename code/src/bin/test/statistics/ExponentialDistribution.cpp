@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the ExponentialDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/ExponentialDistribution.h"
 
 int main(int argc, char** argv) {

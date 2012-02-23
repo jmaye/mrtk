@@ -21,11 +21,11 @@
            distributions with conjugate prior
   */
 
+#include <vector>
+
 #include "statistics/MultinomialDistribution.h"
 #include "statistics/DirichletDistribution.h"
 #include "statistics/DCMDistribution.h"
-
-#include <vector>
 
 /** The class EstimatorBayes is implemented for multinomial
     distributions with conjugate prior.
@@ -78,6 +78,8 @@ public:
   /// Add points to the estimator
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator
+  void addPoints(const Container& points);
   /** @}
     */
 

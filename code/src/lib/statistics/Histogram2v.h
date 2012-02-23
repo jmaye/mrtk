@@ -20,13 +20,12 @@
     \brief This file contains the definition of a bivariate histogram
   */
 
+#include <vector>
+
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 #include "exceptions/OutOfBoundException.h"
-
 #include <utils/SizeTSupport.h>
-
-#include <vector>
 
 /** The Histogram2v class defines bivariate histograms
     \brief 2-v histogram

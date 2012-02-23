@@ -21,10 +21,10 @@
            regression models
   */
 
+#include <vector>
+
 #include "statistics/LinearRegression.h"
 #include "statistics/MixtureDistribution.h"
-
-#include <vector>
 
 /** The class EstimatorML is implemented for mixtures of linear regressions.
     \brief Mixture of linear regression ML estimator
@@ -92,6 +92,8 @@ public:
   /// Add points to the estimator / Returns number of EM iterationss
   size_t addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator
+  void addPoints(const Container& points);
   /// Reset the estimator
   void reset();
   /** @}

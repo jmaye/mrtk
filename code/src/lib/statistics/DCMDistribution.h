@@ -30,7 +30,8 @@
 #include "base/Serializable.h"
 
 /** The DCMDistribution class represents a Dirichlet Compound Multinomial
-    distribution.
+    distribution, which is the predictive distribution of a categorical random
+    variable.
     \brief Dirichlet Compound Multinomial distribution
   */
 template <size_t M> class DCMDistribution :

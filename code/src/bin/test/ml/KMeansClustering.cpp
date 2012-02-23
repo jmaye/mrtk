@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the KMeansClustering class
   */
 
+#include <iostream>
+
 #include "ml/KMeansClustering.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"

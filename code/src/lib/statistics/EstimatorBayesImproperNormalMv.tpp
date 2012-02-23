@@ -24,28 +24,28 @@
 
 template <size_t M>
 EstimatorBayesImproper<NormalDistribution<M>, M>::EstimatorBayesImproper() :
-  mNumPoints(0),
-  mValid(false) {
+    mNumPoints(0),
+    mValid(false) {
 }
 
 template <size_t M>
 EstimatorBayesImproper<NormalDistribution<M>, M>::EstimatorBayesImproper(const
-  EstimatorBayesImproper<NormalDistribution<M>, M>& other) :
-  mPostMeanDist(other.mPostMeanDist),
-  mPostCovarianceDist(other.mPostCovarianceDist),
-  mPostPredDist(other.mPostPredDist),
-  mSampleMean(other.mSampleMean),
-  mSampleCovariance(other.mSampleCovariance),
-  mNumPoints(other.mNumPoints),
-  mValid(other.mValid),
-  mValuesSum(other.mValuesSum),
-  mSquaredValuesSum(other.mSquaredValuesSum){
+    EstimatorBayesImproper<NormalDistribution<M>, M>& other) :
+    mPostMeanDist(other.mPostMeanDist),
+    mPostCovarianceDist(other.mPostCovarianceDist),
+    mPostPredDist(other.mPostPredDist),
+    mSampleMean(other.mSampleMean),
+    mSampleCovariance(other.mSampleCovariance),
+    mNumPoints(other.mNumPoints),
+    mValid(other.mValid),
+    mValuesSum(other.mValuesSum),
+    mSquaredValuesSum(other.mSquaredValuesSum) {
 }
 
 template <size_t M>
 EstimatorBayesImproper<NormalDistribution<M>, M>&
-  EstimatorBayesImproper<NormalDistribution<M>, M>::operator =
-  (const EstimatorBayesImproper<NormalDistribution<M>, M>& other) {
+    EstimatorBayesImproper<NormalDistribution<M>, M>::operator =
+    (const EstimatorBayesImproper<NormalDistribution<M>, M>& other) {
   if (this != &other) {
     mPostMeanDist = other.mPostMeanDist;
     mPostCovarianceDist = other.mPostCovarianceDist;
@@ -70,12 +70,12 @@ EstimatorBayesImproper<NormalDistribution<M>, M>::~EstimatorBayesImproper() {
 
 template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M>, M>::read(std::istream&
-  stream) {
+    stream) {
 }
 
 template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M>, M>::write(std::ostream&
-  stream) const {
+    stream) const {
   stream << "posterior mean distribution: " << std::endl << mPostMeanDist
     << std::endl << "posterior covariance distribution: " << std::endl
     << mPostCovarianceDist
@@ -89,12 +89,12 @@ void EstimatorBayesImproper<NormalDistribution<M>, M>::write(std::ostream&
 
 template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M>, M>::read(std::ifstream&
-  stream) {
+    stream) {
 }
 
 template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M>, M>::write(std::ofstream&
-  stream) const {
+    stream) const {
 }
 
 /******************************************************************************/
@@ -103,20 +103,20 @@ void EstimatorBayesImproper<NormalDistribution<M>, M>::write(std::ofstream&
 
 template <size_t M>
 const StudentDistribution<M>& EstimatorBayesImproper<NormalDistribution<M>, M>::
-getPostMeanDist() const {
+    getPostMeanDist() const {
   return mPostMeanDist;
 }
 
 template <size_t M>
 const InvWishartDistribution<M>&
 EstimatorBayesImproper<NormalDistribution<M>, M>::getPostCovarianceDist()
-  const {
+    const {
   return mPostCovarianceDist;
 }
 
 template <size_t M>
 const StudentDistribution<M>& EstimatorBayesImproper<NormalDistribution<M>, M>::
-getPostPredDist() const {
+    getPostPredDist() const {
   return mPostPredDist;
 }
 
@@ -150,7 +150,7 @@ void EstimatorBayesImproper<NormalDistribution<M>, M>::reset() {
 
 template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M>, M>::addPoint(const Point&
-  point) {
+    point) {
   if (mNumPoints == 0) {
     mValuesSum = Eigen::Matrix<double, M, 1>::Zero(point.size());
     mSquaredValuesSum = Eigen::Matrix<double, M, M>::Zero(point.size(),
@@ -190,7 +190,13 @@ void EstimatorBayesImproper<NormalDistribution<M>, M>::addPoint(const Point&
 
 template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M>, M>::addPoints(const
-  ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
+}
+
+template <size_t M>
+void EstimatorBayesImproper<NormalDistribution<M>, M>::addPoints(const
+    Container& points) {
+  addPoints(points.begin(), points.end());
 }

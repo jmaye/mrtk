@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
-
 #include <limits>
+
+#include "statistics/Randomizer.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -26,11 +26,11 @@
 
 template <typename T>
 Histogram<T, 1>::Histogram(T minValue, T maxValue, T binWidth)
-  throw (BadArgumentException<T>) :
-  mMinValue(minValue),
-  mMaxValue(maxValue),
-  mBinWidth(binWidth),
-  mNormFactor(1.0) {
+    throw (BadArgumentException<T>) :
+    mMinValue(minValue),
+    mMaxValue(maxValue),
+    mBinWidth(binWidth),
+    mNormFactor(1.0) {
   if (minValue >= maxValue)
     throw BadArgumentException<T>(minValue,
       "Histogram<T, 1>::Histogram(): maximum value must be strictly larger "
@@ -48,17 +48,17 @@ Histogram<T, 1>::Histogram(T minValue, T maxValue, T binWidth)
 
 template <typename T>
 Histogram<T, 1>::Histogram(const Histogram<T, 1>& other) :
-  mMinValue(other.mMinValue),
-  mMaxValue(other.mMaxValue),
-  mBinWidth(other.mBinWidth),
-  mNumBins(other.mNumBins),
-  mBins(other.mBins),
-  mNormFactor(other.mNormFactor) {
+    mMinValue(other.mMinValue),
+    mMaxValue(other.mMaxValue),
+    mBinWidth(other.mBinWidth),
+    mNumBins(other.mNumBins),
+    mBins(other.mBins),
+    mNormFactor(other.mNormFactor) {
 }
 
 template <typename T>
 Histogram<T, 1>& Histogram<T, 1>::operator =
-  (const Histogram<T, 1>& other) {
+    (const Histogram<T, 1>& other) {
   if (this != &other) {
     mMinValue = other.mMinValue;
     mMaxValue = other.mMaxValue;
@@ -126,13 +126,13 @@ size_t Histogram<T, 1>::getNumBins() const {
 
 template <typename T>
 const Eigen::Matrix<double, Eigen::Dynamic, 1>& Histogram<T, 1>::getBins()
-  const {
+    const {
   return mBins;
 }
 
 template <typename T>
 void Histogram<T, 1>::setBinContent(size_t bin, double value)
-  throw (OutOfBoundException<size_t>) {
+    throw (OutOfBoundException<size_t>) {
   if (bin >= (size_t)mBins.size())
     throw OutOfBoundException<size_t>(bin,
       "Histogram<T, 1>::setBinContent(): wrong bin number",
@@ -152,7 +152,7 @@ double Histogram<T, 1>::getBinContent(size_t bin) const
 
 template <typename T>
 void Histogram<T, 1>::addBinContent(size_t bin)
-  throw (OutOfBoundException<size_t>) {
+    throw (OutOfBoundException<size_t>) {
   if (bin >= (size_t)mBins.size())
     throw OutOfBoundException<size_t>(bin,
       "Histogram<T, 1>::addBinContent(): wrong bin number",
@@ -237,7 +237,7 @@ void Histogram<T, 1>::clear() {
 template <typename T>
 template <typename U, size_t D>
 double Histogram<T, 1>::Traits<U, D>::getBinCenter(const Histogram<U, 1>& hist,
-  size_t bin) {
+    size_t bin) {
   if (hist.mBinWidth == 1)
     return hist.getBinStart(bin);
   else
@@ -247,20 +247,20 @@ double Histogram<T, 1>::Traits<U, D>::getBinCenter(const Histogram<U, 1>& hist,
 template <typename T>
 template <size_t D>
 double Histogram<T, 1>::Traits<float, D>::getBinCenter(const
-  Histogram<float, 1>& hist, size_t bin) {
+    Histogram<float, 1>& hist, size_t bin) {
   return hist.getBinStart(bin) + hist.mBinWidth / 2.0;
 }
 
 template <typename T>
 template <size_t D>
 double Histogram<T, 1>::Traits<double, D>::getBinCenter(const
-  Histogram<double, 1>& hist, size_t bin) {
+    Histogram<double, 1>& hist, size_t bin) {
   return hist.getBinStart(bin) + hist.mBinWidth / 2.0;
 }
 
 template <typename T>
 double Histogram<T, 1>::getBinCenter(size_t bin) const
-  throw (OutOfBoundException<size_t>) {
+    throw (OutOfBoundException<size_t>) {
   if (bin >= (size_t)mBins.size())
     throw OutOfBoundException<size_t>(bin,
       "Histogram<T, 1>::getBinCenter(): wrong bin number",
@@ -270,7 +270,7 @@ double Histogram<T, 1>::getBinCenter(size_t bin) const
 
 template <typename T>
 T Histogram<T, 1>::getBinStart(size_t bin) const
-  throw (OutOfBoundException<size_t>) {
+    throw (OutOfBoundException<size_t>) {
   if (bin >= (size_t)mBins.size())
     throw OutOfBoundException<size_t>(bin,
       "Histogram<T, 1>::getBinStart(): wrong bin number",
@@ -311,7 +311,7 @@ double Histogram<T, 1>::getSampleMedian() const {
 template <typename T>
 template <typename U, size_t D>
 size_t Histogram<T, 1>::Traits<U, D>::computeNumBins(const Histogram<U, 1>&
-  hist) {
+    hist) {
   return (size_t)floor((hist.mMaxValue - hist.mMinValue) /
     (double)hist.mBinWidth) + 1;
 }
@@ -319,14 +319,14 @@ size_t Histogram<T, 1>::Traits<U, D>::computeNumBins(const Histogram<U, 1>&
 template <typename T>
 template <size_t D>
 size_t Histogram<T, 1>::Traits<float, D>::computeNumBins(const
-  Histogram<float, 1>& hist) {
+    Histogram<float, 1>& hist) {
   return (size_t)ceil((hist.mMaxValue - hist.mMinValue) / hist.mBinWidth);
 }
 
 template <typename T>
 template <size_t D>
 size_t Histogram<T, 1>::Traits<double, D>::computeNumBins(const
-  Histogram<double, 1>& hist) {
+    Histogram<double, 1>& hist) {
   return (size_t)ceil((hist.mMaxValue - hist.mMinValue) / hist.mBinWidth);
 }
 
@@ -341,7 +341,7 @@ void Histogram<T, 1>::Traits<U, D>::addSample(Histogram<U, 1>& hist, U sample) {
 template <typename T>
 template <size_t D>
 void Histogram<T, 1>::Traits<float, D>::addSample(Histogram<float, 1>& hist,
-  float sample) {
+    float sample) {
   if (sample >= hist.mMinValue && sample < hist.mMaxValue)
     hist.mBins((size_t)floor((sample - hist.mMinValue) / hist.mBinWidth))++;
 }
@@ -349,7 +349,7 @@ void Histogram<T, 1>::Traits<float, D>::addSample(Histogram<float, 1>& hist,
 template <typename T>
 template <size_t D>
 void Histogram<T, 1>::Traits<double, D>::addSample(Histogram<double, 1>& hist,
-  double sample) {
+    double sample) {
   if (sample >= hist.mMinValue && sample < hist.mMaxValue)
     hist.mBins((size_t)floor((sample - hist.mMinValue) / hist.mBinWidth))++;
 }

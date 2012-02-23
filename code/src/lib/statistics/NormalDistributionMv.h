@@ -21,12 +21,12 @@
            multivariate normal distribution
   */
 
+#include <Eigen/Cholesky>
+
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
-
-#include <Eigen/Cholesky>
 
 /** The NormalDistributionMv class represents a multivariate normal
     distribution.

@@ -21,9 +21,9 @@
            interface to the multivariate continuous functions
   */
 
-#include "functions/Function.h"
-
 #include <Eigen/Core>
+
+#include "functions/Function.h"
 
 /** The class ContinuousFunctionMv is an interface to the multivariate
     continuous functions.

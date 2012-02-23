@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the EstimatorML class online
   */
 
+#include <iostream>
+
 #include "statistics/EstimatorML.h"
 
 int main(int argc, char** argv) {

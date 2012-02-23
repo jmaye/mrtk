@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the GammaDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/GammaDistribution.h"
 
 int main(int argc, char** argv) {

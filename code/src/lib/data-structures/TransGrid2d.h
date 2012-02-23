@@ -21,7 +21,7 @@
            2-dimensional grid that can be transformed
   */
 
-#include "helpers/Transformation.h"
+#include "geometry/Transformation.h"
 
 /** The class TransGrid2d represents an 2-dimensional grid that can be
     transformed.

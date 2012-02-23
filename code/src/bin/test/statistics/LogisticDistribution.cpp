@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the LogisticDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/LogisticDistribution.h"
 
 int main(int argc, char** argv) {

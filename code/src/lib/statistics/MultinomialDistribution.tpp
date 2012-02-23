@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/LogFactorialFunction.h"
-#include "statistics/Randomizer.h"
+#include <limits>
 
 #include <Eigen/Array>
 
-#include <limits>
+#include "functions/LogFactorialFunction.h"
+#include "statistics/Randomizer.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -29,21 +29,21 @@
 
 template <size_t M>
 MultinomialDistribution<M>::MultinomialDistribution(size_t numTrials, const
-  Eigen::Matrix<double, M, 1>& successProbabilities) {
+    Eigen::Matrix<double, M, 1>& successProbabilities) {
   setSuccessProbabilities(successProbabilities);
   setNumTrials(numTrials);
 }
 
 template <size_t M>
 MultinomialDistribution<M>::MultinomialDistribution(const
-  MultinomialDistribution<M>& other) :
-  mSuccessProbabilities(other.mSuccessProbabilities),
-  mNumTrials(other.mNumTrials) {
+    MultinomialDistribution<M>& other) :
+    mSuccessProbabilities(other.mSuccessProbabilities),
+    mNumTrials(other.mNumTrials) {
 }
 
 template <size_t M>
 MultinomialDistribution<M>& MultinomialDistribution<M>::operator =
-  (const MultinomialDistribution<M>& other) {
+    (const MultinomialDistribution<M>& other) {
   if (this != &other) {
     mSuccessProbabilities = other.mSuccessProbabilities;
     mNumTrials = other.mNumTrials;
@@ -84,8 +84,8 @@ void MultinomialDistribution<M>::write(std::ofstream& stream) const {
 
 template <size_t M>
 void MultinomialDistribution<M>::setSuccessProbabilities(const
-  Eigen::Matrix<double, M, 1>& successProbabilities) throw
-  (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
+    Eigen::Matrix<double, M, 1>& successProbabilities) throw
+    (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(successProbabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
     (successProbabilities.cwise() < 0).any() == true)
@@ -99,13 +99,13 @@ void MultinomialDistribution<M>::setSuccessProbabilities(const
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>&
-  MultinomialDistribution<M>::getSuccessProbabilities() const {
+    MultinomialDistribution<M>::getSuccessProbabilities() const {
   return mSuccessProbabilities;
 }
 
 template <size_t M>
 void MultinomialDistribution<M>::setNumTrials(size_t numTrials)
-  throw (BadArgumentException<size_t>) {
+    throw (BadArgumentException<size_t>) {
   if (numTrials == 0)
     throw BadArgumentException<size_t>(numTrials,
       "MultinomialDistribution<M>::setNumTrials(): number of trials must be "
@@ -122,8 +122,8 @@ size_t MultinomialDistribution<M>::getNumTrials() const {
 template <size_t M>
 template <size_t N, size_t D>
 double MultinomialDistribution<M>::Traits<N, D>::pmf(const
-  MultinomialDistribution<N>& distribution, const
-  Eigen::Matrix<size_t, N - 1, 1>& value) {
+    MultinomialDistribution<N>& distribution, const
+    Eigen::Matrix<size_t, N - 1, 1>& value) {
   if (value.sum() > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
@@ -134,7 +134,7 @@ double MultinomialDistribution<M>::Traits<N, D>::pmf(const
 template <size_t M>
 template <size_t D>
 double MultinomialDistribution<M>::Traits<2, D>::pmf(const
-  MultinomialDistribution<2>& distribution, const size_t& value) {
+    MultinomialDistribution<2>& distribution, const size_t& value) {
   if (value > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
@@ -145,8 +145,8 @@ double MultinomialDistribution<M>::Traits<2, D>::pmf(const
 template <size_t M>
 template <size_t N, size_t D>
 double MultinomialDistribution<M>::Traits<N, D>::logpmf(const
-  MultinomialDistribution<N>& distribution, const
-  Eigen::Matrix<size_t, N - 1, 1>& value) {
+    MultinomialDistribution<N>& distribution, const
+    Eigen::Matrix<size_t, N - 1, 1>& value) {
   if (value.sum() > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
@@ -157,7 +157,7 @@ double MultinomialDistribution<M>::Traits<N, D>::logpmf(const
 template <size_t M>
 template <size_t D>
 double MultinomialDistribution<M>::Traits<2, D>::logpmf(const
-  MultinomialDistribution<2>& distribution, const size_t& value) {
+    MultinomialDistribution<2>& distribution, const size_t& value) {
   if (value > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
@@ -167,7 +167,7 @@ double MultinomialDistribution<M>::Traits<2, D>::logpmf(const
 
 template <size_t M>
 double MultinomialDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
-  const {
+    const {
   if (value.sum() != mNumTrials)
     return 0.0;
   else
@@ -176,13 +176,13 @@ double MultinomialDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value)
 
 template <size_t M>
 double MultinomialDistribution<M>::pmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>
 double MultinomialDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
-  value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
+    value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
   if (value.sum() != mNumTrials)
     throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
       "MultinomialDistribution<M>::logpmf(): sum of the input vector must be "
@@ -198,7 +198,7 @@ double MultinomialDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
 
 template <size_t M>
 double MultinomialDistribution<M>::logpmf(const typename
-  DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
   return Traits<M>::logpmf(*this, value);
 }
 

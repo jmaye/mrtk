@@ -20,10 +20,10 @@
     \brief This file is a testing binary for the LogisticFunction class
   */
 
-#include "functions/LogisticFunction.h"
-
 #include <iostream>
 #include <limits>
+
+#include "functions/LogisticFunction.h"
 
 int main(int argc, char** argv) {
   LogisticFunction<double> l;

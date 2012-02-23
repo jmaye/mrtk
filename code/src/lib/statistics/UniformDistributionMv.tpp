@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <statistics/Randomizer.h>
-
 #include <Eigen/Array>
+
+#include <statistics/Randomizer.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -26,22 +26,22 @@
 
 template <typename X, size_t M>
 UniformDistribution<X, M>::UniformDistribution(const Eigen::Matrix<X, M, 1>&
-  minSupport, const Eigen::Matrix<X, M, 1>& maxSupport) :
-  mSupportArea(0.0) {
+    minSupport, const Eigen::Matrix<X, M, 1>& maxSupport) :
+    mSupportArea(0.0) {
   setSupport(minSupport, maxSupport);
 }
 
 template <typename X, size_t M>
 UniformDistribution<X, M>::UniformDistribution(const UniformDistribution<X, M>&
-  other) :
-  mMinSupport(other.mMinSupport),
-  mMaxSupport(other.mMaxSupport),
-  mSupportArea(other.mSupportArea) {
+    other) :
+    mMinSupport(other.mMinSupport),
+    mMaxSupport(other.mMaxSupport),
+    mSupportArea(other.mSupportArea) {
 }
 
 template <typename X, size_t M>
 UniformDistribution<X, M>& UniformDistribution<X, M>::operator =
-  (const UniformDistribution<X, M>& other) {
+    (const UniformDistribution<X, M>& other) {
   if (this != &other) {
     mMaxSupport = other.mMaxSupport;
     mMinSupport = other.mMinSupport;
@@ -83,8 +83,8 @@ void UniformDistribution<X, M>::write(std::ofstream& stream) const {
 
 template <typename X, size_t M>
 void UniformDistribution<X, M>::setSupport(const Eigen::Matrix<X, M, 1>&
-  minSupport, const Eigen::Matrix<X, M, 1>& maxSupport)
-  throw (BadArgumentException<Eigen::Matrix<X, M, 1> >) {
+    minSupport, const Eigen::Matrix<X, M, 1>& maxSupport)
+    throw (BadArgumentException<Eigen::Matrix<X, M, 1> >) {
   if ((minSupport.cwise() >= maxSupport).any())
     throw BadArgumentException<Eigen::Matrix<X, M, 1> >(minSupport,
       "UniformDistribution<X, M>::setSupport(): minimum support must be "
@@ -99,7 +99,7 @@ void UniformDistribution<X, M>::setSupport(const Eigen::Matrix<X, M, 1>&
 
 template <typename X, size_t M>
 void UniformDistribution<X, M>::setMinSupport(const Eigen::Matrix<X, M, 1>&
-  minSupport) {
+    minSupport) {
   setSupport(minSupport, mMaxSupport);
 }
 
@@ -110,7 +110,7 @@ const Eigen::Matrix<X, M, 1>& UniformDistribution<X, M>::getMinSupport() const {
 
 template <typename X, size_t M>
 void UniformDistribution<X, M>::setMaxSupport(const Eigen::Matrix<X, M, 1>&
-  maxSupport) {
+    maxSupport) {
   setSupport(mMinSupport, maxSupport);
 }
 
@@ -127,16 +127,16 @@ X UniformDistribution<X, M>::getSupportArea() const {
 template <typename X, size_t M>
 template <typename U, size_t D>
 double UniformDistribution<X, M>::Traits<U, D>::pdf(const
-  UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>&
-  value) {
+    UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>&
+    value) {
   return Traits<U>::pmf(distribution, value);
 }
 
 template <typename X, size_t M>
 template <typename U, size_t D>
 double UniformDistribution<X, M>::Traits<U, D>::pmf(const
-  UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>&
-  value) {
+    UniformDistribution<U, M>& distribution, const Eigen::Matrix<U, M, 1>&
+    value) {
   U supportArea = 1;
   for (size_t i = 0; i < (size_t)distribution.mMinSupport.size(); ++i)
     supportArea *= distribution.mMaxSupport(i) -
@@ -151,8 +151,8 @@ double UniformDistribution<X, M>::Traits<U, D>::pmf(const
 template <typename X, size_t M>
 template <size_t D>
 double UniformDistribution<X, M>::Traits<float, D>::pdf(const
-  UniformDistribution<float, M>& distribution, const Eigen::Matrix<float, M, 1>&
-  value) {
+    UniformDistribution<float, M>& distribution,
+    const Eigen::Matrix<float, M, 1>& value) {
   if ((value.cwise() >= distribution.mMinSupport).all() &&
     (value.cwise() <= distribution.mMaxSupport).all())
     return 1.0 / distribution.mSupportArea;
@@ -163,16 +163,16 @@ double UniformDistribution<X, M>::Traits<float, D>::pdf(const
 template <typename X, size_t M>
 template <size_t D>
 double UniformDistribution<X, M>::Traits<float, D>::pmf(const
-  UniformDistribution<float, M>& distribution, const Eigen::Matrix<float, M, 1>&
-  value) {
+    UniformDistribution<float, M>& distribution,
+    const Eigen::Matrix<float, M, 1>& value) {
   return Traits<float>::pdf(distribution, value);
 }
 
 template <typename X, size_t M>
 template <size_t D>
 double UniformDistribution<X, M>::Traits<double, D>::pdf(const
-  UniformDistribution<double, M>& distribution, const
-  Eigen::Matrix<double, M, 1>& value) {
+    UniformDistribution<double, M>& distribution, const
+    Eigen::Matrix<double, M, 1>& value) {
   if ((value.cwise() >= distribution.mMinSupport).all() &&
     (value.cwise() <= distribution.mMaxSupport).all())
     return 1.0 / distribution.mSupportArea;
@@ -183,20 +183,20 @@ double UniformDistribution<X, M>::Traits<double, D>::pdf(const
 template <typename X, size_t M>
 template <size_t D>
 double UniformDistribution<X, M>::Traits<double, D>::pmf(const
-  UniformDistribution<double, M>& distribution, const
-  Eigen::Matrix<double, M, 1>& value) {
+    UniformDistribution<double, M>& distribution, const
+    Eigen::Matrix<double, M, 1>& value) {
   return Traits<double>::pdf(distribution, value);
 }
 
 template <typename X, size_t M>
 double UniformDistribution<X, M>::pdf(const Eigen::Matrix<X, M, 1>& value)
-  const {
+    const {
   return Traits<X>::pdf(*this, value);
 }
 
 template <typename X, size_t M>
 double UniformDistribution<X, M>::pmf(const Eigen::Matrix<X, M, 1>& value)
-  const {
+    const {
   return Traits<X>::pmf(*this, value);
 }
 

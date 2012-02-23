@@ -9,39 +9,24 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogFunction.cpp
-    \brief This file is a testing binary for the LogFunction class
+/** \file TransGrid.cpp
+    \brief This file is a testing binary for the TransGrid class.
   */
 
 #include <iostream>
-#include <limits>
 
-#include "functions/LogFunction.h"
+#include "data-structures/TransGrid.h"
 
-int main(int argc, char** argv) {
-  LogFunction<double> l;
-
-  std::cout << "l(1): " << std::fixed << l(1) << std::endl;
-  if (fabs(l(1) - 0) > std::numeric_limits<double>::epsilon())
-    return 1;
-
-  std::cout << "l(e): " << std::fixed << l(M_E) << std::endl;
-  if (fabs(l(M_E) - 1.0) > std::numeric_limits<double>::epsilon())
-    return 1;
-
-  try {
-    std::cout << "l(0): " << std::fixed << l(0) << std::endl;
-  }
-  catch (BadArgumentException<double>& e) {
-    std::cout << e.what() << std::endl;
-  }
-
+int main (int argc, char** argv) {
+  TransGrid<double, size_t, 2> transGrid(Eigen::Matrix<double, 2, 1>(0.0, 0.0),
+    Eigen::Matrix<double, 2, 1>(4.0, 4.0),
+    Eigen::Matrix<double, 2, 1>(0.5, 0.5), 0, 0, 0);
   return 0;
 }

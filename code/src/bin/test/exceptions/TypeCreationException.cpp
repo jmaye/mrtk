@@ -20,9 +20,9 @@
     \brief This file is a testing binary for the TypeCreationException class
   */
 
-#include "exceptions/TypeCreationException.h"
-
 #include <iostream>
+
+#include "exceptions/TypeCreationException.h"
 
 int main(int argc, char** argv) {
   return 0;

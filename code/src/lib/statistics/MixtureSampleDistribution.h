@@ -24,10 +24,10 @@
 #ifndef MIXTURESAMPLEDISTRIBUTION_H
 #define MIXTURESAMPLEDISTRIBUTION_H
 
+#include <vector>
+
 #include "statistics/MixtureDistribution.h"
 #include "statistics/SampleDistribution.h"
-
-#include <vector>
 
 /** The MixtureSampleDistribution class represents an interface to sample
     mixture distributions.

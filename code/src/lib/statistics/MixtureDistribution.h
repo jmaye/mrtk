@@ -23,12 +23,12 @@
 #ifndef MIXTUREDISTRIBUTION_H
 #define MIXTUREDISTRIBUTION_H
 
+#include <vector>
+
 #include "statistics/Distribution.h"
 #include "statistics/CategoricalDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
-
-#include <vector>
 
 /** The MixtureDistribution class represents an interface to any kind of mixture
     distributions.

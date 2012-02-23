@@ -20,6 +20,8 @@
     \brief This file is a testing binary for the BetaDistribution class
   */
 
+#include <iostream>
+
 #include "statistics/BetaDistribution.h"
 
 int main(int argc, char** argv) {
