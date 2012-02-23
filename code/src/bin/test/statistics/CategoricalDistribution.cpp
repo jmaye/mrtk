@@ -25,34 +25,48 @@
 #include "statistics/CategoricalDistribution.h"
 
 int main(int argc, char** argv) {
-  CategoricalDistribution<2> dist;
-  std::cout << "Distribution default parameters: " << std::endl << dist
+  std::cout << "Testing CategoricalDistribution<2>" << std::endl << std::endl;
+  CategoricalDistribution<2> dist1;
+  std::cout << "Distribution default parameters: " << std::endl << dist1
     << std::endl << std::endl;
-  std::cout << "dist.getSuccessProbabilities(): " << std::endl
-    << dist.getSuccessProbabilities() << std::endl << std::endl;
-  std::cout << "dist.setSuccessProbability(0.7, 0.3)" << std::endl << std::endl;
-  dist.setSuccessProbabilities(Eigen::Vector2d(0.7, 0.3));
-  std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
+  std::cout << "dist1.getSuccessProbabilities(): " << std::endl
+    << dist1.getSuccessProbabilities() << std::endl << std::endl;
+  std::cout << "dist1.setSuccessProbabilities(0.7, 0.3)" << std::endl
     << std::endl;
+  dist1.setSuccessProbabilities(Eigen::Vector2d(0.7, 0.3));
+  std::cout << "Distribution new parameters: " << std::endl << dist1
+    << std::endl << std::endl;
+  std::cout << "dist1.getSuccessProbability(0): "
+    << dist1.getSuccessProbability(0) << std::endl << std::endl;
+  std::cout << "dist1.getSuccessProbability(1): "
+    << dist1.getSuccessProbability(1) << std::endl << std::endl;
 
-  Eigen::Matrix<size_t, 2, 1> value;
-  value(0) = 1;
-  value(1) = 0;
-  std::cout << "pmf(1, 0): " << std::fixed << dist(value) << std::endl
+  try {
+    std::cout << "dist1.getSuccessProbability(2): "
+      << dist1.getSuccessProbability(2) << std::endl << std::endl;
+  }
+  catch (OutOfBoundException<size_t>& e) {
+    std::cout << e.what() << std::endl;
+  }
+
+  Eigen::Matrix<size_t, 2, 1> value1;
+  value1(0) = 1;
+  value1(1) = 0;
+  std::cout << "pmf(1, 0): " << std::fixed << dist1(value1) << std::endl
     << std::endl;
-  if (fabs(dist(value) - 0.7) > 1e-4)
+  if (fabs(dist1(value1) - 0.7) > 1e-4)
     return 1;
 
-  value(0) = 0;
-  value(1) = 1;
-  std::cout << "pmf(0, 1): " << std::fixed << dist(value) << std::endl
+  value1(0) = 0;
+  value1(1) = 1;
+  std::cout << "pmf(0, 1): " << std::fixed << dist1(value1) << std::endl
     << std::endl;
-  if (fabs(dist(value) - 0.3) > 1e-4)
+  if (fabs(dist1(value1) - 0.3) > 1e-4)
     return 1;
 
   try {
-    std::cout << "dist.setSuccessProbabilities(0.8, 0.9)" << std::endl;
-    dist.setSuccessProbabilities(Eigen::Vector2d(0.8, 0.9));
+    std::cout << "dist1.setSuccessProbabilities(0.8, 0.9)" << std::endl;
+    dist1.setSuccessProbabilities(Eigen::Vector2d(0.8, 0.9));
   }
   catch (BadArgumentException<Eigen::Vector2d>& e) {
     std::cout << e.what() << std::endl;
@@ -60,8 +74,69 @@ int main(int argc, char** argv) {
 
   std::cout << std::endl;
 
-  std::cout << "dist.getSample(): " << std::endl
-    << dist.getSample() << std::endl << std::endl;
+  std::cout << "dist1.getSample(): " << std::endl
+    << dist1.getSample() << std::endl << std::endl;
+
+  std::cout << "Testing CategoricalDistribution<3>" << std::endl << std::endl;
+  CategoricalDistribution<3> dist2;
+  std::cout << "Distribution default parameters: " << std::endl << dist2
+    << std::endl << std::endl;
+  std::cout << "dist2.getNumTrials(): " << dist2.getNumTrials()
+    << std::endl << std::endl;
+  std::cout << "dist2.getSuccessProbabilities(): " << std::endl
+    << dist2.getSuccessProbabilities() << std::endl << std::endl;
+  try {
+    std::cout << "dist2.setNumTrials(5)" << std::endl << std::endl;
+    dist2.setNumTrials(5);
+  }
+  catch (BadArgumentException<size_t>& e) {
+    std::cout << e.what() << std::endl;
+  }
+  std::cout << "dist2.setSuccessProbabilities(0.1, 0.7, 0.2)" << std::endl
+    << std::endl;
+  dist2.setSuccessProbabilities(Eigen::Matrix<double, 3, 1>(0.1, 0.7, 0.2));
+  std::cout << "Distribution new parameters: " << std::endl << dist2
+    << std::endl << std::endl;
+
+  Eigen::Matrix<size_t, 3, 1> value2;
+  value2(0) = 0;
+  value2(1) = 0;
+  value2(2) = 1;
+  std::cout << "pmf(0, 0, 1): " << std::fixed << dist2(value2) << std::endl
+    << std::endl;
+  if (fabs(dist2(value2) - 0.2) > 1e-4)
+    return 1;
+
+  value2(0) = 1;
+  value2(1) = 0;
+  value2(2) = 0;
+  std::cout << "pmf(1, 0, 0): " << std::fixed << dist2(value2) << std::endl
+    << std::endl;
+  if (fabs(dist2(value2) - 0.1) > 1e-4)
+    return 1;
+
+  value2(0) = 0;
+  value2(1) = 1;
+  value2(2) = 0;
+  std::cout << "pmf(0, 1, 0): " << std::fixed << dist2(value2) << std::endl
+    << std::endl;
+  if (fabs(dist2(value2) - 0.7) > 1e-4)
+    return 1;
+
+  value1(0) = 0;
+  value1(1) = 1;
+  std::cout << "pmf(0, 1): " << std::fixed << dist2(value1) << std::endl
+    << std::endl;
+  if (fabs(dist2(value1) - 0.2) > 1e-4)
+    return 1;
+
+  std::cout << "logpmf(0, 1, 0): " << std::fixed << dist2.logpmf(value2)
+    << std::endl << std::endl;
+  std::cout << "logpmf(0, 1): " << std::fixed << dist2.logpmf(value1)
+    << std::endl << std::endl;
+
+  std::cout << "dist2.getSample(): " << std::endl << dist2.getSample()
+    << std::endl << std::endl;
 
   std::cout << "Testing categorical distribution M-D" << std::endl;
   CategoricalDistribution<Eigen::Dynamic> distMd(Eigen::Matrix<double,

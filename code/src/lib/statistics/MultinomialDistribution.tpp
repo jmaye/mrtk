@@ -98,6 +98,16 @@ void MultinomialDistribution<M>::setSuccessProbabilities(const
 }
 
 template <size_t M>
+double MultinomialDistribution<M>::getSuccessProbability(size_t idx)
+    throw (OutOfBoundException<size_t>) {
+  if (idx >= (size_t)mSuccessProbabilities.size())
+    throw OutOfBoundException<size_t>(idx,
+      "MultinomialDistribution<M>::getSuccessProbability(): index out of bound",
+      __FILE__, __LINE__);
+  return mSuccessProbabilities(idx);
+}
+
+template <size_t M>
 const Eigen::Matrix<double, M, 1>&
     MultinomialDistribution<M>::getSuccessProbabilities() const {
   return mSuccessProbabilities;

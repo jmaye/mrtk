@@ -28,6 +28,7 @@
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
+#include "exceptions/OutOfBoundException.h"
 
 /** The MultinomialDistribution class represents a multinomial distribution,
     i.e., the discrete distribution of N independent categorical distribution
@@ -91,8 +92,11 @@ public:
     (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the success probabilities
   const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  /// Returns a success probability
+  double getSuccessProbability(size_t idx) throw (OutOfBoundException<size_t>);
   /// Sets the number of trials
-  void setNumTrials(size_t numTrials) throw (BadArgumentException<size_t>);
+  virtual void setNumTrials(size_t numTrials)
+    throw (BadArgumentException<size_t>);
   /// Returns the number of trials
   size_t getNumTrials() const;
   /// Returns the mean of the distribution
