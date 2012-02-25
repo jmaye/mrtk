@@ -21,6 +21,10 @@
   */
 
 #include <iostream>
+#include <limits>
+#include <string>
+
+#include <RInside.h>
 
 #include "statistics/GammaDistribution.h"
 
@@ -28,59 +32,105 @@ int main(int argc, char** argv) {
   GammaDistribution<double> dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
+
   std::cout << "dist.getShape(): " << dist.getShape() << std::endl << std::endl;
   std::cout << "dist.getInvScale(): " << dist.getInvScale() << std::endl
     << std::endl;
+
   std::cout << "dist.setShape(1.5)" << std::endl << std::endl;
-  std::cout << "dist.setInvScale(2.0)" << std::endl << std::endl;
-  dist.setShape(1.5);
-  dist.setInvScale(2.0);
+  std::cout << "dist.setInvScale(2.5)" << std::endl << std::endl;
+  const double shape = 1.5;
+  const double invScale = 2.5;
+  dist.setShape(shape);
+  dist.setInvScale(invScale);
   std::cout << "Distribution new parameters: " << std::endl << dist
     << std::endl << std::endl;
-  std::cout << "dist.getShape(): " << dist.getShape() << std::endl << std::endl;
-  std::cout << "dist.getInvScale(): " << dist.getInvScale() << std::endl
-    << std::endl;
-
-  std::cout << "pdf(0.5): " << std::fixed << dist(0.5) << std::endl
-    << std::endl;
-  if (fabs(dist(0.5) - 0.830215) > 1e-4)
+  if (dist.getShape() != shape)
+    return 1;
+  if (dist.getInvScale() != invScale)
     return 1;
 
-  std::cout << "pdf(1.5): " << std::fixed << dist(1.5) << std::endl
-    << std::endl;
-  if (fabs(dist(1.5) - 0.1946087) > 1e-4)
-    return 1;
+  std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
+  RInside R(argc, argv);
+  std::string expression = "dgamma(seq(-10, 10, by=0.1), 1.5, 2.5)";
+  SEXP ans = R.parseEval(expression);
+  Rcpp::NumericVector v(ans);
+  double value = -10.0;
+  for (size_t i = 0; i < (size_t)v.size(); ++i) {
+    if (v[i] != std::numeric_limits<double>::infinity() &&
+        fabs(dist(value) - v[i]) > 1e-12) {
+      std::cout << v[i] << " " << dist(value) << std::endl;
+      return 1;
+    }
+    value += 0.1;
+  }
+  expression = "pgamma(seq(-10, 10, by=0.1), 1.5, 2.5)";
+  ans = R.parseEval(expression);
+  v = ans;
+  value = -10.0;
+  for (size_t i = 0; i < (size_t)v.size(); ++i) {
+    if (fabs(dist.cdf(value) - v[i]) > 1e-12) {
+      std::cout << v[i] << " " << dist.cdf(value) << std::endl;
+      return 1;
+    }
+    value += 0.1;
+  }
 
-  std::cout << "pdf(0): " << std::fixed << dist(0) << std::endl << std::endl;
-  if (fabs(dist(0) - 0.0) > 1e-4)
-    return 1;
-
-  std::cout << "logpdf(1.5): " << std::fixed << dist.logpdf(1.5) << std::endl
+  std::cout << "dist.getMean(): " << std::fixed << dist.getMean() << std::endl
     << std::endl;
-  if (fabs(dist.logpdf(1.5) + 1.636764) > 1e-4)
+  if (fabs(dist.getMean() - shape / invScale) >
+      std::numeric_limits<double>::epsilon())
     return 1;
-
-  std::cout << "cdf(1.5): " << std::fixed << dist.cdf(1.5) << std::endl
-    << std::endl;
-  if (fabs(dist.cdf(1.5) - 0.1116102) > 1e-4)
+  std::cout << "dist.getVariance(): " << std::fixed << dist.getVariance()
+    << std::endl << std::endl;
+  if (fabs(dist.getVariance() - shape / (invScale * invScale)) >
+      std::numeric_limits<double>::epsilon())
     return 1;
-
-  std::cout << "dist.getSample(): " << dist.getSample() << std::endl
+  std::cout << "dist.getMode(): " << std::fixed << dist.getMode() << std::endl
     << std::endl;
+  if (fabs(dist.getMode() - (shape - 1) / invScale) >
+      std::numeric_limits<double>::epsilon())
+    return 1;
 
   try {
+    std::cout << "dist.setShape(0.0): " << std::endl;
     dist.setShape(0.0);
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
-
+  std::cout << std::endl;
   try {
+    std::cout << "dist.setInvScale(0.0): " << std::endl;
     dist.setInvScale(0.0);
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
+  std::cout << std::endl;
+
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
+  std::vector<double> samples;
+  dist.getSamples(samples, 10);
+  std::cout << "dist.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samples[i] << std::endl;
+  std::cout << std::endl;
+
+  GammaDistribution<double> distCopy(dist);
+  std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
+    << std::endl;
+  if (distCopy.getShape() != dist.getShape())
+    return 1;
+  if (distCopy.getInvScale() != dist.getInvScale())
+    return 1;
+  GammaDistribution<double> distAssign = dist;
+  std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
+  if (distAssign.getShape() != dist.getShape())
+    return 1;
+  if (distAssign.getInvScale() != dist.getInvScale())
+    return 1;
 
   return 0;
 }

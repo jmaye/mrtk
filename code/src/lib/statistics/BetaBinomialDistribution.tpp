@@ -16,86 +16,73 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <gsl/gsl_sf_gamma.h>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BetaDistribution::BetaDistribution(double alpha, double beta) :
-    DirichletDistribution<2>(Eigen::Matrix<double, 2, 1>(alpha, beta)) {
+BetaBinomialDistribution::BetaBinomialDistribution(size_t numTrials, double
+    alpha, double beta) :
+    DCMDistribution<2>(numTrials, Eigen::Matrix<double, 2, 1>(alpha, beta)) {
 }
 
-BetaDistribution::BetaDistribution(const BetaDistribution& other) :
-    DirichletDistribution<2>(other) {
+BetaBinomialDistribution::BetaBinomialDistribution(const
+    BetaBinomialDistribution& other) :
+    DCMDistribution<2>(other) {
 }
 
-BetaDistribution& BetaDistribution::operator = (const BetaDistribution& other) {
+BetaBinomialDistribution& BetaBinomialDistribution::operator =
+    (const BetaBinomialDistribution& other) {
   if (this != &other) {
-    DirichletDistribution<2>::operator=(other);
+    DCMDistribution<2>::operator=(other);
   }
   return *this;
 }
 
-BetaDistribution::~BetaDistribution() {
+BetaBinomialDistribution::~BetaBinomialDistribution() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void BetaDistribution::read(std::istream& stream) {
+void BetaBinomialDistribution::read(std::istream& stream) {
 }
 
-void BetaDistribution::write(std::ostream& stream) const {
-  stream << "alpha: " << mAlpha(0) << std::endl << "beta: " << mAlpha(1);
+void BetaBinomialDistribution::write(std::ostream& stream) const {
+  stream << "alpha: " << mAlpha(0) << std::endl << "beta: " << mAlpha(1) <<
+    std::endl << "trials number: " << mNumTrials;
 }
 
-void BetaDistribution::read(std::ifstream& stream) {
+void BetaBinomialDistribution::read(std::ifstream& stream) {
 }
 
-void BetaDistribution::write(std::ofstream& stream) const {
+void BetaBinomialDistribution::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BetaDistribution::setAlpha(double alpha) {
-  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(alpha,
-    getBeta()));
+void BetaBinomialDistribution::setAlpha(double alpha) {
+  DCMDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(alpha, getBeta()));
 }
 
-double BetaDistribution::getAlpha() const {
+double BetaBinomialDistribution::getAlpha() const {
   return mAlpha(0);
 }
 
-void BetaDistribution::setBeta(double beta) {
-  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(getAlpha(),
-    beta));
+void BetaBinomialDistribution::setBeta(double beta) {
+  DCMDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(getAlpha(), beta));
 }
 
-double BetaDistribution::getBeta() const {
+double BetaBinomialDistribution::getBeta() const {
   return mAlpha(1);
 }
 
-double BetaDistribution::getMean() const {
-  return DirichletDistribution<2>::getMean()(0);
+double BetaBinomialDistribution::getMean() const {
+  return DCMDistribution<2>::getMean()(0);
 }
 
-double BetaDistribution::getMode() const {
-  return DirichletDistribution<2>::getMode()(0);
-}
-
-double BetaDistribution::getVariance() const {
-  return DirichletDistribution<2>::getCovariance()(0, 0);
-}
-
-double BetaDistribution::cdf(const double& value) const {
-  if (value < 0)
-    return 0;
-  else if (value > 1)
-    return 1;
-  else 
-    return gsl_sf_beta_inc(mAlpha(0), mAlpha(1), value);
+double BetaBinomialDistribution::getVariance() const {
+  return DCMDistribution<2>::getCovariance()(0, 0);
 }

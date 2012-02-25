@@ -78,19 +78,31 @@ double GeometricDistribution::getSuccessProbability() const {
   return mSuccessProbability;
 }
 
-double GeometricDistribution::pmf(const size_t& value) const {
-  return exp(logpmf(value));
+double GeometricDistribution::pmf(const int& value) const {
+  if (value < 0)
+    return 0.0;
+  else
+    return exp(logpmf(value));
 }
 
-double GeometricDistribution::logpmf(const size_t& value) const {
-  return value * log(1 - mSuccessProbability) + log(mSuccessProbability);
+double GeometricDistribution::logpmf(const int& value) const
+    throw (BadArgumentException<int>) {
+  if (value < 0)
+    throw BadArgumentException<int>(value,
+      "GeometricDistribution::logpmf(): value must be bigger than 0",
+      __FILE__, __LINE__);
+  else
+    return value * log(1 - mSuccessProbability) + log(mSuccessProbability);
 }
 
-double GeometricDistribution::cdf(const size_t& value) const {
-  return 1 - pow(1 - mSuccessProbability, value + 1);
+double GeometricDistribution::cdf(const int& value) const {
+  if (value < 0)
+    return 0.0;
+  else
+    return 1 - pow(1 - mSuccessProbability, value + 1);
 }
 
-size_t GeometricDistribution::getSample() const {
+int GeometricDistribution::getSample() const {
   const static Randomizer<double> randomizer;
   return randomizer.sampleGeometric(mSuccessProbability);
 }

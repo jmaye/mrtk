@@ -28,7 +28,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("GammaDistribution",
-    GammaDistribution<>(9.0, 2), 0, 5, 0.1);
+    GammaDistribution<>(1.5, 2.5), 0, 5, 0.1);
   plot.show();
   return app.exec();
 }

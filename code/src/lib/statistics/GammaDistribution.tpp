@@ -20,7 +20,6 @@
 
 #include "statistics/Randomizer.h"
 #include "functions/LogGammaFunction.h"
-#include "functions/GammaFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -121,7 +120,7 @@ double GammaDistribution<T>::getNormalizer() const {
 
 template <typename T>
 double GammaDistribution<T>::pdf(const double& value) const {
-  if (value <= 0)
+  if (value < 0)
     return 0.0;
   else
     return exp(logpdf(value));
@@ -129,17 +128,18 @@ double GammaDistribution<T>::pdf(const double& value) const {
 
 template <typename T>
 double GammaDistribution<T>::logpdf(const double& value) const {
-  return (mShape - 1) * log(value) - value * mInvScale - mNormalizer;
+  if (value == 0 && mShape == T(1))
+    return -mNormalizer;
+  else
+    return (mShape - 1) * log(value) - value * mInvScale - mNormalizer;
 }
 
 template <typename T>
 double GammaDistribution<T>::cdf(const double& value) const {
   if (value <= 0)
     return 0.0;
-  else {
-    GammaFunction<T> gammaFunction;
-    return gsl_sf_gamma_inc(mShape, value * mInvScale) / gammaFunction(mShape);
-  }
+  else
+    return gsl_sf_gamma_inc_P(mShape, value * mInvScale);
 }
 
 template <typename T>
@@ -154,10 +154,12 @@ double GammaDistribution<T>::getMean() const {
 }
 
 template <typename T>
-double GammaDistribution<T>::getMode() const {
+double GammaDistribution<T>::getMode() const throw (InvalidOperationException) {
   if (mShape >= 1)
     return (mShape - 1) / mInvScale;
-  return 0;
+  else
+    throw InvalidOperationException("GammaDistribution<T>::getMode(): "
+      "shape must be bigger or equal than 1");
 }
 
 template <typename T>

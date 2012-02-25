@@ -22,25 +22,25 @@
   */
 
 #include "visualization/HistogramPlot.h"
-#include "statistics/DCMDistribution.h"
+#include "statistics/BetaBinomialDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<size_t, 1> hist(0, 20, 1);
-  DCMDistribution<2> dist(20, Eigen::Matrix<double, 2, 1>(5, 5));
+  BetaBinomialDistribution dist(5, 2, 5);
   for (size_t i = 0; i < 100000; ++i)
-    hist.addSample(dist.getSample()(1));
+    hist.addSample(dist.getSample()(0));
   std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
   std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
   std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
     << std::endl;
   std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
-  std::cout << "Dist. mean: " << dist.getMean()(1) << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
 //  std::cout << "Dist. median: " << dist.getMedian() << std::endl;
 //  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
-  std::cout << "Dist. variance: " << dist.getCovariance()(1, 1) << std::endl;
+  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   hist.normalize();
   HistogramPlot<size_t, 1> plot("BetaBinomialDistributionRndHistogramPlot",
     hist);

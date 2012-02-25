@@ -28,6 +28,7 @@
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The GammaDistribution class represents a gamma distribution,
     i.e., a continuous distribution that models waiting times, e.g., the
@@ -70,7 +71,7 @@ public:
   /// Returns the mean of the distribution
   double getMean() const;
   /// Returns the mode of the distribution
-  virtual double getMode() const;
+  double getMode() const throw (InvalidOperationException);
   /// Returns the variance of the distribution
   double getVariance() const;
   /// Access the probablity density function at the given value

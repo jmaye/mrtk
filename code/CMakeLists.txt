@@ -14,7 +14,7 @@ remake_project(
   INSTALL /usr
 )
 
-remake_pack_deb(libann0 libqt4-gui libqwt5-qt4)
+remake_pack_deb(libann0 libqt4-gui libqwt5-qt4 libgsl0ldbl libdai)
 
 remake_pack_deb(
   COMPONENT dev
@@ -25,6 +25,7 @@ remake_pack_deb(
   libqwt5-qt4-dev
   libqt4-dev
   libeigen2-dev
+  libgsl0-dev
 )
 
 remake_doc(

@@ -63,6 +63,8 @@ public:
   double getMode() const;
   /// Returns the variance of the distribution
   double getVariance() const;
+  /// Access the cumulative mass function at the given value
+  double cmf(const int& value) const;
   /** @}
     */
 

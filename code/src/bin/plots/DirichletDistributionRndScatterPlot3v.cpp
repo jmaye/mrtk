@@ -28,7 +28,7 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  DirichletDistribution<3> dist;
+  DirichletDistribution<3> dist(Eigen::Matrix<double, 3, 1>(2.0, 5.0, 10.0));
   std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;

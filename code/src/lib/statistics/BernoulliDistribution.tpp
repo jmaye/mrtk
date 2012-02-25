@@ -48,7 +48,7 @@ void BernoulliDistribution::read(std::istream& stream) {
 }
 
 void BernoulliDistribution::write(std::ostream& stream) const {
-  stream << "success probability: " << mSuccessProbabilities(1);
+  stream << "success probability: " << mSuccessProbabilities(0);
 }
 
 void BernoulliDistribution::read(std::ifstream& stream) {
@@ -63,25 +63,35 @@ void BernoulliDistribution::write(std::ofstream& stream) const {
 
 void BernoulliDistribution::setSuccessProbability(double successProbability) {
   CategoricalDistribution<2>::setSuccessProbabilities(
-    Eigen::Matrix<double, 2, 1>(1.0 - successProbability, successProbability));
+    Eigen::Matrix<double, 2, 1>(successProbability, 1.0 - successProbability));
 }
 
 double BernoulliDistribution::getSuccessProbability() const {
-  return mSuccessProbabilities(1);
+  return mSuccessProbabilities(0);
 }
 
 double BernoulliDistribution::getMean() const {
-  return CategoricalDistribution<2>::getMean()(1);
+  return CategoricalDistribution<2>::getMean()(0);
 }
 
 double BernoulliDistribution::getMode() const {
-  if (mSuccessProbabilities(0) > mSuccessProbabilities(1))
+  if (mSuccessProbabilities(1) > mSuccessProbabilities(0))
     return 0;
-  if (mSuccessProbabilities(0) < mSuccessProbabilities(1))
+  else if (mSuccessProbabilities(1) == mSuccessProbabilities(0))
+    return 0;
+  else
     return 1;
-  return 0;
 }
 
 double BernoulliDistribution::getVariance() const {
-  return CategoricalDistribution<2>::getCovariance()(1, 1);
+  return CategoricalDistribution<2>::getCovariance()(0, 0);
+}
+
+double BernoulliDistribution::cmf(const int& value) const {
+  if (value < 0)
+    return 0;
+  else if (value >= 0 && value < 1)
+    return mSuccessProbabilities(1);
+  else
+    return 1;
 }

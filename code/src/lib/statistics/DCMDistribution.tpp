@@ -118,7 +118,7 @@ double DCMDistribution<M>::Traits<N, D>::pmf(const DCMDistribution<N>&
   if (value.sum() > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
-  valueMat << distribution.mNumTrials - value.sum(), value;
+  valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.pmf(valueMat);
 }
 
@@ -129,7 +129,7 @@ double DCMDistribution<M>::Traits<2, D>::pmf(const DCMDistribution<2>&
   if (value > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat << distribution.mNumTrials - value, value;
+  valueMat << value, distribution.mNumTrials - value;
   return distribution.pmf(valueMat);
 }
 
@@ -140,7 +140,7 @@ double DCMDistribution<M>::Traits<N, D>::logpmf(const DCMDistribution<N>&
   if (value.sum() > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
-  valueMat << distribution.mNumTrials - value.sum(), value;
+  valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.logpmf(valueMat);
 }
 
@@ -151,7 +151,7 @@ double DCMDistribution<M>::Traits<2, D>::logpmf(const DCMDistribution<2>&
   if (value > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat << distribution.mNumTrials - value, value;
+  valueMat << value, distribution.mNumTrials - value;
   return distribution.logpmf(valueMat);
 }
 
@@ -210,14 +210,14 @@ Eigen::Matrix<double, M, 1> DCMDistribution<M>::getMean() const {
 
 template <size_t M>
 Eigen::Matrix<double, M, M> DCMDistribution<M>::getCovariance() const {
-  // TODO: CHECK THIS!
   Eigen::Matrix<double, M, M> covariance(mAlpha.size(), mAlpha.size());
-  double sum = mAlpha.sum();
+  const double sum = mAlpha.sum();
   for (size_t i = 0; i < (size_t)mAlpha.size(); ++i) {
-    covariance(i, i) = mNumTrials * mAlpha(i) * (mNumTrials *
-      (sum - mAlpha(i))) / (sum * sum * (sum + 1));
+    covariance(i, i) = mNumTrials * mAlpha(i) * (sum - mAlpha(i)) *
+      (mNumTrials + sum) / (sum * sum * (sum + 1));
     for (size_t j = i + 1; j < (size_t)mAlpha.size(); ++j) {
-      covariance(i, j) = -mAlpha(i) * mAlpha(j) / (sum * sum * (sum + 1));
+      covariance(i, j) = -mAlpha(i) * mAlpha(j) * mNumTrials /
+        (sum * sum * (sum + 1));
       covariance(j, i) = covariance(i, j);
     }
   }

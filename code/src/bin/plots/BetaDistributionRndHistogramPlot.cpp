@@ -29,9 +29,9 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<double, 1> hist(-2, 2, 0.05);
-  BetaDistribution dist(2, 10);
+  BetaDistribution dist(2, 5);
   for (size_t i = 0; i < 100000; ++i)
-    hist.addSample(dist.getSample()(1));
+    hist.addSample(dist.getSample()(0));
   std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
   std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
     << std::endl;

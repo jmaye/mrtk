@@ -27,6 +27,8 @@
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "exceptions/BadArgumentException.h"
+#include "exceptions/OutOfBoundException.h"
+#include "exceptions/InvalidOperationException.h"
 #include "base/Serializable.h"
 
 /** The DirichletDistribution class represents a Dirichlet distribution,
@@ -89,10 +91,14 @@ public:
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the alpha parameter
   const Eigen::Matrix<double, M, 1>& getAlpha() const;
+  /// Returns an alpha by index
+  double getAlpha(size_t idx) throw (OutOfBoundException<size_t>);
   /// Returns the normalizer
   double getNormalizer() const;
   /// Returns the mean of the distribution
   Eigen::Matrix<double, M, 1> getMean() const;
+  /// Returns the mode of the distribution
+  Eigen::Matrix<double, M, 1> getMode() const throw (InvalidOperationException);
   /// Returns the covariance of the distribution
   Eigen::Matrix<double, M, M> getCovariance() const;
   /// Access the probability density function at the given value

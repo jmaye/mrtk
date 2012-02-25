@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
     estExp.addPoint(samplesExp[i]);
   std::cout << "Estimation5: " << std::endl << estExp << std::endl;
   GeometricDistribution distGeom(0.7);
-  std::vector<size_t> samplesGeom;
+  std::vector<int> samplesGeom;
   distGeom.getSamples(samplesGeom, 1000);
   EstimatorML<GeometricDistribution> estGeom;
   for (size_t i = 0; i < samplesGeom.size(); ++i)

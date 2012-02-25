@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <gsl/gsl_sf_gamma.h>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -50,7 +52,7 @@ void BinomialDistribution::read(std::istream& stream) {
 
 void BinomialDistribution::write(std::ostream& stream) const {
   stream << "success probability: "
-    << mSuccessProbabilities(1) << std::endl
+    << mSuccessProbabilities(0) << std::endl
     << "trials number: " << mNumTrials;
 }
 
@@ -66,25 +68,35 @@ void BinomialDistribution::write(std::ofstream& stream) const {
 
 void BinomialDistribution::setSuccessProbability(double successProbability) {
   MultinomialDistribution<2>::setSuccessProbabilities(
-    Eigen::Matrix<double, 2, 1>(1.0 - successProbability, successProbability));
+    Eigen::Matrix<double, 2, 1>(successProbability, 1.0 - successProbability));
 }
 
 double BinomialDistribution::getSuccessProbability() const {
-  return mSuccessProbabilities(1);
+  return mSuccessProbabilities(0);
 }
 
 double BinomialDistribution::getMean() const {
-  return MultinomialDistribution<2>::getMean()(1);
+  return MultinomialDistribution<2>::getMean()(0);
 }
 
 double BinomialDistribution::getMedian() const {
-  return floor(mNumTrials * mSuccessProbabilities(1));
+  return floor(mNumTrials * mSuccessProbabilities(0));
 }
 
 double BinomialDistribution::getMode() const {
-  return floor((mNumTrials + 1) * mSuccessProbabilities(1));
+  return floor((mNumTrials + 1) * mSuccessProbabilities(0));
 }
 
 double BinomialDistribution::getVariance() const {
-  return MultinomialDistribution<2>::getCovariance()(1, 1);
+  return MultinomialDistribution<2>::getCovariance()(0, 0);
+}
+
+double BinomialDistribution::cmf(const int& value) const {
+  if (value < 0)
+    return 0;
+  else if (value >= (int)mNumTrials)
+    return 1;
+  else
+    return gsl_sf_beta_inc(mNumTrials - value, value + 1,
+      1 - mSuccessProbabilities(0));
 }

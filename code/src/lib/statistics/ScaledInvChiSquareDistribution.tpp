@@ -33,7 +33,7 @@ ScaledInvChiSquareDistribution::ScaledInvChiSquareDistribution(const
 ScaledInvChiSquareDistribution& ScaledInvChiSquareDistribution::operator =
     (const ScaledInvChiSquareDistribution& other) {
   if (this != &other) {
-    this->InvGammaDistribution<>::operator=(other);
+    InvGammaDistribution<>::operator=(other);
   }
   return *this;
 }
@@ -73,6 +73,7 @@ double ScaledInvChiSquareDistribution::getScale() const {
 
 void ScaledInvChiSquareDistribution::setDegrees(size_t degrees) {
   setShape(degrees * 0.5);
+  InvGammaDistribution<>::setScale(0.5 * degrees * getScale());
 }
 
 size_t ScaledInvChiSquareDistribution::getDegrees() const {

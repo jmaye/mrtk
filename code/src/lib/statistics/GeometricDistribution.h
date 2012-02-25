@@ -36,8 +36,8 @@
     \brief Geometric distribution
   */
 class GeometricDistribution :
-  public DiscreteDistribution<size_t>,
-  public SampleDistribution<size_t>,
+  public DiscreteDistribution<int>,
+  public SampleDistribution<int>,
   public virtual Serializable {
 public:
   /** \name Constructors/destructor
@@ -69,13 +69,13 @@ public:
   /// Returns the variance of the distribution
   double getVariance() const;
   /// Returns the probability mass function at a point
-  virtual double pmf(const size_t& value) const;
+  virtual double pmf(const int& value) const;
   /// Returns the log-probability mass function at a point
-  double logpmf(const size_t& value) const;
+  double logpmf(const int& value) const throw (BadArgumentException<int>);
   /// Returns the cumulative mass function at a point
-  double cdf(const size_t& value) const;
+  double cdf(const int& value) const;
   /// Access a sample drawn from the distribution
-  virtual size_t getSample() const;
+  virtual int getSample() const;
   /** @}
     */
 

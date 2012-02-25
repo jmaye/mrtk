@@ -28,7 +28,7 @@
 
 /** The InvChiSquareDistribution class represents an inverse chi-square
     distribution.
-    \brief Inverse chi-Square distribution
+    \brief Inverse chi-square distribution
   */
 class InvChiSquareDistribution :
   public InvGammaDistribution<> {

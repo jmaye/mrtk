@@ -32,7 +32,7 @@ InvChiSquareDistribution::InvChiSquareDistribution(const
 InvChiSquareDistribution& InvChiSquareDistribution::operator =
     (const InvChiSquareDistribution& other) {
   if (this != &other) {
-    this->InvGammaDistribution<>::operator=(other);
+    InvGammaDistribution<>::operator=(other);
   }
   return *this;
 }

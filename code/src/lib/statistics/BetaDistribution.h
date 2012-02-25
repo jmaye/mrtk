@@ -25,6 +25,7 @@
 #define BETADISTRIBUTION_H
 
 #include "statistics/DirichletDistribution.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The BetaDistribution class represents a beta distribution,
     i.e., a continuous distribution that is a conjugate prior to the binomial or
@@ -65,6 +66,8 @@ public:
   double getMode() const;
   /// Returns the variance of the distribution
   double getVariance() const;
+  /// Access the cumulative distribution function at the given value
+  double cdf(const double& value) const;
   /** @}
     */
 

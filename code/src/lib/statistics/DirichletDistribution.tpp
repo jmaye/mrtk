@@ -97,6 +97,16 @@ const Eigen::Matrix<double, M, 1>& DirichletDistribution<M>::getAlpha() const {
 }
 
 template <size_t M>
+double DirichletDistribution<M>::getAlpha(size_t idx)
+    throw (OutOfBoundException<size_t>) {
+  if (idx >= (size_t)mAlpha.size())
+    throw OutOfBoundException<size_t>(idx,
+      "DirichletDistribution<M>::getAlpha(): index out of bound",
+      __FILE__, __LINE__);
+  return mAlpha(idx);
+}
+
+template <size_t M>
 double DirichletDistribution<M>::getNormalizer() const {
   return mNormalizer;
 }
@@ -195,9 +205,19 @@ Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getMean() const {
 }
 
 template <size_t M>
+Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getMode() const
+    throw (InvalidOperationException) {
+  if ((mAlpha.cwise() <= 1).any() == true)
+    throw InvalidOperationException("DirichletDistribution<M>::getMode(): "
+      "alpha must be bigger than 1");
+  else
+    return (mAlpha.cwise() - 1) / (mAlpha.sum() - mAlpha.size());
+}
+
+template <size_t M>
 Eigen::Matrix<double, M, M> DirichletDistribution<M>::getCovariance() const {
   Eigen::Matrix<double, M, M> covariance(mAlpha.size(), mAlpha.size());
-  double sum = mAlpha.sum();
+  const double sum = mAlpha.sum();
   for (size_t i = 0; i < (size_t)mAlpha.size(); ++i) {
     covariance(i, i) = mAlpha(i) * (sum - mAlpha(i)) / (sum * sum * (sum + 1));
     for (size_t j = i + 1; j < (size_t)mAlpha.size(); ++j) {

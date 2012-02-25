@@ -28,7 +28,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   DiscreteFunctionPlot<double, size_t, 1> plot("BinomialDistribution",
-    BinomialDistribution(20, 0.5), 0, 25);
+    BinomialDistribution(5, 0.2), 0, 25);
   plot.show();
   return app.exec();
 }

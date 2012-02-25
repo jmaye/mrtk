@@ -24,10 +24,7 @@
 #ifndef EXPONENTIALDISTRIBUTION_H
 #define EXPONENTIALDISTRIBUTION_H
 
-#include "statistics/ContinuousDistribution.h"
-#include "statistics/SampleDistribution.h"
-#include "base/Serializable.h"
-#include "exceptions/BadArgumentException.h"
+#include "statistics/GammaDistribution.h"
 
 /** The ExponentialDistribution class represents an exponential distribution,
     i.e., a continuous distribution that models the time between events in a
@@ -36,9 +33,7 @@
     \brief Exponential distribution
   */
 class ExponentialDistribution :
-  public ContinuousDistribution<double>,
-  public SampleDistribution<double>,
-  public virtual Serializable {
+  public GammaDistribution<size_t> {
 public:
   /** \name Constructors/destructor
     @{
@@ -58,27 +53,11 @@ public:
     @{
     */
   /// Sets the event rate
-  void setRate(double rate) throw (BadArgumentException<double>);
+  void setRate(double rate);
   /// Returns the event rate
   double getRate() const;
-  /// Returns the mean of the distribution
-  double getMean() const;
   /// Returns the median of the distribution
   double getMedian() const;
-  /// Returns the mode of the distribution
-  double getMode() const;
-  /// Returns the variance of the distribution
-  double getVariance() const;
-  /// Access the probablity density function at the given value
-  virtual double pdf(const double& value) const;
-  /// Access the log-probablity density function at the given value
-  double logpdf(const double& value) const;
-  /// Access the cumulative density function at the given value
-  double cdf(const double& value) const;
-  /// Access a sample drawn from the distribution
-  virtual double getSample() const;
-  /// Returns the KL-divergence with another distribution
-  double KLDivergence(const ExponentialDistribution& other) const;
   /** @}
     */
 
@@ -94,14 +73,6 @@ protected:
   virtual void read(std::ifstream& stream);
   /// Writes to a file
   virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
-  /** \name Protected members
-    @{
-    */
-  /// Rate
-  double mRate;
   /** @}
     */
 

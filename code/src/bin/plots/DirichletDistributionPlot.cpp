@@ -32,7 +32,8 @@ int main(int argc, char** argv) {
   Eigen::Matrix<double, 2, 1> resolution(0.05, 0.05);
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 2> plot("DirichletDistribution",
-    DirichletDistribution<3>(), minimum, maximum, resolution);
+    DirichletDistribution<3>(Eigen::Matrix<double, 3, 1>(2.0, 5.0, 10.0)),
+    minimum, maximum, resolution);
   plot.show();
   return app.exec();
 }

@@ -151,10 +151,13 @@ double InvGammaDistribution<T>::getSample() const {
 }
 
 template <typename T>
-double InvGammaDistribution<T>::getMean() const {
+double InvGammaDistribution<T>::getMean() const
+    throw (InvalidOperationException) {
   if (mShape > 1)
     return mScale / (mShape - 1);
-  return mScale;
+  else
+    throw InvalidOperationException("InvGammaDistribution<T>::getMean(): "
+      "shape must be bigger than 1");
 }
 
 template <typename T>
@@ -163,8 +166,11 @@ double InvGammaDistribution<T>::getMode() const {
 }
 
 template <typename T>
-double InvGammaDistribution<T>::getVariance() const {
+double InvGammaDistribution<T>::getVariance() const
+    throw (InvalidOperationException) {
   if (mShape > 2)
     return (mScale * mScale) / ((mShape - 1) * (mShape - 1) * (mShape - 2));
-  return mScale * mScale;
+  else
+    throw InvalidOperationException("InvGammaDistribution<T>::getVariance(): "
+      "shape must be bigger than 2");
 }

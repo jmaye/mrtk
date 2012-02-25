@@ -21,6 +21,10 @@
   */
 
 #include <iostream>
+#include <limits>
+#include <string>
+
+#include <RInside.h>
 
 #include "statistics/GeometricDistribution.h"
 
@@ -28,39 +32,85 @@ int main(int argc, char** argv) {
   GeometricDistribution dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
+
   std::cout << "dist.getSuccessProbability(): "
     << dist.getSuccessProbability() << std::endl << std::endl;
+
   std::cout << "dist.setSuccessProbability(0.7)" << std::endl << std::endl;
-  dist.setSuccessProbability(0.7);
+  const double p = 0.7;
+  dist.setSuccessProbability(p);
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
-
-  std::cout << "pmf(0): " << std::fixed << dist(0) << std::endl << std::endl;
-  if (fabs(dist(0) - 0.7) > 1e-4)
-    return 1;
-  std::cout << "pmf(1): " << std::fixed << dist(1) << std::endl << std::endl;
-  if (fabs(dist(1) - 0.21) > 1e-4)
+  if (dist.getSuccessProbability() != p)
     return 1;
 
-  std::cout << "logpmf(1): " << std::fixed << dist.logpmf(1) << std::endl
+  std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
+  RInside R(argc, argv);
+  std::string expression = "dgeom(-10:10, 0.7)";
+  SEXP ans = R.parseEval(expression);
+  Rcpp::NumericVector v(ans);
+  int value = -10;
+  for (size_t i = 0; i < (size_t)v.size(); ++i) {
+    if (fabs(dist(value) - v[i]) > 1e-12) {
+      std::cout << v[i] << " " << dist(value) << std::endl;
+      return 1;
+    }
+    value++;
+  }
+  expression = "pgeom(-10:10, 0.7)";
+  ans = R.parseEval(expression);
+  v = ans;
+  value = -10;
+  for (size_t i = 0; i < (size_t)v.size(); ++i) {
+    if (fabs(dist.cdf(value) - v[i]) > 1e-12) {
+      std::cout << v[i] << " " << dist.cdf(value) << std::endl;
+      return 1;
+    }
+    value++;
+  }
+
+  std::cout << "dist.getMean(): " << std::fixed << dist.getMean() << std::endl
     << std::endl;
-  if (fabs(dist.logpmf(1) + 1.560648) > 1e-4)
+  if (fabs(dist.getMean() - (1.0 - p) / p) >
+      std::numeric_limits<double>::epsilon())
     return 1;
-
-  std::cout << "cdf(1): " << std::fixed << dist.cdf(1) << std::endl
-    << std::endl;
-  if (fabs(dist.cdf(1) - 0.91) > 1e-4)
+  std::cout << "dist.getVariance(): " << std::fixed << dist.getVariance()
+    << std::endl << std::endl;
+  if (fabs(dist.getVariance() - (1.0 - p) / (p * p)) >
+      std::numeric_limits<double>::epsilon())
     return 1;
-
-  std::cout << "dist.getSample(): " << dist.getSample() << std::endl
+  std::cout << "dist.getMode(): " << std::fixed << dist.getMode() << std::endl
     << std::endl;
+  if (fabs(dist.getMode()) > std::numeric_limits<double>::epsilon())
+    return 1;
 
   try {
+    std::cout << "dist.setSuccessProbability(1.2)" << std::endl;
     dist.setSuccessProbability(1.2);
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
+  std::cout << std::endl;
+
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
+  std::vector<int> samples;
+  dist.getSamples(samples, 10);
+  std::cout << "dist.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samples[i] << std::endl;
+  std::cout << std::endl;
+
+  GeometricDistribution distCopy(dist);
+  std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
+    << std::endl;
+  if (distCopy.getSuccessProbability() != dist.getSuccessProbability())
+    return 1;
+  GeometricDistribution distAssign = dist;
+  std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
+  if (distAssign.getSuccessProbability() != dist.getSuccessProbability())
+    return 1;
 
   return 0;
 }

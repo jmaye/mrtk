@@ -28,6 +28,7 @@
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The InvGammaDistribution class represents an inverse gamma distribution.
     \brief Inverse gamma distribution
@@ -65,11 +66,11 @@ public:
   /// Returns the normalizer
   double getNormalizer() const;
   /// Returns the mean of the distribution
-  double getMean() const;
+  double getMean() const throw (InvalidOperationException);
   /// Returns the mode of the distribution
-  virtual double getMode() const;
+  double getMode() const;
   /// Returns the variance of the distribution
-  double getVariance() const;
+  double getVariance() const throw (InvalidOperationException);
   /// Access the probablity density function at the given value
   virtual double pdf(const double& value) const;
   /// Access the log-probablity density function at the given value

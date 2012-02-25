@@ -137,7 +137,7 @@ double MultinomialDistribution<M>::Traits<N, D>::pmf(const
   if (value.sum() > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
-  valueMat << distribution.mNumTrials - value.sum(), value;
+  valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.pmf(valueMat);
 }
 
@@ -148,7 +148,7 @@ double MultinomialDistribution<M>::Traits<2, D>::pmf(const
   if (value > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat << distribution.mNumTrials - value, value;
+  valueMat << value, distribution.mNumTrials - value;
   return distribution.pmf(valueMat);
 }
 
@@ -160,7 +160,7 @@ double MultinomialDistribution<M>::Traits<N, D>::logpmf(const
   if (value.sum() > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, M, 1> valueMat;
-  valueMat << distribution.mNumTrials - value.sum(), value;
+  valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.logpmf(valueMat);
 }
 
@@ -171,7 +171,7 @@ double MultinomialDistribution<M>::Traits<2, D>::logpmf(const
   if (value > distribution.mNumTrials)
     return 0.0;
   Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat << distribution.mNumTrials - value, value;
+  valueMat << value, distribution.mNumTrials - value;
   return distribution.logpmf(valueMat);
 }
 

@@ -16,52 +16,53 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BernoulliDistribution.h
-    \brief This file defines the BernoulliDistribution class, which represents a
-           Bernoulli distribution
+/** \file BetaBinomialDistribution.h
+    \brief This file defines the BetaBinomialDistribution class, which represents
+           a beta binomial distribution
   */
 
-#ifndef BERNOULLIDISTRIBUTION_H
-#define BERNOULLIDISTRIBUTION_H
+#ifndef BETABINOMIALDISTRIBUTION_H
+#define BETABINOMIALDISTRIBUTION_H
 
-#include "statistics/CategoricalDistribution.h"
+#include "statistics/DCMDistribution.h"
 
-/** The class BernoulliDistribution represents a Bernoulli distribution, i.e.,
-    the discrete distribution of a random event with success or failure.
-    \brief Bernoulli distribution
+/** The BetaBinomialDistribution class represents a beta binomial distribution,
+    which is the predictive distribution of a binomial random variable.
+    \brief Beta binomial distribution
   */
-class BernoulliDistribution :
-  public CategoricalDistribution<2> {
+class BetaBinomialDistribution :
+  public DCMDistribution<2> {
 public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs the distribution from the parameter
-  BernoulliDistribution(double successProbability = 0.5);
+  /// Constructs distribution from parameters
+  BetaBinomialDistribution(size_t numTrials = 1, double alpha = 1.0,
+    double beta = 1.0);
   /// Copy constructor
-  BernoulliDistribution(const BernoulliDistribution& other);
+  BetaBinomialDistribution(const BetaBinomialDistribution& other);
   /// Assignment operator
-  BernoulliDistribution& operator = (const BernoulliDistribution& other);
+  BetaBinomialDistribution& operator = (const BetaBinomialDistribution& other);
   /// Destructor
-  virtual ~BernoulliDistribution();
+  virtual ~BetaBinomialDistribution();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the success probability
-  void setSuccessProbability(double successProbability);
-  /// Returns the success probability
-  double getSuccessProbability() const;
+  /// Sets the number of successes
+  void setAlpha(double alpha);
+  /// Returns the number of successes
+  double getAlpha() const;
+  /// Sets the number of failures
+  void setBeta(double beta);
+  /// Returns the number of failures
+  double getBeta() const;
   /// Returns the mean of the distribution
   double getMean() const;
-  /// Returns the mode of the distribution
-  double getMode() const;
   /// Returns the variance of the distribution
   double getVariance() const;
-  /// Access the cumulative mass function at the given value
-  double cmf(const int& value) const;
   /** @}
     */
 
@@ -82,6 +83,6 @@ protected:
 
 };
 
-#include "statistics/BernoulliDistribution.tpp"
+#include "statistics/BetaBinomialDistribution.tpp"
 
-#endif // BERNOULLIDISTRIBUTION_H
+#endif // BETABINOMIALDISTRIBUTION_H

@@ -21,131 +21,139 @@
   */
 
 #include <iostream>
+#include <limits>
+#include <string>
+
+#include <RInside.h>
 
 #include "statistics/DirichletDistribution.h"
 
 int main(int argc, char** argv) {
-  std::cout << "Testing DirichletDistribution<2>" << std::endl << std::endl;
-  Eigen::Matrix<double, 2, 1> alpha1;
-  alpha1(0) = 0.1;
-  alpha1(1) = 0.9;
-  DirichletDistribution<2> dist1;
-  std::cout << "Distribution default parameters: " << std::endl << dist1
-    << std::endl << std::endl;
-  std::cout << "dist1.getAlpha(): " << std::endl << dist1.getAlpha()
-    << std::endl << std::endl;
-  std::cout << "dist1.setAlpha(0.1, 0.9)" << std::endl << std::endl;
-  dist1.setAlpha(alpha1);
-  std::cout << "Distribution new parameters: " << std::endl << dist1
-    << std::endl << std::endl;
-  std::cout << "dist1.getAlpha(): " << std::endl << dist1.getAlpha()
+  std::cout << "Testing DirichletDistribution<3>" << std::endl << std::endl;
+  DirichletDistribution<3> dist;
+  std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
 
-  std::cout << "dist1.getMean(): " << std::endl <<
-    dist1.getMean() << std::endl << std::endl;
-  std::cout << "dist1.getCovariance(): " << std::endl <<
-    dist1.getCovariance() << std::endl << std::endl;
+  std::cout << "dist.getAlpha(): " << std::endl << dist.getAlpha()
+    << std::endl << std::endl;
 
-  Eigen::Matrix<double, 2, 1> value1;
-  value1(0) = 0.9;
-  value1(1) = 0.1;
-  std::cout << "pdf(0.9, 0.1): " << std::fixed << dist1(value1) << std::endl
-     << std::endl;
-  if (fabs(dist1(value1) - 0.1361) > 1e-4)
+  std::cout << "dist.setAlpha(2.0, 5.0, 10.0)" << std::endl << std::endl;
+  const Eigen::Matrix<double, 3, 1> alpha(2.0, 5.0, 10.0);
+  dist.setAlpha(alpha);
+  std::cout << "Distribution new parameters: " << std::endl << dist
+    << std::endl << std::endl;
+  if (dist.getAlpha() != alpha)
     return 1;
 
-  value1(0) = 0.1;
-  value1(1) = 0.9;
-  std::cout << "pdf(0.1, 0.9): " << std::fixed << dist1(value1) << std::endl
-     << std::endl;
-  if (fabs(dist1(value1) - 0.7896) > 1e-4)
-    return 1;
+  std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
+  RInside R(argc, argv);
+  std::string expression = "library('MCMCpack');\
+    rdirichlet(100, c(2,5,10))";
+  SEXP ans = R.parseEval(expression);
+  Rcpp::NumericMatrix x(ans);
+  R["X"] = x;
+  expression = "library('MCMCpack');\
+    ddirichlet(X, c(2,5,10))";
+  ans = R.parseEval(expression);
+  Rcpp::NumericVector y(ans);
+  for (size_t i = 0; i < (size_t)x.rows(); ++i) {
+    if (fabs(dist( Eigen::Matrix<double, 3, 1>(x(i, 0), x(i, 1), x(i, 2)))
+        - y[i]) > 1e-12) {
+      std::cout << y[i] << " "
+        << dist( Eigen::Matrix<double, 3, 1>(x(i, 0), x(i, 1), x(i, 2)))
+        << std::endl;
+      return 1;
+    }
+  }
+  std::cout << std::endl;
 
-  std::cout << "pdf(0.1): " << std::fixed << dist1(0.1) << std::endl
-    << std::endl;
-  if (fabs(dist1(0.1) - 0.7896) > 1e-4)
-    return 1;
-  std::cout << "pdf(0.9): " << std::fixed << dist1(0.9) << std::endl
-    << std::endl;
-  if (fabs(dist1(0.9) - 0.1361) > 1e-4)
-    return 1;
-
-  std::cout << "logpdf(0.1, 0.9): " << std::fixed << dist1.logpdf(value1)
-    << std::endl << std::endl;
-  std::cout << "logpdf(0.1): " << std::fixed << dist1.logpdf(0.1) << std::endl
-    << std::endl;
-
-  std::cout << "dist1.getSample(): " << std::endl << dist1.getSample()
-    << std::endl << std::endl;
+  std::cout << "dist.getMean(): " << std::endl <<
+    dist.getMean() << std::endl << std::endl;
+  std::cout << "dist.getMode(): " << std::endl <<
+    dist.getMode() << std::endl << std::endl;
+  std::cout << "dist.getCovariance(): " << std::endl <<
+    dist.getCovariance() << std::endl << std::endl;
 
   try {
-    alpha1(0) = 0.0;
-    alpha1(1) = 0.9;
-    dist1.setAlpha(alpha1);
+    std::cout << "dist.setAlpha(0.0, 0.9, 10.9)" << std::endl;
+    Eigen::Matrix<double, 3, 1> alphaWrong(0.0, 0.9, 10.9);
+    dist.setAlpha(alphaWrong);
   }
-  catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
+  catch (BadArgumentException<Eigen::Matrix<double, 3, 1> >& e) {
     std::cout << e.what() << std::endl;
   }
+  std::cout << std::endl;
 
-  std::cout << "Testing DirichletDistribution<3>" << std::endl << std::endl;
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
+  std::vector<Eigen::Matrix<double, 3, 1> > samples;
+  dist.getSamples(samples, 10);
+  std::cout << "dist.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samples[i] << std::endl;
+  std::cout << std::endl;
 
-  Eigen::Matrix<double, 3, 1> alpha2;
-  alpha2(0) = 0.1;
-  alpha2(1) = 0.9;
-  alpha2(2) = 1.2;
-  DirichletDistribution<3> dist2;
-  std::cout << "Distribution default parameters: " << std::endl << dist2
-    << std::endl << std::endl;
-  std::cout << "dist2.getAlpha(): " << std::endl << dist2.getAlpha()
-    << std::endl << std::endl;
-  std::cout << "dist2.setAlpha(0.1, 0.9)" << std::endl << std::endl;
-  dist2.setAlpha(alpha2);
-  std::cout << "Distribution new parameters: " << std::endl << dist2
-    << std::endl << std::endl;
-  std::cout << "dist2.getAlpha(): " << std::endl << dist2.getAlpha()
-    << std::endl << std::endl;
-
-  Eigen::Matrix<double, 3, 1> value2;
-  value2(0) = 0.8;
-  value2(1) = 0.1;
-  value2(2) = 0.1;
-  std::cout << "pdf(0.8, 0.1, 0.1): " << std::fixed << dist2(value2)
-    << std::endl << std::endl;
-  if (fabs(dist2(value2) - 0.1146) > 1e-4)
+  DirichletDistribution<3> distCopy(dist);
+  std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
+    << std::endl;
+  if (distCopy.getAlpha() != dist.getAlpha())
     return 1;
-
-  value2(0) = 0.1;
-  value2(1) = 0.8;
-  value2(2) = 0.1;
-  std::cout << "pdf(0.1, 0.8, 0.1): " << std::fixed << dist2(value2)
-     << std::endl << std::endl;
-  if (fabs(dist2(value2) - 0.6049) > 1e-4)
+  DirichletDistribution<3> distAssign = dist;
+  std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
+  if (distAssign.getAlpha() != dist.getAlpha())
     return 1;
-
-  value1(0) = 0.1;
-  value1(1) = 0.8;
-  std::cout << "pdf(0.1, 0.8): " << std::fixed << dist2(value1)
-     << std::endl << std::endl;
-  if (fabs(dist2(value1) - 0.6049) > 1e-4)
-    return 1;
-
-  std::cout << "logpdf(0.1, 0.8, 0.1): " << std::fixed << dist2.logpdf(value2)
-    << std::endl << std::endl;
-  std::cout << "logpdf(0.1, 0.8): " << std::fixed << dist2.logpdf(value1)
-    << std::endl << std::endl;
-
-  std::cout << "dist2.getSample(): " << std::endl << dist2.getSample()
-    << std::endl << std::endl;
+  std::cout << std::endl;
 
   std::cout << "Testing Dirichlet distribution M-D" << std::endl;
   DirichletDistribution<Eigen::Dynamic> distMd(Eigen::Matrix<double,
     Eigen::Dynamic, 1>::Constant(5, 1.0));
-  std::cout << "distMd.getSample(): " << distMd.getSample().transpose()
+  std::cout << "Distribution default parameters: " << std::endl << distMd
+    << std::endl << std::endl;
+
+  std::cout << "distMd.getAlpha(): " << std::endl << distMd.getAlpha()
+    << std::endl << std::endl;
+
+  std::cout << "distMd.setAlpha(2.0, 5.0, 10.0, 3.0, 4.0)" << std::endl
     << std::endl;
-  std::cout << "distMd.getMean(): " << distMd.getMean().transpose()
+  Eigen::Matrix<double, Eigen::Dynamic, 1> alphaMd(5);
+  alphaMd(0) = 2.0;
+  alphaMd(1) = 5.0;
+  alphaMd(2) = 10.0;
+  alphaMd(3) = 3.0;
+  alphaMd(4) = 4.0;
+  distMd.setAlpha(alphaMd);
+  std::cout << "Distribution new parameters: " << std::endl << distMd
+    << std::endl << std::endl;
+  if (distMd.getAlpha() != alphaMd)
+    return 1;
+
+  std::cout << "distMd.getMean(): " << std::endl <<
+    distMd.getMean() << std::endl << std::endl;
+  std::cout << "distMd.getMode(): " << std::endl <<
+    distMd.getMode() << std::endl << std::endl;
+  std::cout << "distMd.getCovariance(): " << std::endl <<
+    distMd.getCovariance() << std::endl << std::endl;
+
+  std::cout << "distMd.getSample(): " << std::endl << distMd.getSample()
+    << std::endl << std::endl;
+  std::vector<Eigen::Matrix<double, Eigen::Dynamic, 1> > samplesMd;
+  distMd.getSamples(samplesMd, 10);
+  std::cout << "distMd.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samplesMd[i] << std::endl;
+  std::cout << std::endl;
+
+  DirichletDistribution<Eigen::Dynamic> distCopyMd(distMd);
+  std::cout << "Copy constructor: " << std::endl << distCopyMd << std::endl
     << std::endl;
-  std::cout << "distMd.getCovariance(): " << std::endl << distMd.getCovariance()
+  if (distCopyMd.getAlpha() != distMd.getAlpha())
+    return 1;
+  DirichletDistribution<Eigen::Dynamic> distAssignMd = distMd;
+  std::cout << "Assignment operator: " << std::endl << distAssignMd
     << std::endl;
+  if (distAssignMd.getAlpha() != distMd.getAlpha())
+    return 1;
+  std::cout << std::endl;
 
   return 0;
 }

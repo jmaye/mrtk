@@ -21,14 +21,14 @@
   */
 
 #include "visualization/DiscreteFunctionPlot.h"
-#include "statistics/DCMDistribution.h"
+#include "statistics/BetaBinomialDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   DiscreteFunctionPlot<double, size_t, 1> plot("BetaBinomialDistribution",
-    DCMDistribution<2>(20, Eigen::Matrix<double, 2, 1>(10, 10)), 0, 25);
+    BetaBinomialDistribution(5, 2, 5), 0, 25);
   plot.show();
   return app.exec();
 }
