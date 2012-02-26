@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
   dist.getSamples(samples, 10);
   std::cout << "dist.getSamples(samples, 10): " << std::endl;
   for (size_t i = 0; i < 10; ++i)
-    std::cout << std::endl << samples[i] << std::endl;
+    std::cout << std::endl << samples[i](0) << std::endl;
   std::cout << std::endl;
 
   BetaBinomialDistribution distCopy(dist);

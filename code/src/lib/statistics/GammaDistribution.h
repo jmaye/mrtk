@@ -82,6 +82,8 @@ public:
   double cdf(const double& value) const;
   /// Access a sample drawn from the distribution
   virtual double getSample() const;
+  /// Returns the KL-divergence with another distribution
+  double KLDivergence(const GammaDistribution<T>& other) const;
   /** @}
     */
 

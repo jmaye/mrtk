@@ -28,7 +28,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("ExponentialDistribution",
-    ExponentialDistribution(), 0, 100, 0.1);
+    ExponentialDistribution(1.5), 0, 100, 0.1);
   plot.show();
   return app.exec();
 }

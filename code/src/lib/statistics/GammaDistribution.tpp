@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 #include <gsl/gsl_sf_gamma.h>
+#include <gsl/gsl_sf_psi.h>
 
 #include "statistics/Randomizer.h"
 #include "functions/LogGammaFunction.h"
@@ -165,4 +166,15 @@ double GammaDistribution<T>::getMode() const throw (InvalidOperationException) {
 template <typename T>
 double GammaDistribution<T>::getVariance() const {
   return mShape / (mInvScale * mInvScale);
+}
+
+template <typename T>
+double GammaDistribution<T>::KLDivergence(const GammaDistribution<T>& other)
+    const {
+  LogGammaFunction<T> logGammaFunction;
+  return (mShape - 1) * gsl_sf_psi(mShape) -
+    (other.mShape - 1) * gsl_sf_psi(other.mShape) - logGammaFunction(mShape) +
+    logGammaFunction(other.mShape) + other.mShape *
+    (log(mInvScale) - log(other.mInvScale)) +
+    mShape * (1.0 / mInvScale - 1.0 / other.mInvScale) * other.mInvScale;
 }

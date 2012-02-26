@@ -49,30 +49,38 @@ int main(int argc, char** argv) {
   if (dist.getBeta() != beta)
     return 1;
 
+  const double min = -2.0;
+  const double max = 2.0;
+  const double inc = 0.1;
   std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
   RInside R(argc, argv);
-  std::string expression = "dbeta(seq(-2, 2, by=0.1), 2.0, 5.0)";
+  R["alpha"] = alpha;
+  R["beta"] = beta;
+  R["min"] = min;
+  R["max"] = max;
+  R["inc"] = inc;
+  std::string expression = "dbeta(seq(min, max, by=inc), alpha, beta)";
   SEXP ans = R.parseEval(expression);
   Rcpp::NumericVector v(ans);
-  double value = -2.0;
+  double value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (v[i] != std::numeric_limits<double>::infinity() &&
         fabs(dist(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist(value) << std::endl;
       return 1;
     }
-    value += 0.1;
+    value += inc;
   }
-  expression = "pbeta(seq(-2, 2, by=0.1), 2.0, 5.0)";
+  expression = "pbeta(seq(min, max, by=inc), alpha, beta)";
   ans = R.parseEval(expression);
   v = ans;
-  value = -2.0;
+  value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (fabs(dist.cdf(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist.cdf(value) << std::endl;
       return 1;
     }
-    value += 0.1;
+    value += inc;
   }
 
   std::cout << "dist.getMean(): " << std::fixed << dist.getMean() << std::endl
@@ -114,7 +122,7 @@ int main(int argc, char** argv) {
   dist.getSamples(samples, 10);
   std::cout << "dist.getSamples(samples, 10): " << std::endl;
   for (size_t i = 0; i < 10; ++i)
-    std::cout << std::endl << samples[i] << std::endl;
+    std::cout << std::endl << samples[i](0) << std::endl;
   std::cout << std::endl;
 
   BetaDistribution distCopy(dist);

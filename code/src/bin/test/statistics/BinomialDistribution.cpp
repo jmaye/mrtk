@@ -50,12 +50,18 @@ int main(int argc, char** argv) {
   if (dist.getSuccessProbability() != p)
     return 1;
 
+  const int min = -10.0;
+  const int max = 10.0;
   std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
   RInside R(argc, argv);
-  std::string expression = "dbinom(-10:10, 5, 0.7)";
+  R["min"] = min;
+  R["max"] = max;
+  R["p"] = p;
+  R["n"] = n;
+  std::string expression = "dbinom(min:max, n, p)";
   SEXP ans = R.parseEval(expression);
   Rcpp::NumericVector v(ans);
-  int value = -10.0;
+  int value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (fabs(dist(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist(value) << std::endl;
@@ -63,10 +69,10 @@ int main(int argc, char** argv) {
     }
     value++;
   }
-  expression = "pbinom(-10:10, 5, 0.7)";
+  expression = "pbinom(min:max, n, p)";
   ans = R.parseEval(expression);
   v = ans;
-  value = -10.0;
+  value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (fabs(dist.cmf(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist.cmf(value) << std::endl;
@@ -110,7 +116,7 @@ int main(int argc, char** argv) {
   dist.getSamples(samples, 10);
   std::cout << "dist.getSamples(samples, 10): " << std::endl;
   for (size_t i = 0; i < 10; ++i)
-    std::cout << std::endl << samples[i] << std::endl;
+    std::cout << std::endl << samples[i](0) << std::endl;
   std::cout << std::endl;
 
   BinomialDistribution distCopy(dist);

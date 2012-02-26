@@ -44,29 +44,36 @@ int main(int argc, char** argv) {
   if (dist.getDegrees() != degrees)
     return 1;
 
+  const double min = -2.0;
+  const double max = 2.0;
+  const double inc = 0.1;
   std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
   RInside R(argc, argv);
-  std::string expression = "dchisq(seq(-10, 10, by=0.1), 5)";
+  R["degrees"] = degrees;
+  R["min"] = min;
+  R["max"] = max;
+  R["inc"] = inc;
+  std::string expression = "dchisq(seq(min, max, by=inc), degrees)";
   SEXP ans = R.parseEval(expression);
   Rcpp::NumericVector v(ans);
-  double value = -10.0;
+  double value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (fabs(dist(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist(value) << std::endl;
       return 1;
     }
-    value += 0.1;
+    value += inc;
   }
-  expression = "pchisq(seq(-10, 10, by=0.1), 5)";
+  expression = "pchisq(seq(min, max, by=inc), degrees)";
   ans = R.parseEval(expression);
   v = ans;
-  value = -10.0;
+  value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (fabs(dist.cdf(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist.cdf(value) << std::endl;
       return 1;
     }
-    value += 0.1;
+    value += inc;
   }
 
   std::cout << "dist.getMean(): " << std::fixed << dist.getMean() << std::endl

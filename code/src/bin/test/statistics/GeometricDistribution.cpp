@@ -44,12 +44,17 @@ int main(int argc, char** argv) {
   if (dist.getSuccessProbability() != p)
     return 1;
 
+  const int min = -10.0;
+  const int max = 10.0;
   std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
   RInside R(argc, argv);
-  std::string expression = "dgeom(-10:10, 0.7)";
+  R["min"] = min;
+  R["max"] = max;
+  R["p"] = p;
+  std::string expression = "dgeom(min:max, p)";
   SEXP ans = R.parseEval(expression);
   Rcpp::NumericVector v(ans);
-  int value = -10;
+  int value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (fabs(dist(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist(value) << std::endl;
@@ -57,10 +62,10 @@ int main(int argc, char** argv) {
     }
     value++;
   }
-  expression = "pgeom(-10:10, 0.7)";
+  expression = "pgeom(min:max, p)";
   ans = R.parseEval(expression);
   v = ans;
-  value = -10;
+  value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (fabs(dist.cdf(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist.cdf(value) << std::endl;
