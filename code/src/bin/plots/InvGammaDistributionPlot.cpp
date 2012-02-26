@@ -29,7 +29,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("InvGammaDistribution",
-    InvGammaDistribution<>(3.0, 0.5), 0, 5, 0.1);
+    InvGammaDistribution<>(3.0, 2.5), 0, 5, 0.1);
   plot.show();
   return app.exec();
 }

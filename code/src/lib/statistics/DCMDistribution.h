@@ -26,6 +26,7 @@
 
 #include "statistics/DiscreteDistribution.h"
 #include "statistics/SampleDistribution.h"
+#include "statistics/DirichletDistribution.h"
 #include "exceptions/BadArgumentException.h"
 #include "base/Serializable.h"
 
@@ -138,6 +139,8 @@ protected:
   Eigen::Matrix<double, M, 1> mAlpha;
   /// Number of trials
   size_t mNumTrials;
+  /// Dirichlet distribution for speeding up sampling
+  DirichletDistribution<M> mDirDist;
   /** @}
     */
 

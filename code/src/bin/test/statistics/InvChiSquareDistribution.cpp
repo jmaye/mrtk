@@ -16,9 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file HyperGeometricDistribution.cpp
-    \brief This file is a testing binary for the HyperGeometricDistribution
-           class
+/** \file InvChiSquareDistribution.cpp
+    \brief This file is a testing binary for the InvChiSquareDistribution class
   */
 
 #include <iostream>
@@ -27,97 +26,88 @@
 
 #include <RInside.h>
 
-#include "statistics/HyperGeometricDistribution.h"
+#include "statistics/InvChiSquareDistribution.h"
 
 int main(int argc, char** argv) {
-  HyperGeometricDistribution<2> dist;
+  InvChiSquareDistribution dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
 
-  std::cout << "dist.getNumTrials(): " << dist.getNumTrials()
-    << std::endl << std::endl;
-  std::cout << "dist.getMarbles(): " << std::endl
-    << dist.getMarbles() << std::endl << std::endl;
+  std::cout << "dist.getDegrees(): " << dist.getDegrees() << std::endl
+    << std::endl;
 
-  Eigen::Matrix<size_t, 2, 1> marbles;
-  marbles(0) = 5;
-  marbles(1) = 10;
-  const size_t numTrials = 5;
-  std::cout << "dist.setMarbles(5, 10)" << std::endl << std::endl;
-  dist.setMarbles(marbles);
-  std::cout << "dist.setNumTrials(5)" << std::endl << std::endl;
-  dist.setNumTrials(numTrials);
+  std::cout << "dist.setDegrees(5)" << std::endl << std::endl;
+  const size_t degrees = 5;
+  dist.setDegrees(degrees);
   std::cout << "Distribution new parameters: " << std::endl << dist
     << std::endl << std::endl;
-  if (dist.getMarbles() != marbles)
-    return 1;
-  if (dist.getNumTrials() != numTrials)
+  if (dist.getDegrees() != degrees)
     return 1;
 
-  const int min = -10.0;
-  const int max = 10.0;
+  const double min = -2.0;
+  const double max = 2.0;
+  const double inc = 0.1;
   std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
   RInside R(argc, argv);
-  R["white"] = marbles(0);
-  R["black"] = marbles(1);
-  R["n"] = numTrials;
+  R["degrees"] = degrees;
   R["min"] = min;
   R["max"] = max;
-  std::string expression = "dhyper(min:max, white, black, n)";
+  R["inc"] = inc;
+  std::string expression = "library('geoR');\
+    dinvchisq(seq(min, max, by=inc), degrees)";
   SEXP ans = R.parseEval(expression);
   Rcpp::NumericVector v(ans);
-  int value = min;
+  double value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
     if (fabs(dist(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist(value) << std::endl;
       return 1;
     }
-    value++;
+    value += inc;
   }
 
-  const double sum = marbles.sum();
-  std::cout << "dist.getMean(): " << std::fixed << dist.getMean()(0)
-    << std::endl << std::endl;
-  if (fabs(dist.getMean()(0) - numTrials / sum *
-      marbles(0)) > std::numeric_limits<double>::epsilon())
+  std::cout << "dist.getMean(): " << std::fixed << dist.getMean() << std::endl
+    << std::endl;
+  if (fabs(dist.getMean() - 1.0 / (degrees - 2)) >
+      std::numeric_limits<double>::epsilon())
     return 1;
-  std::cout << "dist.getVariance(): " << std::fixed
-    << dist.getCovariance()(0, 0) << std::endl << std::endl;
-  if (fabs(dist.getCovariance()(0, 0) - numTrials * marbles(0) / sum *
-      (sum - marbles(0)) / sum * (sum - numTrials) / (sum - 1)) >
+  std::cout << "dist.getVariance(): " << std::fixed << dist.getVariance()
+    << std::endl << std::endl;
+  if (fabs(dist.getVariance() - 2.0 / (degrees - 2) / (degrees - 2) /
+      (degrees - 4)) > std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getMode(): " << std::fixed << dist.getMode() << std::endl
+    << std::endl;
+  if (fabs(dist.getMode() - 1.0 / (degrees + 2.0)) >
       std::numeric_limits<double>::epsilon())
     return 1;
 
   try {
-  std::cout << "dist.setNumTrials(20)" << std::endl;
-    dist.setNumTrials(20);
+  std::cout << "dist.setDegrees(0)" << std::endl;
+    dist.setDegrees(0);
   }
-  catch (BadArgumentException<size_t>& e) {
+  catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
   std::cout << std::endl;
 
-//  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
-//    << std::endl << std::endl;
-//  std::vector<double> samples;
-//  dist.getSamples(samples, 10);
-//  std::cout << "dist.getSamples(samples, 10): " << std::endl;
-//  for (size_t i = 0; i < 10; ++i)
-//    std::cout << std::endl << samples[i] << std::endl;
-//  std::cout << std::endl;
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
+  std::vector<double> samples;
+  dist.getSamples(samples, 10);
+  std::cout << "dist.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samples[i] << std::endl;
+  std::cout << std::endl;
 
-  HyperGeometricDistribution<2> distCopy(dist);
+  InvChiSquareDistribution distCopy(dist);
   std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
     << std::endl;
-  if (distCopy.getNumTrials() != dist.getNumTrials())
+  if (distCopy.getDegrees() != dist.getDegrees())
     return 1;
-  if (distCopy.getMarbles() != dist.getMarbles())
-    return 1;
-  HyperGeometricDistribution<2> distAssign = dist;
+  InvChiSquareDistribution distAssign = dist;
   std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
-  if (distAssign.getNumTrials() != dist.getNumTrials())
-    return 1;
-  if (distCopy.getMarbles() != dist.getMarbles())
+  if (distAssign.getDegrees() != dist.getDegrees())
     return 1;
 
   return 0;

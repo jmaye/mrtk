@@ -104,8 +104,8 @@ double LogisticDistribution::logpdf(const double& value) const {
 }
 
 double LogisticDistribution::cdf(const double& value) const {
-  const LogisticFunction<double> logisticFunction;
-  return logisticFunction(-(value - mLocation) * mInverseScale);
+  const static LogisticFunction<double> logisticFunction;
+  return logisticFunction((value - mLocation) * mInverseScale);
 }
 
 double LogisticDistribution::getSample() const {
@@ -126,5 +126,5 @@ double LogisticDistribution::getMode() const {
 }
 
 double LogisticDistribution::getVariance() const {
-  return M_PI / 3.0 * mScale * mScale;
+  return M_PI * M_PI / 3.0 * mScale * mScale;
 }

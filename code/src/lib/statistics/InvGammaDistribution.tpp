@@ -16,12 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
-
-#include "functions/LogGammaFunction.h"
-#include "functions/GammaFunction.h"
-
 #include <gsl/gsl_sf_gamma.h>
+
+#include "statistics/Randomizer.h"
+#include "functions/LogGammaFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -125,7 +123,7 @@ template <typename T>
 double InvGammaDistribution<T>::pdf(const double& value) const {
   if (value <= 0)
     return 0.0;
-  else
+  else 
     return exp(logpdf(value));
 }
 
@@ -138,10 +136,8 @@ template <typename T>
 double InvGammaDistribution<T>::cdf(const double& value) const {
   if (value <= 0)
     return 0.0;
-  else {
-    const GammaFunction<T> gammaFunction;
-    return gsl_sf_gamma_inc(mShape, mScale / value) / gammaFunction(mShape);
-  }
+  else 
+    return gsl_sf_gamma_inc_Q(mShape, mScale / value);
 }
 
 template <typename T>

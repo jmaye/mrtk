@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
   ans = R.parseEval(expression);
   Rcpp::NumericVector y(ans);
   for (size_t i = 0; i < (size_t)x.rows(); ++i) {
-    if (fabs(dist( Eigen::Matrix<double, 3, 1>(x(i, 0), x(i, 1), x(i, 2)))
+    if (fabs(dist(Eigen::Matrix<double, 3, 1>(x(i, 0), x(i, 1), x(i, 2)))
         - y[i]) > 1e-12) {
       std::cout << y[i] << " "
         << dist( Eigen::Matrix<double, 3, 1>(x(i, 0), x(i, 1), x(i, 2)))

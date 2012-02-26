@@ -20,7 +20,6 @@
 
 #include "functions/LogGammaFunction.h"
 #include "functions/LogFactorialFunction.h"
-#include "statistics/DirichletDistribution.h"
 #include "statistics/MultinomialDistribution.h"
 
 /******************************************************************************/
@@ -37,7 +36,8 @@ DCMDistribution<M>::DCMDistribution(size_t numTrials, const
 template <size_t M>
 DCMDistribution<M>::DCMDistribution(const DCMDistribution<M>& other) :
     mAlpha(other.mAlpha),
-    mNumTrials(other.mNumTrials) {
+    mNumTrials(other.mNumTrials),
+    mDirDist(other.mDirDist) {
 }
 
 template <size_t M>
@@ -46,6 +46,7 @@ DCMDistribution<M>& DCMDistribution<M>::operator =
   if (this != &other) {
     mAlpha = other.mAlpha;
     mNumTrials = other.mNumTrials;
+    mDirDist = other.mDirDist;
   }
   return *this;
 }
@@ -87,7 +88,9 @@ void DCMDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DCMDistribution<M>::setAlpha(): alpha must be strictly positive",
       __FILE__, __LINE__);
-  mAlpha = alpha;
+  mAlpha = alpha;  /// Multinomial distribution for speeding up sampling
+  MultinomialDistribution<M> mMultDist;
+  mDirDist.setAlpha(alpha);
 }
 
 template <size_t M>
@@ -196,10 +199,9 @@ double DCMDistribution<M>::logpmf(const typename
 
 template <size_t M>
 Eigen::Matrix<size_t, M, 1> DCMDistribution<M>::getSample() const {
-  static MultinomialDistribution<M> multDist(mNumTrials);
-  static DirichletDistribution<M> dirDist;
-  dirDist.setAlpha(mAlpha);
-  multDist.setSuccessProbabilities(dirDist.getSample());
+  static MultinomialDistribution<M> multDist;
+  multDist.setNumTrials(mNumTrials);
+  multDist.setSuccessProbabilities(mDirDist.getSample());
   return multDist.getSample();
 }
 

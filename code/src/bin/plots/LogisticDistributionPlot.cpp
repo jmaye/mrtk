@@ -28,7 +28,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot("LogisticDistribution",
-    LogisticDistribution(), -5, 5, 0.1);
+    LogisticDistribution(1.0, 2.0), -5, 5, 0.1);
   plot.show();
   return app.exec();
 }

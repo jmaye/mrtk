@@ -16,9 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "functions/LogGammaFunction.h"
-
 #include <Eigen/LU>
+
+#include "functions/LogGammaFunction.h"
+#include "statistics/NormalDistribution.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -40,7 +41,8 @@ InvWishartDistribution<M>::InvWishartDistribution(const
     mScale(other.mScale),
     mDeterminant(other.mDeterminant),
     mNormalizer(other.mNormalizer),
-    mTransformation(other.mTransformation) {
+    mTransformation(other.mTransformation),
+    mWishartDist(other.mWishartDist) {
 }
 
 template <size_t M>
@@ -52,6 +54,7 @@ InvWishartDistribution<M>& InvWishartDistribution<M>::operator = (const
     mDeterminant = other.mDeterminant;
     mNormalizer = other.mNormalizer;
     mTransformation = other.mTransformation;
+    mWishartDist = other.mWishartDist;
   }
   return *this;
 }
@@ -95,6 +98,10 @@ void InvWishartDistribution<M>::setDegrees(double degrees)
       "bigger than the dimension",
       __FILE__, __LINE__);
   mDegrees = degrees;
+  const LogGammaFunction<double> logGammaFunction(mScale.rows());
+  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) - mDegrees * 0.5 *
+    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
+  mWishartDist.setDegrees(degrees);
 }
 
 template <size_t M>
@@ -115,6 +122,7 @@ void InvWishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
   mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) - mDegrees * 0.5 *
     log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
   mScale = scale;
+  mWishartDist.setScale(scale);
 }
 
 template <size_t M>
@@ -139,8 +147,13 @@ const Eigen::LLT<Eigen::Matrix<double, M, M> >&
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMean() const {
-  return mScale / (mDegrees - mScale.rows() - 1);
+Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMean() const
+    throw (InvalidOperationException) {
+  if (mDegrees > mScale.rows() + 1)
+    return mScale / (mDegrees - mScale.rows() - 1);
+  else
+    throw InvalidOperationException("InvWishartDistribution<M>::getMean(): "
+      "degrees of freedom must be bigger than dim + 1");
 }
 
 template <size_t M>
@@ -167,14 +180,5 @@ double InvWishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>&
 
 template <size_t M>
 Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getSample() const {
-  static NormalDistribution<M> normalDist(
-    Eigen::Matrix<double, M, 1>::Zero(mScale.rows()), mScale);
-  normalDist.setCovariance(mScale);
-  Eigen::Matrix<double, M, M> sample =
-    Eigen::Matrix<double, M, M>::Zero(mScale.rows(), mScale.rows());
-  for (size_t i = 0; i < mDegrees; ++i) {
-    Eigen::Matrix<double, M, 1> normSample = normalDist.getSample();
-    sample += normSample * normSample.transpose();
-  }
-  return sample.inverse();
+  return mWishartDist.getSample();
 }

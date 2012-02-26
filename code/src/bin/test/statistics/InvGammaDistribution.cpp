@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LogisticDistribution.cpp
-    \brief This file is a testing binary for the LogisticDistribution class
+/** \file InvGammaDistribution.cpp
+    \brief This file is a testing binary for the InvGammaDistribution class
   */
 
 #include <iostream>
@@ -26,29 +26,26 @@
 
 #include <RInside.h>
 
-#include "statistics/LogisticDistribution.h"
+#include "statistics/InvGammaDistribution.h"
 
 int main(int argc, char** argv) {
-  LogisticDistribution dist;
+  InvGammaDistribution<double> dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
 
-  std::cout << "dist.getLocation(): " << dist.getLocation() << std::endl
-    << std::endl;
+  std::cout << "dist.getShape(): " << dist.getShape() << std::endl << std::endl;
   std::cout << "dist.getScale(): " << dist.getScale() << std::endl
     << std::endl;
-  std::cout << "dist.getInverseScale(): " << dist.getInverseScale() << std::endl
-    << std::endl;
 
-  std::cout << "dist.setLocation(1)" << std::endl;
-  std::cout << "dist.setScale(2)" << std::endl;
-  const double location = 1.0;
-  const double scale = 2.0;
-  dist.setLocation(location);
+  std::cout << "dist.setShape(3.0)" << std::endl << std::endl;
+  std::cout << "dist.setScale(2.5)" << std::endl << std::endl;
+  const double shape = 3.0;
+  const double scale = 2.5;
+  dist.setShape(shape);
   dist.setScale(scale);
   std::cout << "Distribution new parameters: " << std::endl << dist
     << std::endl << std::endl;
-  if (dist.getLocation() != location)
+  if (dist.getShape() != shape)
     return 1;
   if (dist.getScale() != scale)
     return 1;
@@ -58,23 +55,25 @@ int main(int argc, char** argv) {
   const double inc = 0.1;
   std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
   RInside R(argc, argv);
-  R["location"] = location;
-  R["scale"] = scale;
+  R["shape"] = shape;
+  R["rate"] = 1.0 / scale;
   R["min"] = min;
   R["max"] = max;
   R["inc"] = inc;
-  std::string expression = "dlogis(seq(min, max, by=inc), location, scale)";
+  std::string expression = "library('actuar');\
+    dinvgamma(seq(min, max, by=inc), shape, rate)";
   SEXP ans = R.parseEval(expression);
   Rcpp::NumericVector v(ans);
   double value = min;
   for (size_t i = 0; i < (size_t)v.size(); ++i) {
-    if (fabs(dist(value) - v[i]) > 1e-12) {
+    if (v[i] != std::numeric_limits<double>::infinity() &&
+        fabs(dist(value) - v[i]) > 1e-12) {
       std::cout << v[i] << " " << dist(value) << std::endl;
       return 1;
     }
     value += inc;
   }
-  expression = "plogis(seq(min, max, by=inc), location, scale)";
+  expression = "pinvgamma(seq(min, max, by=inc), shape, rate)";
   ans = R.parseEval(expression);
   v = ans;
   value = min;
@@ -86,29 +85,32 @@ int main(int argc, char** argv) {
     value += inc;
   }
 
-  std::cout << "dist.getMean(): " << dist.getMean() << std::endl
+  std::cout << "dist.getMean(): " << std::fixed << dist.getMean() << std::endl
     << std::endl;
-  if (fabs(dist.getMean() - location) >
+  if (fabs(dist.getMean() - scale / (shape - 1)) >
       std::numeric_limits<double>::epsilon())
     return 1;
-  std::cout << "dist.getMedian(): " << dist.getMedian() << std::endl
-    << std::endl;
-  if (fabs(dist.getMedian() - location) >
-      std::numeric_limits<double>::epsilon())
+  std::cout << "dist.getVariance(): " << std::fixed << dist.getVariance()
+    << std::endl << std::endl;
+  if (fabs(dist.getVariance() - (scale * scale) / (shape - 1) / (shape - 1) /
+      (shape - 2)) > std::numeric_limits<double>::epsilon())
     return 1;
-  std::cout << "dist.getMode(): " << dist.getMode() << std::endl
+  std::cout << "dist.getMode(): " << std::fixed << dist.getMode() << std::endl
     << std::endl;
-  if (fabs(dist.getMode() - location) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "dist.getVariance(): " << dist.getVariance() << std::endl
-    << std::endl;
-  if (fabs(dist.getVariance() - M_PI * M_PI / 3.0 * scale * scale) >
+  if (fabs(dist.getMode() - scale / (shape + 1)) >
       std::numeric_limits<double>::epsilon())
     return 1;
 
   try {
-    std::cout << "dist.setScale(0.0)" << std::endl;
+    std::cout << "dist.setShape(0.0): " << std::endl;
+    dist.setShape(0.0);
+  }
+  catch (BadArgumentException<double>& e) {
+    std::cout << e.what() << std::endl;
+  }
+  std::cout << std::endl;
+  try {
+    std::cout << "dist.setScale(0.0): " << std::endl;
     dist.setScale(0.0);
   }
   catch (BadArgumentException<double>& e) {
@@ -125,16 +127,16 @@ int main(int argc, char** argv) {
     std::cout << std::endl << samples[i] << std::endl;
   std::cout << std::endl;
 
-  LogisticDistribution distCopy(dist);
+  InvGammaDistribution<double> distCopy(dist);
   std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
     << std::endl;
-  if (distCopy.getLocation() != dist.getLocation())
+  if (distCopy.getShape() != dist.getShape())
     return 1;
   if (distCopy.getScale() != dist.getScale())
     return 1;
-  LogisticDistribution distAssign = dist;
+  InvGammaDistribution<double> distAssign = dist;
   std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
-  if (distAssign.getLocation() != dist.getLocation())
+  if (distAssign.getShape() != dist.getShape())
     return 1;
   if (distAssign.getScale() != dist.getScale())
     return 1;

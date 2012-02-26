@@ -9,39 +9,40 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file InvGammaDistributionRndHistogramPlot.cpp
-    \brief This file is a testing binary for plotting random samples of the
-           InvGammaDistribution class
+/** \file EstimatorMLMixture.cpp
+    \brief This file is a testing binary for the EstimatorMLMixture class.
   */
 
-#include "visualization/HistogramPlot.h"
-#include "statistics/InvGammaDistribution.h"
+#include <iostream>
 
-#include <QtGui/QApplication>
+//#include "statistics/EstimatorMLMixture.h"
+#include "statistics/MixtureSampleDistribution.h"
+#include "statistics/NormalDistribution.h"
 
 int main(int argc, char** argv) {
-  QApplication app(argc, argv);
-  Histogram<double, 1> hist(0, 100, 0.05);
-  InvGammaDistribution<> dist(3.0, 2.5);
-  std::vector<double> data;
-  dist.getSamples(data, 100000);
-  hist.addSamples(data);
-  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
-  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
-    << std::endl;
-  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
-  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
-  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
-  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-  hist.normalize();
-  HistogramPlot<double, 1> plot("InvGammaDistributionRndHistogramPlot", hist);
-  plot.show();
-  return app.exec();
+  std::vector<NormalDistribution<1> > distributionsNorm1;
+  distributionsNorm1.push_back(NormalDistribution<1>(0, 1));
+  distributionsNorm1.push_back(NormalDistribution<1>(5, 1));
+  distributionsNorm1.push_back(NormalDistribution<1>(10, 1));
+  distributionsNorm1.push_back(NormalDistribution<1>(-5, 1));
+  distributionsNorm1.push_back(NormalDistribution<1>(-10, 1));
+  MixtureSampleDistribution<NormalDistribution<1>, 5> distMixtNorm1(
+    distributionsNorm1, CategoricalDistribution<5>());
+  std::vector<double> samplesMixtNorm1;
+  distMixtNorm1.getSamples(samplesMixtNorm1, 1000);
+  Eigen::Matrix<double, 5, 1> initMeansMixtNorm1;
+  initMeansMixtNorm1 << 1, 6, 12, -5.5, -9.5;
+  Eigen::Matrix<double, 5, 1> initVariancesMixtNorm1;
+  initVariancesMixtNorm1 << 1.5, 1.2, 1.1, 0.9, 2.0;
+  Eigen::Matrix<double, 5, 1> initWeightsMixtNorm1;
+  initWeightsMixtNorm1 << 0.2, 0.3, 0.1, 0.3, 0.1;
+  //EstimatorMLMixture<NormalDistribution<1>, 5> estMixNorm1(distMixtNorm1);
+  return 0;
 }

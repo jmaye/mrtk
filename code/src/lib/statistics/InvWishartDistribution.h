@@ -28,8 +28,10 @@
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
+#include "statistics/WishartDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The InvWishartDistribution class represents an inverse Wishart distribution.
     \brief Inverse Wishart distribution
@@ -74,7 +76,7 @@ public:
   /// Returns the cholesky decomposition of the scale matrix
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Returns the mean of the distribution
-  Eigen::Matrix<double, M, M> getMean() const;
+  Eigen::Matrix<double, M, M> getMean() const throw (InvalidOperationException);
   /// Returns the mode of the distribution
   Eigen::Matrix<double, M, M> getMode() const;
   /// Access the probability density function at the given value
@@ -115,6 +117,8 @@ protected:
   double mNormalizer;
   /// Cholesky decomposition of the scale matrix
   Eigen::LLT<Eigen::Matrix<double, M, M> > mTransformation;
+  /// Wishart distribution for fast sampling
+  WishartDistribution<M> mWishartDist;
   /** @}
     */
 
