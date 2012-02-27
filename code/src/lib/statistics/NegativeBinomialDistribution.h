@@ -65,7 +65,9 @@ public:
   /// Returns the variance of the distribution
   double getVariance() const;
   /// Access a sample drawn from the distribution
-  virtual Eigen::Matrix<size_t, 2, 1> getSample() const;
+  virtual Eigen::Matrix<int, 2, 1> getSample() const;
+  /// Access the cumulative mass function at the given value
+  double cmf(const int& value) const;
   /** @}
     */
 

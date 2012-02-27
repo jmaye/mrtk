@@ -16,33 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file NegativeBinomialDistributionRndHistogramPlot.cpp
-    \brief This file is a testing binary for plotting random samples from the
-           NegativeBinomialDistribution class
+/** \file LogisticDistributionRndHistogramPlot1v.cpp
+    \brief This file is a testing binary for plotting random samples of the
+           LogisticDistribution
   */
 
 #include "visualization/HistogramPlot.h"
-#include "statistics/NegativeBinomialDistribution.h"
+#include "statistics/LogisticDistribution.h"
 
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<int, 1> hist(0, 50, 1);
-  NegativeBinomialDistribution dist(5, 0.7);
-  for (size_t i = 0; i < 100000; ++i)
-    hist.addSample(dist.getSample()(0));
+  Histogram<double, 1> hist(-10, 10, 0.05);
+  LogisticDistribution dist(1.0, 2.0);
+  std::vector<double> data;
+  dist.getSamples(data, 100000);
+  hist.addSamples(data);
   std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
   std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
   std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
     << std::endl;
   std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. median: " << dist.getMedian() << std::endl;
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   hist.normalize();
-  HistogramPlot<int, 1> plot("NegativeBinomialDistributionRndHistogramPlot",
-    hist);
+  HistogramPlot<double, 1> plot("LogisticDistributionRndHistogramPlot", hist);
   plot.show();
   return app.exec();
 }

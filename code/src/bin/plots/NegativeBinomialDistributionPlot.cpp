@@ -27,8 +27,8 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  DiscreteFunctionPlot<double, size_t, 1> plot("NegativeBinomialDistribution",
-    NegativeBinomialDistribution(20, 0.5), 0, 50);
+  DiscreteFunctionPlot<double, int, 1> plot("NegativeBinomialDistribution",
+    NegativeBinomialDistribution(5, 0.7), 0, 50);
   plot.show();
   return app.exec();
 }

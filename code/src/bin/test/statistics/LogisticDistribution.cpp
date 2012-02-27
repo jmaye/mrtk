@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
 
   std::cout << "dist.setLocation(1)" << std::endl;
   std::cout << "dist.setScale(2)" << std::endl;
-  const double location = 1.0;
+  const double location = -2.0;
   const double scale = 2.0;
   dist.setLocation(location);
   dist.setScale(scale);

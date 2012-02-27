@@ -16,13 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
-#include "functions/LogGammaFunction.h"
-#include "functions/LogFactorialFunction.h"
+#include <limits>
 
 #include <Eigen/Array>
 
-#include <limits>
+#include "functions/LogGammaFunction.h"
+#include "functions/LogFactorialFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -125,18 +124,18 @@ template <size_t M>
 template <size_t N, size_t D>
 double NegativeMultinomialDistribution<M>::Traits<N, D>::pmf(const
     NegativeMultinomialDistribution<N>& distribution, const
-    Eigen::Matrix<size_t, N - 1, 1>& value) {
-  Eigen::Matrix<size_t, M, 1> valueMat;
-  valueMat << distribution.mNumTrials, value;
+    Eigen::Matrix<int, N - 1, 1>& value) {
+  Eigen::Matrix<int, M, 1> valueMat;
+  valueMat << value, distribution.mNumTrials;
   return distribution.pmf(valueMat);
 }
 
 template <size_t M>
 template <size_t D>
 double NegativeMultinomialDistribution<M>::Traits<2, D>::pmf(const
-    NegativeMultinomialDistribution<2>& distribution, const size_t& value) {
-  Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat << distribution.mNumTrials, value;
+    NegativeMultinomialDistribution<2>& distribution, const int& value) {
+  Eigen::Matrix<int, 2, 1> valueMat;
+  valueMat << value, distribution.mNumTrials;
   return distribution.pmf(valueMat);
 }
 
@@ -144,25 +143,26 @@ template <size_t M>
 template <size_t N, size_t D>
 double NegativeMultinomialDistribution<M>::Traits<N, D>::logpmf(const
     NegativeMultinomialDistribution<N>& distribution, const
-    Eigen::Matrix<size_t, N - 1, 1>& value) {
-  Eigen::Matrix<size_t, M, 1> valueMat;
-  valueMat << distribution.mNumTrials, value;
+    Eigen::Matrix<int, N - 1, 1>& value) {
+  Eigen::Matrix<int, M, 1> valueMat;
+  valueMat << value, distribution.mNumTrials;
   return distribution.logpmf(valueMat);
 }
 
 template <size_t M>
 template <size_t D>
 double NegativeMultinomialDistribution<M>::Traits<2, D>::logpmf(const
-    NegativeMultinomialDistribution<2>& distribution, const size_t& value) {
-  Eigen::Matrix<size_t, 2, 1> valueMat;
-  valueMat << distribution.mNumTrials, value;
+    NegativeMultinomialDistribution<2>& distribution, const int& value) {
+  Eigen::Matrix<int, 2, 1> valueMat;
+  valueMat << value, distribution.mNumTrials;
   return distribution.logpmf(valueMat);
 }
 
 template <size_t M>
 double NegativeMultinomialDistribution<M>::pmf(const
-    Eigen::Matrix<size_t, M, 1>& value) const {
-  if (value(0) != mNumTrials)
+    Eigen::Matrix<int, M, 1>& value) const {
+  if (value(value.size() - 1) != (int)mNumTrials ||
+      (value.cwise() < 0).any() == true)
     return 0.0;
   else
     return exp(logpmf(value));
@@ -170,24 +170,25 @@ double NegativeMultinomialDistribution<M>::pmf(const
 
 template <size_t M>
 double NegativeMultinomialDistribution<M>::pmf(const typename
-    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<int, M - 1>::Domain& value) const {
   return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>
 double NegativeMultinomialDistribution<M>::logpmf(const
-    Eigen::Matrix<size_t, M, 1>& value) const
-    throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
-  if (value(0) != mNumTrials)
-    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
-      "NegativeMultinomialDistribution<M>::logpmf(): value(0) must contain the "
-      "trial numbers",
+    Eigen::Matrix<int, M, 1>& value) const
+    throw (BadArgumentException<Eigen::Matrix<int, M, 1> >) {
+  if (value(value.size() - 1) != (int)mNumTrials ||
+      (value.cwise() < 0).any() == true)
+    throw BadArgumentException<Eigen::Matrix<int, M, 1> >(value,
+      "NegativeMultinomialDistribution<M>::logpmf(): value(M) must contain the "
+      "trial numbers and be stricly positive",
       __FILE__, __LINE__);
   const LogGammaFunction<size_t> lgamma;
-  double sum = lgamma(value.sum()) + value(0) *
-    log(mSuccessProbabilities(0)) - lgamma(value(0));
+  double sum = lgamma(value.sum()) - lgamma(mNumTrials) +
+    mNumTrials * log(mSuccessProbabilities(value.size() - 1));
   const LogFactorialFunction lfactorial;
-  for (size_t i = 1; i < (size_t)mSuccessProbabilities.size(); ++i)
+  for (size_t i = 0; i < (size_t)mSuccessProbabilities.size() - 1; ++i)
     sum += value(i) *
       log(mSuccessProbabilities(i)) - lfactorial(value(i));
   return sum;
@@ -195,27 +196,30 @@ double NegativeMultinomialDistribution<M>::logpmf(const
 
 template <size_t M>
 double NegativeMultinomialDistribution<M>::logpmf(const typename
-    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<int, M - 1>::Domain& value) const {
   return Traits<M>::logpmf(*this, value);
 }
 
 template <size_t M>
-Eigen::Matrix<size_t, M, 1> NegativeMultinomialDistribution<M>::getSample()
+Eigen::Matrix<int, M, 1> NegativeMultinomialDistribution<M>::getSample()
     const {
   // TODO: NOT IMPLEMENTED!
-  return Eigen::Matrix<size_t, M, 1>::Zero(mSuccessProbabilities.size());
+  return Eigen::Matrix<int, M, 1>::Zero(mSuccessProbabilities.size());
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, 1> NegativeMultinomialDistribution<M>::getMean()
     const {
-  return mNumTrials * mSuccessProbabilities / mSuccessProbabilities(0);
+  return mNumTrials / mSuccessProbabilities(mSuccessProbabilities.size() - 1) *
+    mSuccessProbabilities;
 }
 
 template <size_t M>
 Eigen::Matrix<double, M, M> NegativeMultinomialDistribution<M>::getCovariance()
     const {
-  return mNumTrials / mSuccessProbabilities(0) / mSuccessProbabilities(0) *
+  // TODO: COVARIANCE NOT IMPLEMENTED
+  const double fail = mSuccessProbabilities(mSuccessProbabilities.size() - 1);
+  return mNumTrials / fail / fail *
     mSuccessProbabilities * mSuccessProbabilities.transpose() + mNumTrials /
-    mSuccessProbabilities(0) * mSuccessProbabilities.asDiagonal();
+    fail * mSuccessProbabilities.asDiagonal();
 }

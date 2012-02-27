@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 #include "functions/LogisticFunction.h"
+#include "statistics/Randomizer.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -99,8 +100,8 @@ double LogisticDistribution::pdf(const double& value) const {
 }
 
 double LogisticDistribution::logpdf(const double& value) const {
-  return (value - mLocation) * mInverseScale - (log(mScale) + 2 * log(1.0 +
-    exp((value - mLocation) * mInverseScale)));
+  return -(value - mLocation) * mInverseScale - (log(mScale) + 2 * log(1.0 +
+    exp(-(value - mLocation) * mInverseScale)));
 }
 
 double LogisticDistribution::cdf(const double& value) const {
@@ -109,8 +110,11 @@ double LogisticDistribution::cdf(const double& value) const {
 }
 
 double LogisticDistribution::getSample() const {
-  // TODO: NOT IMPLEMENTED!
-  return 0.0;
+  const static Randomizer<double> randomizer;
+  double y = 0;
+  while (y == 0)
+    y = randomizer.sampleUniform();
+  return mLocation + mScale * log(y / (1 - y));
 }
 
 double LogisticDistribution::getMean() const {
