@@ -21,6 +21,10 @@
   */
 
 #include <iostream>
+#include <limits>
+#include <string>
+
+#include <RInside.h>
 
 #include "statistics/PoissonDistribution.h"
 
@@ -28,44 +32,98 @@ int main(int argc, char** argv) {
   PoissonDistribution dist;
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
+
   std::cout << "dist.getMean(): " << dist.getMean() << std::endl
     << std::endl;
+
   std::cout << "dist.setMean(2.5)" << std::endl << std::endl;
-  dist.setMean(2.5);
+  const double rate = 2.5;
+  dist.setMean(rate);
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
-
-  std::cout << "pmf(2): " << std::fixed << dist(2) << std::endl << std::endl;
-  if (fabs(dist(2) - 0.2565156) > 1e-4)
+  if (dist.getMean() != rate)
     return 1;
 
-  std::cout << "pmf(5): " << std::fixed << dist(5) << std::endl << std::endl;
-  if (fabs(dist(5) - 0.06680094) > 1e-4)
-    return 1;
+  const int min = -10.0;
+  const int max = 10.0;
+  std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
+  RInside R(argc, argv);
+  R["min"] = min;
+  R["max"] = max;
+  R["lambda"] = rate;
+  std::string expression = "dpois(min:max, lambda)";
+  SEXP ans = R.parseEval(expression);
+  Rcpp::NumericVector v(ans);
+  int value = min;
+  for (size_t i = 0; i < (size_t)v.size(); ++i) {
+    if (fabs(dist(value) - v[i]) > 1e-12) {
+      std::cout << v[i] << " " << dist(value) << std::endl;
+      return 1;
+    }
+    value++;
+  }
+  expression = "ppois(min:max, lambda)";
+  ans = R.parseEval(expression);
+  v = ans;
+  value = min;
+  for (size_t i = 0; i < (size_t)v.size(); ++i) {
+    if (fabs(dist.cdf(value) - v[i]) > 1e-12) {
+      std::cout << v[i] << " " << dist.cdf(value) << std::endl;
+      return 1;
+    }
+    value++;
+  }
 
-  std::cout << "pmf(0): " << std::fixed << dist(0) << std::endl << std::endl;
-  if (fabs(dist(0) - 0.082085) > 1e-4)
-    return 1;
-
-  std::cout << "logpmf(2): " << std::fixed << dist.logpmf(2) << std::endl
+  std::cout << "dist.getMean(): " << std::fixed << dist.getMean() << std::endl
     << std::endl;
-  if (fabs(dist.logpmf(2) + 1.360566) > 1e-4)
+  if (fabs(dist.getMean() - rate) > std::numeric_limits<double>::epsilon())
     return 1;
-
-  std::cout << "cdf(2): " << std::fixed << dist.cdf(2) << std::endl
-    << std::endl;
-  if (fabs(dist.cdf(2) - 0.5438131) > 1e-4)
-    return 1;
-
-  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+  std::cout << "dist.getVariance(): " << std::fixed << dist.getVariance()
     << std::endl << std::endl;
+  if (fabs(dist.getVariance() - rate) > std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getMode(): " << std::fixed << dist.getMode() << std::endl
+    << std::endl;
+  if (fabs(dist.getMode() - ceil(rate) + 1) >
+      std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getMedian(): " << std::fixed << dist.getMedian()
+    << std::endl << std::endl;
+  if (fabs(dist.getMedian() - floor(rate + 1.0/ 3.0 - 0.02 / rate)) >
+      std::numeric_limits<double>::epsilon())
+    return 1;
 
   try {
+    std::cout << "dist.setMean(-1.0)" << std::endl;
     dist.setMean(-1.0);
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
+  std::cout << std::endl;
+
+  std::cout << "dist.getSample(): " << std::endl << dist.getSample()
+    << std::endl << std::endl;
+  std::vector<int> samples;
+  dist.getSamples(samples, 10);
+  std::cout << "dist.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samples[i] << std::endl;
+  std::cout << std::endl;
+
+  PoissonDistribution distComp(3.0);
+  std::cout << "dist.KLDivergence(distComp(3.0)): "
+    << dist.KLDivergence(distComp) << std::endl << std::endl;
+
+  PoissonDistribution distCopy(dist);
+  std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
+    << std::endl;
+  if (distCopy.getMean() != dist.getMean())
+    return 1;
+  PoissonDistribution distAssign = dist;
+  std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
+  if (distAssign.getMean() != dist.getMean())
+    return 1;
 
   return 0;
 }

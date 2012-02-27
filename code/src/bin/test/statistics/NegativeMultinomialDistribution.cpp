@@ -29,38 +29,24 @@ int main(int argc, char** argv) {
   NegativeMultinomialDistribution<3> dist;
  std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
+
   std::cout << "dist.getNumTrials(): " << dist.getNumTrials() << std::endl
     << std::endl;
   std::cout << "dist.getSuccessProbabilities(): " << std::endl
     << dist.getSuccessProbabilities() << std::endl << std::endl;
+
   std::cout << "dist.setNumTrials(5)" << std::endl << std::endl;
-  dist.setNumTrials(5);
   std::cout << "dist.setSuccessProbabilities(0.5, 0.3, 0.2)" << std::endl
     << std::endl;
-  dist.setSuccessProbabilities(Eigen::Vector3d(0.5, 0.3, 0.2));
+  const size_t n = 5;
+  const Eigen::Matrix<double, 3, 1> p(0.5, 0.3, 0.2);
+  dist.setNumTrials(n);
+  dist.setSuccessProbabilities(p);
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
-
-  Eigen::Matrix<size_t, 2, 1> value;
-  value(0) = 2;
-  value(1) = 3;
-  std::cout << "pmf(2, 3): " << std::fixed << dist(value) << std::endl
-    << std::endl;
-  if (fabs(dist(value) - 0.028349) > 1e-4)
+  if (dist.getNumTrials() != n)
     return 1;
-
-  value(0) = 5;
-  value(1) = 0;
-  std::cout << "pmf(5, 0): " << std::fixed << dist(value) << std::endl
-    << std::endl;
-  if (fabs(dist(value) - 0.0095681) > 1e-4)
-    return 1;
-
-  value(0) = 0;
-  value(1) = 5;
-  std::cout << "pmf(0, 5): " << std::fixed << dist(value) << std::endl
-    << std::endl;
-  if (fabs(dist(value) - 0.001259) > 1e-4)
+  if (dist.getSuccessProbabilities() != p)
     return 1;
 
   return 0;

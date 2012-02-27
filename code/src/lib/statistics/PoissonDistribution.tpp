@@ -28,7 +28,7 @@ PoissonDistribution::PoissonDistribution(double mean) {
   setMean(mean);
 }
 
-PoissonDistribution::PoissonDistribution(const PoissonDistribution& other) : 
+PoissonDistribution::PoissonDistribution(const PoissonDistribution& other) :
     mMean(other.mMean) {
 }
 
@@ -77,24 +77,36 @@ double PoissonDistribution::getMean() const {
   return mMean;
 }
 
-double PoissonDistribution::pmf(const size_t& value) const {
-  return exp(logpmf(value));
+double PoissonDistribution::pmf(const int& value) const {
+  if (value < 0)
+    return 0.0;
+  else
+    return exp(logpmf(value));
 }
 
-double PoissonDistribution::logpmf(const size_t& value) const {
+double PoissonDistribution::logpmf(const int& value) const
+    throw (BadArgumentException<int>) {
+  if (value < 0)
+    throw BadArgumentException<int>(value,
+      "PoissonDistribution::logpmf(): value must be strictly positive",
+      __FILE__, __LINE__);
   const LogFactorialFunction lfactorial;
   return value * log(mMean) - mMean - lfactorial(value);
 }
 
-double PoissonDistribution::cdf(const size_t& value) const {
-  const FactorialFunction factorial;
-  double sum = 0.0;
-  for (size_t i = 0; i <= value; ++i)
-    sum += pow(mMean, i) / factorial(i);
-  return exp(-mMean) * sum;
+double PoissonDistribution::cdf(const int& value) const {
+  if (value < 0)
+    return 0.0;
+  else {
+    const FactorialFunction factorial;
+    double sum = 0.0;
+    for (size_t i = 0; i <= (size_t)value; ++i)
+      sum += pow(mMean, i) / factorial(i);
+    return exp(-mMean) * sum;
+  }
 }
 
-size_t PoissonDistribution::getSample() const {
+int PoissonDistribution::getSample() const {
   const static Randomizer<double> randomizer;
   return randomizer.samplePoisson(mMean);
 }

@@ -29,7 +29,8 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   std::vector<Eigen::Matrix<double, 2, 1> > data;
-  NormalDistribution<2> dist;
+  NormalDistribution<2> dist(Eigen::Matrix<double, 2, 1>(1.0, 1.0),
+    (Eigen::Matrix<double, 2, 2>() << 2, 0, 0, 2).finished());
   dist.getSamples(data, 100000);
   ScatterPlot<2> plot("NormalDistributionRndScatterPlot2v", data);
   plot.show();

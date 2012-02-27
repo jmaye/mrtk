@@ -82,12 +82,12 @@ double NormalDistribution<1>::getMean() const {
 
 void NormalDistribution<1>::setVariance(double variance)
     throw (BadArgumentException<double>) {
-  mVariance = variance;
-  if (mVariance <= 0.0)
+  if (variance <= 0.0)
     throw BadArgumentException<double>(variance,
       "NormalDistribution::setVariance(): variance must be strictly bigger "
       "than 0",
       __FILE__, __LINE__);
+  mVariance = variance;
   mPrecision = 1.0 / variance;
   mStandardDeviation = sqrt(variance);
   mNormalizer = 0.5 * log(2.0 * M_PI * mVariance);

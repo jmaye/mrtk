@@ -28,9 +28,9 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> hist(0, 100, 1);
-  PoissonDistribution dist;
-  std::vector<size_t> data;
+  Histogram<int, 1> hist(0, 100, 1);
+  PoissonDistribution dist(2.5);
+  std::vector<int> data;
   dist.getSamples(data, 100000);
   hist.addSamples(data);
   std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   hist.normalize();
-  HistogramPlot<size_t, 1> plot("PoissonDistributionRndHistogramPlot", hist);
+  HistogramPlot<int, 1> plot("PoissonDistributionRndHistogramPlot", hist);
   plot.show();
   return app.exec();
 }

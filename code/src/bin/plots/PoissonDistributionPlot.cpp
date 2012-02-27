@@ -27,8 +27,8 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  DiscreteFunctionPlot<double, size_t, 1> plot("PoissonDistribution",
-    PoissonDistribution(), 0, 10);
+  DiscreteFunctionPlot<double, int, 1> plot("PoissonDistribution",
+    PoissonDistribution(2.5), 0, 10);
   plot.show();
   return app.exec();
 }

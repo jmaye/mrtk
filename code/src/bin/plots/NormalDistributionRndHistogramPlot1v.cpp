@@ -29,7 +29,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<double, 1> hist(-10, 10, 0.05);
-  NormalDistribution<1> dist;
+  NormalDistribution<1> dist(1.0, 2.0);
   std::vector<double> data;
   dist.getSamples(data, 100000);
   hist.addSamples(data);
