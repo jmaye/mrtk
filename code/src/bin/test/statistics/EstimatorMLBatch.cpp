@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
   estGeom.addPoints(samplesGeom.begin(), samplesGeom.end());
   std::cout << "Estimation6: " << std::endl << estGeom << std::endl;
   PoissonDistribution distPois(2.0);
-  std::vector<size_t> samplesPois;
+  std::vector<int> samplesPois;
   distPois.getSamples(samplesPois, 1000);
   EstimatorML<PoissonDistribution> estPois;
   estPois.addPoints(samplesPois.begin(), samplesPois.end());

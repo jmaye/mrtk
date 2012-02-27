@@ -29,14 +29,20 @@ int main(int argc, char** argv) {
   UniformDistribution<double> distCont;
   std::cout << "Distribution default parameters: " << std::endl << distCont
     << std::endl << std::endl;
+
   std::cout << "dist.getMinSupport(): " << distCont.getMinSupport() << std::endl
     << std::endl;
   std::cout << "dist.getMaxSupport(): " << distCont.getMaxSupport() << std::endl
     << std::endl;
+
   std::cout << "dist.setSupport(2, 5)" << std::endl << std::endl;
   distCont.setSupport(2, 5);
   std::cout << "Distribution new parameters: " << std::endl << distCont
     << std::endl << std::endl;
+  if (distCont.getMinSupport() != 2)
+    return 1;
+  if (distCont.getMaxSupport() != 5)
+    return 1;
 
   std::cout << "pdf(2): " << std::fixed << distCont(2) << std::endl
     << std::endl;
@@ -58,28 +64,56 @@ int main(int argc, char** argv) {
   if (fabs(distCont(10) - 0.0) > 1e-4)
     return 1;
 
-  std::cout << "dist.getSample(): " << distCont.getSample() << std::endl
-    << std::endl;
-
   try {
+    std::cout << "dist.setSupport(5, 2)" << std::endl;
     distCont.setSupport(5, 2);
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
+  std::cout << std::endl;
+
+  std::cout << "dist.getSample(): " << std::endl << distCont.getSample()
+    << std::endl << std::endl;
+  std::vector<double> samples;
+  distCont.getSamples(samples, 10);
+  std::cout << "dist.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samples[i] << std::endl;
+  std::cout << std::endl;
+
+  UniformDistribution<double> distCopy(distCont);
+  std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
+    << std::endl;
+  if (distCopy.getMaxSupport() != distCont.getMaxSupport())
+    return 1;
+  if (distCopy.getMinSupport() != distCont.getMinSupport())
+    return 1;
+  UniformDistribution<double> distAssign = distCont;
+  std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
+  if (distAssign.getMaxSupport() != distCont.getMaxSupport())
+    return 1;
+  if (distAssign.getMinSupport() != distCont.getMinSupport())
+    return 1;
 
   std::cout << "Testing discrete uniform distribution 1-D" << std::endl;
   UniformDistribution<size_t> distDisc;
   std::cout << "Distribution default parameters: " << std::endl << distDisc
     << std::endl << std::endl;
+
   std::cout << "dist.getMinSupport(): " << distDisc.getMinSupport() << std::endl
     << std::endl;
   std::cout << "dist.getMaxSupport(): " << distDisc.getMaxSupport() << std::endl
     << std::endl;
+
   std::cout << "dist.setSupport(2, 5)" << std::endl << std::endl;
   distDisc.setSupport(2, 5);
   std::cout << "Distribution new parameters: " << std::endl << distDisc
     << std::endl << std::endl;
+  if (distDisc.getMinSupport() != 2)
+    return 1;
+  if (distDisc.getMaxSupport() != 5)
+    return 1;
 
   std::cout << "pdf(2): " << std::fixed << distDisc(2) << std::endl
     << std::endl;
@@ -101,22 +135,31 @@ int main(int argc, char** argv) {
   if (fabs(distDisc(10) - 0.0) > 1e-4)
     return 1;
 
-  std::cout << "dist.getSample(): " << distDisc.getSample() << std::endl
-    << std::endl;
+  std::cout << "dist.getSample(): " << std::endl << distDisc.getSample()
+    << std::endl << std::endl;
+  std::vector<size_t> samplesDisc;
+  distDisc.getSamples(samplesDisc, 10);
+  std::cout << "dist.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samplesDisc[i] << std::endl;
+  std::cout << std::endl;
 
   std::cout << "Testing continuous uniform distribution 2-D" << std::endl;
   UniformDistribution<double, 2> distCont2D;
   std::cout << "Distribution default parameters: " << std::endl << distCont2D
     << std::endl << std::endl;
+
   std::cout << "dist.getMinSupport(): " << distCont2D.getMinSupport()
     << std::endl << std::endl;
   std::cout << "dist.getMaxSupport(): " << distCont2D.getMaxSupport()
     << std::endl << std::endl;
+
   std::cout << "dist.setSupport((2, 2), (5, 5))" << std::endl << std::endl;
   distCont2D.setSupport(Eigen::Matrix<double, 2, 1>(2, 2),
     Eigen::Matrix<double, 2, 1>(5, 5));
   std::cout << "Distribution new parameters: " << std::endl << distCont2D
     << std::endl << std::endl;
+
 
   std::cout << "pdf((2, 2)): " << std::fixed
     << distCont2D(Eigen::Matrix<double, 2, 1>(2, 2)) << std::endl << std::endl;
@@ -163,6 +206,10 @@ int main(int argc, char** argv) {
     Eigen::Matrix<int, 2, 1>(5, 5));
   std::cout << "Distribution new parameters: " << std::endl << distDisc2D
     << std::endl << std::endl;
+  if (distDisc2D.getMinSupport() != Eigen::Matrix<int, 2, 1>(2, 2))
+    return 1;
+  if (distDisc2D.getMaxSupport() != Eigen::Matrix<int, 2, 1>(5, 5))
+    return 1;
 
   std::cout << "pdf((2, 2)): " << std::fixed
     << distDisc2D(Eigen::Matrix<int, 2, 1>(2, 2)) << std::endl << std::endl;
@@ -186,6 +233,37 @@ int main(int argc, char** argv) {
     return 1;
 
   std::cout << "dist.getSample(): " << std::endl << distDisc2D.getSample()
+    << std::endl << std::endl;
+  std::vector<Eigen::Matrix<int, 2, 1> > samples2d;
+  distDisc2D.getSamples(samples2d, 10);
+  std::cout << "dist.getSamples(samples, 10): " << std::endl;
+  for (size_t i = 0; i < 10; ++i)
+    std::cout << std::endl << samples2d[i] << std::endl;
+  std::cout << std::endl;
+
+  UniformDistribution<int, 2> distCopy2d(distDisc2D);
+  std::cout << "Copy constructor: " << std::endl << distCopy2d << std::endl
+    << std::endl;
+  if (distCopy2d.getMaxSupport() != distDisc2D.getMaxSupport())
+    return 1;
+  if (distCopy2d.getMinSupport() != distDisc2D.getMinSupport())
+    return 1;
+  UniformDistribution<int, 2> distAssign2d = distDisc2D;
+  std::cout << "Assignment operator: " << std::endl << distAssign2d
+    << std::endl;
+  if (distAssign2d.getMaxSupport() != distDisc2D.getMaxSupport())
+    return 1;
+  if (distAssign2d.getMinSupport() != distDisc2D.getMinSupport())
+    return 1;
+
+  std::cout << "Testing uniform distribution M-D" << std::endl;
+  UniformDistribution<double, Eigen::Dynamic> distMd(Eigen::Matrix<double,
+    Eigen::Dynamic, 1>::Zero(5),
+    Eigen::Matrix<double, Eigen::Dynamic,1>::Ones(5));
+  std::cout << "Distribution default parameters: " << std::endl << distMd
+    << std::endl << std::endl;
+
+  std::cout << "distMd.getSample(): " << distMd.getSample().transpose()
     << std::endl << std::endl;
 
   return 0;

@@ -29,7 +29,7 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   ContinuousFunctionPlot<double, double, 1> plot(
-    "ScaledInvChiSquareDistribution", ScaledInvChiSquareDistribution(10, 4), 0,
+    "ScaledInvChiSquareDistribution", ScaledInvChiSquareDistribution(5, 4), 0,
      50, 0.1);
   plot.show();
   return app.exec();

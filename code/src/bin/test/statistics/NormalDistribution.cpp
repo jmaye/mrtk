@@ -188,16 +188,16 @@ int main(int argc, char** argv) {
     }
   }
 
-  std::cout << "dist2D.getMean(): " << std::fixed << dist2D.getMean()
-    << std::endl << std::endl;
+  std::cout << "dist2D.getMean(): " << std::endl << std::fixed
+    << dist2D.getMean() << std::endl << std::endl;
   if (dist2D.getMean() != mu2d)
     return 1;
-  std::cout << "dist2D.getCovariance(): " << std::fixed
+  std::cout << "dist2D.getCovariance(): " << std::endl << std::fixed
     << dist2D.getCovariance() << std::endl << std::endl;
   if (dist2D.getCovariance() != sigma22d)
     return 1;
-  std::cout << "dist2D.getMode(): " << std::fixed << dist2D.getMode()
-    << std::endl << std::endl;
+  std::cout << "dist2D.getMode(): " << std::endl << std::fixed
+    << dist2D.getMode() << std::endl << std::endl;
   if (dist2D.getMode() != mu2d)
     return 1;
 

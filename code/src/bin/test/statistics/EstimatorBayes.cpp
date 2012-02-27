@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
   estMult4.addPoints(samplesMult4.begin(), samplesMult4.end());
   std::cout << "Estimation4: " << std::endl << estMult4 << std::endl;
   PoissonDistribution distPois(2.0);
-  std::vector<size_t> samplesPois;
+  std::vector<int> samplesPois;
   distPois.getSamples(samplesPois, 1000);
   EstimatorBayes<PoissonDistribution> estPois;
   estPois.addPoints(samplesPois.begin(), samplesPois.end());

@@ -17,18 +17,19 @@
  ******************************************************************************/
 
 /** \file StudentDistribution1v.h
-    \brief This file defines the univariate Student distribution
+    \brief This file defines the univariate Student's t-distribution
   */
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
+#include "exceptions/InvalidOperationException.h"
 
-/** The StudentDistribution1v class represents a univariate Student
-    distribution, i.e., a predictive distribution for a normal with unknown mean
-    and variance.
-    \brief Univariate Student distribution
+/** The StudentDistribution1v class represents a univariate Student's
+    t-distribution, i.e., a predictive distribution for a normal with unknown
+    mean and variance.
+    \brief Univariate Student's t-distribution
   */
 template <> class StudentDistribution<1> :
   public ContinuousDistribution<double>,
@@ -57,7 +58,7 @@ public:
   void setLocation(double scale);
   /// Returns the location of the distribution
   double getLocation() const;
-  /// Sets the scale of the distribution
+  /// Sets the scale of the distribution (already squared)
   void setScale(double scale) throw (BadArgumentException<double>);
   /// Returns the scale of the distribution
   double getScale() const;
@@ -70,13 +71,13 @@ public:
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
   /// Returns the mean of the distribution
-  double getMean() const;
+  double getMean() const throw (InvalidOperationException);
   /// Returns the median of the distribution
   double getMedian() const;
   /// Returns the mode of the distribution
   double getMode() const;
   /// Returns the variance of the distribution
-  double getVariance() const;
+  double getVariance() const throw (InvalidOperationException);
   /// Access the probability density function at the given value
   virtual double pdf(const double& value) const;
   /// Access the log-probability density function at the given value

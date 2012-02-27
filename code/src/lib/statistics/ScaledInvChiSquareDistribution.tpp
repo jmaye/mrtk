@@ -22,7 +22,7 @@
 
 ScaledInvChiSquareDistribution::ScaledInvChiSquareDistribution(size_t degrees,
     double scale) :
-  InvGammaDistribution<>(0.5 * degrees, 0.5 * degrees * scale) {
+    InvGammaDistribution<>(0.5 * degrees, 0.5 * degrees * scale) {
 }
 
 ScaledInvChiSquareDistribution::ScaledInvChiSquareDistribution(const
@@ -72,8 +72,8 @@ double ScaledInvChiSquareDistribution::getScale() const {
 }
 
 void ScaledInvChiSquareDistribution::setDegrees(size_t degrees) {
-  setShape(degrees * 0.5);
   InvGammaDistribution<>::setScale(0.5 * degrees * getScale());
+  setShape(degrees * 0.5);
 }
 
 size_t ScaledInvChiSquareDistribution::getDegrees() const {

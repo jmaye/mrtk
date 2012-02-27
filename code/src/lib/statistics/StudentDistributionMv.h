@@ -18,7 +18,7 @@
 
 /** \file StudentDistributionMv.h
     \brief This file defines the StudentDistributionMv class, which represents a
-           multivariate Student distribution
+           multivariate Student's t-distribution
   */
 
 #include <Eigen/Cholesky>
@@ -27,11 +27,12 @@
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
+#include "exceptions/InvalidOperationException.h"
 
-/** The StudentDistributionMv class represents a multivariate Student
-    distribution, i.e., a predictive distribution for a normal with unknown
+/** The StudentDistributionMv class represents a multivariate Student's
+    t-distribution, i.e., a predictive distribution for a normal with unknown
     mean and covariance matrix.
-    \brief Multivariate Student distribution
+    \brief Multivariate Student's t-distribution
   */
 template <size_t M> class StudentDistribution :
   public ContinuousDistribution<double, M>,
@@ -80,11 +81,12 @@ public:
   /// Returns the cholesky decomposition of the scale matrix
   const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
   /// Returns the mean of the distribution
-  Eigen::Matrix<double, M, 1> getMean() const;
+  Eigen::Matrix<double, M, 1> getMean() const throw (InvalidOperationException);
   /// Returns the mode of the distribution
   Eigen::Matrix<double, M, 1> getMode() const;
   /// Returns the variance of the distribution
-  Eigen::Matrix<double, M, M> getCovariance() const;
+  Eigen::Matrix<double, M, M> getCovariance() const
+    throw (InvalidOperationException);
   /// Access the probability density function at the given value
   virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
   /// Access the log-probability density function at the given value

@@ -28,8 +28,8 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<double, 1> hist(0, 100, 0.05);
-  ScaledInvChiSquareDistribution dist(10, 4);
+  Histogram<double, 1> hist(0, 1000, 0.05);
+  ScaledInvChiSquareDistribution dist(5, 4);
   std::vector<double> data;
   dist.getSamples(data, 100000);
   hist.addSamples(data);

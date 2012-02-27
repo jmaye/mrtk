@@ -98,6 +98,9 @@ void WishartDistribution<M>::setDegrees(double degrees)
       "than the dimension",
       __FILE__, __LINE__);
   mDegrees = degrees;
+  LogGammaFunction<double> logGammaFunction((size_t)mScale.rows());
+  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) + mDegrees * 0.5 *
+    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
 }
 
 template <size_t M>
@@ -115,10 +118,10 @@ void WishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
       __FILE__, __LINE__);
   mDeterminant = scale.determinant();
   mInverseScale = scale.inverse();
-  LogGammaFunction<double> logGammaFunction((size_t)scale.rows());
-  mNormalizer = mDegrees * scale.rows() * 0.5 * log(2) + mDegrees * 0.5 *
-    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
   mScale = scale;
+  LogGammaFunction<double> logGammaFunction((size_t)mScale.rows());
+  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) + mDegrees * 0.5 *
+    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
 }
 
 template <size_t M>
@@ -154,10 +157,13 @@ Eigen::Matrix<double, M, M> WishartDistribution<M>::getMean() const {
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> WishartDistribution<M>::getMode() const {
-  if (mDegrees >= (size_t)mScale.rows() + 1)
+Eigen::Matrix<double, M, M> WishartDistribution<M>::getMode() const
+    throw (InvalidOperationException) {
+  if (mDegrees >= mScale.rows() + 1)
     return (mDegrees - mScale.rows() - 1) * mScale;
-  return Eigen::Matrix<double, M, M>::Zero(mScale.rows(), mScale.rows());
+  else
+    throw InvalidOperationException("InvWishartDistribution<M>::getMode(): "
+      "degrees of freedom must be bigger than dim + 1");
 }
 
 template <size_t M>

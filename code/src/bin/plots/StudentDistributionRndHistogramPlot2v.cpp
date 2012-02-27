@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
   Histogram<double, 2> hist(Eigen::Matrix<double, 2, 1>(-50, -50),
     Eigen::Matrix<double, 2, 1>(50, 50),
     Eigen::Matrix<double, 2, 1>(0.05, 0.05));
-  StudentDistribution<2> dist(3.0, Eigen::Matrix<double, 2, 1>::Zero(),
-    Eigen::Matrix<double, 2, 2>::Identity());
+  StudentDistribution<2> dist(5, Eigen::Matrix<double, 2, 1>(1.0, 1.0),
+    (Eigen::Matrix<double, 2, 2>() << 2, 0, 0, 2).finished());
   std::vector<Eigen::Matrix<double, 2, 1> > data;
   dist.getSamples(data, 100000);
   hist.addSamples(data);

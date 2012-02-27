@@ -35,7 +35,7 @@ public:
     @{
     */
   /// Point type
-  typedef size_t Point;
+  typedef int Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator

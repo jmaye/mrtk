@@ -30,6 +30,7 @@
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The WishartDistribution class represents a Wishart distribution, i.e., a
     continuous distribution that is a conjugate prior for precision matrix in a
@@ -79,7 +80,7 @@ public:
   /// Returns the mean of the distribution
   Eigen::Matrix<double, M, M> getMean() const;
   /// Returns the mode of the distribution
-  Eigen::Matrix<double, M, M> getMode() const;
+  Eigen::Matrix<double, M, M> getMode() const throw (InvalidOperationException);
   /// Access the probability density function at the given value
   virtual double pdf(const Eigen::Matrix<double, M, M>& value) const;
   /// Access the log-probability density function at the given value

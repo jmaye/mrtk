@@ -114,7 +114,7 @@ void StudentDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
   mTransformation = scale.llt();
   if (mTransformation.isPositiveDefinite() == false)
     throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
-      "StudentDistribution<M>::setScale(): covariance must be positive "
+      "StudentDistribution<M>::setScale(): scale must be positive "
       "definite",
       __FILE__, __LINE__);
   if ((scale.diagonal().cwise() < 0).any() == true)
@@ -208,8 +208,13 @@ double StudentDistribution<M>::mahalanobisDistance(const
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMean() const {
-  return mLocation;
+Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMean() const
+    throw (InvalidOperationException) {
+  if (mDegrees > 1)
+    return mLocation;
+  else
+    throw InvalidOperationException("StudentDistribution<M>::getMean(): "
+      "degrees must be bigger than 1");
 }
 
 template <size_t M>
@@ -219,9 +224,10 @@ Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMode() const {
 
 template <size_t M>
 Eigen::Matrix<double, M, M> StudentDistribution<M>::getCovariance()
-    const {
+    const throw (InvalidOperationException) {
   if (mDegrees > 2)
     return mDegrees / (mDegrees - 2) * mScale;
   else
-    return 4.0 * mScale;
+    throw InvalidOperationException("StudentDistribution<M>::getCovariance(): "
+      "degrees must be bigger than 2");
 }

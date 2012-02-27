@@ -204,7 +204,7 @@ template <typename X, size_t M>
 Eigen::Matrix<X, M, 1> UniformDistribution<X, M>::getSample() const {
   const static Randomizer<X> randomizer;
   Eigen::Matrix<X, M, 1> sample(mMinSupport.size());
-  for (size_t i = 0; i < M; ++i)
+  for (size_t i = 0; i < (size_t)sample.size(); ++i)
     sample(i) = randomizer.sampleUniform(mMinSupport(i), mMaxSupport(i));
   return sample;
 }

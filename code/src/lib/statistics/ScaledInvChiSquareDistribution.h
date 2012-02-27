@@ -51,7 +51,7 @@ public:
   /** \name Accessors
     @{
     */
-  /// Sets the scale of the distribution
+  /// Sets the scale of the distribution (already squared!)
   void setScale(double scale);
   /// Returns the scale of the distribution
   double getScale() const;
