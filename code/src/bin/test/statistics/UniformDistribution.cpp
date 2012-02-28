@@ -21,6 +21,7 @@
   */
 
 #include <iostream>
+#include <limits>
 
 #include "statistics/UniformDistribution.h"
 
@@ -46,22 +47,40 @@ int main(int argc, char** argv) {
 
   std::cout << "pdf(2): " << std::fixed << distCont(2) << std::endl
     << std::endl;
-  if (fabs(distCont(2) - 1.0 / 3.0) > 1e-4)
+  if (fabs(distCont(2) - 1.0 / 3.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf(5): " << std::fixed << distCont(5) << std::endl
     << std::endl;
-  if (fabs(distCont(5) -  1.0 / 3.0) > 1e-4)
+  if (fabs(distCont(5) -  1.0 / 3.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf(3): " << std::fixed << distCont(3) << std::endl
     << std::endl;
-  if (fabs(distCont(3) -  1.0 / 3.0) > 1e-4)
+  if (fabs(distCont(3) -  1.0 / 3.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf(10): " << std::fixed << distCont(10) << std::endl
     << std::endl;
-  if (fabs(distCont(10) - 0.0) > 1e-4)
+  if (fabs(distCont(10) - 0.0) > std::numeric_limits<double>::epsilon())
+    return 1;
+
+  std::cout << "dist.getMean(): " << std::fixed << distCont.getMean()
+    << std::endl << std::endl;
+  if (fabs(distCont.getMean() - 1.5) > std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getVariance(): " << std::fixed << distCont.getVariance()
+    << std::endl << std::endl;
+  if (fabs(distCont.getVariance() - 9.0 / 12.0) >
+      std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getMode(): " << std::fixed << distCont.getMode()
+    << std::endl << std::endl;
+  if (fabs(distCont.getMode() - 2) > std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getMedian(): " << std::fixed << distCont.getMedian()
+    << std::endl << std::endl;
+  if (fabs(distCont.getMedian() - 1.5) > std::numeric_limits<double>::epsilon())
     return 1;
 
   try {
@@ -96,6 +115,8 @@ int main(int argc, char** argv) {
   if (distAssign.getMinSupport() != distCont.getMinSupport())
     return 1;
 
+  std::cout << std::endl;
+
   std::cout << "Testing discrete uniform distribution 1-D" << std::endl;
   UniformDistribution<size_t> distDisc;
   std::cout << "Distribution default parameters: " << std::endl << distDisc
@@ -117,22 +138,40 @@ int main(int argc, char** argv) {
 
   std::cout << "pdf(2): " << std::fixed << distDisc(2) << std::endl
     << std::endl;
-  if (fabs(distDisc(2) - 1.0 / 4.0) > 1e-4)
+  if (fabs(distDisc(2) - 1.0 / 4.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf(5): " << std::fixed << distDisc(5) << std::endl
     << std::endl;
-  if (fabs(distDisc(5) -  1.0 / 4.0) > 1e-4)
+  if (fabs(distDisc(5) -  1.0 / 4.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf(3): " << std::fixed << distDisc(3) << std::endl
     << std::endl;
-  if (fabs(distDisc(3) -  1.0 / 4.0) > 1e-4)
+  if (fabs(distDisc(3) -  1.0 / 4.0) > std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf(10): " << std::fixed << distDisc(10) << std::endl
     << std::endl;
-  if (fabs(distDisc(10) - 0.0) > 1e-4)
+  if (fabs(distDisc(10) - 0.0) > std::numeric_limits<double>::epsilon())
+    return 1;
+
+  std::cout << "dist.getMean(): " << std::fixed << distDisc.getMean()
+    << std::endl << std::endl;
+  if (fabs(distDisc.getMean() - 1.5) > std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getVariance(): " << std::fixed << distDisc.getVariance()
+    << std::endl << std::endl;
+  if (fabs(distDisc.getVariance() - 15.0 / 12.0) >
+      std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getMode(): " << std::fixed << distDisc.getMode()
+    << std::endl << std::endl;
+  if (fabs(distDisc.getMode() - 2) > std::numeric_limits<double>::epsilon())
+    return 1;
+  std::cout << "dist.getMedian(): " << std::fixed << distDisc.getMedian()
+    << std::endl << std::endl;
+  if (fabs(distDisc.getMedian() - 1.5) > std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "dist.getSample(): " << std::endl << distDisc.getSample()
@@ -160,26 +199,29 @@ int main(int argc, char** argv) {
   std::cout << "Distribution new parameters: " << std::endl << distCont2D
     << std::endl << std::endl;
 
-
   std::cout << "pdf((2, 2)): " << std::fixed
     << distCont2D(Eigen::Matrix<double, 2, 1>(2, 2)) << std::endl << std::endl;
-  if (fabs(distCont2D(Eigen::Matrix<double, 2, 1>(2, 2)) - 1.0 / 9.0) > 1e-4)
+  if (fabs(distCont2D(Eigen::Matrix<double, 2, 1>(2, 2)) - 1.0 / 9.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf((5, 5)): " << std::fixed
     << distCont2D(Eigen::Matrix<double, 2, 1>(5, 5)) << std::endl << std::endl;
-  if (fabs(distCont2D(Eigen::Matrix<double, 2, 1>(5, 5)) -  1.0 / 9.0) > 1e-4)
+  if (fabs(distCont2D(Eigen::Matrix<double, 2, 1>(5, 5)) -  1.0 / 9.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf((3, 3)): " << std::fixed
     << distCont2D(Eigen::Matrix<double, 2, 1>(3, 3)) << std::endl << std::endl;
-  if (fabs(distCont2D(Eigen::Matrix<double, 2, 1>(3, 3)) -  1.0 / 9.0) > 1e-4)
+  if (fabs(distCont2D(Eigen::Matrix<double, 2, 1>(3, 3)) -  1.0 / 9.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf((10, 10)): " << std::fixed
     << distCont2D(Eigen::Matrix<double, 2, 1>(10, 10)) << std::endl
     << std::endl;
-  if (fabs(distCont2D(Eigen::Matrix<double, 2, 1>(10, 10)) - 0.0) > 1e-4)
+  if (fabs(distCont2D(Eigen::Matrix<double, 2, 1>(10, 10)) - 0.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "dist.getSample(): " << std::endl << distCont2D.getSample()
@@ -192,6 +234,8 @@ int main(int argc, char** argv) {
   catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
     std::cout << e.what() << std::endl;
   }
+
+  std::cout << std::endl;
 
   std::cout << "Testing discrete uniform distribution 2-D" << std::endl;
   UniformDistribution<int, 2> distDisc2D;
@@ -213,24 +257,37 @@ int main(int argc, char** argv) {
 
   std::cout << "pdf((2, 2)): " << std::fixed
     << distDisc2D(Eigen::Matrix<int, 2, 1>(2, 2)) << std::endl << std::endl;
-  if (fabs(distDisc2D(Eigen::Matrix<int, 2, 1>(2, 2)) - 1.0 / 16.0) > 1e-4)
+  if (fabs(distDisc2D(Eigen::Matrix<int, 2, 1>(2, 2)) - 1.0 / 16.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf((5, 5)): " << std::fixed
     << distDisc2D(Eigen::Matrix<int, 2, 1>(5, 5)) << std::endl << std::endl;
-  if (fabs(distDisc2D(Eigen::Matrix<int, 2, 1>(5, 5)) -  1.0 / 16.0) > 1e-4)
+  if (fabs(distDisc2D(Eigen::Matrix<int, 2, 1>(5, 5)) -  1.0 / 16.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf((3, 3)): " << std::fixed
     << distDisc2D(Eigen::Matrix<int, 2, 1>(3, 3)) << std::endl << std::endl;
-  if (fabs(distDisc2D(Eigen::Matrix<int, 2, 1>(3, 3)) -  1.0 / 16.0) > 1e-4)
+  if (fabs(distDisc2D(Eigen::Matrix<int, 2, 1>(3, 3)) -  1.0 / 16.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
 
   std::cout << "pdf((10, 10)): " << std::fixed
     << distDisc2D(Eigen::Matrix<int, 2, 1>(10, 10)) << std::endl
     << std::endl;
-  if (fabs(distDisc2D(Eigen::Matrix<int, 2, 1>(10, 10)) - 0.0) > 1e-4)
+  if (fabs(distDisc2D(Eigen::Matrix<int, 2, 1>(10, 10)) - 0.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
+
+  std::cout << "dist.getMean(): " << std::fixed << distDisc2D.getMean()
+    << std::endl << std::endl;
+  std::cout << "dist.getCovariance(): " << std::fixed
+    << distDisc2D.getCovariance() << std::endl << std::endl;
+  std::cout << "dist.getMode(): " << std::fixed << distDisc2D.getMode()
+    << std::endl << std::endl;
+  std::cout << "dist.getMedian(): " << std::fixed << distDisc2D.getMedian()
+    << std::endl << std::endl;
 
   std::cout << "dist.getSample(): " << std::endl << distDisc2D.getSample()
     << std::endl << std::endl;
@@ -255,6 +312,8 @@ int main(int argc, char** argv) {
     return 1;
   if (distAssign2d.getMinSupport() != distDisc2D.getMinSupport())
     return 1;
+
+  std::cout << std::endl;
 
   std::cout << "Testing uniform distribution M-D" << std::endl;
   UniformDistribution<double, Eigen::Dynamic> distMd(Eigen::Matrix<double,

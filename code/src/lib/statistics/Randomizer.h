@@ -27,6 +27,8 @@
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 #include "utils/SizeTSupport.h"
+#include "utils/IsReal.h"
+#include "utils/IsInteger.h"
 
 /** The Randomizer class implements random sampling from several distributions
     \brief Random sampling from distributions
@@ -37,23 +39,15 @@ public:
   /** \name Traits
     @{
     */
-  /// Rounding support for all integer types
-  template <typename U, size_t D = 0> struct Traits {
+  /// Specialization for integer or real types
+  struct Traits {
   public:
-    /// Round function
-    static U round(double value);
-  };
-  /// Rounding support for float type
-  template <size_t D> struct Traits<float, D> {
-  public:
-    /// Round function
-    static float round(float value);
-  };
-  /// Rounding support for double type
-  template <size_t D> struct Traits<double, D> {
-  public:
-    /// Round function
-    static double round(double value);
+    /// Round function for real types
+    template <typename Z, typename IsReal<Z>::Result::Numeric>
+      static Z round(const Z& value);
+    /// Round function for integer types
+    template <typename Z, typename IsInteger<Z>::Result::Numeric>
+      static Z round(const double& value);
   };
   /** @}
     */

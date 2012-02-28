@@ -28,6 +28,7 @@
 #include "exceptions/BadArgumentException.h"
 #include "utils/IfThenElse.h"
 #include "utils/IsReal.h"
+#include "utils/IsInteger.h"
 
 /** The UniformDistributionMv class represents an interface to the multivariate
     uniform distributions.
@@ -42,35 +43,27 @@ public:
   /** \name Traits
     @{
     */
-  /// Mapping in case one calls the pdf instead of pmf
-  template <typename U, size_t D = 0> struct Traits {
+  /// Specialization for integer or real types
+  struct Traits {
   public:
-    /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<U, M>& distribution,
-      const Eigen::Matrix<U, M, 1>& value);
-    /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<U, M>& distribution,
-      const Eigen::Matrix<U, M, 1>& value);
-  };
-  /// Mapping in case one calls the pmf instead of pdf
-  template <size_t D> struct Traits<float, D> {
-  public:
-    /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<float, M>& distribution,
-      const Eigen::Matrix<float, M, 1>&);
-    /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<float, M>& distribution,
-      const Eigen::Matrix<float, M, 1>&);
-  };
-  /// Mapping in case one calls the pmf instead of pdf
-  template <size_t D> struct Traits<double, D> {
-  public:
-    /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<double, M>& distribution,
-      const Eigen::Matrix<double, M, 1>&);
-    /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<double, M>& distribution,
-      const Eigen::Matrix<double, M, 1>&);
+    /// Get support area for real types
+    template <typename Z, typename IsReal<Z>::Result::Numeric>
+      static Z getSupportArea(const Eigen::Matrix<Z, M, 1>& minSupport, const
+        Eigen::Matrix<Z, M, 1>& maxSupport);
+    /// Get support area for integer types
+    template <typename Z, typename IsInteger<Z>::Result::Numeric>
+      static Z getSupportArea(const Eigen::Matrix<Z, M, 1>& minSupport, const
+        Eigen::Matrix<Z, M, 1>& maxSupport);
+    /// Get covariance for real types
+    template <typename Z, typename IsReal<Z>::Result::Numeric>
+      static Eigen::Matrix<double, M, M> getCovariance(
+        const Eigen::Matrix<Z, M, 1>& minSupport,
+        const Eigen::Matrix<Z, M, 1>& maxSupport);
+    /// Get covariance for integer types
+    template <typename Z, typename IsInteger<Z>::Result::Numeric>
+      static Eigen::Matrix<double, M, M> getCovariance(
+        const Eigen::Matrix<Z, M, 1>& minSupport,
+        const Eigen::Matrix<Z, M, 1>& maxSupport);
   };
   /** @}
     */
@@ -107,7 +100,15 @@ public:
   /// Returns the maximum support
   const Eigen::Matrix<X, M, 1>& getMaxSupport() const;
   /// Access the multivariate uniform distribution's support area
-  X getSupportArea() const;
+  const X& getSupportArea() const;
+  /// Returns the mean of the distribution
+  Eigen::Matrix<double, M, 1> getMean() const;
+  /// Returns the median of the distribution
+  Eigen::Matrix<double, M, 1> getMedian() const;
+  /// Returns the mode of the distribution
+  Eigen::Matrix<double, M, 1> getMode() const;
+  /// Returns the variance of the distribution
+  Eigen::Matrix<double, M, M> getCovariance() const;
   /// Access the probablity density function at the given value
   virtual double pdf(const Eigen::Matrix<X, M, 1>& value) const;
   /// Access the probablity mass function at the given value

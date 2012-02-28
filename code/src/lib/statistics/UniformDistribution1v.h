@@ -28,6 +28,7 @@
 #include "exceptions/BadArgumentException.h"
 #include "utils/IfThenElse.h"
 #include "utils/IsReal.h"
+#include "utils/IsInteger.h"
 
 /** The UniformDistribution1v class represents an interface to the univariate
     uniform distributions.
@@ -42,39 +43,21 @@ public:
   /** \name Traits
     @{
     */
-  /// Mapping in case one calls the pdf instead of pmf
-  template <typename U, size_t D = 0> struct Traits {
+  /// Specialization for integer or real types
+  struct Traits {
   public:
-    /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<U>& distribution, U value);
-    /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<U>& distribution, U value);
-    /// Returns the variance of the distribution
-    static double getVariance(const UniformDistribution<U>& distribution);
-  };
-  /// Mapping in case one calls the pmf instead of pdf
-  template <size_t D> struct Traits<float, D> {
-  public:
-    /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<float>& distribution,
-      float value);
-    /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<float>& distribution,
-      float value);
-    /// Returns the variance of the distribution
-    static double getVariance(const UniformDistribution<float>& distribution);
-  };
-  /// Mapping in case one calls the pmf instead of pdf
-  template <size_t D> struct Traits<double, D> {
-  public:
-    /// Access the probablity density function at the given value
-    static double pdf(const UniformDistribution<double>& distribution,
-      double value);
-    /// Access the probablity mass function at the given value
-    static double pmf(const UniformDistribution<double>& distribution,
-      double value);
-    /// Returns the variance of the distribution
-    static double getVariance(const UniformDistribution<double>& distribution);
+    /// Get support area for real types
+    template <typename Z, typename IsReal<Z>::Result::Numeric>
+      static Z getSupportArea(const Z& minSupport, const Z& maxSupport);
+    /// Get support area for integer types
+    template <typename Z, typename IsInteger<Z>::Result::Numeric>
+      static Z getSupportArea(const Z& minSupport, const Z& maxSupport);
+    /// Get variance for real types
+    template <typename Z, typename IsReal<Z>::Result::Numeric>
+      static double getVariance(const Z& minSupport, const Z& maxSupport);
+    /// Get variance for integer types
+    template <typename Z, typename IsInteger<Z>::Result::Numeric>
+      static double getVariance(const Z& minSupport, const Z& maxSupport);
   };
   /** @}
     */
@@ -107,6 +90,8 @@ public:
   void setMaxSupport(const X& maxSupport);
   /// Returns the maximum support
   const X& getMaxSupport() const;
+  /// Returns the support area
+  const X& getSupportArea() const;
   /// Returns the mean of the distribution
   double getMean() const;
   /// Returns the median of the distribution
@@ -146,6 +131,8 @@ protected:
   X mMinSupport;
   /// Maximum support of the distribution
   X mMaxSupport;
+  /// Support area
+  X mSupportArea;
   /** @}
     */
 

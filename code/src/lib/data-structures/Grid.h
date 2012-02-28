@@ -61,8 +61,10 @@ public:
   /// Specialization for integer or real types
   struct Traits {
   public:
+    /// Ceil function for real types
     template <typename Z, typename IsReal<Z>::Result::Numeric>
       static Z ceil(const Z& value);
+    /// Ceil function for integer types
     template <typename Z, typename IsInteger<Z>::Result::Numeric>
       static Z ceil(const Z& value);
   };

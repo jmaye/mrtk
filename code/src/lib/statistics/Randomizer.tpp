@@ -101,8 +101,8 @@ T Randomizer<T, M>::sampleUniform(const T& minSupport, const T& maxSupport)
       "Randomizer<T, M>::sampleUniform(): minimum support must be smaller "
       "than maximum support",
       __FILE__, __LINE__);
-  return minSupport + Traits<T>::round(random() / (double)RAND_MAX *
-    (maxSupport - minSupport));
+  return minSupport + Traits::template round<T, true>(random() /
+    (double)RAND_MAX * (maxSupport - minSupport));
 }
 
 template <typename T, size_t M>
@@ -119,7 +119,8 @@ T Randomizer<T, M>::sampleNormal(const T& mean, const T& variance) const
     s = u * u + v * v;
   }
   while (s >= 1.0 || s == 0.0);
-  return Traits<T>::round(mean + sqrt(variance) * u * sqrt(-2.0 * log(s) / s));
+  return Traits::template round<T, true>(mean + sqrt(variance) * u *
+    sqrt(-2.0 * log(s) / s));
 }
 
 template <typename T, size_t M>
@@ -245,19 +246,13 @@ double Randomizer<T, M>::sampleGamma(double shape, double invScale) const
 }
 
 template <typename T, size_t M>
-template <typename U, size_t D>
-U Randomizer<T, M>::Traits<U, D>::round(double value) {
-  return (U)::round(value);
-}
-
-template <typename T, size_t M>
-template <size_t D>
-float Randomizer<T, M>::Traits<float, D>::round(float value) {
+template <typename Z, typename IsReal<Z>::Result::Numeric>
+Z Randomizer<T, M>::Traits::round(const Z& value) {
   return value;
 }
 
 template <typename T, size_t M>
-template <size_t D>
-double Randomizer<T, M>::Traits<double, D>::round(double value) {
-  return value;
+template <typename Z, typename IsInteger<Z>::Result::Numeric>
+Z Randomizer<T, M>::Traits::round(const double& value) {
+  return (Z)::round(value);
 }
