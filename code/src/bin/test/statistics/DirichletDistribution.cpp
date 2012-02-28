@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
   std::cout << "Testing Dirichlet distribution M-D" << std::endl;
   DirichletDistribution<Eigen::Dynamic> distMd(Eigen::Matrix<double,
     Eigen::Dynamic, 1>::Constant(5, 1.0));
-  std::cout << "Distribution default parameters: " << std::endl << distMd
+  std::cout << "Distribution parameters: " << std::endl << distMd
     << std::endl << std::endl;
 
   std::cout << "distMd.getAlpha(): " << std::endl << distMd.getAlpha()

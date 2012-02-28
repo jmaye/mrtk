@@ -21,6 +21,7 @@
   */
 
 #include <iostream>
+#include <limits>
 
 #include "statistics/Histogram.h"
 
@@ -29,6 +30,7 @@ int main(int argc, char** argv) {
   Histogram<size_t, 1> hist1DiscDefault;
   std::cout << "Histogram default parameters: " << std::endl << hist1DiscDefault
     << std::endl << std::endl;
+
   std::cout << "hist.getMinValue(): " << std::endl << hist1DiscDefault.
     getMinValue() << std::endl << std::endl;
   std::cout << "hist.getMaxValue(): " << std::endl << hist1DiscDefault.
@@ -39,23 +41,27 @@ int main(int argc, char** argv) {
     getNumBins() << std::endl << std::endl;
   std::cout << "hist.getBins(): " << std::endl << hist1DiscDefault.
     getBins() << std::endl << std::endl;
+
   std::cout << "hist.addBinContent(0)" << std::endl;
   std::cout << "hist.addBinContent(1)" << std::endl;
   hist1DiscDefault.addBinContent(0);
   hist1DiscDefault.addBinContent(1);
   std::cout << "hist.getBinContent(0): " << std::endl << hist1DiscDefault.
     getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(0) - 1.0) > 1e-6)
+  if (fabs(hist1DiscDefault.getBinContent(0) - 1.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.getBinContent(1): " << std::endl << hist1DiscDefault.
     getBinContent(1) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(1) - 1.0) > 1e-6)
+  if (fabs(hist1DiscDefault.getBinContent(1) - 1.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.setBinContent(1, 10)" << std::endl;
   hist1DiscDefault.setBinContent(1, 10);
   std::cout << "hist.getBinContent(1): " << std::endl << hist1DiscDefault.
     getBinContent(1) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(1) - 10.0) > 1e-6)
+  if (fabs(hist1DiscDefault.getBinContent(1) - 10.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.addSample(1)" << std::endl;
   hist1DiscDefault.addSample(1);
@@ -63,7 +69,8 @@ int main(int argc, char** argv) {
   hist1DiscDefault.addSample(2);
   std::cout << "hist.getBinContent(1): " << std::endl << hist1DiscDefault.
     getBinContent(1) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(1) - 11.0) > 1e-6)
+  if (fabs(hist1DiscDefault.getBinContent(1) - 11.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.getNormFactor(): " << std::endl << hist1DiscDefault.
     getNormFactor() << std::endl << std::endl;
@@ -91,29 +98,34 @@ int main(int argc, char** argv) {
   hist1DiscDefault.normalize();
   std::cout << "hist.getBinContent(0): " << std::endl << hist1DiscDefault.
     getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(0) - 1.0 / 12) > 1e-6)
+  if (fabs(hist1DiscDefault.getBinContent(0) - 1.0 / 12) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.getBinContent(1): " << std::endl << hist1DiscDefault.
     getBinContent(1) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(1) - 11.0 / 12) > 1e-6)
+  if (fabs(hist1DiscDefault.getBinContent(1) - 11.0 / 12) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.clear()" << std::endl;
   hist1DiscDefault.clear();
   std::cout << "hist.getBins(): " << std::endl << hist1DiscDefault.
     getBins() << std::endl << std::endl;
   try {
+    std::cout << "hist.setBinContent(2, 10)" << std::endl;
     hist1DiscDefault.setBinContent(2, 10);
   }
   catch (OutOfBoundException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
   try {
+    std::cout << "hist.getBinContent(2)" << std::endl;
     hist1DiscDefault.getBinContent(2);
   }
   catch (OutOfBoundException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
   try {
+    std::cout << "hist.addBinContent(2)" << std::endl;
     hist1DiscDefault.addBinContent(2);
   }
   catch (OutOfBoundException<size_t>& e) {
@@ -131,6 +143,7 @@ int main(int argc, char** argv) {
   catch (BadArgumentException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
+
   Histogram<double, 1> hist1ContDefault;
   std::cout << "Testing continuous histograms 1-D" << std::endl;
   std::cout << "Histogram default parameters: " << std::endl << hist1ContDefault
@@ -147,13 +160,15 @@ int main(int argc, char** argv) {
   hist1ContDefault.addBinContent(0);
   std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
     getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1ContDefault.getBinContent(0) - 1.0) > 1e-6)
+  if (fabs(hist1ContDefault.getBinContent(0) - 1.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.setBinContent(0, 10)" << std::endl;
   hist1ContDefault.setBinContent(0, 10);
   std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
     getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1ContDefault.getBinContent(0) - 10.0) > 1e-6)
+  if (fabs(hist1ContDefault.getBinContent(0) - 10.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.addSample(0.5)" << std::endl;
   hist1ContDefault.addSample(0.5);
@@ -161,7 +176,8 @@ int main(int argc, char** argv) {
   hist1ContDefault.addSample(1.5);
   std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
     getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1ContDefault.getBinContent(0) - 11.0) > 1e-6)
+  if (fabs(hist1ContDefault.getBinContent(0) - 11.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.getNormFactor(): " << std::endl << hist1ContDefault.
     getNormFactor() << std::endl << std::endl;
@@ -187,25 +203,29 @@ int main(int argc, char** argv) {
   hist1ContDefault.normalize();
   std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
     getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1ContDefault.getBinContent(0) - 1.0) > 1e-6)
+  if (fabs(hist1ContDefault.getBinContent(0) - 1.0) >
+      std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.clear()" << std::endl;
   hist1ContDefault.clear();
   std::cout << "hist.getBins(): " << std::endl << hist1ContDefault.
     getBins() << std::endl << std::endl;
   try {
+    std::cout << "hist.setBinContent(2, 10)" << std::endl;
     hist1ContDefault.setBinContent(2, 10);
   }
   catch (OutOfBoundException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
   try {
+    std::cout << "hist.getBinContent(2)" << std::endl;
     hist1ContDefault.getBinContent(2);
   }
   catch (OutOfBoundException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
   try {
+    std::cout << "hist.addBinContent(2)" << std::endl;
     hist1ContDefault.addBinContent(2);
   }
   catch (OutOfBoundException<size_t>& e) {
@@ -223,6 +243,7 @@ int main(int argc, char** argv) {
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
   }
+
   std::cout << "Testing discrete histograms 2-D" << std::endl;
   Histogram<size_t, 2> hist2DiscDefault;
   std::cout << "Histogram default parameters: " << std::endl << hist2DiscDefault
@@ -244,19 +265,19 @@ int main(int argc, char** argv) {
   std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2DiscDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
   if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
-    1.0) > 1e-6)
+    1.0) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.getBinContent(0, 1): " << std::endl << hist2DiscDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
   if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) -
-    1.0) > 1e-6)
+    1.0) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.setBinContent((0, 1), 10)" << std::endl;
   hist2DiscDefault.setBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1), 10);
   std::cout << "hist.getBinContent(0, 1): " << std::endl << hist2DiscDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
   if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) -
-    10.0) > 1e-6)
+    10.0) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.addSample(0, 1)" << std::endl;
   hist2DiscDefault.addSample(Eigen::Matrix<size_t, 2, 1>(0, 1));
@@ -265,7 +286,7 @@ int main(int argc, char** argv) {
   std::cout << "hist.getBinContent(0, 1): " << std::endl << hist2DiscDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
   if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) -
-    11.0) > 1e-6)
+    11.0) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.getNormFactor(): " << std::endl << hist2DiscDefault.
     getNormFactor() << std::endl << std::endl;
@@ -294,12 +315,12 @@ int main(int argc, char** argv) {
   std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2DiscDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
   if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
-    1.0 / 12) > 1e-6)
+    1.0 / 12) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.getBinContent(0, 1): " << std::endl << hist2DiscDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) << std::endl << std::endl;
   if (fabs(hist2DiscDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 1)) -
-    11.0 / 12) > 1e-6)
+    11.0 / 12) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.clear()" << std::endl;
   hist2DiscDefault.clear();
@@ -356,14 +377,14 @@ int main(int argc, char** argv) {
   std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
   if (fabs(hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
-    1.0) > 1e-6)
+    1.0) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.setBinContent((0, 0), 10)" << std::endl;
   hist2ContDefault.setBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0), 10);
   std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
   if (fabs(hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
-    10.0) > 1e-6)
+    10.0) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.addSample(0.5, 0.5)" << std::endl;
   hist2ContDefault.addSample(Eigen::Matrix<double, 2, 1>(0.5, 0.5));
@@ -372,7 +393,7 @@ int main(int argc, char** argv) {
   std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
   if (fabs(hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
-    11.0) > 1e-6)
+    11.0) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.getNormFactor(): " << std::endl << hist2ContDefault.
     getNormFactor() << std::endl << std::endl;
@@ -399,7 +420,7 @@ int main(int argc, char** argv) {
   std::cout << "hist.getBinContent(0, 0): " << std::endl << hist2ContDefault.
     getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) << std::endl << std::endl;
   if (fabs(hist2ContDefault.getBinContent(Eigen::Matrix<size_t, 2, 1>(0, 0)) -
-    1.0) > 1e-6)
+    1.0) > std::numeric_limits<double>::epsilon())
     return 1;
   std::cout << "hist.clear()" << std::endl;
   hist2ContDefault.clear();

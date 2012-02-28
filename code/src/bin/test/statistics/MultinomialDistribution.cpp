@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
   std::cout << "Testing multinomial distribution M-D" << std::endl;
   MultinomialDistribution<Eigen::Dynamic> distMd(20, Eigen::Matrix<double,
     Eigen::Dynamic, 1>::Constant(5, 1.0 / 5.0));
-  std::cout << "Distribution default parameters: " << std::endl << distMd
+  std::cout << "Distribution parameters: " << std::endl << distMd
     << std::endl << std::endl;
 
   std::cout << "distMd.getSample(): " << distMd.getSample().transpose()

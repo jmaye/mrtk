@@ -262,7 +262,7 @@ int main(int argc, char** argv) {
   NormalDistribution<Eigen::Dynamic> distMd(Eigen::Matrix<double,
     Eigen::Dynamic, 1>::Zero(5), Eigen::Matrix<double, Eigen::Dynamic,
     Eigen::Dynamic>::Identity(5, 5));
-  std::cout << "Distribution default parameters: " << std::endl << distMd
+  std::cout << "Distribution parameters: " << std::endl << distMd
     << std::endl << std::endl;
 
   std::cout << "distMd.getSample(): " << distMd.getSample().transpose()

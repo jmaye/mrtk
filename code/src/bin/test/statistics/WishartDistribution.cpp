@@ -41,9 +41,9 @@ int main(int argc, char** argv) {
     dist.getTransformation().matrixL() << std::endl;
 
   std::cout << "dist.setDegrees(5)" << std::endl;
-  std::cout << "dist.setScale((1, 0, 0, 1))" << std::endl;
+  std::cout << "dist.setScale((2, 0, 0, 2))" << std::endl;
   const Eigen::Matrix<double, 2, 2> scale =
-    (Eigen::Matrix<double, 2, 2>() << 1, 0, 0, 1).finished();
+    (Eigen::Matrix<double, 2, 2>() << 2, 0, 0, 2).finished();
   const size_t degrees = 5;
   dist.setScale(scale);
   dist.setDegrees(degrees);
@@ -59,12 +59,12 @@ int main(int argc, char** argv) {
   R["degrees"] = degrees;
   for (size_t i = 0; i < 100; ++i) {
     std::string expression = "library('MCMCpack');\
-      rwish(degrees, matrix(c(1,0,0,1),2,2))";
+      rwish(degrees, matrix(c(2,0,0,2),2,2))";
     SEXP ans = R.parseEval(expression);
     Rcpp::NumericMatrix x(ans);
     R["X"] = x;
     expression = "library('MCMCpack');\
-      dwish(X, degrees, matrix(c(1,0,0,1),2,2))";
+      dwish(X, degrees, matrix(c(2,0,0,2),2,2))";
     ans = R.parseEval(expression);
     Rcpp::NumericVector y(ans);
     if (fabs(dist((Eigen::Matrix<double, 2, 2>() << x(0, 0), x(0, 1), x(1, 0),
@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
   std::cout << "Testing Wishart distribution M-D" << std::endl;
   WishartDistribution<Eigen::Dynamic> distMd(6,
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Identity(4, 4));
-  std::cout << "Distribution default parameters: " << std::endl << dist
+  std::cout << "Distribution parameters: " << std::endl << distMd
     << std::endl << std::endl;
 
   std::cout << "distMd.getSample(): " << std::endl << distMd.getSample()

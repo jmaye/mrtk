@@ -45,7 +45,8 @@ Grid<T, C, M>::Grid(const Coordinate& minimum, const Coordinate& maximum, const
   mNumCellsTot = 1.0;
   mLinProd = Index::Ones(resolution.size());
   for (size_t i = 0; i < static_cast<size_t>(minimum.size()); ++i) {
-    mNumCells(i) = ceil((maximum(i) - minimum(i)) / resolution(i));
+    mNumCells(i) = Traits::template ceil<T, true>((maximum(i) - minimum(i)) /
+      resolution(i));
     mNumCellsTot *= mNumCells(i);
   }
   for (size_t i = 0; i < static_cast<size_t>(minimum.size()); ++i)
@@ -264,5 +265,17 @@ size_t Grid<T, C, M>::computeLinearIndex(const Index& idx) const {
 template <typename T, typename C, size_t M>
 void Grid<T, C, M>::reset() {
   for (CellIterator it = getCellBegin(); it != getCellEnd(); ++it)
-    it->reset();
+    *it = C();
+}
+
+template <typename T, typename C, size_t M>
+template <typename Z, typename IsReal<Z>::Result::Numeric>
+Z Grid<T, C, M>::Traits::ceil(const Z& value) {
+  return ::ceil(value);
+}
+
+template <typename T, typename C, size_t M>
+template <typename Z, typename IsInteger<Z>::Result::Numeric>
+Z Grid<T, C, M>::Traits::ceil(const Z& value) {
+  return ::ceil(value) + 1;
 }

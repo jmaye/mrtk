@@ -30,6 +30,8 @@
 #include "exceptions/OutOfBoundException.h"
 #include "exceptions/BadArgumentException.h"
 #include "utils/SizeTSupport.h"
+#include "utils/IsReal.h"
+#include "utils/IsInteger.h"
 
 /** The class Grid represents an n-dimensional grid.
     \brief An n-dimensional grid
@@ -50,6 +52,20 @@ public:
   typedef Eigen::Matrix<size_t, M, 1> Index;
   /// Coordinate type
   typedef Eigen::Matrix<T, M, 1> Coordinate;
+  /** @}
+    */
+
+  /** \name Traits
+    @{
+    */
+  /// Specialization for integer or real types
+  struct Traits {
+  public:
+    template <typename Z, typename IsReal<Z>::Result::Numeric>
+      static Z ceil(const Z& value);
+    template <typename Z, typename IsInteger<Z>::Result::Numeric>
+      static Z ceil(const Z& value);
+  };
   /** @}
     */
 
