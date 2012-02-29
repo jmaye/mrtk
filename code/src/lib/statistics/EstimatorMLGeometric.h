@@ -66,7 +66,7 @@ public:
   /// Returns the validity state of the estimator
   bool getValid() const;
   /// Returns the estimated success probability
-  double getSuccessProbability() const;
+  double getProbability() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -98,7 +98,7 @@ protected:
     @{
     */
   /// Estimated success probability
-  double mSuccessProbability;
+  double mProbability;
   /// Estimated mean
   double mMean;
   /// Number of points in the estimator

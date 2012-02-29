@@ -30,19 +30,19 @@ int main(int argc, char** argv) {
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
 
-  std::cout << "dist.getSuccessProbability(): " << dist.getSuccessProbability()
+  std::cout << "dist.getSuccessProbability(): " << dist.getProbability()
     << std::endl << std::endl;
 
-  std::cout << "dist.setSuccessProbability(0.7)" << std::endl << std::endl;
-  dist.setSuccessProbability(0.7);
-  if (dist.getSuccessProbability() != 0.7)
+  std::cout << "dist.setProbability(0.7)" << std::endl << std::endl;
+  dist.setProbability(0.7);
+  if (dist.getProbability() != 0.7)
     return 1;
 
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
 
-  const double p = dist.getSuccessProbability();
-  const double q = 1.0 - dist.getSuccessProbability();
+  const double p = dist.getProbability();
+  const double q = 1.0 - dist.getProbability();
 
   std::cout << "pmf(0): " << std::fixed << dist(0) << std::endl << std::endl;
   if (fabs(dist(0) - q) > std::numeric_limits<double>::epsilon())
@@ -67,8 +67,8 @@ int main(int argc, char** argv) {
     return 1;
 
   try {
-    std::cout << "dist.setSuccessProbability(1.2)" << std::endl;
-    dist.setSuccessProbability(1.2);
+    std::cout << "dist.setProbability(1.2)" << std::endl;
+    dist.setProbability(1.2);
   }
   catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
     std::cout << e.what() << std::endl;
@@ -111,11 +111,11 @@ int main(int argc, char** argv) {
   BernoulliDistribution distCopy(dist);
   std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
     << std::endl;
-  if (distCopy.getSuccessProbability() != dist.getSuccessProbability())
+  if (distCopy.getProbability() != dist.getProbability())
     return 1;
   BernoulliDistribution distAssign = dist;
   std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
-  if (distAssign.getSuccessProbability() != dist.getSuccessProbability())
+  if (distAssign.getProbability() != dist.getProbability())
     return 1;
 
   return 0;

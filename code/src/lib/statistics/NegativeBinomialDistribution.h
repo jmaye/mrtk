@@ -39,8 +39,7 @@ public:
     @{
     */
   /// Constructs the distribution from the parameter
-  NegativeBinomialDistribution(size_t numTrials = 1, double
-    successProbability = 0.5);
+  NegativeBinomialDistribution(size_t numTrials = 1, double probability = 0.5);
   /// Copy constructor
   NegativeBinomialDistribution(const NegativeBinomialDistribution& other);
   /// Assignment operator
@@ -55,9 +54,9 @@ public:
     @{
     */
   /// Sets the success probability
-  void setSuccessProbability(double successProbability);
+  void setProbability(double probability);
   /// Returns the success probability
-  double getSuccessProbability() const;
+  double getProbability() const;
   /// Returns the mean of the distribution
   double getMean() const;
   /// Returns the mode of the distribution

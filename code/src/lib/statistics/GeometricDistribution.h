@@ -44,7 +44,7 @@ public:
     @{
     */
   /// Constructs distribution from parameter
-  GeometricDistribution(double successProbability = 0.5);
+  GeometricDistribution(double probability = 0.5);
   /// Copy constructor
   GeometricDistribution(const GeometricDistribution& other);
   /// Assignment operator
@@ -58,10 +58,9 @@ public:
     @{
     */
   /// Sets the success probability
-  void setSuccessProbability(double successProbability)
-    throw (BadArgumentException<double>);
+  void setProbability(double probability) throw (BadArgumentException<double>);
   /// Returns the success probability
-  double getSuccessProbability() const;
+  double getProbability() const;
   /// Returns the mean of the distribution
   Mean getMean() const;
   /// Returns the mode of the distribution
@@ -99,7 +98,7 @@ protected:
     @{
     */
   /// Success probability
-  double mSuccessProbability;
+  double mProbability;
   /** @}
     */
 

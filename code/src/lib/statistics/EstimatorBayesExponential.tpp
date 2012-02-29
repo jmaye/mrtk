@@ -92,7 +92,7 @@ void EstimatorBayes<ExponentialDistribution>::addPoint(const Point& point) {
   mPostRateDist.setShape(mAlpha);
   mPostRateDist.setInvScale(mBeta);
   // TODO: POST PRED DIST CHECK
-  mPostPredDist.setSuccessProbability(1.0 / (mBeta + 1));
+  mPostPredDist.setProbability(1.0 / (mBeta + 1));
   mPostPredDist.setNumTrials(mAlpha);
 }
 

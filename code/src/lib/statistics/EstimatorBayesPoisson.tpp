@@ -88,7 +88,7 @@ void EstimatorBayes<PoissonDistribution>::addPoint(const Point& point) {
   mBeta += 1;
   mPostMeanDist.setShape(mAlpha);
   mPostMeanDist.setInvScale(mBeta);
-  mPostPredDist.setSuccessProbability(1.0 / (mBeta + 1));
+  mPostPredDist.setProbability(1.0 / (mBeta + 1));
   mPostPredDist.setNumTrials(mAlpha);
 }
 

@@ -33,15 +33,15 @@ int main(int argc, char** argv) {
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
 
-  std::cout << "dist.getSuccessProbability(): "
-    << dist.getSuccessProbability() << std::endl << std::endl;
+  std::cout << "dist.getProbability(): "
+    << dist.getProbability() << std::endl << std::endl;
 
-  std::cout << "dist.setSuccessProbability(0.7)" << std::endl << std::endl;
+  std::cout << "dist.setProbability(0.7)" << std::endl << std::endl;
   const double p = 0.7;
-  dist.setSuccessProbability(p);
+  dist.setProbability(p);
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
-  if (dist.getSuccessProbability() != p)
+  if (dist.getProbability() != p)
     return 1;
 
   const int min = -10.0;
@@ -90,8 +90,8 @@ int main(int argc, char** argv) {
     return 1;
 
   try {
-    std::cout << "dist.setSuccessProbability(1.2)" << std::endl;
-    dist.setSuccessProbability(1.2);
+    std::cout << "dist.setProbability(1.2)" << std::endl;
+    dist.setProbability(1.2);
   }
   catch (BadArgumentException<double>& e) {
     std::cout << e.what() << std::endl;
@@ -110,11 +110,11 @@ int main(int argc, char** argv) {
   GeometricDistribution distCopy(dist);
   std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
     << std::endl;
-  if (distCopy.getSuccessProbability() != dist.getSuccessProbability())
+  if (distCopy.getProbability() != dist.getProbability())
     return 1;
   GeometricDistribution distAssign = dist;
   std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
-  if (distAssign.getSuccessProbability() != dist.getSuccessProbability())
+  if (distAssign.getProbability() != dist.getProbability())
     return 1;
 
   return 0;

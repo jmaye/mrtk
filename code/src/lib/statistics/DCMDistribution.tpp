@@ -193,7 +193,7 @@ typename DCMDistribution<M>::RandomVariable DCMDistribution<M>::getSample()
     const {
   static MultinomialDistribution<M> multDist;
   multDist.setNumTrials(mNumTrials);
-  multDist.setSuccessProbabilities(mDirDist.getSample());
+  multDist.setProbabilities(mDirDist.getSample());
   return multDist.getSample();
 }
 

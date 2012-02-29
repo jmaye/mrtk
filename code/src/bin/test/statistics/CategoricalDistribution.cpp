@@ -31,19 +31,18 @@ int main(int argc, char** argv) {
   std::cout << "Distribution default parameters: " << std::endl << dist
     << std::endl << std::endl;
 
-  std::cout << "dist.getSuccessProbabilities(): " << std::endl
-    << dist.getSuccessProbabilities() << std::endl << std::endl;
-  std::cout << "dist.getSuccessProbability(0): "
-    << dist.getSuccessProbability(0) << std::endl << std::endl;
-  std::cout << "dist.getSuccessProbability(1): "
-    << dist.getSuccessProbability(1) << std::endl << std::endl;
+  std::cout << "dist.getProbabilities(): " << std::endl
+    << dist.getProbabilities() << std::endl << std::endl;
+  std::cout << "dist.getProbability(0): "
+    << dist.getProbability(0) << std::endl << std::endl;
+  std::cout << "dist.getProbability(1): "
+    << dist.getProbability(1) << std::endl << std::endl;
 
-  std::cout << "dist.setSuccessProbabilities(0.7, 0.3)" << std::endl
-    << std::endl;
-  dist.setSuccessProbabilities(Eigen::Matrix<double, 2, 1>(0.7, 0.3));
+  std::cout << "dist.setProbabilities(0.7, 0.3)" << std::endl << std::endl;
+  dist.setProbabilities(Eigen::Matrix<double, 2, 1>(0.7, 0.3));
   std::cout << "Distribution new parameters: " << std::endl << dist
     << std::endl << std::endl;
-  if (dist.getSuccessProbabilities() != Eigen::Matrix<double, 2, 1>(0.7, 0.3))
+  if (dist.getProbabilities() != Eigen::Matrix<double, 2, 1>(0.7, 0.3))
     return 1;
 
   Eigen::Matrix<int, 2, 1> value1;
@@ -67,16 +66,16 @@ int main(int argc, char** argv) {
     return 1;
 
   try {
-    std::cout << "dist.getSuccessProbability(2): " << std::endl;
-    std::cout << dist.getSuccessProbability(2) << std::endl << std::endl;
+    std::cout << "dist.getProbability(2): " << std::endl;
+    std::cout << dist.getProbability(2) << std::endl << std::endl;
   }
   catch (OutOfBoundException<size_t>& e) {
     std::cout << e.what() << std::endl;
   }
   std::cout << std::endl;
   try {
-    std::cout << "dist.setSuccessProbabilities(0.8, 0.9)" << std::endl;
-    dist.setSuccessProbabilities(Eigen::Vector2d(0.8, 0.9));
+    std::cout << "dist.setProbabilities(0.8, 0.9)" << std::endl;
+    dist.setProbabilities(Eigen::Vector2d(0.8, 0.9));
   }
   catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
     std::cout << e.what() << std::endl;
@@ -106,11 +105,11 @@ int main(int argc, char** argv) {
   CategoricalDistribution<2> distCopy(dist);
   std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
     << std::endl;
-  if (distCopy.getSuccessProbabilities() != dist.getSuccessProbabilities())
+  if (distCopy.getProbabilities() != dist.getProbabilities())
     return 1;
   CategoricalDistribution<2> distAssign = dist;
   std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
-  if (distAssign.getSuccessProbabilities() != dist.getSuccessProbabilities())
+  if (distAssign.getProbabilities() != dist.getProbabilities())
     return 1;
 
   std::cout << "Testing categorical distribution M-D" << std::endl;
@@ -119,20 +118,20 @@ int main(int argc, char** argv) {
   std::cout << "Distribution parameters: " << std::endl << distMd
     << std::endl << std::endl;
 
-  std::cout << "distMd.getSuccessProbabilities(): " << std::endl
-    << distMd.getSuccessProbabilities() << std::endl << std::endl;
-  std::cout << "distMd.getSuccessProbability(0): "
-    << distMd.getSuccessProbability(0) << std::endl << std::endl;
-  std::cout << "distMd.getSuccessProbability(1): "
-    << distMd.getSuccessProbability(1) << std::endl << std::endl;
-  std::cout << "distMd.getSuccessProbability(2): "
-    << distMd.getSuccessProbability(2) << std::endl << std::endl;
-  std::cout << "distMd.getSuccessProbability(3): "
-    << distMd.getSuccessProbability(3) << std::endl << std::endl;
-  std::cout << "distMd.getSuccessProbability(4): "
-    << distMd.getSuccessProbability(4) << std::endl << std::endl;
+  std::cout << "distMd.getProbabilities(): " << std::endl
+    << distMd.getProbabilities() << std::endl << std::endl;
+  std::cout << "distMd.getProbability(0): "
+    << distMd.getProbability(0) << std::endl << std::endl;
+  std::cout << "distMd.getProbability(1): "
+    << distMd.getProbability(1) << std::endl << std::endl;
+  std::cout << "distMd.getProbability(2): "
+    << distMd.getProbability(2) << std::endl << std::endl;
+  std::cout << "distMd.getProbability(3): "
+    << distMd.getProbability(3) << std::endl << std::endl;
+  std::cout << "distMd.getProbability(4): "
+    << distMd.getProbability(4) << std::endl << std::endl;
 
-  std::cout << "distMd.setSuccessProbabilities(0.1, 0.2, 0.3, 0.1, 0.3)"
+  std::cout << "distMd.setProbabilities(0.1, 0.2, 0.3, 0.1, 0.3)"
     << std::endl << std::endl;
   Eigen::Matrix<double, Eigen::Dynamic, 1> probabilities(5);
   probabilities(0) = 0.1;
@@ -140,10 +139,10 @@ int main(int argc, char** argv) {
   probabilities(2) = 0.3;
   probabilities(3) = 0.1;
   probabilities(4) = 0.3;
-  distMd.setSuccessProbabilities(probabilities);
+  distMd.setProbabilities(probabilities);
   std::cout << "Distribution new parameters: " << std::endl << distMd
     << std::endl << std::endl;
-  if (distMd.getSuccessProbabilities() != probabilities)
+  if (distMd.getProbabilities() != probabilities)
     return 1;
 
   Eigen::Matrix<int, Eigen::Dynamic, 1> value(5);
@@ -158,8 +157,8 @@ int main(int argc, char** argv) {
     return 1;
 
   try {
-    std::cout << "distMd.getSuccessProbability(6): " << std::endl;
-    std::cout << distMd.getSuccessProbability(6) << std::endl << std::endl;
+    std::cout << "distMd.getProbability(6): " << std::endl;
+    std::cout << distMd.getProbability(6) << std::endl << std::endl;
   }
   catch (OutOfBoundException<size_t>& e) {
     std::cout << e.what() << std::endl;
@@ -171,9 +170,9 @@ int main(int argc, char** argv) {
   probabilities(3) = 0.1;
   probabilities(4) = 0.4;
   try {
-    std::cout << "distMd.setSuccessProbabilities(0.1, 0.2, 0.3, 0.1, 0.4)"
+    std::cout << "distMd.setProbabilities(0.1, 0.2, 0.3, 0.1, 0.4)"
       << std::endl;
-    distMd.setSuccessProbabilities(probabilities);
+    distMd.setProbabilities(probabilities);
   }
   catch (BadArgumentException<Eigen::Matrix<double, Eigen::Dynamic, 1> >& e) {
     std::cout << e.what() << std::endl;
@@ -200,12 +199,12 @@ int main(int argc, char** argv) {
   CategoricalDistribution<Eigen::Dynamic> distMdCopy(distMd);
   std::cout << "Copy constructor: " << std::endl << distMdCopy << std::endl
     << std::endl;
-  if (distMdCopy.getSuccessProbabilities() != distMd.getSuccessProbabilities())
+  if (distMdCopy.getProbabilities() != distMd.getProbabilities())
     return 1;
   CategoricalDistribution<Eigen::Dynamic> distMdAssign = distMd;
   std::cout << "Assignment operator: " << std::endl << distMdAssign
     << std::endl;
-  if (distMdAssign.getSuccessProbabilities() != distMd.getSuccessProbabilities())
+  if (distMdAssign.getProbabilities() != distMd.getProbabilities())
     return 1;
 
   return 0;

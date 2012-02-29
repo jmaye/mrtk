@@ -29,15 +29,15 @@
 
 template <size_t M>
 MultinomialDistribution<M>::MultinomialDistribution(size_t numTrials, const
-    Eigen::Matrix<double, M, 1>& successProbabilities) {
-  setSuccessProbabilities(successProbabilities);
+    Eigen::Matrix<double, M, 1>& probabilities) {
+  setProbabilities(probabilities);
   setNumTrials(numTrials);
 }
 
 template <size_t M>
 MultinomialDistribution<M>::MultinomialDistribution(const
     MultinomialDistribution<M>& other) :
-    mSuccessProbabilities(other.mSuccessProbabilities),
+    mProbabilities(other.mProbabilities),
     mNumTrials(other.mNumTrials) {
 }
 
@@ -45,7 +45,7 @@ template <size_t M>
 MultinomialDistribution<M>& MultinomialDistribution<M>::operator =
     (const MultinomialDistribution<M>& other) {
   if (this != &other) {
-    mSuccessProbabilities = other.mSuccessProbabilities;
+    mProbabilities = other.mProbabilities;
     mNumTrials = other.mNumTrials;
   }
   return *this;
@@ -66,7 +66,7 @@ void MultinomialDistribution<M>::read(std::istream& stream) {
 template <size_t M>
 void MultinomialDistribution<M>::write(std::ostream& stream) const {
   stream << "success probabilities: "
-    << mSuccessProbabilities.transpose() << std::endl
+    << mProbabilities.transpose() << std::endl
     << "trials number: " << mNumTrials;
 }
 
@@ -83,34 +83,34 @@ void MultinomialDistribution<M>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 template <size_t M>
-void MultinomialDistribution<M>::setSuccessProbabilities(const
-    Eigen::Matrix<double, M, 1>& successProbabilities) throw
+void MultinomialDistribution<M>::setProbabilities(const
+    Eigen::Matrix<double, M, 1>& probabilities) throw
     (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if (fabs(successProbabilities.sum() - 1.0) >
+  if (fabs(probabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
-    (successProbabilities.cwise() < 0).any())
+    (probabilities.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
-      successProbabilities,
-      "MultinomialDistribution<M>::setSuccessProbabilities(): success "
+      probabilities,
+      "MultinomialDistribution<M>::setProbabilities(): success "
       "probabilities must sum to 1 and have probabilities bigger or equal to 0",
       __FILE__, __LINE__);
-  mSuccessProbabilities = successProbabilities;
+  mProbabilities = probabilities;
 }
 
 template <size_t M>
-double MultinomialDistribution<M>::getSuccessProbability(size_t idx) const
+double MultinomialDistribution<M>::getProbability(size_t idx) const
     throw (OutOfBoundException<size_t>) {
-  if (idx >= (size_t)mSuccessProbabilities.size())
+  if (idx >= (size_t)mProbabilities.size())
     throw OutOfBoundException<size_t>(idx,
-      "MultinomialDistribution<M>::getSuccessProbability(): index out of bound",
+      "MultinomialDistribution<M>::getProbability(): index out of bound",
       __FILE__, __LINE__);
-  return mSuccessProbabilities(idx);
+  return mProbabilities(idx);
 }
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>&
-    MultinomialDistribution<M>::getSuccessProbabilities() const {
-  return mSuccessProbabilities;
+    MultinomialDistribution<M>::getProbabilities() const {
+  return mProbabilities;
 }
 
 template <size_t M>
@@ -191,8 +191,8 @@ double MultinomialDistribution<M>::logpmf(const RandomVariable& value) const
       __FILE__, __LINE__);
   const LogFactorialFunction logFactorialFunction;
   double sum = logFactorialFunction(mNumTrials);
-  for (size_t i = 0; i < (size_t)mSuccessProbabilities.size(); ++i)
-    sum += value(i) * log(mSuccessProbabilities(i)) -
+  for (size_t i = 0; i < (size_t)mProbabilities.size(); ++i)
+    sum += value(i) * log(mProbabilities(i)) -
       logFactorialFunction(value(i));
   return sum;
 }
@@ -208,29 +208,27 @@ typename MultinomialDistribution<M>::RandomVariable
     MultinomialDistribution<M>::getSample() const {
   const static Randomizer<double, M> randomizer;
   RandomVariable sampleVector =
-    RandomVariable::Zero(mSuccessProbabilities.size());
+    RandomVariable::Zero(mProbabilities.size());
   for (size_t i = 0; i < mNumTrials; ++i)
-    sampleVector(randomizer.sampleCategorical(mSuccessProbabilities))++;
+    sampleVector(randomizer.sampleCategorical(mProbabilities))++;
   return sampleVector;
 }
 
 template <size_t M>
 typename MultinomialDistribution<M>::Mean MultinomialDistribution<M>::getMean()
     const {
-  return mNumTrials * mSuccessProbabilities;
+  return mNumTrials * mProbabilities;
 }
 
 template <size_t M>
 typename MultinomialDistribution<M>::Covariance
     MultinomialDistribution<M>::getCovariance() const {
-  Covariance covariance(mSuccessProbabilities.size(),
-    mSuccessProbabilities.size());
-  for (size_t i = 0; i < (size_t)mSuccessProbabilities.size(); ++i) {
-    covariance(i, i) = mNumTrials * mSuccessProbabilities(i) * (1 -
-      mSuccessProbabilities(i));
-    for (size_t j = i + 1; j < (size_t)mSuccessProbabilities.size(); ++j) {
-      covariance(i, j) = -1.0 * mNumTrials * mSuccessProbabilities(i) *
-        mSuccessProbabilities(j);
+  Covariance covariance(mProbabilities.size(), mProbabilities.size());
+  for (size_t i = 0; i < (size_t)mProbabilities.size(); ++i) {
+    covariance(i, i) = mNumTrials * mProbabilities(i) * (1 - mProbabilities(i));
+    for (size_t j = i + 1; j < (size_t)mProbabilities.size(); ++j) {
+      covariance(i, j) = -1.0 * mNumTrials * mProbabilities(i) *
+        mProbabilities(j);
       covariance(j, i) = covariance(i, j);
     }
   }

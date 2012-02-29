@@ -34,21 +34,21 @@ int main(int argc, char** argv) {
     << std::endl << std::endl;
   std::cout << "dist.getNumTrials(): " << dist.getNumTrials()
     << std::endl << std::endl;
-  std::cout << "dist.getSuccessProbabilities(): " << std::endl
-    << dist.getSuccessProbabilities() << std::endl << std::endl;
+  std::cout << "dist.getProbabilities(): " << std::endl
+    << dist.getProbabilities() << std::endl << std::endl;
 
   std::cout << "dist.setNumTrials(5)" << std::endl << std::endl;
-  std::cout << "dist.setSuccessProbabilities(0.1, 0.2, 0.7)" << std::endl
+  std::cout << "dist.setProbabilities(0.1, 0.2, 0.7)" << std::endl
     << std::endl;
   const size_t n = 5;
   const Eigen::Matrix<double, 3, 1> p(0.1, 0.2, 0.7);
   dist.setNumTrials(n);
-  dist.setSuccessProbabilities(p);
+  dist.setProbabilities(p);
   std::cout << "Distribution new parameters: " << std::endl << dist
     << std::endl << std::endl;
   if (dist.getNumTrials() != n)
     return 1;
-  if (dist.getSuccessProbabilities() != p)
+  if (dist.getProbabilities() != p)
     return 1;
 
   std::cout << "Evaluating distribution with GNU-R" << std::endl << std::endl;
@@ -84,9 +84,9 @@ int main(int argc, char** argv) {
   }
   std::cout << std::endl;
   try {
-    std::cout << "dist.setSuccessProbabilities(0.1, 0.3, 0.7)" << std::endl
+    std::cout << "dist.setProbabilities(0.1, 0.3, 0.7)" << std::endl
       << std::endl;
-    dist.setSuccessProbabilities(Eigen::Matrix<double, 3, 1>(0.1, 0.3, 0.7));
+    dist.setProbabilities(Eigen::Matrix<double, 3, 1>(0.1, 0.3, 0.7));
   }
   catch (BadArgumentException<Eigen::Matrix<double, 3, 1> >& e) {
     std::cout << e.what() << std::endl;
@@ -107,13 +107,13 @@ int main(int argc, char** argv) {
     << std::endl;
   if (distCopy.getNumTrials() != dist.getNumTrials())
     return 1;
-  if (distCopy.getSuccessProbabilities() != dist.getSuccessProbabilities())
+  if (distCopy.getProbabilities() != dist.getProbabilities())
     return 1;
   MultinomialDistribution<3> distAssign = dist;
   std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
   if (distAssign.getNumTrials() != dist.getNumTrials())
     return 1;
-  if (distCopy.getSuccessProbabilities() != dist.getSuccessProbabilities())
+  if (distCopy.getProbabilities() != dist.getProbabilities())
     return 1;
   std::cout << std::endl;
 

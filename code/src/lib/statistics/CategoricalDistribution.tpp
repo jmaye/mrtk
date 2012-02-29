@@ -21,8 +21,8 @@
 /******************************************************************************/
 template <size_t M>
 CategoricalDistribution<M>::CategoricalDistribution(const
-    Eigen::Matrix<double, M, 1>& successProbabilities) :
-    MultinomialDistribution<M>(1, successProbabilities) {
+    Eigen::Matrix<double, M, 1>& probabilities) :
+    MultinomialDistribution<M>(1, probabilities) {
 }
 
 template <size_t M>
@@ -55,7 +55,7 @@ void CategoricalDistribution<M>::read(std::istream& stream) {
 template <size_t M>
 void CategoricalDistribution<M>::write(std::ostream& stream) const {
   stream << "success probabilities: " <<
-    MultinomialDistribution<M>::mSuccessProbabilities.transpose();
+    MultinomialDistribution<M>::mProbabilities.transpose();
 }
 
 template <size_t M>

@@ -29,15 +29,15 @@
 
 template <size_t M>
 NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(size_t
-    numTrials, const Eigen::Matrix<double, M, 1>& successProbabilities) {
-  setSuccessProbabilities(successProbabilities);
+    numTrials, const Eigen::Matrix<double, M, 1>& probabilities) {
+  setProbabilities(probabilities);
   setNumTrials(numTrials);
 }
 
 template <size_t M>
 NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(const
     NegativeMultinomialDistribution<M>& other) :
-    mSuccessProbabilities(other.mSuccessProbabilities),
+    mProbabilities(other.mProbabilities),
     mNumTrials(other.mNumTrials) {
 }
 
@@ -46,7 +46,7 @@ NegativeMultinomialDistribution<M>&
     NegativeMultinomialDistribution<M>::operator =
     (const NegativeMultinomialDistribution<M>& other) {
   if (this != &other) {
-    mSuccessProbabilities = other.mSuccessProbabilities;
+    mProbabilities = other.mProbabilities;
     mNumTrials = other.mNumTrials;
   }
   return *this;
@@ -67,7 +67,7 @@ void NegativeMultinomialDistribution<M>::read(std::istream& stream) {
 template <size_t M>
 void NegativeMultinomialDistribution<M>::write(std::ostream& stream) const {
   stream << "success probabilities: "
-    << mSuccessProbabilities.transpose() << std::endl
+    << mProbabilities.transpose() << std::endl
     << "trials number: " << mNumTrials;
 }
 
@@ -84,24 +84,24 @@ void NegativeMultinomialDistribution<M>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 template <size_t M>
-void NegativeMultinomialDistribution<M>::setSuccessProbabilities(const
-    Eigen::Matrix<double, M, 1>& successProbabilities) throw
+void NegativeMultinomialDistribution<M>::setProbabilities(const
+    Eigen::Matrix<double, M, 1>& probabilities) throw
     (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if (fabs(successProbabilities.sum() - 1.0) >
+  if (fabs(probabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
-    (successProbabilities.cwise() < 0).any())
+    (probabilities.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
-      successProbabilities,
-      "NegativeMultinomialDistribution<M>::setSuccessProbabilities(): success "
+      probabilities,
+      "NegativeMultinomialDistribution<M>::setProbabilities(): success "
       "probabilities must sum to 1 and have probabilities bigger or equal to 0",
       __FILE__, __LINE__);
-  mSuccessProbabilities = successProbabilities;
+  mProbabilities = probabilities;
 }
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>&
-    NegativeMultinomialDistribution<M>::getSuccessProbabilities() const {
-  return mSuccessProbabilities;
+    NegativeMultinomialDistribution<M>::getProbabilities() const {
+  return mProbabilities;
 }
 
 template <size_t M>
@@ -185,11 +185,11 @@ double NegativeMultinomialDistribution<M>::logpmf(const RandomVariable& value)
       __FILE__, __LINE__);
   const LogGammaFunction<size_t> lgamma;
   double sum = lgamma(value.sum()) - lgamma(mNumTrials) +
-    mNumTrials * log(mSuccessProbabilities(value.size() - 1));
+    mNumTrials * log(mProbabilities(value.size() - 1));
   const LogFactorialFunction lfactorial;
-  for (size_t i = 0; i < (size_t)mSuccessProbabilities.size() - 1; ++i)
+  for (size_t i = 0; i < (size_t)mProbabilities.size() - 1; ++i)
     sum += value(i) *
-      log(mSuccessProbabilities(i)) - lfactorial(value(i));
+      log(mProbabilities(i)) - lfactorial(value(i));
   return sum;
 }
 
@@ -203,22 +203,22 @@ template <size_t M>
 typename NegativeMultinomialDistribution<M>::RandomVariable
     NegativeMultinomialDistribution<M>::getSample() const {
   // TODO: NOT IMPLEMENTED!
-  return RandomVariable::Zero(mSuccessProbabilities.size());
+  return RandomVariable::Zero(mProbabilities.size());
 }
 
 template <size_t M>
 typename NegativeMultinomialDistribution<M>::Mean
     NegativeMultinomialDistribution<M>::getMean() const {
-  return mNumTrials / mSuccessProbabilities(mSuccessProbabilities.size() - 1) *
-    mSuccessProbabilities;
+  return mNumTrials / mProbabilities(mProbabilities.size() - 1) *
+    mProbabilities;
 }
 
 template <size_t M>
 typename NegativeMultinomialDistribution<M>::Covariance
     NegativeMultinomialDistribution<M>::getCovariance() const {
   // TODO: COVARIANCE NOT IMPLEMENTED
-  const double fail = mSuccessProbabilities(mSuccessProbabilities.size() - 1);
+  const double fail = mProbabilities(mProbabilities.size() - 1);
   return mNumTrials / fail / fail *
-    mSuccessProbabilities * mSuccessProbabilities.transpose() + mNumTrials /
-    fail * mSuccessProbabilities.asDiagonal();
+    mProbabilities * mProbabilities.transpose() + mNumTrials /
+    fail * mProbabilities.asDiagonal();
 }

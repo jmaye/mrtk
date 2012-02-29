@@ -34,20 +34,20 @@ int main(int argc, char** argv) {
 
   std::cout << "dist.getNumTrials(): " << dist.getNumTrials() << std::endl
     << std::endl;
-  std::cout << "dist.getSuccessProbability(): " << dist.getSuccessProbability()
-    << std::endl << std::endl;
+  std::cout << "dist.getProbability(): " << dist.getProbability() << std::endl
+    << std::endl;
 
   const double p = 0.7;
   const size_t n = 5;
   std::cout << "dist.setNumTrials(5)" << std::endl << std::endl;
   dist.setNumTrials(n);
-  std::cout << "dist.setSuccessProbability(0.7)" << std::endl << std::endl;
-  dist.setSuccessProbability(p);
+  std::cout << "dist.setProbability(0.7)" << std::endl << std::endl;
+  dist.setProbability(p);
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
   if (dist.getNumTrials() != n)
     return 1;
-  if (dist.getSuccessProbability() != p)
+  if (dist.getProbability() != p)
     return 1;
 
   const int min = -10.0;
@@ -102,8 +102,8 @@ int main(int argc, char** argv) {
     return 1;
 
   try {
-    std::cout << "dist.setSuccessProbability(1.2)" << std::endl;
-    dist.setSuccessProbability(1.2);
+    std::cout << "dist.setProbability(1.2)" << std::endl;
+    dist.setProbability(1.2);
   }
   catch (BadArgumentException<Eigen::Matrix<double, 2, 1> >& e) {
     std::cout << e.what() << std::endl;
@@ -122,13 +122,13 @@ int main(int argc, char** argv) {
   BinomialDistribution distCopy(dist);
   std::cout << "Copy constructor: " << std::endl << distCopy << std::endl
     << std::endl;
-  if (distCopy.getSuccessProbability() != dist.getSuccessProbability())
+  if (distCopy.getProbability() != dist.getProbability())
     return 1;
   if (distCopy.getNumTrials() != dist.getNumTrials())
     return 1;
   BinomialDistribution distAssign = dist;
   std::cout << "Assignment operator: " << std::endl << distAssign << std::endl;
-  if (distAssign.getSuccessProbability() != dist.getSuccessProbability())
+  if (distAssign.getProbability() != dist.getProbability())
     return 1;
   if (distAssign.getNumTrials() != dist.getNumTrials())
     return 1;

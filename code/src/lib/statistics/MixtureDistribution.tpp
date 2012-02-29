@@ -124,7 +124,7 @@ template <typename D, size_t M>
 double MixtureDistribution<D, M>::pdf(const RandomVariable& value) const {
   double probability = 0.0;
   for (size_t i = 0; i < mCompDistributions.size(); ++i)
-    probability += mAssignDistribution.getSuccessProbability(i) *
+    probability += mAssignDistribution.getProbability(i) *
       mCompDistributions[i](value);
   return probability;
 }

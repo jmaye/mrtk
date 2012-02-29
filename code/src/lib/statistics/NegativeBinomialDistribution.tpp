@@ -26,9 +26,9 @@
 /******************************************************************************/
 
 NegativeBinomialDistribution::NegativeBinomialDistribution(size_t numTrials,
-    double successProbability) :
+    double probability) :
     NegativeMultinomialDistribution<2>(numTrials) {
-  setSuccessProbability(successProbability);
+  setProbability(probability);
 }
 
 NegativeBinomialDistribution::NegativeBinomialDistribution(const
@@ -56,7 +56,7 @@ void NegativeBinomialDistribution::read(std::istream& stream) {
 
 void NegativeBinomialDistribution::write(std::ostream& stream) const {
   stream << "success probability: "
-    << mSuccessProbabilities(0) << std::endl
+    << mProbabilities(0) << std::endl
     << "trials number: " << mNumTrials;
 }
 
@@ -70,16 +70,12 @@ void NegativeBinomialDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void NegativeBinomialDistribution::setSuccessProbability(double
-    successProbability) {
-  Eigen::Matrix<double, 2, 1> successProbabilities;
-  successProbabilities(0) = successProbability;
-  successProbabilities(1) = 1.0 - successProbability;
-  setSuccessProbabilities(successProbabilities);
+void NegativeBinomialDistribution::setProbability(double probability) {
+  setProbabilities(Eigen::Matrix<double, 2, 1>(probability, 1.0 - probability));
 }
 
-double NegativeBinomialDistribution::getSuccessProbability() const {
-  return mSuccessProbabilities(0);
+double NegativeBinomialDistribution::getProbability() const {
+  return mProbabilities(0);
 }
 
 double NegativeBinomialDistribution::getMean() const {
@@ -88,8 +84,7 @@ double NegativeBinomialDistribution::getMean() const {
 
 double NegativeBinomialDistribution::getMode() const {
   if (mNumTrials > 1)
-    return floor(mSuccessProbabilities(0) * (mNumTrials - 1) /
-      mSuccessProbabilities(1));
+    return floor(mProbabilities(0) * (mNumTrials - 1) / mProbabilities(1));
   else
     return 0.0;
 }
@@ -102,7 +97,7 @@ Eigen::Matrix<int, 2, 1> NegativeBinomialDistribution::getSample() const {
   static GammaDistribution<double> gammaDist;
   static PoissonDistribution poissonDist;
   gammaDist.setShape(mNumTrials);
-  gammaDist.setInvScale(mSuccessProbabilities(1) / mSuccessProbabilities(0));
+  gammaDist.setInvScale(mProbabilities(1) / mProbabilities(0));
   poissonDist.setMean(gammaDist.getSample());
   Eigen::Matrix<int, 2, 1> sample;
   sample(0) = poissonDist.getSample();
@@ -115,5 +110,5 @@ double NegativeBinomialDistribution::cmf(const int& value) const {
     return 0;
   else 
     return 1.0 -
-      gsl_sf_beta_inc(value + 1, mNumTrials, mSuccessProbabilities(0));
+      gsl_sf_beta_inc(value + 1, mNumTrials, mProbabilities(0));
 }

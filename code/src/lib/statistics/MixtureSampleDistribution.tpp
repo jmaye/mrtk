@@ -56,7 +56,7 @@ typename MixtureSampleDistribution<D, M>::RandomVariable
     MixtureSampleDistribution<D, M>::getSample() const {
   const static Randomizer<double, M> randomizer;
   return this->mCompDistributions[randomizer.sampleCategorical(
-    this->mAssignDistribution.getSuccessProbabilities())].getSample();
+    this->mAssignDistribution.getProbabilities())].getSample();
 }
 
 template <typename D, size_t M>

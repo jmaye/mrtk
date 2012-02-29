@@ -30,7 +30,7 @@ EstimatorML<MultinomialDistribution<M>, M>::EstimatorML(size_t numTrials) :
 template <size_t M>
 EstimatorML<MultinomialDistribution<M>, M>::EstimatorML(const
     EstimatorML<MultinomialDistribution<M>, M>& other) :
-    mSuccessProbabilities(other.mSuccessProbabilities),
+    mProbabilities(other.mProbabilities),
     mNumTrials(other.mNumTrials),
     mNumPoints(other.mNumPoints),
     mValid(other.mValid) {
@@ -41,7 +41,7 @@ EstimatorML<MultinomialDistribution<M>, M>&
     EstimatorML<MultinomialDistribution<M>, M>::operator =
     (const EstimatorML<MultinomialDistribution<M>, M>& other) {
   if (this != &other) {
-    mSuccessProbabilities = other.mSuccessProbabilities;
+    mProbabilities = other.mProbabilities;
     mNumTrials = other.mNumTrials;
     mNumPoints = other.mNumPoints;
     mValid = other.mValid;
@@ -64,7 +64,7 @@ void EstimatorML<MultinomialDistribution<M>, M>::read(std::istream& stream) {
 template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::write(std::ostream& stream)
     const {
-  stream << "success probabilities: " << mSuccessProbabilities.transpose()
+  stream << "success probabilities: " << mProbabilities.transpose()
     << std::endl << "number of trials: " << mNumTrials << std::endl 
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
@@ -95,8 +95,8 @@ bool EstimatorML<MultinomialDistribution<M>, M>::getValid() const {
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>&
-EstimatorML<MultinomialDistribution<M>, M>::getSuccessProbabilities() const {
-  return mSuccessProbabilities;
+EstimatorML<MultinomialDistribution<M>, M>::getProbabilities() const {
+  return mProbabilities;
 }
 
 template <size_t M>
@@ -113,19 +113,19 @@ void EstimatorML<MultinomialDistribution<M>, M>::reset() {
 template <size_t M>
 void EstimatorML<MultinomialDistribution<M>, M>::addPoint(const Point& point) {
   if (mNumPoints == 0)
-    mSuccessProbabilities = Eigen::Matrix<double, M, 1>::Zero(point.size(), 1);
+    mProbabilities = Eigen::Matrix<double, M, 1>::Zero(point.size(), 1);
   if (point.sum() != (int)mNumTrials)
     return;
   mNumPoints++;
   if (mNumPoints == 1) {
     for (size_t i = 0; i < (size_t)point.size(); ++i)
-      mSuccessProbabilities(i) += point(i) / (double)mNumTrials;
+      mProbabilities(i) += point(i) / (double)mNumTrials;
     mValid = true;
   }
   else {
     for (size_t i = 0; i < (size_t)point.size(); ++i)
-      mSuccessProbabilities(i) += 1.0 / mNumPoints * (point(i) /
-        (double)mNumTrials - mSuccessProbabilities(i));
+      mProbabilities(i) += 1.0 / mNumPoints * (point(i) /
+        (double)mNumTrials - mProbabilities(i));
   }
 }
 

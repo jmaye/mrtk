@@ -86,7 +86,7 @@ public:
     */
   /// Constructs the distribution from the parameters
   NegativeMultinomialDistribution(size_t numTrials = 1, const
-    Eigen::Matrix<double, M, 1>& successProbabilities =
+    Eigen::Matrix<double, M, 1>& probabilities =
     Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
   /// Copy constructor
   NegativeMultinomialDistribution(const NegativeMultinomialDistribution& other);
@@ -102,11 +102,10 @@ public:
     @{
     */
   /// Sets the success probabilities
-  void setSuccessProbabilities(const Eigen::Matrix<double, M, 1>&
-    successProbabilities) throw
+  void setProbabilities(const Eigen::Matrix<double, M, 1>& probabilities) throw
     (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the success probabilities
-  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  const Eigen::Matrix<double, M, 1>& getProbabilities() const;
   /// Sets the number of trials
   void setNumTrials(size_t numTrials) throw (BadArgumentException<size_t>);
   /// Returns the number of trials
@@ -153,7 +152,7 @@ protected:
     @{
     */
   /// Success probabilities
-  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  Eigen::Matrix<double, M, 1> mProbabilities;
   /// Number of trials
   size_t mNumTrials;
   /** @}

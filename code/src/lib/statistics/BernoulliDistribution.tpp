@@ -20,8 +20,8 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BernoulliDistribution::BernoulliDistribution(double successProbability) {
-  setSuccessProbability(successProbability);
+BernoulliDistribution::BernoulliDistribution(double probability) {
+  setProbability(probability);
 }
 
 BernoulliDistribution::BernoulliDistribution(const BernoulliDistribution&
@@ -48,7 +48,7 @@ void BernoulliDistribution::read(std::istream& stream) {
 }
 
 void BernoulliDistribution::write(std::ostream& stream) const {
-  stream << "success probability: " << mSuccessProbabilities(0);
+  stream << "success probability: " << mProbabilities(0);
 }
 
 void BernoulliDistribution::read(std::ifstream& stream) {
@@ -61,13 +61,13 @@ void BernoulliDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BernoulliDistribution::setSuccessProbability(double successProbability) {
-  CategoricalDistribution<2>::setSuccessProbabilities(
-    Eigen::Matrix<double, 2, 1>(successProbability, 1.0 - successProbability));
+void BernoulliDistribution::setProbability(double probability) {
+  CategoricalDistribution<2>::setProbabilities(
+    Eigen::Matrix<double, 2, 1>(probability, 1.0 - probability));
 }
 
-double BernoulliDistribution::getSuccessProbability() const {
-  return mSuccessProbabilities(0);
+double BernoulliDistribution::getProbability() const {
+  return mProbabilities(0);
 }
 
 double BernoulliDistribution::getMean() const {
@@ -75,9 +75,9 @@ double BernoulliDistribution::getMean() const {
 }
 
 double BernoulliDistribution::getMode() const {
-  if (mSuccessProbabilities(1) > mSuccessProbabilities(0))
+  if (mProbabilities(1) > mProbabilities(0))
     return 0;
-  else if (mSuccessProbabilities(1) == mSuccessProbabilities(0))
+  else if (mProbabilities(1) == mProbabilities(0))
     return 0;
   else
     return 1;
@@ -91,7 +91,7 @@ double BernoulliDistribution::cmf(const int& value) const {
   if (value < 0)
     return 0;
   else if (value >= 0 && value < 1)
-    return mSuccessProbabilities(1);
+    return mProbabilities(1);
   else
     return 1;
 }

@@ -86,7 +86,7 @@ public:
     */
   /// Constructs the distribution from the parameters
   MultinomialDistribution(size_t numTrials = 1, const
-    Eigen::Matrix<double, M, 1>& successProbabilities =
+    Eigen::Matrix<double, M, 1>& probabilities =
     Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
   /// Copy constructor
   MultinomialDistribution(const MultinomialDistribution& other);
@@ -101,13 +101,12 @@ public:
     @{
     */
   /// Sets the success probabilities
-  void setSuccessProbabilities(const Eigen::Matrix<double, M, 1>&
-    successProbabilities) throw
-    (BadArgumentException<Eigen::Matrix<double, M, 1> >);
+  void setProbabilities(const Eigen::Matrix<double, M, 1>& probabilities)
+    throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);
   /// Returns the success probabilities
-  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  const Eigen::Matrix<double, M, 1>& getProbabilities() const;
   /// Returns a success probability by index
-  double getSuccessProbability(size_t idx) const
+  double getProbability(size_t idx) const
     throw (OutOfBoundException<size_t>);
   /// Sets the number of trials
   virtual void setNumTrials(size_t numTrials)
@@ -156,7 +155,7 @@ protected:
     @{
     */
   /// Success probabilities
-  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  Eigen::Matrix<double, M, 1> mProbabilities;
   /// Number of trials
   size_t mNumTrials;
   /** @}

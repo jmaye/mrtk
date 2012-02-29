@@ -40,7 +40,7 @@ public:
     */
   /// Constructs distribution from parameters
   CategoricalDistribution(const Eigen::Matrix<double, M, 1>&
-    successProbabilities = Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
+    probabilities = Eigen::Matrix<double, M, 1>::Constant(1.0 / M));
   /// Copy constructor
   CategoricalDistribution(const CategoricalDistribution& other);
   /// Assignment operator

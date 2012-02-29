@@ -29,7 +29,7 @@ EstimatorML<CategoricalDistribution<M>, M>::EstimatorML() :
 template <size_t M>
 EstimatorML<CategoricalDistribution<M>, M>::EstimatorML(const
     EstimatorML<CategoricalDistribution<M>, M>& other) :
-    mSuccessProbabilities(other.mSuccessProbabilities),
+    mProbabilities(other.mProbabilities),
     mNumPoints(other.mNumPoints),
     mValid(other.mValid) {
 }
@@ -39,7 +39,7 @@ EstimatorML<CategoricalDistribution<M>, M>&
     EstimatorML<CategoricalDistribution<M>, M>::operator =
     (const EstimatorML<CategoricalDistribution<M>, M>& other) {
   if (this != &other) {
-    mSuccessProbabilities = other.mSuccessProbabilities;
+    mProbabilities = other.mProbabilities;
     mNumPoints = other.mNumPoints;
     mValid = other.mValid;
   }
@@ -61,7 +61,7 @@ void EstimatorML<CategoricalDistribution<M>, M>::read(std::istream& stream) {
 template <size_t M>
 void EstimatorML<CategoricalDistribution<M>, M>::write(std::ostream& stream)
     const {
-  stream << "success probabilities: " << mSuccessProbabilities.transpose()
+  stream << "success probabilities: " << mProbabilities.transpose()
     << std::endl << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }
@@ -91,8 +91,8 @@ bool EstimatorML<CategoricalDistribution<M>, M>::getValid() const {
 
 template <size_t M>
 const Eigen::Matrix<double, M, 1>&
-EstimatorML<CategoricalDistribution<M>, M>::getSuccessProbabilities() const {
-  return mSuccessProbabilities;
+EstimatorML<CategoricalDistribution<M>, M>::getProbabilities() const {
+  return mProbabilities;
 }
 
 template <size_t M>
@@ -104,17 +104,16 @@ void EstimatorML<CategoricalDistribution<M>, M>::reset() {
 template <size_t M>
 void EstimatorML<CategoricalDistribution<M>, M>::addPoint(const Point& point) {
   if (mNumPoints == 0)
-    mSuccessProbabilities = Eigen::Matrix<double, M, 1>::Zero(point.size(), 1);
+    mProbabilities = Eigen::Matrix<double, M, 1>::Zero(point.size(), 1);
   mNumPoints++;
   if (mNumPoints == 1) {
     for (size_t i = 0; i < (size_t)point.size(); ++i)
-      mSuccessProbabilities(i) += point(i);
+      mProbabilities(i) += point(i);
     mValid = true;
   }
   else
     for (size_t i = 0; i < (size_t)point.size(); ++i)
-      mSuccessProbabilities(i) += 1.0 / mNumPoints * (point(i) -
-        mSuccessProbabilities(i));
+      mProbabilities(i) += 1.0 / mNumPoints * (point(i) - mProbabilities(i));
 }
 
 template <size_t M>

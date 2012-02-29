@@ -125,25 +125,25 @@ T Randomizer<T, M>::sampleNormal(const T& mean, const T& variance) const
 
 template <typename T, size_t M>
 size_t Randomizer<T, M>::sampleCategorical(const
-    Eigen::Matrix<double, M, 1>& successProbabilities) const
+    Eigen::Matrix<double, M, 1>& probabilities) const
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if (fabs(successProbabilities.sum() - 1.0) >
-    std::numeric_limits<double>::epsilon() ||
-    (successProbabilities.cwise() < 0).any())
+  if (fabs(probabilities.sum() - 1.0) >
+      std::numeric_limits<double>::epsilon() ||
+      (probabilities.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
-      successProbabilities,
+      probabilities,
       "Randomizer<T, M>::sampleCategorical: success probabilities must sum "
       "to 1 and probabilities bigger or equal to 0",
       __FILE__, __LINE__);
 
-  double sum = successProbabilities(0);
+  double sum = probabilities(0);
   const double u = sampleUniform();
-  for (size_t i = 1; i < (size_t)successProbabilities.size(); ++i)
+  for (size_t i = 1; i < (size_t)probabilities.size(); ++i)
     if (u > sum)
-      sum += successProbabilities(i);
+      sum += probabilities(i);
     else
       return i - 1;
-  return successProbabilities.size() - 1;
+  return probabilities.size() - 1;
 }
 
 template <typename T, size_t M>
@@ -180,10 +180,10 @@ double Randomizer<T, M>::sampleExponential(double rate) const
 }
 
 template <typename T, size_t M>
-size_t Randomizer<T, M>::sampleGeometric(double successProbability) const
+size_t Randomizer<T, M>::sampleGeometric(double probability) const
     throw (BadArgumentException<double>) {
-  if (successProbability <= 0.0 || successProbability > 1.0)
-    throw BadArgumentException<double>(successProbability,
+  if (probability <= 0.0 || probability > 1.0)
+    throw BadArgumentException<double>(probability,
       "Randomizer<T, M>::sampleGeometric(): success probability must be "
       "between 0 and 1",
       __FILE__, __LINE__);
@@ -192,7 +192,7 @@ size_t Randomizer<T, M>::sampleGeometric(double successProbability) const
     u = sampleUniform();
   }
   while (u == 0);
-  return floor(log(u) / log(1 - successProbability));
+  return floor(log(u) / log(1 - probability));
 }
 
 template <typename T, size_t M>

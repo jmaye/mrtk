@@ -23,9 +23,9 @@
 /******************************************************************************/
 
 BinomialDistribution::BinomialDistribution(size_t numTrials, double
-    successProbability) :
+    probability) :
     MultinomialDistribution<2>(numTrials) {
-  setSuccessProbability(successProbability);
+  setProbability(probability);
 }
 
 BinomialDistribution::BinomialDistribution(const BinomialDistribution& other) :
@@ -52,7 +52,7 @@ void BinomialDistribution::read(std::istream& stream) {
 
 void BinomialDistribution::write(std::ostream& stream) const {
   stream << "success probability: "
-    << mSuccessProbabilities(0) << std::endl
+    << mProbabilities(0) << std::endl
     << "trials number: " << mNumTrials;
 }
 
@@ -66,13 +66,13 @@ void BinomialDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BinomialDistribution::setSuccessProbability(double successProbability) {
-  MultinomialDistribution<2>::setSuccessProbabilities(
-    Eigen::Matrix<double, 2, 1>(successProbability, 1.0 - successProbability));
+void BinomialDistribution::setProbability(double probability) {
+  MultinomialDistribution<2>::setProbabilities(
+    Eigen::Matrix<double, 2, 1>(probability, 1.0 - probability));
 }
 
-double BinomialDistribution::getSuccessProbability() const {
-  return mSuccessProbabilities(0);
+double BinomialDistribution::getProbability() const {
+  return mProbabilities(0);
 }
 
 double BinomialDistribution::getMean() const {
@@ -80,11 +80,11 @@ double BinomialDistribution::getMean() const {
 }
 
 double BinomialDistribution::getMedian() const {
-  return floor(mNumTrials * mSuccessProbabilities(0));
+  return floor(mNumTrials * mProbabilities(0));
 }
 
 double BinomialDistribution::getMode() const {
-  return floor((mNumTrials + 1) * mSuccessProbabilities(0));
+  return floor((mNumTrials + 1) * mProbabilities(0));
 }
 
 double BinomialDistribution::getVariance() const {
@@ -98,5 +98,5 @@ double BinomialDistribution::cmf(const int& value) const {
     return 1;
   else
     return gsl_sf_beta_inc(mNumTrials - value, value + 1,
-      1 - mSuccessProbabilities(0));
+      1 - mProbabilities(0));
 }

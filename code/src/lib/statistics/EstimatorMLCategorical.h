@@ -66,7 +66,7 @@ public:
   /// Returns the validity state of the estimator
   bool getValid() const;
   /// Returns the estimated success probabilities
-  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  const Eigen::Matrix<double, M, 1>& getProbabilities() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -98,7 +98,7 @@ protected:
     @{
     */
   /// Estimated success probabilities
-  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  Eigen::Matrix<double, M, 1> mProbabilities;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

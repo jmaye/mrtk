@@ -21,7 +21,7 @@
 /******************************************************************************/
 
 EstimatorML<GeometricDistribution>::EstimatorML() :
-    mSuccessProbability(0.0),
+    mProbability(0.0),
     mMean(0.0),
     mNumPoints(0),
     mValid(false) {
@@ -29,7 +29,7 @@ EstimatorML<GeometricDistribution>::EstimatorML() :
 
 EstimatorML<GeometricDistribution>::EstimatorML(const
     EstimatorML<GeometricDistribution>& other) :
-    mSuccessProbability(other.mSuccessProbability),
+    mProbability(other.mProbability),
     mMean(other.mMean),
     mNumPoints(other.mNumPoints),
     mValid(other.mValid) {
@@ -39,7 +39,7 @@ EstimatorML<GeometricDistribution>&
     EstimatorML<GeometricDistribution>::operator =
     (const EstimatorML<GeometricDistribution>& other) {
   if (this != &other) {
-    mSuccessProbability = other.mSuccessProbability;
+    mProbability = other.mProbability;
     mMean = other.mMean;
     mNumPoints = other.mNumPoints;
     mValid = other.mValid;
@@ -58,7 +58,7 @@ void EstimatorML<GeometricDistribution>::read(std::istream& stream) {
 }
 
 void EstimatorML<GeometricDistribution>::write(std::ostream& stream) const {
-  stream << "success probability: " << mSuccessProbability << std::endl
+  stream << "success probability: " << mProbability << std::endl
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }
@@ -81,14 +81,14 @@ bool EstimatorML<GeometricDistribution>::getValid() const {
   return mValid;
 }
 
-double EstimatorML<GeometricDistribution>::getSuccessProbability() const {
-  return mSuccessProbability;
+double EstimatorML<GeometricDistribution>::getProbability() const {
+  return mProbability;
 }
 
 void EstimatorML<GeometricDistribution>::reset() {
   mNumPoints = 0;
   mValid = false;
-  mSuccessProbability = 0;
+  mProbability = 0;
   mMean = 0;
 }
 
@@ -100,7 +100,7 @@ void EstimatorML<GeometricDistribution>::addPoint(const Point& point) {
   }
   else
     mMean += 1.0 / mNumPoints * (point - mMean);
-  mSuccessProbability = 1.0 / (1 + mMean);
+  mProbability = 1.0 / (1 + mMean);
 }
 
 void EstimatorML<GeometricDistribution>::addPoints(const

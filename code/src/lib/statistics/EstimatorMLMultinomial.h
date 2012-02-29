@@ -66,7 +66,7 @@ public:
   /// Returns the validity state of the estimator
   bool getValid() const;
   /// Returns the estimated success probabilities
-  const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
+  const Eigen::Matrix<double, M, 1>& getProbabilities() const;
   /// Returns the number of trials of the distribution
   size_t getNumTrials() const;
   /// Add a point to the estimator
@@ -100,7 +100,7 @@ protected:
     @{
     */
   /// Estimated success probabilities
-  Eigen::Matrix<double, M, 1> mSuccessProbabilities;
+  Eigen::Matrix<double, M, 1> mProbabilities;
   /// Number of trials of the distribution (fixed parameter)
   size_t mNumTrials;
   /// Number of points in the estimator

@@ -32,21 +32,21 @@ int main(int argc, char** argv) {
 
   std::cout << "dist.getNumTrials(): " << dist.getNumTrials() << std::endl
     << std::endl;
-  std::cout << "dist.getSuccessProbabilities(): " << std::endl
-    << dist.getSuccessProbabilities() << std::endl << std::endl;
+  std::cout << "dist.getProbabilities(): " << std::endl
+    << dist.getProbabilities() << std::endl << std::endl;
 
   std::cout << "dist.setNumTrials(5)" << std::endl << std::endl;
-  std::cout << "dist.setSuccessProbabilities(0.5, 0.3, 0.2)" << std::endl
+  std::cout << "dist.setProbabilities(0.5, 0.3, 0.2)" << std::endl
     << std::endl;
   const size_t n = 5;
   const Eigen::Matrix<double, 3, 1> p(0.5, 0.3, 0.2);
   dist.setNumTrials(n);
-  dist.setSuccessProbabilities(p);
+  dist.setProbabilities(p);
   std::cout << "Distribution new parameters: " << std::endl << dist << std::endl
     << std::endl;
   if (dist.getNumTrials() != n)
     return 1;
-  if (dist.getSuccessProbabilities() != p)
+  if (dist.getProbabilities() != p)
     return 1;
 
   return 0;
