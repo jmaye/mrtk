@@ -59,9 +59,9 @@ void PointCloud<X, M>::write(std::ostream& stream) const {
 template <typename X, size_t M>
 void PointCloud<X, M>::read(std::ifstream& stream) throw (IOException) {
   mPoints.clear();
-  if (stream.is_open() == false)
+  if (!stream.is_open())
     throw IOException("PointCloud<X, M>::read(): could not open file");
-  while (stream.eof() == false) {
+  while (!stream.eof()) {
     Point point;
     for (size_t i = 0; i < M; ++i) {
       stream >> point(i);
@@ -74,7 +74,7 @@ void PointCloud<X, M>::read(std::ifstream& stream) throw (IOException) {
 
 template <typename X, size_t M>
 void PointCloud<X, M>::write(std::ofstream& stream) const {
-  if (stream.is_open() == false)
+  if (!stream.is_open())
     throw IOException("PointCloud<X, M>::write(): could not open file");
   for (ConstPointIterator it = getPointBegin(); it != getPointEnd(); ++it)
     stream << it->transpose() << std::endl;

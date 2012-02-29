@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "statistics/Randomizer.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -52,12 +54,9 @@ MixtureSampleDistribution<D, M>::~MixtureSampleDistribution() {
 template <typename D, size_t M>
 typename MixtureSampleDistribution<D, M>::RandomVariable
     MixtureSampleDistribution<D, M>::getSample() const {
-  typename CategoricalDistribution<M>::RandomVariable component =
-    this->mAssignDistribution.getSample();
-  for (size_t i = 0; i < (size_t)component.size(); ++i)
-    if (component(i) == 1)
-      return this->mCompDistributions[i].getSample();
-  return this->mCompDistributions[0].getSample();
+  const static Randomizer<double, M> randomizer;
+  return this->mCompDistributions[randomizer.sampleCategorical(
+    this->mAssignDistribution.getSuccessProbabilities())].getSample();
 }
 
 template <typename D, size_t M>

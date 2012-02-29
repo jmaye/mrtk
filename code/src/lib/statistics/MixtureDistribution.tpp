@@ -123,14 +123,9 @@ void MixtureDistribution<D, M>::setAssignDistribution(const
 template <typename D, size_t M>
 double MixtureDistribution<D, M>::pdf(const RandomVariable& value) const {
   double probability = 0.0;
-  for (size_t i = 0; i < mCompDistributions.size(); ++i) {
-    typename CategoricalDistribution<M>::RandomVariable component =
-      CategoricalDistribution<M>::RandomVariable::Zero(
-      mCompDistributions.size());
-    component(i) = 1.0;
-    probability += mAssignDistribution(component) *
+  for (size_t i = 0; i < mCompDistributions.size(); ++i)
+    probability += mAssignDistribution.getSuccessProbability(i) *
       mCompDistributions[i](value);
-  }
   return probability;
 }
 

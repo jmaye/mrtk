@@ -41,7 +41,7 @@ public:
     @{
     */
   /// Random variable type
-  typedef typename D::DistributionType::RandomVariable RandomVariable;
+  typedef typename D::VariableType RandomVariable;
   /** @}
     */
 

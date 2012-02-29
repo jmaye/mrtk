@@ -108,7 +108,7 @@ public:
   /// Returns the alpha parameter
   const Eigen::Matrix<double, M, 1>& getAlpha() const;
   /// Returns an alpha by index
-  double getAlpha(size_t idx) throw (OutOfBoundException<size_t>);
+  double getAlpha(size_t idx) const throw (OutOfBoundException<size_t>);
   /// Returns the normalizer
   double getNormalizer() const;
   /// Returns the mean of the distribution

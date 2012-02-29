@@ -98,7 +98,7 @@ void MultinomialDistribution<M>::setSuccessProbabilities(const
 }
 
 template <size_t M>
-double MultinomialDistribution<M>::getSuccessProbability(size_t idx)
+double MultinomialDistribution<M>::getSuccessProbability(size_t idx) const
     throw (OutOfBoundException<size_t>) {
   if (idx >= (size_t)mSuccessProbabilities.size())
     throw OutOfBoundException<size_t>(idx,
@@ -210,7 +210,7 @@ typename MultinomialDistribution<M>::RandomVariable
   RandomVariable sampleVector =
     RandomVariable::Zero(mSuccessProbabilities.size());
   for (size_t i = 0; i < mNumTrials; ++i)
-    sampleVector += randomizer.sampleCategorical(mSuccessProbabilities);
+    sampleVector(randomizer.sampleCategorical(mSuccessProbabilities))++;
   return sampleVector;
 }
 

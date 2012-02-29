@@ -97,7 +97,7 @@ const Eigen::Matrix<double, M, 1>& DirichletDistribution<M>::getAlpha() const {
 }
 
 template <size_t M>
-double DirichletDistribution<M>::getAlpha(size_t idx)
+double DirichletDistribution<M>::getAlpha(size_t idx) const
     throw (OutOfBoundException<size_t>) {
   if (idx >= (size_t)mAlpha.size())
     throw OutOfBoundException<size_t>(idx,

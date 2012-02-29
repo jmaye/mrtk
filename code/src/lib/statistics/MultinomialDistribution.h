@@ -107,7 +107,8 @@ public:
   /// Returns the success probabilities
   const Eigen::Matrix<double, M, 1>& getSuccessProbabilities() const;
   /// Returns a success probability by index
-  double getSuccessProbability(size_t idx) throw (OutOfBoundException<size_t>);
+  double getSuccessProbability(size_t idx) const
+    throw (OutOfBoundException<size_t>);
   /// Sets the number of trials
   virtual void setNumTrials(size_t numTrials)
     throw (BadArgumentException<size_t>);

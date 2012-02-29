@@ -124,36 +124,26 @@ T Randomizer<T, M>::sampleNormal(const T& mean, const T& variance) const
 }
 
 template <typename T, size_t M>
-Eigen::Matrix<int, M, 1> Randomizer<T, M>::sampleCategorical(const
+size_t Randomizer<T, M>::sampleCategorical(const
     Eigen::Matrix<double, M, 1>& successProbabilities) const
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(successProbabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
-    (successProbabilities.cwise() < 0).any() == true)
+    (successProbabilities.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
       successProbabilities,
       "Randomizer<T, M>::sampleCategorical: success probabilities must sum "
       "to 1 and probabilities bigger or equal to 0",
       __FILE__, __LINE__);
-  Eigen::Matrix<double, Eigen::Dynamic, 1> cumProbabilities =
-    Eigen::Matrix<double, Eigen::Dynamic, 1>::Zero(successProbabilities.size()
-      + 1);
-  double sum = 0.0;
-  for (size_t i = 1; i < (size_t)successProbabilities.size() + 1; ++i) {
-    sum += successProbabilities(i - 1);
-    cumProbabilities(i) += sum;
-  }
+
+  double sum = successProbabilities(0);
   const double u = sampleUniform();
-  Eigen::Matrix<int, M, 1> sample =
-    Eigen::Matrix<int, M, 1>::Zero(successProbabilities.size());
-  for (size_t i = 1; i < (size_t)cumProbabilities.size(); ++i) {
-    if (u > cumProbabilities(i - 1) && u <= cumProbabilities(i)) {
-      sample(i - 1)++;
-      return sample;
-    }
-  }
-  sample(successProbabilities.size() - 1)++;
-  return sample;
+  for (size_t i = 1; i < (size_t)successProbabilities.size(); ++i)
+    if (u > sum)
+      sum += successProbabilities(i);
+    else
+      return i - 1;
+  return successProbabilities.size() - 1;
 }
 
 template <typename T, size_t M>
