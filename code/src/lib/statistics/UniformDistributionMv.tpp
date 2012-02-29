@@ -150,17 +150,17 @@ Eigen::Matrix<X, M, 1> UniformDistribution<X, M>::getSample() const {
 
 template <typename X, size_t M>
 Eigen::Matrix<double, M, 1> UniformDistribution<X, M>::getMean() const {
-  return 0.5 * (mMaxSupport - mMinSupport);
+  return 0.5 * (mMaxSupport - mMinSupport).template cast<double>();
 }
 
 template <typename X, size_t M>
 Eigen::Matrix<double, M, 1> UniformDistribution<X, M>::getMode() const {
-  return mMinSupport;
+  return mMinSupport.template cast<double>();
 }
 
 template <typename X, size_t M>
 Eigen::Matrix<double, M, 1> UniformDistribution<X, M>::getMedian() const {
-  return 0.5 * (mMaxSupport - mMinSupport);
+  return 0.5 * (mMaxSupport - mMinSupport).template cast<double>();
 }
 
 template <typename X, size_t M>

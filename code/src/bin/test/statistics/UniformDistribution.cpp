@@ -280,14 +280,14 @@ int main(int argc, char** argv) {
       std::numeric_limits<double>::epsilon())
     return 1;
 
-  std::cout << "dist.getMean(): " << std::fixed << distDisc2D.getMean()
-    << std::endl << std::endl;
-  std::cout << "dist.getCovariance(): " << std::fixed
+  std::cout << "dist.getMean(): " << std::endl << std::fixed
+    << distDisc2D.getMean() << std::endl << std::endl;
+  std::cout << "dist.getCovariance(): " << std::endl << std::fixed
     << distDisc2D.getCovariance() << std::endl << std::endl;
-  std::cout << "dist.getMode(): " << std::fixed << distDisc2D.getMode()
-    << std::endl << std::endl;
-  std::cout << "dist.getMedian(): " << std::fixed << distDisc2D.getMedian()
-    << std::endl << std::endl;
+  std::cout << "dist.getMode(): " << std::endl << std::fixed
+    << distDisc2D.getMode() << std::endl << std::endl;
+  std::cout << "dist.getMedian(): " << std::endl << std::fixed
+    << distDisc2D.getMedian() << std::endl << std::endl;
 
   std::cout << "dist.getSample(): " << std::endl << distDisc2D.getSample()
     << std::endl << std::endl;
