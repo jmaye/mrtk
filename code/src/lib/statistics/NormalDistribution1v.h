@@ -33,11 +33,21 @@ template <> class NormalDistribution<1> :
   public SampleDistribution<double>,
   public virtual Serializable {
 public:
+  /** \name Types
+    @{
+    */
+  /// Precision type
+  typedef Variance Precision;
+  /// Standard deviation type
+  typedef Variance Std;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Constructs a normal distribution from the parameters
-  NormalDistribution(double mean = 0.0, double variance = 1.0);
+  NormalDistribution(Mean mean = 0.0, Variance variance = 1.0);
   /// Copy constructor
   NormalDistribution(const NormalDistribution<1>& other);
   /// Assignment operator
@@ -51,35 +61,35 @@ public:
     @{
     */
   /// Sets the mean of the distribution
-  void setMean(double mean);
+  void setMean(Mean mean);
   /// Returns the mean of the distribution
-  double getMean() const;
+  Mean getMean() const;
   /// Sets the variance of the distribution
-  void setVariance(double variance) throw (BadArgumentException<double>);
+  void setVariance(Variance variance) throw (BadArgumentException<Variance>);
   /// Returns the variance of the distribution
-  double getVariance() const;
+  Variance getVariance() const;
   /// Returns the precision of the distribution
-  double getPrecision() const;
+  Precision getPrecision() const;
   /// Returns the standard deviation of the distribution
-  double getStandardDeviation() const;
+  Std getStandardDeviation() const;
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
   /// Returns the median of the distribution
-  double getMedian() const;
+  Median getMedian() const;
   /// Returns the mode of the distribution
-  double getMode() const;
+  Mode getMode() const;
   /// Access the probability density function at the given value
-  virtual double pdf(const double& value) const;
+  virtual double pdf(const RandomVariable& value) const;
   /// Access the log-probability density function at the given value
-  double logpdf(const double& value) const;
+  double logpdf(const RandomVariable& value) const;
   /// Access the cumulative density function at the given value
-  double cdf(const double& value) const;
+  double cdf(const RandomVariable& value) const;
   /// Access a sample drawn from the distribution
-  virtual double getSample() const;
+  virtual RandomVariable getSample() const;
   /// Returns the KL-divergence with another distribution
   double KLDivergence(const NormalDistribution<1>& other) const;
   /// Returns the squared Mahalanobis distance from a given value
-  double mahalanobisDistance(const double& value) const;
+  double mahalanobisDistance(const RandomVariable& value) const;
   /** @}
     */
 

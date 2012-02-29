@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
 
   std::cout << "dist.getSample(): " << std::endl << dist.getSample()
     << std::endl << std::endl;
-  std::vector<Eigen::Matrix<size_t, 2, 1> > samples;
+  std::vector<Eigen::Matrix<int, 2, 1> > samples;
   dist.getSamples(samples, 10);
   std::cout << "dist.getSamples(samples, 10): " << std::endl;
   for (size_t i = 0; i < 10; ++i)

@@ -69,6 +69,6 @@ size_t ChiSquareDistribution::getDegrees() const {
   return getShape() * 2;
 }
 
-double ChiSquareDistribution::getMedian() const {
+ChiSquareDistribution::Median ChiSquareDistribution::getMedian() const {
   return getDegrees() * pow(1.0 - 2.0 / (9 * getDegrees()), 3);
 }

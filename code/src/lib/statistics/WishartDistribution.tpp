@@ -26,8 +26,8 @@
 /******************************************************************************/
 
 template <size_t M>
-WishartDistribution<M>::WishartDistribution(double degrees, const
-    Eigen::Matrix<double, M, M>& scale) :
+WishartDistribution<M>::WishartDistribution(double degrees,
+    const Scale& scale) :
     mDegrees(degrees),
     mScale(scale) {
   setDegrees(degrees);
@@ -109,11 +109,11 @@ double WishartDistribution<M>::getDegrees() const {
 }
 
 template <size_t M>
-void WishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
-    scale) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
+void WishartDistribution<M>::setScale(const Scale& scale)
+    throw (BadArgumentException<Scale>) {
   mTransformation = scale.llt();
-  if (mTransformation.isPositiveDefinite() == false)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
+  if (!mTransformation.isPositiveDefinite())
+    throw BadArgumentException<Scale>(scale,
       "WishartDistribution<M>::setScale(): scale must be positive definite",
       __FILE__, __LINE__);
   mDeterminant = scale.determinant();
@@ -125,13 +125,14 @@ void WishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, M>& WishartDistribution<M>::getScale() const {
+const typename WishartDistribution<M>::Scale&
+    WishartDistribution<M>::getScale() const {
   return mScale;
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, M>& WishartDistribution<M>::getInverseScale()
-    const {
+const typename WishartDistribution<M>::Scale&
+    WishartDistribution<M>::getInverseScale() const {
   return mInverseScale;
 }
 
@@ -146,18 +147,18 @@ double WishartDistribution<M>::getNormalizer() const {
 }
 
 template <size_t M>
-const Eigen::LLT<Eigen::Matrix<double, M, M> >&
+const Eigen::LLT<typename WishartDistribution<M>::Scale>&
     WishartDistribution<M>::getTransformation() const {
   return mTransformation;
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> WishartDistribution<M>::getMean() const {
+typename WishartDistribution<M>::Mean WishartDistribution<M>::getMean() const {
   return mDegrees * mScale;
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> WishartDistribution<M>::getMode() const
+typename WishartDistribution<M>::Mode WishartDistribution<M>::getMode() const
     throw (InvalidOperationException) {
   if (mDegrees >= mScale.rows() + 1)
     return (mDegrees - mScale.rows() - 1) * mScale;
@@ -167,16 +168,15 @@ Eigen::Matrix<double, M, M> WishartDistribution<M>::getMode() const
 }
 
 template <size_t M>
-double WishartDistribution<M>::pdf(const Eigen::Matrix<double, M, M>& value)
-    const {
+double WishartDistribution<M>::pdf(const RandomVariable& value) const {
   return exp(logpdf(value));
 }
 
 template <size_t M>
-double WishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>& value)
-    const throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
-  if (value.llt().isPositiveDefinite() == false)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(value,
+double WishartDistribution<M>::logpdf(const RandomVariable& value) const
+    throw (BadArgumentException<RandomVariable>) {
+  if (!value.llt().isPositiveDefinite())
+    throw BadArgumentException<RandomVariable>(value,
       "WishartDistribution<M>::pdf(): value must be positive definite",
       __FILE__, __LINE__);
   return (mDegrees - mScale.rows() - 1) * 0.5 * log(value.determinant())
@@ -184,14 +184,15 @@ double WishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>& value)
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> WishartDistribution<M>::getSample() const {
+typename WishartDistribution<M>::RandomVariable
+    WishartDistribution<M>::getSample() const {
   static NormalDistribution<M> normalDist(
-    Eigen::Matrix<double, M, 1>::Zero(mScale.rows()), mScale);
+    NormalDistribution<M>::Mean::Zero(mScale.rows()), mScale);
   normalDist.setCovariance(mScale);
-  Eigen::Matrix<double, M, M> sample =
-    Eigen::Matrix<double, M, M>::Zero(mScale.rows(), mScale.rows());
+  RandomVariable sample = RandomVariable::Zero(mScale.rows(), mScale.rows());
   for (size_t i = 0; i < mDegrees; ++i) {
-    Eigen::Matrix<double, M, 1> normSample = normalDist.getSample();
+    typename NormalDistribution<M>::RandomVariable normSample =
+      normalDist.getSample();
     sample += normSample * normSample.transpose();
   }
   return sample;

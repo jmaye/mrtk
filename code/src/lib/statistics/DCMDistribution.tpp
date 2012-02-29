@@ -84,12 +84,11 @@ void DCMDistribution<M>::write(std::ofstream& stream) const {
 template <size_t M>
 void DCMDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
     alpha) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if ((alpha.cwise() <= 0).any() == true)
+  if ((alpha.cwise() <= 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DCMDistribution<M>::setAlpha(): alpha must be strictly positive",
       __FILE__, __LINE__);
-  mAlpha = alpha;  /// Multinomial distribution for speeding up sampling
-  MultinomialDistribution<M> mMultDist;
+  mAlpha = alpha;
   mDirDist.setAlpha(alpha);
 }
 
@@ -117,10 +116,8 @@ size_t DCMDistribution<M>::getNumTrials() const {
 template <size_t M>
 template <size_t N, size_t D>
 double DCMDistribution<M>::Traits<N, D>::pmf(const DCMDistribution<N>&
-    distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
-  if (value.sum() > distribution.mNumTrials)
-    return 0.0;
-  Eigen::Matrix<size_t, M, 1> valueMat;
+    distribution, const Eigen::Matrix<int, N - 1, 1>& value) {
+  Eigen::Matrix<int, M, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.pmf(valueMat);
 }
@@ -128,10 +125,8 @@ double DCMDistribution<M>::Traits<N, D>::pmf(const DCMDistribution<N>&
 template <size_t M>
 template <size_t D>
 double DCMDistribution<M>::Traits<2, D>::pmf(const DCMDistribution<2>&
-    distribution, const size_t& value) {
-  if (value > distribution.mNumTrials)
-    return 0.0;
-  Eigen::Matrix<size_t, 2, 1> valueMat;
+    distribution, const int& value) {
+  Eigen::Matrix<int, 2, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value;
   return distribution.pmf(valueMat);
 }
@@ -139,10 +134,8 @@ double DCMDistribution<M>::Traits<2, D>::pmf(const DCMDistribution<2>&
 template <size_t M>
 template <size_t N, size_t D>
 double DCMDistribution<M>::Traits<N, D>::logpmf(const DCMDistribution<N>&
-    distribution, const Eigen::Matrix<size_t, N - 1, 1>& value) {
-  if (value.sum() > distribution.mNumTrials)
-    return 0.0;
-  Eigen::Matrix<size_t, M, 1> valueMat;
+    distribution, const Eigen::Matrix<int, N - 1, 1>& value) {
+  Eigen::Matrix<int, M, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value.sum();
   return distribution.logpmf(valueMat);
 }
@@ -150,17 +143,15 @@ double DCMDistribution<M>::Traits<N, D>::logpmf(const DCMDistribution<N>&
 template <size_t M>
 template <size_t D>
 double DCMDistribution<M>::Traits<2, D>::logpmf(const DCMDistribution<2>&
-    distribution, const size_t& value) {
-  if (value > distribution.mNumTrials)
-    return 0.0;
-  Eigen::Matrix<size_t, 2, 1> valueMat;
+    distribution, const int& value) {
+  Eigen::Matrix<int, 2, 1> valueMat;
   valueMat << value, distribution.mNumTrials - value;
   return distribution.logpmf(valueMat);
 }
 
 template <size_t M>
-double DCMDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value) const {
-  if (value.sum() != mNumTrials)
+double DCMDistribution<M>::pmf(const RandomVariable& value) const {
+  if (value.sum() != (int)mNumTrials || (value.cwise() < 0).any())
     return 0.0;
   else
     return exp(logpmf(value));
@@ -168,17 +159,17 @@ double DCMDistribution<M>::pmf(const Eigen::Matrix<size_t, M, 1>& value) const {
 
 template <size_t M>
 double DCMDistribution<M>::pmf(const typename
-    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<int, M - 1>::Domain& value) const {
   return Traits<M>::pmf(*this, value);
 }
 
 template <size_t M>
-double DCMDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
-    value) const throw (BadArgumentException<Eigen::Matrix<size_t, M, 1> >) {
-  if (value.sum() != mNumTrials)
-    throw BadArgumentException<Eigen::Matrix<size_t, M, 1> >(value,
+double DCMDistribution<M>::logpmf(const RandomVariable& value) const
+    throw (BadArgumentException<RandomVariable>) {
+  if (value.sum() != (int)mNumTrials || (value.cwise() < 0).any())
+    throw BadArgumentException<RandomVariable>(value,
       "DCMDistribution<M>::logpmf(): sum of the input vector must be "
-      "equal to the number of trials",
+      "equal to the number of trials and contains positive values",
       __FILE__, __LINE__);
   const LogGammaFunction<double> logGammaFunction;
   const LogFactorialFunction logFactorialFunction;
@@ -193,12 +184,13 @@ double DCMDistribution<M>::logpmf(const Eigen::Matrix<size_t, M, 1>&
 
 template <size_t M>
 double DCMDistribution<M>::logpmf(const typename
-    DiscreteDistribution<size_t, M - 1>::Domain& value) const {
+    DiscreteDistribution<int, M - 1>::Domain& value) const {
   return Traits<M>::logpmf(*this, value);
 }
 
 template <size_t M>
-Eigen::Matrix<size_t, M, 1> DCMDistribution<M>::getSample() const {
+typename DCMDistribution<M>::RandomVariable DCMDistribution<M>::getSample()
+    const {
   static MultinomialDistribution<M> multDist;
   multDist.setNumTrials(mNumTrials);
   multDist.setSuccessProbabilities(mDirDist.getSample());
@@ -206,13 +198,14 @@ Eigen::Matrix<size_t, M, 1> DCMDistribution<M>::getSample() const {
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> DCMDistribution<M>::getMean() const {
+typename DCMDistribution<M>::Mean DCMDistribution<M>::getMean() const {
   return mNumTrials * mAlpha / mAlpha.sum();
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> DCMDistribution<M>::getCovariance() const {
-  Eigen::Matrix<double, M, M> covariance(mAlpha.size(), mAlpha.size());
+typename DCMDistribution<M>::Covariance DCMDistribution<M>::getCovariance()
+    const {
+  Covariance covariance(mAlpha.size(), mAlpha.size());
   const double sum = mAlpha.sum();
   for (size_t i = 0; i < (size_t)mAlpha.size(); ++i) {
     covariance(i, i) = mNumTrials * mAlpha(i) * (sum - mAlpha(i)) *

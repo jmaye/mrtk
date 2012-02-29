@@ -28,7 +28,7 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> hist(0, 20, 1);
+  Histogram<int, 1> hist(0, 20, 1);
   BinomialDistribution dist(5, 0.2);
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample()(0));
@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   hist.normalize();
-  HistogramPlot<size_t, 1> plot("BinomialDistributionRndHistogramPlot", hist);
+  HistogramPlot<int, 1> plot("BinomialDistributionRndHistogramPlot", hist);
   plot.show();
   return app.exec();
 }

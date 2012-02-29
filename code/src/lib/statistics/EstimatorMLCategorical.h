@@ -35,7 +35,7 @@ public:
     @{
     */
   /// Point type
-  typedef Eigen::Matrix<size_t, M, 1> Point;
+  typedef Eigen::Matrix<int, M, 1> Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator

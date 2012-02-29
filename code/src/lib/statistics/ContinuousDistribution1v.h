@@ -47,6 +47,16 @@ public:
     */
   /// Distribution type
   typedef ContinuousDistribution<X> DistributionType;
+  /// Random variable type
+  typedef X RandomVariable;
+  /// Mean type
+  typedef double Mean;
+  /// Variance type
+  typedef double Variance;
+  /// Mode type
+  typedef double Mode;
+  /// Median type
+  typedef double Median;
   /** @}
     */
 

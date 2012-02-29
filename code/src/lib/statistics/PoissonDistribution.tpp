@@ -24,7 +24,7 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-PoissonDistribution::PoissonDistribution(double mean) {
+PoissonDistribution::PoissonDistribution(Mean mean) {
   setMean(mean);
 }
 
@@ -64,10 +64,10 @@ void PoissonDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void PoissonDistribution::setMean(double mean)
-    throw (BadArgumentException<double>) {
+void PoissonDistribution::setMean(Mean mean)
+    throw (BadArgumentException<Mean>) {
   if (mean <= 0)
-    throw BadArgumentException<double>(mean,
+    throw BadArgumentException<Mean>(mean,
       "PoissonDistribution::setMean(): mean must be strictly positive",
       __FILE__, __LINE__);
   mMean = mean;
@@ -77,24 +77,24 @@ double PoissonDistribution::getMean() const {
   return mMean;
 }
 
-double PoissonDistribution::pmf(const int& value) const {
+double PoissonDistribution::pmf(const RandomVariable& value) const {
   if (value < 0)
     return 0.0;
   else
     return exp(logpmf(value));
 }
 
-double PoissonDistribution::logpmf(const int& value) const
-    throw (BadArgumentException<int>) {
+double PoissonDistribution::logpmf(const RandomVariable& value) const
+    throw (BadArgumentException<RandomVariable>) {
   if (value < 0)
-    throw BadArgumentException<int>(value,
+    throw BadArgumentException<RandomVariable>(value,
       "PoissonDistribution::logpmf(): value must be strictly positive",
       __FILE__, __LINE__);
   const LogFactorialFunction lfactorial;
   return value * log(mMean) - mMean - lfactorial(value);
 }
 
-double PoissonDistribution::cdf(const int& value) const {
+double PoissonDistribution::cdf(const RandomVariable& value) const {
   if (value < 0)
     return 0.0;
   else {
@@ -106,20 +106,20 @@ double PoissonDistribution::cdf(const int& value) const {
   }
 }
 
-int PoissonDistribution::getSample() const {
+PoissonDistribution::RandomVariable PoissonDistribution::getSample() const {
   const static Randomizer<double> randomizer;
   return randomizer.samplePoisson(mMean);
 }
 
-double PoissonDistribution::getMedian() const {
+PoissonDistribution::Median PoissonDistribution::getMedian() const {
   return floor(mMean + 1.0/ 3.0 - 0.02 / mMean);
 }
 
-double PoissonDistribution::getMode() const {
+PoissonDistribution::Mode PoissonDistribution::getMode() const {
   return ceil(mMean) - 1.0;
 }
 
-double PoissonDistribution::getVariance() const {
+PoissonDistribution::Variance PoissonDistribution::getVariance() const {
   return mMean;
 }
 

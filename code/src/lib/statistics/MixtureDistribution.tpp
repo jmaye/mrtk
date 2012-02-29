@@ -121,11 +121,12 @@ void MixtureDistribution<D, M>::setAssignDistribution(const
 }
 
 template <typename D, size_t M>
-double MixtureDistribution<D, M>::pdf(const VariableType& value) const {
+double MixtureDistribution<D, M>::pdf(const RandomVariable& value) const {
   double probability = 0.0;
   for (size_t i = 0; i < mCompDistributions.size(); ++i) {
-    Eigen::Matrix<size_t, M, 1> component =
-      Eigen::Matrix<size_t, M, 1>::Zero(mCompDistributions.size());
+    typename CategoricalDistribution<M>::RandomVariable component =
+      CategoricalDistribution<M>::RandomVariable::Zero(
+      mCompDistributions.size());
     component(i) = 1.0;
     probability += mAssignDistribution(component) *
       mCompDistributions[i](value);
@@ -134,6 +135,6 @@ double MixtureDistribution<D, M>::pdf(const VariableType& value) const {
 }
 
 template <typename D, size_t M>
-double MixtureDistribution<D, M>::pmf(const VariableType& value) const {
+double MixtureDistribution<D, M>::pmf(const RandomVariable& value) const {
   return pdf(value);
 }

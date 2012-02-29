@@ -120,7 +120,7 @@ double InvGammaDistribution<T>::getNormalizer() const {
 }
 
 template <typename T>
-double InvGammaDistribution<T>::pdf(const double& value) const {
+double InvGammaDistribution<T>::pdf(const RandomVariable& value) const {
   if (value <= 0)
     return 0.0;
   else 
@@ -128,12 +128,12 @@ double InvGammaDistribution<T>::pdf(const double& value) const {
 }
 
 template <typename T>
-double InvGammaDistribution<T>::logpdf(const double& value) const {
+double InvGammaDistribution<T>::logpdf(const RandomVariable& value) const {
   return -(mShape + 1) * log(value) - mScale / value - mNormalizer;
 }
 
 template <typename T>
-double InvGammaDistribution<T>::cdf(const double& value) const {
+double InvGammaDistribution<T>::cdf(const RandomVariable& value) const {
   if (value <= 0)
     return 0.0;
   else 
@@ -141,13 +141,14 @@ double InvGammaDistribution<T>::cdf(const double& value) const {
 }
 
 template <typename T>
-double InvGammaDistribution<T>::getSample() const {
+typename InvGammaDistribution<T>::RandomVariable
+    InvGammaDistribution<T>::getSample() const {
   const static Randomizer<double> randomizer;
   return 1.0 / randomizer.sampleGamma(mShape, mScale);
 }
 
 template <typename T>
-double InvGammaDistribution<T>::getMean() const
+typename InvGammaDistribution<T>::Mean InvGammaDistribution<T>::getMean() const
     throw (InvalidOperationException) {
   if (mShape > 1)
     return mScale / (mShape - 1);
@@ -157,12 +158,14 @@ double InvGammaDistribution<T>::getMean() const
 }
 
 template <typename T>
-double InvGammaDistribution<T>::getMode() const {
+typename InvGammaDistribution<T>::Mode InvGammaDistribution<T>::getMode()
+    const {
   return mScale / (mShape + 1);
 }
 
 template <typename T>
-double InvGammaDistribution<T>::getVariance() const
+typename InvGammaDistribution<T>::Variance
+    InvGammaDistribution<T>::getVariance() const
     throw (InvalidOperationException) {
   if (mShape > 2)
     return (mScale * mScale) / ((mShape - 1) * (mShape - 1) * (mShape - 2));

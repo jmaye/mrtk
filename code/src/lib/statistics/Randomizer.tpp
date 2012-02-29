@@ -124,7 +124,7 @@ T Randomizer<T, M>::sampleNormal(const T& mean, const T& variance) const
 }
 
 template <typename T, size_t M>
-Eigen::Matrix<size_t, M, 1> Randomizer<T, M>::sampleCategorical(const
+Eigen::Matrix<int, M, 1> Randomizer<T, M>::sampleCategorical(const
     Eigen::Matrix<double, M, 1>& successProbabilities) const
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(successProbabilities.sum() - 1.0) >
@@ -144,8 +144,8 @@ Eigen::Matrix<size_t, M, 1> Randomizer<T, M>::sampleCategorical(const
     cumProbabilities(i) += sum;
   }
   const double u = sampleUniform();
-  Eigen::Matrix<size_t, M, 1> sample =
-    Eigen::Matrix<size_t, M, 1>::Zero(successProbabilities.size());
+  Eigen::Matrix<int, M, 1> sample =
+    Eigen::Matrix<int, M, 1>::Zero(successProbabilities.size());
   for (size_t i = 1; i < (size_t)cumProbabilities.size(); ++i) {
     if (u > cumProbabilities(i - 1) && u <= cumProbabilities(i)) {
       sample(i - 1)++;

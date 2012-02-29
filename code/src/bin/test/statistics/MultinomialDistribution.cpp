@@ -62,9 +62,9 @@ int main(int argc, char** argv) {
     expression = "dmultinom(x, n, c(0.1,0.2,0.7))";
     ans = R.parseEval(expression);
     Rcpp::NumericVector y(ans);
-    if (fabs(dist((Eigen::Matrix<size_t, 3, 1>() << x[0], x[1],
+    if (fabs(dist((Eigen::Matrix<int, 3, 1>() << x[0], x[1],
         x[2]).finished()) - y[0]) > 1e-12) {
-      std::cout << y[0] << " " << dist((Eigen::Matrix<size_t, 3, 1>() << x[0],
+      std::cout << y[0] << " " << dist((Eigen::Matrix<int, 3, 1>() << x[0],
         x[1], x[2]).finished()) << std::endl;
       return 1;
     }
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 
   std::cout << "dist.getSample(): " << std::endl << dist.getSample()
     << std::endl << std::endl;
-  std::vector<Eigen::Matrix<size_t, 3, 1> > samples;
+  std::vector<Eigen::Matrix<int, 3, 1> > samples;
   dist.getSamples(samples, 10);
   std::cout << "dist.getSamples(samples, 10): " << std::endl;
   for (size_t i = 0; i < 10; ++i)

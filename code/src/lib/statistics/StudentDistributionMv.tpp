@@ -27,9 +27,8 @@
 /******************************************************************************/
 
 template <size_t M>
-StudentDistribution<M>::StudentDistribution(double degrees, const
-    Eigen::Matrix<double, M, 1>& location, const Eigen::Matrix<double, M, M>&
-    scale):
+StudentDistribution<M>::StudentDistribution(double degrees, const Location&
+    location, const Scale& scale):
     mLocation(location) {
   setDegrees(degrees);
   setScale(scale);
@@ -94,31 +93,31 @@ void StudentDistribution<M>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 template <size_t M>
-void StudentDistribution<M>::setLocation(const Eigen::Matrix<double, M, 1>&
-    location) {
+void StudentDistribution<M>::setLocation(const Location& location) {
   mLocation = location;
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& StudentDistribution<M>::getLocation() const {
+const typename StudentDistribution<M>::Location&
+    StudentDistribution<M>::getLocation() const {
   return mLocation;
 }
 
 template <size_t M>
-void StudentDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
-    scale) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
+void StudentDistribution<M>::setScale(const Scale& scale)
+    throw (BadArgumentException<Scale>) {
   if (scale.transpose() != scale)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
+    throw BadArgumentException<Scale>(scale,
       "StudentDistribution<M>::setScale(): scale must be symmetric",
       __FILE__, __LINE__);
   mTransformation = scale.llt();
-  if (mTransformation.isPositiveDefinite() == false)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
+  if (!mTransformation.isPositiveDefinite())
+    throw BadArgumentException<Scale>(scale,
       "StudentDistribution<M>::setScale(): scale must be positive "
       "definite",
       __FILE__, __LINE__);
-  if ((scale.diagonal().cwise() < 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
+  if ((scale.diagonal().cwise() < 0).any())
+    throw BadArgumentException<Scale>(scale,
       "StudentDistribution<M>::setScale(): elements must be positive",
       __FILE__, __LINE__);
   mDeterminant = scale.determinant();
@@ -131,7 +130,7 @@ void StudentDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, M>& StudentDistribution<M>::getScale()
+const typename StudentDistribution<M>::Scale& StudentDistribution<M>::getScale()
     const {
   return mScale;
 }
@@ -156,8 +155,8 @@ double StudentDistribution<M>::getDegrees() const {
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, M>& StudentDistribution<M>::getInverseScale()
-    const {
+const typename StudentDistribution<M>::Scale&
+    StudentDistribution<M>::getInverseScale() const {
   return mInverseScale;
 }
 
@@ -172,26 +171,25 @@ double StudentDistribution<M>::getNormalizer() const {
 }
 
 template <size_t M>
-const Eigen::LLT<Eigen::Matrix<double, M, M> >&
+const Eigen::LLT<typename StudentDistribution<M>::Scale>&
     StudentDistribution<M>::getTransformation() const {
   return mTransformation;
 }
 
 template <size_t M>
-double StudentDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
-    const {
+double StudentDistribution<M>::pdf(const RandomVariable& value) const {
   return exp(logpdf(value));
 }
 
 template <size_t M>
-double StudentDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>& value)
-    const {
+double StudentDistribution<M>::logpdf(const RandomVariable& value) const {
   return -0.5 * (mLocation.size() + mDegrees) * log(1.0 + 1.0 / mDegrees *
     mahalanobisDistance(value)) - mNormalizer;
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> StudentDistribution<M>::getSample() const {
+typename StudentDistribution<M>::RandomVariable
+    StudentDistribution<M>::getSample() const {
   static NormalDistribution<M> normalDist(mLocation, mScale);
   static ChiSquareDistribution chi2Dist;
   normalDist.setMean(mLocation);
@@ -201,14 +199,14 @@ Eigen::Matrix<double, M, 1> StudentDistribution<M>::getSample() const {
 }
 
 template <size_t M>
-double StudentDistribution<M>::mahalanobisDistance(const
-    Eigen::Matrix<double, M, 1>& value) const {
+double StudentDistribution<M>::mahalanobisDistance(const RandomVariable& value)
+    const {
   return ((value - mLocation).transpose() * mInverseScale *
     (value - mLocation))(0, 0);
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMean() const
+typename StudentDistribution<M>::Mean StudentDistribution<M>::getMean() const
     throw (InvalidOperationException) {
   if (mDegrees > 1)
     return mLocation;
@@ -218,13 +216,14 @@ Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMean() const
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> StudentDistribution<M>::getMode() const {
+typename StudentDistribution<M>::Mode StudentDistribution<M>::getMode() const {
   return mLocation;
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> StudentDistribution<M>::getCovariance()
-    const throw (InvalidOperationException) {
+typename StudentDistribution<M>::Covariance
+    StudentDistribution<M>::getCovariance() const
+    throw (InvalidOperationException) {
   if (mDegrees > 2)
     return mDegrees / (mDegrees - 2) * mScale;
   else

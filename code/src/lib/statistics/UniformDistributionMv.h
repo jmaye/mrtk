@@ -40,6 +40,26 @@ template <typename X, size_t M> class UniformDistribution:
   public SampleDistribution<Eigen::Matrix<X, M, 1> >,
   public virtual Serializable {
 public:
+  /** \name Types
+    @{
+    */
+  /// Distribution type
+  typedef typename IfThenElse<typename IsReal<X>::Result,
+    ContinuousDistribution<X, M>, DiscreteDistribution<X, M> >::Result
+    DistributionType;
+  /// Random variable type
+  typedef typename DistributionType::RandomVariable RandomVariable;
+  /// Mean type
+  typedef typename DistributionType::Mean Mean;
+  /// Mean type
+  typedef typename DistributionType::Median Median;
+  /// Mode type
+  typedef typename DistributionType::Mode Mode;
+  /// Covariance type
+  typedef typename DistributionType::Covariance Covariance;
+  /** @}
+    */
+
   /** \name Traits
     @{
     */
@@ -72,9 +92,8 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  UniformDistribution(const Eigen::Matrix<X, M, 1>& minSupport =
-    Eigen::Matrix<X, M, 1>::Zero(), const Eigen::Matrix<X, M, 1>&
-    maxSupport = Eigen::Matrix<X, M, 1>::Ones());
+  UniformDistribution(const RandomVariable& minSupport = RandomVariable::Zero(),
+    const RandomVariable& maxSupport = RandomVariable::Ones());
   /// Copy constructor
   UniformDistribution(const UniformDistribution<X, M>& other);
   /// Assignment operator
@@ -88,33 +107,32 @@ public:
     @{
     */
   /// Sets the support of the distribution
-  void setSupport(const Eigen::Matrix<X, M, 1>& minSupport, const
-    Eigen::Matrix<X, M, 1>& maxSupport)
-    throw (BadArgumentException<Eigen::Matrix<X, M, 1> >);
+  void setSupport(const RandomVariable& minSupport, const RandomVariable&
+    maxSupport) throw (BadArgumentException<RandomVariable>);
   /// Sets the minimum support
-  void setMinSupport(const Eigen::Matrix<X, M, 1>& minSupport);
+  void setMinSupport(const RandomVariable& minSupport);
   /// Returns the minimum support
-  const Eigen::Matrix<X, M, 1>& getMinSupport() const;
+  const RandomVariable& getMinSupport() const;
   /// Sets the maximum support
-  void setMaxSupport(const Eigen::Matrix<X, M, 1>& maxSupport);
+  void setMaxSupport(const RandomVariable& maxSupport);
   /// Returns the maximum support
-  const Eigen::Matrix<X, M, 1>& getMaxSupport() const;
+  const RandomVariable& getMaxSupport() const;
   /// Access the multivariate uniform distribution's support area
   const X& getSupportArea() const;
   /// Returns the mean of the distribution
-  Eigen::Matrix<double, M, 1> getMean() const;
+  Mean getMean() const;
   /// Returns the median of the distribution
-  Eigen::Matrix<double, M, 1> getMedian() const;
+  Median getMedian() const;
   /// Returns the mode of the distribution
-  Eigen::Matrix<double, M, 1> getMode() const;
+  Mode getMode() const;
   /// Returns the variance of the distribution
-  Eigen::Matrix<double, M, M> getCovariance() const;
+  Covariance getCovariance() const;
   /// Access the probablity density function at the given value
-  virtual double pdf(const Eigen::Matrix<X, M, 1>& value) const;
+  virtual double pdf(const RandomVariable& value) const;
   /// Access the probablity mass function at the given value
-  virtual double pmf(const Eigen::Matrix<X, M, 1>& value) const;
+  virtual double pmf(const RandomVariable& value) const;
   /// Access a sample drawn from the distribution
-  virtual Eigen::Matrix<X, M, 1> getSample() const;
+  virtual RandomVariable getSample() const;
   /** @}
     */
 
@@ -137,9 +155,9 @@ protected:
     @{
     */
   /// Minimum support of the distribution
-  Eigen::Matrix<X, M, 1> mMinSupport;
+  RandomVariable mMinSupport;
   /// Maximum support of the distribution
-  Eigen::Matrix<X, M, 1> mMaxSupport;
+  RandomVariable mMaxSupport;
   /// Support area
   X mSupportArea;
   /** @}

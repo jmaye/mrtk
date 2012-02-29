@@ -40,6 +40,26 @@ template <typename X> class UniformDistribution<X> :
   public SampleDistribution<X>,
   public virtual Serializable {
 public:
+  /** \name Types
+    @{
+    */
+  /// Distribution type
+  typedef typename IfThenElse<typename IsReal<X>::Result,
+    ContinuousDistribution<X>, DiscreteDistribution<X> >::Result
+    DistributionType;
+  /// Random variable type
+  typedef typename DistributionType::RandomVariable RandomVariable;
+  /// Mean type
+  typedef typename DistributionType::Mean Mean;
+  /// Variance type
+  typedef typename DistributionType::Variance Variance;
+  /// Mode type
+  typedef typename DistributionType::Mode Mode;
+  /// Median type
+  typedef typename DistributionType::Median Median;
+  /** @}
+    */
+
   /** \name Traits
     @{
     */
@@ -66,7 +86,8 @@ public:
     @{
     */
   /// Constructs distribution from parameters
-  UniformDistribution(const X& minSupport = X(0), const X& maxSupport = X(1));
+  UniformDistribution(const RandomVariable& minSupport = X(0), const
+    RandomVariable& maxSupport = X(1));
   /// Copy constructor
   UniformDistribution(const UniformDistribution<X>& other);
   /// Assignment operator
@@ -80,32 +101,32 @@ public:
     @{
     */
   /// Sets the support of the distribution
-  void setSupport(const X& minSupport, const X& maxSupport)
-    throw (BadArgumentException<X>);
+  void setSupport(const RandomVariable& minSupport, const RandomVariable&
+    maxSupport) throw (BadArgumentException<RandomVariable>);
   /// Sets the minimum support
-  void setMinSupport(const X& minSupport);
+  void setMinSupport(const RandomVariable& minSupport);
   /// Returns the minimum support
-  const X& getMinSupport() const;
+  const RandomVariable& getMinSupport() const;
   /// Sets the maximum support
-  void setMaxSupport(const X& maxSupport);
+  void setMaxSupport(const RandomVariable& maxSupport);
   /// Returns the maximum support
-  const X& getMaxSupport() const;
+  const RandomVariable& getMaxSupport() const;
   /// Returns the support area
   const X& getSupportArea() const;
   /// Returns the mean of the distribution
-  double getMean() const;
+  Mean getMean() const;
   /// Returns the median of the distribution
-  double getMedian() const;
+  Median getMedian() const;
   /// Returns the mode of the distribution
-  double getMode() const;
+  Mode getMode() const;
   /// Returns the variance of the distribution
-  double getVariance() const;
+  Variance getVariance() const;
   /// Access the probablity density function at the given value
-  virtual double pdf(const X& value) const;
+  virtual double pdf(const RandomVariable& value) const;
   /// Access the probablity mass function at the given value
-  virtual double pmf(const X& value) const;
+  virtual double pmf(const RandomVariable& value) const;
   /// Access a sample drawn from the distribution
-  virtual X getSample() const;
+  virtual RandomVariable getSample() const;
   /** @}
     */
 
@@ -128,11 +149,11 @@ protected:
     @{
     */
   /// Minimum support of the distribution
-  X mMinSupport;
+  RandomVariable mMinSupport;
   /// Maximum support of the distribution
-  X mMaxSupport;
+  RandomVariable mMaxSupport;
   /// Support area
-  X mSupportArea;
+  RandomVariable mSupportArea;
   /** @}
     */
 

@@ -44,7 +44,7 @@ public:
     @{
     */
   /// Constructs the distribution from the parameter
-  PoissonDistribution(double mean = 1.0);
+  PoissonDistribution(Mean mean = 1.0);
   /// Copy constructor
   PoissonDistribution(const PoissonDistribution& other);
   /// Assignment operator
@@ -58,23 +58,24 @@ public:
     @{
     */
   /// Sets the event mean
-  void setMean(double mean) throw (BadArgumentException<double>);
+  void setMean(Mean mean) throw (BadArgumentException<Mean>);
   /// Returns the event mean
-  double getMean() const;
+  Mean getMean() const;
   /// Returns the median of the distribution
-  double getMedian() const;
+  Median getMedian() const;
   /// Returns the mode of the distribution
-  double getMode() const;
+  Mode getMode() const;
   /// Returns the variance of the distribution
-  double getVariance() const;
+  Variance getVariance() const;
   /// Returns the probability mass function at a point
-  virtual double pmf(const int& value) const;
+  virtual double pmf(const RandomVariable& value) const;
   /// Returns the log-probability mass function at a point
-  double logpmf(const int& value) const throw (BadArgumentException<int>);
+  double logpmf(const RandomVariable& value) const
+    throw (BadArgumentException<RandomVariable>);
   /// Returns the cumulative mass function at a point
-  double cdf(const int& value) const;
+  double cdf(const RandomVariable& value) const;
   /// Access a sample drawn from the distribution
-  virtual int getSample() const;
+  virtual RandomVariable getSample() const;
   /// Returns the KL-divergence with another distribution
   double KLDivergence(const PoissonDistribution& other) const;
   /** @}

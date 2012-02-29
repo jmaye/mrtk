@@ -27,7 +27,7 @@
 #include <QtGui/QApplication>
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> hist(0, 10, 1);
+  Histogram<int, 1> hist(0, 10, 1);
   BernoulliDistribution dist(0.1);
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample()(0));
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   hist.normalize();
-  HistogramPlot<size_t, 1> plot("BernoulliDistributionRndHistogramPlot", hist);
+  HistogramPlot<int, 1> plot("BernoulliDistributionRndHistogramPlot", hist);
   plot.show();
   return app.exec();
 }

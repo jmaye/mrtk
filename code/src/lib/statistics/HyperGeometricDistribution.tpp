@@ -161,9 +161,8 @@ double HyperGeometricDistribution<M>::getNormalizer() const {
 }
 
 template <size_t M>
-double HyperGeometricDistribution<M>::pmf(const Eigen::Matrix<int, M, 1>&
-    value) const {
-  if (value.sum() != (int)mNumTrials || (value.cwise() < 0).any() == true)
+double HyperGeometricDistribution<M>::pmf(const RandomVariable& value) const {
+  if (value.sum() != (int)mNumTrials || (value.cwise() < 0).any())
     return 0.0;
   else
     return exp(logpmf(value));
@@ -176,12 +175,12 @@ double HyperGeometricDistribution<M>::pmf(const typename
 }
 
 template <size_t M>
-double HyperGeometricDistribution<M>::logpmf(const Eigen::Matrix<int, M, 1>&
-    value) const throw (BadArgumentException<Eigen::Matrix<int, M, 1> >) {
-  if (value.sum() != (int)mNumTrials || (value.cwise() < 0).any() == true)
+double HyperGeometricDistribution<M>::logpmf(const RandomVariable&
+    value) const throw (BadArgumentException<RandomVariable>) {
+  if (value.sum() != (int)mNumTrials || (value.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<int, M, 1> >(value,
       "HyperGeometricDistribution<M>::logpmf(): value has to sum to the trials "
-      "number and value must be positive",
+      "number and contains positive values",
       __FILE__, __LINE__);
   Eigen::Matrix<size_t, 2, 1> argument;
   double sum = 0.0;
@@ -201,22 +200,21 @@ double HyperGeometricDistribution<M>::logpmf(const typename
 }
 
 template <size_t M>
-Eigen::Matrix<int, M, 1> HyperGeometricDistribution<M>::getSample() const {
+typename HyperGeometricDistribution<M>::RandomVariable
+    HyperGeometricDistribution<M>::getSample() const {
   // TODO: NOT IMPLEMENTED!
-  return Eigen::Matrix<int, M, 1>::Zero(mMarbles.size());
+  return RandomVariable::Zero(mMarbles.size());
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> HyperGeometricDistribution<M>::getMean() const {
-  Eigen::Matrix<double, M, 1> mean(mMarbles.size());
-  for (size_t i = 0; i < (size_t)mMarbles.size(); ++i)
-    mean(i) = mMarbles(i);
-  return mNumTrials / (double)mMarbles.sum() * mean;
+typename HyperGeometricDistribution<M>::Mean
+    HyperGeometricDistribution<M>::getMean() const {
+  return mNumTrials / (double)mMarbles.sum() * mMarbles.template cast<double>();
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> HyperGeometricDistribution<M>::getCovariance()
-    const {
+typename HyperGeometricDistribution<M>::Covariance
+    HyperGeometricDistribution<M>::getCovariance() const {
   Eigen::Matrix<double, M, M> covariance(mMarbles.size(), mMarbles.size());
   const double sum = mMarbles.sum();
   for (size_t i = 0; i < (size_t)mMarbles.size(); ++i) {

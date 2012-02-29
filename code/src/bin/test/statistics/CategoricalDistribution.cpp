@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
   if (dist.getSuccessProbabilities() != Eigen::Matrix<double, 2, 1>(0.7, 0.3))
     return 1;
 
-  Eigen::Matrix<size_t, 2, 1> value1;
+  Eigen::Matrix<int, 2, 1> value1;
   value1(0) = 1;
   value1(1) = 0;
   std::cout << "pmf(1, 0): " << std::fixed << dist(value1) << std::endl
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
   std::cout << "dist.getSample(): " << std::endl << dist.getSample()
     << std::endl << std::endl;
 
-  std::vector<Eigen::Matrix<size_t, 2, 1> > samples;
+  std::vector<Eigen::Matrix<int, 2, 1> > samples;
   dist.getSamples(samples, 10);
 
   std::cout << "dist.getSamples(samples, 10): " << std::endl;
@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
   if (distMd.getSuccessProbabilities() != probabilities)
     return 1;
 
-  Eigen::Matrix<size_t, Eigen::Dynamic, 1> value(5);
+  Eigen::Matrix<int, Eigen::Dynamic, 1> value(5);
   value(0) = 0;
   value(1) = 0;
   value(2) = 0;
@@ -190,7 +190,7 @@ int main(int argc, char** argv) {
 
   std::cout << "distMd.getSample(): " << std::endl << distMd.getSample()
     << std::endl << std::endl;
-  std::vector<Eigen::Matrix<size_t, Eigen::Dynamic, 1> > samplesMd;
+  std::vector<Eigen::Matrix<int, Eigen::Dynamic, 1> > samplesMd;
   distMd.getSamples(samplesMd, 10);
   std::cout << "distMd.getSamples(samples, 10): " << std::endl;
   for (size_t i = 0; i < 10; ++i)

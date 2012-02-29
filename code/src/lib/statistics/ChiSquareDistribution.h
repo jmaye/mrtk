@@ -56,7 +56,7 @@ public:
   /// Returns the degrees of freedom of the distribution
   size_t getDegrees() const;
   /// Returns the median of the distribution
-  double getMedian() const;
+  Median getMedian() const;
   /** @}
     */
 

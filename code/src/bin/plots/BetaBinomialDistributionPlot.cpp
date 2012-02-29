@@ -27,7 +27,7 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  DiscreteFunctionPlot<double, size_t, 1> plot("BetaBinomialDistribution",
+  DiscreteFunctionPlot<double, int, 1> plot("BetaBinomialDistribution",
     BetaBinomialDistribution(5, 2, 5), 0, 25);
   plot.show();
   return app.exec();

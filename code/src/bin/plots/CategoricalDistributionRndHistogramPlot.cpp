@@ -28,11 +28,11 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<size_t, 1> hist(0, 10, 1);
+  Histogram<int, 1> hist(0, 10, 1);
   CategoricalDistribution<5> dist((Eigen::Matrix<double, 5, 1>()
     << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
   for (size_t i = 0; i < 100000; ++i) {
-    Eigen::Matrix<size_t, 5, 1> sample = dist.getSample();
+    Eigen::Matrix<int, 5, 1> sample = dist.getSample();
     for (size_t j = 0; j < 5; ++j)
       hist.setBinContent(j, hist.getBinContent(j) + sample(j));
   }
@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
   std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;
-  HistogramPlot<size_t, 1> plot("CategoricalDistributionRndHistogramPlot",
+  HistogramPlot<int, 1> plot("CategoricalDistributionRndHistogramPlot",
     hist);
   plot.show();
   return app.exec();

@@ -27,7 +27,7 @@
 
 template <size_t M>
 InvWishartDistribution<M>::InvWishartDistribution(double degrees, const
-    Eigen::Matrix<double, M, M>& scale) :
+    Scale& scale) :
     mDegrees(degrees),
     mScale(scale) {
   setDegrees(degrees);
@@ -110,11 +110,11 @@ double InvWishartDistribution<M>::getDegrees() const {
 }
 
 template <size_t M>
-void InvWishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
-    scale) throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
+void InvWishartDistribution<M>::setScale(const Scale& scale)
+    throw (BadArgumentException<Scale>) {
   mTransformation = scale.llt();
-  if (mTransformation.isPositiveDefinite() == false)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(scale,
+  if (!mTransformation.isPositiveDefinite())
+    throw BadArgumentException<Scale>(scale,
       "InvWishartDistribution<M>::setScale(): scale must be positive definite",
       __FILE__, __LINE__);
   mDeterminant = scale.determinant();
@@ -126,7 +126,8 @@ void InvWishartDistribution<M>::setScale(const Eigen::Matrix<double, M, M>&
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, M>& InvWishartDistribution<M>::getScale() const {
+const typename InvWishartDistribution<M>::Scale&
+    InvWishartDistribution<M>::getScale() const {
   return mScale;
 }
 
@@ -141,14 +142,14 @@ double InvWishartDistribution<M>::getNormalizer() const {
 }
 
 template <size_t M>
-const Eigen::LLT<Eigen::Matrix<double, M, M> >&
+const Eigen::LLT<typename InvWishartDistribution<M>::Scale>&
     InvWishartDistribution<M>::getTransformation() const {
   return mTransformation;
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMean() const
-    throw (InvalidOperationException) {
+typename InvWishartDistribution<M>::Mean InvWishartDistribution<M>::getMean()
+  const throw (InvalidOperationException) {
   if (mDegrees > mScale.rows() + 1)
     return mScale / (mDegrees - mScale.rows() - 1);
   else
@@ -157,21 +158,21 @@ Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMean() const
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getMode() const {
+typename InvWishartDistribution<M>::Mode
+    InvWishartDistribution<M>::getMode() const {
   return mScale / (mDegrees + mScale.rows() + 1);
 }
 
 template <size_t M>
-double InvWishartDistribution<M>::pdf(const Eigen::Matrix<double, M, M>& value)
-    const {
+double InvWishartDistribution<M>::pdf(const RandomVariable& value) const {
   return exp(logpdf(value));
 }
 
 template <size_t M>
-double InvWishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>&
-    value) const throw (BadArgumentException<Eigen::Matrix<double, M, M> >) {
-  if (value.llt().isPositiveDefinite() == false)
-    throw BadArgumentException<Eigen::Matrix<double, M, M> >(value,
+double InvWishartDistribution<M>::logpdf(const RandomVariable& value) const
+    throw (BadArgumentException<RandomVariable>) {
+  if (!value.llt().isPositiveDefinite())
+    throw BadArgumentException<RandomVariable>(value,
       "InvWishartDistribution<M>::pdf(): value must be positive definite",
       __FILE__, __LINE__);
   return -(mDegrees + mScale.rows() + 1) * 0.5 * log(value.determinant())
@@ -179,6 +180,7 @@ double InvWishartDistribution<M>::logpdf(const Eigen::Matrix<double, M, M>&
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> InvWishartDistribution<M>::getSample() const {
+typename InvWishartDistribution<M>::RandomVariable
+    InvWishartDistribution<M>::getSample() const {
   return mWishartDist.getSample();
 }

@@ -63,19 +63,20 @@ public:
   /// Returns the success probability
   double getSuccessProbability() const;
   /// Returns the mean of the distribution
-  double getMean() const;
+  Mean getMean() const;
   /// Returns the mode of the distribution
-  double getMode() const;
+  Mode getMode() const;
   /// Returns the variance of the distribution
-  double getVariance() const;
+  Variance getVariance() const;
   /// Returns the probability mass function at a point
-  virtual double pmf(const int& value) const;
+  virtual double pmf(const RandomVariable& value) const;
   /// Returns the log-probability mass function at a point
-  double logpmf(const int& value) const throw (BadArgumentException<int>);
+  double logpmf(const RandomVariable& value) const
+    throw (BadArgumentException<RandomVariable>);
   /// Returns the cumulative mass function at a point
-  double cdf(const int& value) const;
+  double cdf(const RandomVariable& value) const;
   /// Access a sample drawn from the distribution
-  virtual int getSample() const;
+  virtual RandomVariable getSample() const;
   /** @}
     */
 

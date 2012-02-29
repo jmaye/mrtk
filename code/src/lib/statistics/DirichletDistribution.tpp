@@ -82,7 +82,7 @@ void DirichletDistribution<M>::write(std::ofstream& stream) const {
 template <size_t M>
 void DirichletDistribution<M>::setAlpha(const Eigen::Matrix<double, M, 1>&
     alpha) throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if ((alpha.cwise() <= 0).any() == true)
+  if ((alpha.cwise() <= 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(alpha,
       "DirichletDistribution<M>::setAlpha(): alpha must be strictly positive",
       __FILE__, __LINE__);
@@ -150,11 +150,9 @@ double DirichletDistribution<M>::Traits<2, D>::logpdf(const
 }
 
 template <size_t M>
-double DirichletDistribution<M>::pdf(const Eigen::Matrix<double, M, 1>& value)
-    const {
-  if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
-    return 0.0;
-  else if ((value.cwise() <= 0).any() == true)
+double DirichletDistribution<M>::pdf(const RandomVariable& value) const {
+  if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon() ||
+      (value.cwise() <= 0).any())
     return 0.0;
   else
     return exp(logpdf(value));
@@ -167,16 +165,13 @@ double DirichletDistribution<M>::pdf(const typename
 }
 
 template <size_t M>
-double DirichletDistribution<M>::logpdf(const Eigen::Matrix<double, M, 1>&
-    value) const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon())
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value,
-      "DirichletDistribution<M>::logpdf(): input vector must sum to 1",
-      __FILE__, __LINE__);
-  if ((value.cwise() <= 0).any() == true)
-    throw BadArgumentException<Eigen::Matrix<double, M, 1> >(value,
-      "DirichletDistribution<M>::logpdf(): input vector must be strictly "
-      "positive",
+double DirichletDistribution<M>::logpdf(const RandomVariable& value) const
+    throw (BadArgumentException<RandomVariable>) {
+  if (fabs(value.sum() - 1.0) > std::numeric_limits<double>::epsilon() ||
+      (value.cwise() <= 0).any())
+    throw BadArgumentException<RandomVariable>(value,
+      "DirichletDistribution<M>::logpdf(): input vector must sum to 1 and "
+      "contains strictly positive values",
       __FILE__, __LINE__);
   double returnValue = 0;
   for (size_t i = 0; i < (size_t)mAlpha.size(); ++i)
@@ -191,23 +186,25 @@ double DirichletDistribution<M>::logpdf(const typename
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getSample() const {
+typename DirichletDistribution<M>::RandomVariable
+    DirichletDistribution<M>::getSample() const {
   const static Randomizer<double> randomizer;
-  Eigen::Matrix<double, M, 1> sampleGammaVector(mAlpha.size());
+  RandomVariable sampleGammaVector(mAlpha.size());
   for (size_t i = 0; i < (size_t)mAlpha.size(); ++i)
     sampleGammaVector(i) = randomizer.sampleGamma(mAlpha(i), 1.0);
   return sampleGammaVector / sampleGammaVector.sum();
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getMean() const {
+typename DirichletDistribution<M>::Mean DirichletDistribution<M>::getMean()
+    const {
   return mAlpha / mAlpha.sum();
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getMode() const
-    throw (InvalidOperationException) {
-  if ((mAlpha.cwise() <= 1).any() == true)
+typename DirichletDistribution<M>::Mode DirichletDistribution<M>::getMode()
+    const throw (InvalidOperationException) {
+  if ((mAlpha.cwise() <= 1).any())
     throw InvalidOperationException("DirichletDistribution<M>::getMode(): "
       "alpha must be bigger than 1");
   else
@@ -215,8 +212,9 @@ Eigen::Matrix<double, M, 1> DirichletDistribution<M>::getMode() const
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> DirichletDistribution<M>::getCovariance() const {
-  Eigen::Matrix<double, M, M> covariance(mAlpha.size(), mAlpha.size());
+typename DirichletDistribution<M>::Covariance
+    DirichletDistribution<M>::getCovariance() const {
+  Covariance covariance(mAlpha.size(), mAlpha.size());
   const double sum = mAlpha.sum();
   for (size_t i = 0; i < (size_t)mAlpha.size(); ++i) {
     covariance(i, i) = mAlpha(i) * (sum - mAlpha(i)) / (sum * sum * (sum + 1));

@@ -130,22 +130,23 @@ double StudentDistribution<1>::getNormalizer() const {
   return mNormalizer;
 }
 
-double StudentDistribution<1>::pdf(const double& value) const {
+double StudentDistribution<1>::pdf(const RandomVariable& value) const {
   return exp(logpdf(value));
 }
 
-double StudentDistribution<1>::logpdf(const double& value) const {
+double StudentDistribution<1>::logpdf(const RandomVariable& value) const {
   return -0.5 * (1 + mDegrees) * log(1.0 +
     mahalanobisDistance(value) / mDegrees) - mNormalizer;
 }
 
-double StudentDistribution<1>::cdf(const double& value) const {
+double StudentDistribution<1>::cdf(const RandomVariable& value) const {
   // TODO: SEEMS TO BE INCORRECT
   return 1.0 - 0.5 * gsl_sf_beta_inc(0.5 * mDegrees, 0.5, mDegrees /
     (value * value + mDegrees));
 }
 
-double StudentDistribution<1>::getSample() const {
+StudentDistribution<1>::RandomVariable StudentDistribution<1>::getSample()
+    const {
   static NormalDistribution<1> normalDist;
   static ChiSquareDistribution chi2Dist;
   normalDist.setMean(mLocation);
@@ -154,11 +155,12 @@ double StudentDistribution<1>::getSample() const {
   return normalDist.getSample() / sqrt(chi2Dist.getSample() / mDegrees);
 }
 
-double StudentDistribution<1>::mahalanobisDistance(const double& value) const {
+double StudentDistribution<1>::mahalanobisDistance(const RandomVariable& value)
+    const {
   return (value - mLocation) * mInverseScale * (value - mLocation);
 }
 
-double StudentDistribution<1>::getMean() const
+StudentDistribution<1>::Mean StudentDistribution<1>::getMean() const
     throw (InvalidOperationException) {
   if (mDegrees > 1)
     return mLocation;
@@ -167,15 +169,15 @@ double StudentDistribution<1>::getMean() const
       "degrees must be bigger than 1");
 }
 
-double StudentDistribution<1>::getMedian() const {
+StudentDistribution<1>::Median StudentDistribution<1>::getMedian() const {
   return mLocation;
 }
 
-double StudentDistribution<1>::getMode() const {
+StudentDistribution<1>::Mode StudentDistribution<1>::getMode() const {
   return mLocation;
 }
 
-double StudentDistribution<1>::getVariance() const
+StudentDistribution<1>::Variance StudentDistribution<1>::getVariance() const
     throw (InvalidOperationException) {
   if (mDegrees > 2)
     return mDegrees / (mDegrees - 2) * mScale;

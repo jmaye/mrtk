@@ -89,7 +89,7 @@ void NegativeMultinomialDistribution<M>::setSuccessProbabilities(const
     (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
   if (fabs(successProbabilities.sum() - 1.0) >
     std::numeric_limits<double>::epsilon() ||
-    (successProbabilities.cwise() < 0).any() == true)
+    (successProbabilities.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
       successProbabilities,
       "NegativeMultinomialDistribution<M>::setSuccessProbabilities(): success "
@@ -159,10 +159,10 @@ double NegativeMultinomialDistribution<M>::Traits<2, D>::logpmf(const
 }
 
 template <size_t M>
-double NegativeMultinomialDistribution<M>::pmf(const
-    Eigen::Matrix<int, M, 1>& value) const {
+double NegativeMultinomialDistribution<M>::pmf(const RandomVariable& value)
+    const {
   if (value(value.size() - 1) != (int)mNumTrials ||
-      (value.cwise() < 0).any() == true)
+      (value.cwise() < 0).any())
     return 0.0;
   else
     return exp(logpmf(value));
@@ -175,11 +175,10 @@ double NegativeMultinomialDistribution<M>::pmf(const typename
 }
 
 template <size_t M>
-double NegativeMultinomialDistribution<M>::logpmf(const
-    Eigen::Matrix<int, M, 1>& value) const
-    throw (BadArgumentException<Eigen::Matrix<int, M, 1> >) {
+double NegativeMultinomialDistribution<M>::logpmf(const RandomVariable& value)
+    const throw (BadArgumentException<RandomVariable>) {
   if (value(value.size() - 1) != (int)mNumTrials ||
-      (value.cwise() < 0).any() == true)
+      (value.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<int, M, 1> >(value,
       "NegativeMultinomialDistribution<M>::logpmf(): value(M) must contain the "
       "trial numbers and be stricly positive",
@@ -201,22 +200,22 @@ double NegativeMultinomialDistribution<M>::logpmf(const typename
 }
 
 template <size_t M>
-Eigen::Matrix<int, M, 1> NegativeMultinomialDistribution<M>::getSample()
-    const {
+typename NegativeMultinomialDistribution<M>::RandomVariable
+    NegativeMultinomialDistribution<M>::getSample() const {
   // TODO: NOT IMPLEMENTED!
-  return Eigen::Matrix<int, M, 1>::Zero(mSuccessProbabilities.size());
+  return RandomVariable::Zero(mSuccessProbabilities.size());
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, 1> NegativeMultinomialDistribution<M>::getMean()
-    const {
+typename NegativeMultinomialDistribution<M>::Mean
+    NegativeMultinomialDistribution<M>::getMean() const {
   return mNumTrials / mSuccessProbabilities(mSuccessProbabilities.size() - 1) *
     mSuccessProbabilities;
 }
 
 template <size_t M>
-Eigen::Matrix<double, M, M> NegativeMultinomialDistribution<M>::getCovariance()
-    const {
+typename NegativeMultinomialDistribution<M>::Covariance
+    NegativeMultinomialDistribution<M>::getCovariance() const {
   // TODO: COVARIANCE NOT IMPLEMENTED
   const double fail = mSuccessProbabilities(mSuccessProbabilities.size() - 1);
   return mNumTrials / fail / fail *

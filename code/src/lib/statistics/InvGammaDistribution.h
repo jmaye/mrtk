@@ -66,19 +66,19 @@ public:
   /// Returns the normalizer
   double getNormalizer() const;
   /// Returns the mean of the distribution
-  double getMean() const throw (InvalidOperationException);
+  Mean getMean() const throw (InvalidOperationException);
   /// Returns the mode of the distribution
-  double getMode() const;
+  Mode getMode() const;
   /// Returns the variance of the distribution
-  double getVariance() const throw (InvalidOperationException);
+  Variance getVariance() const throw (InvalidOperationException);
   /// Access the probablity density function at the given value
-  virtual double pdf(const double& value) const;
+  virtual double pdf(const RandomVariable& value) const;
   /// Access the log-probablity density function at the given value
-  double logpdf(const double& value) const;
+  double logpdf(const RandomVariable& value) const;
   /// Access the cumulative density function at the given value
-  double cdf(const double& value) const;
+  double cdf(const RandomVariable& value) const;
   /// Access a sample drawn from the distribution
-  virtual double getSample() const;
+  virtual RandomVariable getSample() const;
   /** @}
     */
 

@@ -57,7 +57,7 @@ public:
   /// Returns the event rate
   double getRate() const;
   /// Returns the median of the distribution
-  double getMedian() const;
+  Median getMedian() const;
   /** @}
     */
 

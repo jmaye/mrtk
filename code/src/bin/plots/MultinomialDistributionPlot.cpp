@@ -27,10 +27,10 @@
 #include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
-  Eigen::Matrix<size_t, 2, 1> minimum(0, 0);
-  Eigen::Matrix<size_t, 2, 1> maximum(20, 20);
+  Eigen::Matrix<int, 2, 1> minimum(0, 0);
+  Eigen::Matrix<int, 2, 1> maximum(20, 20);
   QApplication app(argc, argv);
-  DiscreteFunctionPlot<double, size_t, 2> plot("MultinomialDistribution",
+  DiscreteFunctionPlot<double, int, 2> plot("MultinomialDistribution",
     MultinomialDistribution<3>(20), minimum, maximum);
   plot.show();
   return app.exec();

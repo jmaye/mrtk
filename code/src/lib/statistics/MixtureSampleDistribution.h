@@ -40,8 +40,8 @@ public:
   /** \name Types definitions
     @{
     */
-  /// Variable type
-  typedef typename D::VariableType VariableType;
+  /// Random variable type
+  typedef typename D::DistributionType::RandomVariable RandomVariable;
   /** @}
     */
 
@@ -65,9 +65,9 @@ public:
     @{
     */
   /// Access a sample drawn from the distribution
-  VariableType getSample() const;
+  RandomVariable getSample() const;
   /// Access samples drawn from the distribution
-  void getSamples(std::vector<VariableType>& samples, size_t numSamples) const;
+  void getSamples(std::vector<RandomVariable>& samples, size_t numSamples) const;
   /** @}
     */
 

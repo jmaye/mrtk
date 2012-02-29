@@ -40,14 +40,14 @@ int main(int argc, char** argv) {
     estNorm2.addPoint(samplesNorm2[i]);
   std::cout << "Estimation2: " << std::endl << estNorm2 << std::endl;
   CategoricalDistribution<4> distCat4;
-  std::vector<Eigen::Matrix<size_t, 4, 1> > samplesCat4;
+  std::vector<Eigen::Matrix<int, 4, 1> > samplesCat4;
   distCat4.getSamples(samplesCat4, 1000);
   EstimatorML<CategoricalDistribution<4>, 4> estCat4;
   for (size_t i = 0; i < samplesCat4.size(); ++i)
     estCat4.addPoint(samplesCat4[i]);
   std::cout << "Estimation3: " << std::endl << estCat4 << std::endl;
   MultinomialDistribution<4> distMult4(20);
-  std::vector<Eigen::Matrix<size_t, 4, 1> > samplesMult4;
+  std::vector<Eigen::Matrix<int, 4, 1> > samplesMult4;
   distMult4.getSamples(samplesMult4, 1000);
   EstimatorML<MultinomialDistribution<4>, 4> estMult4(20);
   for (size_t i = 0; i < samplesMult4.size(); ++i)

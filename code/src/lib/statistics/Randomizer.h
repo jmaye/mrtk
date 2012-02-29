@@ -86,7 +86,7 @@ public:
   T sampleNormal(const T& mean = T(0), const T& variance = T(1)) const
     throw (BadArgumentException<T>);
   /// Returns a sample from a categorical distribution
-  Eigen::Matrix<size_t, M, 1> sampleCategorical(const
+  Eigen::Matrix<int, M, 1> sampleCategorical(const
     Eigen::Matrix<double, M, 1>& successProbabilities =
     Eigen::Matrix<double, M, 1>::Constant(1.0 / M))
     const throw (BadArgumentException<Eigen::Matrix<double, M, 1> >);

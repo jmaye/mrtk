@@ -50,9 +50,10 @@ MixtureSampleDistribution<D, M>::~MixtureSampleDistribution() {
 /******************************************************************************/
 
 template <typename D, size_t M>
-typename MixtureSampleDistribution<D, M>::VariableType
+typename MixtureSampleDistribution<D, M>::RandomVariable
     MixtureSampleDistribution<D, M>::getSample() const {
-  Eigen::Matrix<size_t, M, 1> component = this->mAssignDistribution.getSample();
+  typename CategoricalDistribution<M>::RandomVariable component =
+    this->mAssignDistribution.getSample();
   for (size_t i = 0; i < (size_t)component.size(); ++i)
     if (component(i) == 1)
       return this->mCompDistributions[i].getSample();
@@ -60,7 +61,7 @@ typename MixtureSampleDistribution<D, M>::VariableType
 }
 
 template <typename D, size_t M>
-void MixtureSampleDistribution<D, M>::getSamples(std::vector<VariableType>&
+void MixtureSampleDistribution<D, M>::getSamples(std::vector<RandomVariable>&
     samples, size_t numSamples) const {
   samples.clear();
   samples.reserve(numSamples);

@@ -69,6 +69,6 @@ double ExponentialDistribution::getRate() const {
   return getInvScale();
 }
 
-double ExponentialDistribution::getMedian() const {
+ExponentialDistribution::Median ExponentialDistribution::getMedian() const {
   return getMean() * log(2);
 }

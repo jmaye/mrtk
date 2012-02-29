@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
   estNorm2.addPoints(samplesNorm2.begin(), samplesNorm2.end());
   std::cout << "Estimation2: " << std::endl << estNorm2 << std::endl;
   MultinomialDistribution<4> distMult4(20);
-  std::vector<Eigen::Matrix<size_t, 4, 1> > samplesMult4;
+  std::vector<Eigen::Matrix<int, 4, 1> > samplesMult4;
   distMult4.getSamples(samplesMult4, 1000);
   EstimatorBayes<MultinomialDistribution<4>, 4> estMult4(20);
   estMult4.addPoints(samplesMult4.begin(), samplesMult4.end());

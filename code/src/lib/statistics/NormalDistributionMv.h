@@ -37,13 +37,30 @@ template <size_t M> class NormalDistribution :
   public SampleDistribution<Eigen::Matrix<double, M, 1> >,
   public virtual Serializable {
 public:
+  /** \name Types
+    @{
+    */
+  /// Distribution type
+  typedef ContinuousDistribution<double, M> DistributionType;
+  /// Random variable type
+  typedef typename DistributionType::RandomVariable RandomVariable;
+  /// Mean type
+  typedef typename DistributionType::Mean Mean;
+  /// Mode type
+  typedef typename DistributionType::Mode Mode;
+  /// Covariance type
+  typedef typename DistributionType::Covariance Covariance;
+  /// Precision type
+  typedef Covariance Precision;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Constructs the distribution from the parameters
-  NormalDistribution(const Eigen::Matrix<double, M, 1>& mean =
-    Eigen::Matrix<double, M, 1>::Zero(), const Eigen::Matrix<double, M, M>&
-    covariance = Eigen::Matrix<double, M, M>::Identity());
+  NormalDistribution(const Mean& mean = Mean::Zero(), const Covariance&
+    covariance = Covariance::Identity());
   /// Copy constructor
   NormalDistribution(const NormalDistribution<M>& other);
   /// Assignment operator
@@ -57,34 +74,34 @@ public:
     @{
     */
   /// Sets the mean of the distribution
-  void setMean(const Eigen::Matrix<double, M, 1>& mean);
+  void setMean(const Mean& mean);
   /// Returns the mean of the distribution
-  const Eigen::Matrix<double, M, 1>& getMean() const;
+  Mean getMean() const;
   /// Sets the covariance matrix of the distribution
-  void setCovariance(const Eigen::Matrix<double, M, M>& covariance)
-    throw (BadArgumentException<Eigen::Matrix<double, M, M> >);
+  void setCovariance(const Covariance& covariance)
+    throw (BadArgumentException<Covariance>);
   /// Returns the covariance matrix of the distribution
-  const Eigen::Matrix<double, M, M>& getCovariance() const;
+  Covariance getCovariance() const;
   /// Returns the precision matrix of the distribution
-  const Eigen::Matrix<double, M, M>& getPrecision() const;
+  Precision getPrecision() const;
   /// Returns the determinant of the covariance matrix
   double getDeterminant() const;
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
   /// Returns the mode of the distribution
-  const Eigen::Matrix<double, M, 1>& getMode() const;
+  Mode getMode() const;
   /// Returns the cholesky decomposition of the covariance matrix
-  const Eigen::LLT<Eigen::Matrix<double, M, M> >& getTransformation() const;
+  const Eigen::LLT<Covariance>& getTransformation() const;
   /// Access the probability density function at the given value
-  virtual double pdf(const Eigen::Matrix<double, M, 1>& value) const;
+  virtual double pdf(const RandomVariable& value) const;
   /// Access the log-probability density function at the given value
-  double logpdf(const Eigen::Matrix<double, M, 1>& value) const;
+  double logpdf(const RandomVariable& value) const;
   /// Access a sample drawn from the distribution
-  virtual Eigen::Matrix<double, M, 1> getSample() const;
+  virtual RandomVariable getSample() const;
   /// Returns the KL-divergence with another distribution
   double KLDivergence(const NormalDistribution<M>& other) const;
   /// Returns the squared Mahalanobis distance from a point
-  double mahalanobisDistance(const Eigen::Matrix<double, M, 1>& value) const;
+  double mahalanobisDistance(const RandomVariable& value) const;
   /** @}
     */
 
@@ -107,17 +124,17 @@ protected:
     @{
     */
   /// Mean of the normal distribution
-  Eigen::Matrix<double, M, 1> mMean;
+  Mean mMean;
   /// Covariance matrix of the normal distribution
-  Eigen::Matrix<double, M, M> mCovariance;
+  Covariance mCovariance;
   /// Precision matrix of the normal distribution
-  Eigen::Matrix<double, M, M> mPrecision;
+ Covariance mPrecision;
   /// Determinant of the covariance matrix
   double mDeterminant;
   /// Normalizer of the distribution
   double mNormalizer;
   /// Cholesky decomposition of the covariance matrix
-  Eigen::LLT<Eigen::Matrix<double, M, M> > mTransformation;
+  Eigen::LLT<Covariance> mTransformation;
   /** @}
     */
 
