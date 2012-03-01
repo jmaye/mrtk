@@ -21,13 +21,11 @@
            functions
   */
 
+#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
+
 #include "functions/DiscreteFunction.h"
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
-
-#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
-
-template <typename Y, typename X, size_t M> class DiscreteFunctionPlot;
 
 /** The DiscreteFunctionPlot1v class is a plotting tool for bivariate
     discrete functions.

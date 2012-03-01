@@ -21,13 +21,11 @@
            functions
   */
 
+#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
+
 #include "functions/ContinuousFunction.h"
 #include "visualization/FunctionPlot.h"
 #include "exceptions/BadArgumentException.h"
-
-#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
-
-template <typename Y, typename X, size_t M> class ContinuousFunctionPlot;
 
 /** The ContinuousFunctionPlot1v class is a plotting tool for bivariate
     continuous functions.

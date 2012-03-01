@@ -21,10 +21,6 @@
            functions
   */
 
-#include "functions/ContinuousFunction.h"
-#include "visualization/FunctionPlot.h"
-#include "exceptions/BadArgumentException.h"
-
 #include <QtCore/QVector>
 
 #include <qwt-qt4/qwt_plot.h>
@@ -32,6 +28,10 @@
 #include <qwt-qt4/qwt_plot_grid.h>
 #include <qwt-qt4/qwt_plot_panner.h>
 #include <qwt-qt4/qwt_plot_magnifier.h>
+
+#include "functions/ContinuousFunction.h"
+#include "visualization/FunctionPlot.h"
+#include "exceptions/BadArgumentException.h"
 
 /** The ContinuousFunctionPlot1v class is a plotting tool for univariate
     continuous functions.

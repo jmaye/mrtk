@@ -20,11 +20,9 @@
     \brief This file contains a plotting tool for bivariate histogram plots
   */
 
-#include "statistics/Histogram.h"
-
 #include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
 
-template <typename T, size_t M> class HistogramPlot;
+#include "statistics/Histogram.h"
 
 /** The HistogramPlot2v class is a plotting tool for bivariate histogram plots.
     \brief 2-v histogram plot
