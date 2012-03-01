@@ -35,14 +35,14 @@ DirichletDistribution<M>::DirichletDistribution(const
 
 template <size_t M>
 DirichletDistribution<M>::DirichletDistribution(const
-    DirichletDistribution<M>& other) :
+    DirichletDistribution& other) :
     mAlpha(other.mAlpha),
     mNormalizer(other.mNormalizer) {
 }
 
 template <size_t M>
 DirichletDistribution<M>& DirichletDistribution<M>::operator =
-    (const DirichletDistribution<M>& other) {
+    (const DirichletDistribution& other) {
   if (this != &other) {
     mAlpha = other.mAlpha;
     mNormalizer = other.mNormalizer;

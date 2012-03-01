@@ -32,7 +32,7 @@ UniformDistribution<X, M>::UniformDistribution(const RandomVariable& minSupport,
 }
 
 template <typename X, size_t M>
-UniformDistribution<X, M>::UniformDistribution(const UniformDistribution<X, M>&
+UniformDistribution<X, M>::UniformDistribution(const UniformDistribution&
     other) :
     mMinSupport(other.mMinSupport),
     mMaxSupport(other.mMaxSupport),
@@ -41,7 +41,7 @@ UniformDistribution<X, M>::UniformDistribution(const UniformDistribution<X, M>&
 
 template <typename X, size_t M>
 UniformDistribution<X, M>& UniformDistribution<X, M>::operator =
-    (const UniformDistribution<X, M>& other) {
+    (const UniformDistribution& other) {
   if (this != &other) {
     mMaxSupport = other.mMaxSupport;
     mMinSupport = other.mMinSupport;

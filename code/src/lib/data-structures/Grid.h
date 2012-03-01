@@ -139,6 +139,8 @@ public:
     */
   /// Computes linear index
   size_t computeLinearIndex(const Index& idx) const;
+  /// Increment an index
+  Index& incrementIndex(Index& idx) const;
   /// Reset the grid
   void reset();
   /** @}

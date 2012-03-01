@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 #include <QtCore/QString>
+
 #include <qwt-qt4/qwt_plot_canvas.h>
 
 /******************************************************************************/
@@ -24,16 +25,17 @@
 /******************************************************************************/
 
 ScatterPlot<2>::ScatterPlot(const std::string& title, const
-  std::vector<Eigen::Matrix<double, 2, 1> >& data) :
-  QwtPlot(0),
-  mPanner(canvas()),
-  mMagnifier(canvas()) {
+    PointCloud<double, 2>::Container& data) :
+    QwtPlot(0),
+    mPanner(canvas()),
+    mMagnifier(canvas()) {
   QwtPlot::setTitle(QString(title.c_str()));
-  mXData.resize(data.size());
-  mYData.resize(data.size());
-  for (size_t i = 0; i < data.size(); ++i) {
-    mXData[i] = data[i](0);
-    mYData[i] = data[i](1);
+  mXData.reserve(data.size());
+  mYData.reserve(data.size());
+  for (PointCloud<double, 2>::ConstPointIterator it = data.begin();
+      it != data.end(); ++it) {
+    mXData.push_back((*it)(0));
+    mYData.push_back((*it)(1));
   }
   mCurve.setData(mXData, mYData);
   mCurve.setPen(QPen(QColor(Qt::blue)));

@@ -42,7 +42,7 @@ HyperGeometricDistribution<M>::HyperGeometricDistribution(const
 
 template <size_t M>
 HyperGeometricDistribution<M>& HyperGeometricDistribution<M>::operator =
-    (const HyperGeometricDistribution<M>& other) {
+    (const HyperGeometricDistribution& other) {
   if (this != &other) {
     mMarbles = other.mMarbles;
     mNumTrials = other.mNumTrials;

@@ -38,9 +38,9 @@ public:
   /// Constructs from rotation and translation
   Transformation(T x, T y, T z, T roll, T pitch, T yaw);
   /// Copy constructor
-  Transformation(const Transformation<T, 3>& other);
+  Transformation(const Transformation& other);
   /// Assignment operator
-  Transformation<T, 3>& operator = (const Transformation<T, 3>& other);
+  Transformation& operator = (const Transformation& other);
   /// Destructor
   virtual ~Transformation();
   /** @}

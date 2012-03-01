@@ -36,14 +36,14 @@ MultinomialDistribution<M>::MultinomialDistribution(size_t numTrials, const
 
 template <size_t M>
 MultinomialDistribution<M>::MultinomialDistribution(const
-    MultinomialDistribution<M>& other) :
+    MultinomialDistribution& other) :
     mProbabilities(other.mProbabilities),
     mNumTrials(other.mNumTrials) {
 }
 
 template <size_t M>
 MultinomialDistribution<M>& MultinomialDistribution<M>::operator =
-    (const MultinomialDistribution<M>& other) {
+    (const MultinomialDistribution& other) {
   if (this != &other) {
     mProbabilities = other.mProbabilities;
     mNumTrials = other.mNumTrials;

@@ -27,7 +27,7 @@ NormalDistribution<1>::NormalDistribution(Mean mean, Variance variance) :
   setVariance(variance);
 }
 
-NormalDistribution<1>::NormalDistribution(const NormalDistribution<1>& other) :
+NormalDistribution<1>::NormalDistribution(const NormalDistribution& other) :
     mMean(other.mMean),
     mVariance(other.mVariance),
     mPrecision(other.mPrecision),
@@ -36,7 +36,7 @@ NormalDistribution<1>::NormalDistribution(const NormalDistribution<1>& other) :
 }
 
 NormalDistribution<1>& NormalDistribution<1>::operator =
-    (const NormalDistribution<1>& other) {
+    (const NormalDistribution& other) {
   if (this != &other) {
     mMean = other.mMean;
     mVariance = other.mVariance;

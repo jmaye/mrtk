@@ -32,7 +32,7 @@ LogFactorialFunction::~LogFactorialFunction() {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-double LogFactorialFunction::getValue(const size_t& argument) const {
+double LogFactorialFunction::getValue(const VariableType& argument) const {
   if (argument) {
     double value = 0.0;
     for (size_t x = 1; x < argument; ++x)

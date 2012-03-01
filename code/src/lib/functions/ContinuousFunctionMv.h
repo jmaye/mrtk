@@ -35,9 +35,9 @@ template <typename Y, typename X, size_t M, size_t N> class ContinuousFunction :
     @{
     */
   /// Copy constructor
-  ContinuousFunction(const ContinuousFunction<Y, X, M, N>& other);
+  ContinuousFunction(const ContinuousFunction& other);
   /// Assignment operator
-  ContinuousFunction& operator = (const ContinuousFunction<Y, X, M, N>& other);
+  ContinuousFunction& operator = (const ContinuousFunction& other);
   /** @}
     */
 

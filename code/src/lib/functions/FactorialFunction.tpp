@@ -30,7 +30,7 @@ FactorialFunction::~FactorialFunction() {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-size_t FactorialFunction::getValue(const size_t& argument) const {
+size_t FactorialFunction::getValue(const VariableType& argument) const {
   if (argument) {
     size_t value = 1;
     for (size_t x = 1; x < argument; ++x)

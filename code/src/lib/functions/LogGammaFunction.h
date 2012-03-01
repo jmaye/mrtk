@@ -37,15 +37,23 @@ template <typename X = size_t> class LogGammaFunction :
   public ContinuousFunction<double, X>,
   public virtual Serializable {
 public:
+  /** \name Types
+    @{
+    */
+  /// Variable type
+  typedef typename ContinuousFunction<double, X>::Domain VariableType;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Constructs gamma function with parameter
   LogGammaFunction(size_t dim = 1.0);
   /// Copy constructor
-  LogGammaFunction(const LogGammaFunction<X>& other);
+  LogGammaFunction(const LogGammaFunction& other);
   /// Assignment operator
-  LogGammaFunction& operator = (const LogGammaFunction<X>& other);
+  LogGammaFunction& operator = (const LogGammaFunction& other);
   /// Destructor
   virtual ~LogGammaFunction();
   /** @}
@@ -59,7 +67,7 @@ public:
   /// Sets the dimension
   void setDim(size_t dim);
   /// Access the function value for the given argument
-  virtual double getValue(const X& argument) const;
+  virtual double getValue(const VariableType& argument) const;
   /** @}
     */
 
@@ -105,6 +113,14 @@ template <> class LogGammaFunction<size_t> :
     */
 
 public:
+  /** \name Types
+    @{
+    */
+  /// Variable type
+  typedef LogFactorialFunction::VariableType VariableType;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
@@ -119,8 +135,8 @@ public:
     @{
     */
   /// Access the function value for the given argument
-  virtual double getValue(const size_t& argument) const
-    throw (BadArgumentException<size_t>);
+  virtual double getValue(const VariableType& argument) const
+    throw (BadArgumentException<VariableType>);
   /** @}
     */
 

@@ -32,7 +32,7 @@ NormalDistribution<M>::NormalDistribution(const Mean& mean, const Covariance&
 }
 
 template <size_t M>
-NormalDistribution<M>::NormalDistribution(const NormalDistribution<M>& other) :
+NormalDistribution<M>::NormalDistribution(const NormalDistribution& other) :
     mMean(other.mMean),
     mCovariance(other.mCovariance),
     mPrecision(other.mPrecision),
@@ -43,7 +43,7 @@ NormalDistribution<M>::NormalDistribution(const NormalDistribution<M>& other) :
 
 template <size_t M>
 NormalDistribution<M>& NormalDistribution<M>::operator = (const
-    NormalDistribution<M>& other) {
+    NormalDistribution& other) {
   if (this != &other) {
     mMean = other.mMean;
     mCovariance = other.mCovariance;

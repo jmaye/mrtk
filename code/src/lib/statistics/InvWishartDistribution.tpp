@@ -36,7 +36,7 @@ InvWishartDistribution<M>::InvWishartDistribution(double degrees, const
 
 template <size_t M>
 InvWishartDistribution<M>::InvWishartDistribution(const
-    InvWishartDistribution<M>& other) :
+    InvWishartDistribution& other) :
     mDegrees(other.mDegrees),
     mScale(other.mScale),
     mDeterminant(other.mDeterminant),
@@ -47,7 +47,7 @@ InvWishartDistribution<M>::InvWishartDistribution(const
 
 template <size_t M>
 InvWishartDistribution<M>& InvWishartDistribution<M>::operator = (const
-    InvWishartDistribution<M>& other) {
+    InvWishartDistribution& other) {
   if (this != &other) {
     mDegrees = other.mDegrees;
     mScale = other.mScale;

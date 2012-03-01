@@ -28,7 +28,7 @@ MixtureDistribution<D, M>::MixtureDistribution(const std::vector<D>&
 }
 
 template <typename D, size_t M>
-MixtureDistribution<D, M>::MixtureDistribution(const MixtureDistribution<D, M>&
+MixtureDistribution<D, M>::MixtureDistribution(const MixtureDistribution&
     other) :
     mCompDistributions(other.mCompDistributions),
     mAssignDistribution(other.mAssignDistribution) {
@@ -36,7 +36,7 @@ MixtureDistribution<D, M>::MixtureDistribution(const MixtureDistribution<D, M>&
 
 template <typename D, size_t M>
 MixtureDistribution<D, M>& MixtureDistribution<D, M>::operator =
-    (const MixtureDistribution<D, M>& other) {
+    (const MixtureDistribution& other) {
   if (this != &other) {
     mCompDistributions = other.mCompDistributions;
     mAssignDistribution = other.mAssignDistribution;

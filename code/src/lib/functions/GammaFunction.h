@@ -36,15 +36,23 @@ template <typename X = size_t> class GammaFunction :
   public ContinuousFunction<double, X>,
   public virtual Serializable {
 public:
+  /** \name Types
+    @{
+    */
+  /// Variable type
+  typedef typename ContinuousFunction<double, X>::Domain VariableType;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Constructs gamma function with parameter
   GammaFunction(size_t dim = 1.0);
   /// Copy constructor
-  GammaFunction(const GammaFunction<X>& other);
+  GammaFunction(const GammaFunction& other);
   /// Assignment operator
-  GammaFunction& operator = (const GammaFunction<X>& other);
+  GammaFunction& operator = (const GammaFunction& other);
   /// Destructor
   virtual ~GammaFunction();
   /** @}
@@ -58,7 +66,7 @@ public:
   /// Sets the dimension
   void setDim(size_t dim);
   /// Access the function value for the given argument
-  virtual double getValue(const X& argument) const;
+  virtual double getValue(const VariableType& argument) const;
   /** @}
     */
 
@@ -103,6 +111,14 @@ template <> class GammaFunction<size_t> :
     */
 
 public:
+  /** \name Types
+    @{
+    */
+  /// Variable type
+  typedef FactorialFunction::VariableType VariableType;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
@@ -117,8 +133,8 @@ public:
     @{
     */
   /// Access the function value for the given argument
-  virtual size_t getValue(const size_t& argument) const
-    throw (BadArgumentException<size_t>);
+  virtual size_t getValue(const VariableType& argument) const
+    throw (BadArgumentException<VariableType>);
   /** @}
     */
 

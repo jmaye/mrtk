@@ -27,13 +27,13 @@ CategoricalDistribution<M>::CategoricalDistribution(const
 
 template <size_t M>
 CategoricalDistribution<M>::CategoricalDistribution(const
-    CategoricalDistribution<M>& other) :
+    CategoricalDistribution& other) :
     MultinomialDistribution<M>(other) {
 }
 
 template <size_t M>
 CategoricalDistribution<M>& CategoricalDistribution<M>::operator = (const
-    CategoricalDistribution<M>& other) {
+    CategoricalDistribution& other) {
   if (this != &other) {
     MultinomialDistribution<M>::operator=(other);
   }

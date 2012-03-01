@@ -42,9 +42,9 @@ public:
     const typename Grid<T, C, 2>::Coordinate& resolution,
     const Transformation<double, 2>& transformation);
   /// Copy constructor
-  TransGrid(const TransGrid<T, C, 2>& other);
+  TransGrid(const TransGrid& other);
   /// Assignment operator
-  TransGrid& operator = (const TransGrid<T, C, 2>& other);
+  TransGrid& operator = (const TransGrid& other);
   /// Destructor
   virtual ~TransGrid();
   /** @}

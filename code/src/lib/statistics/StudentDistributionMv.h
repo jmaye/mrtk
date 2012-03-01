@@ -66,9 +66,9 @@ public:
   StudentDistribution(double degrees = 1.0, const Location& location =
     Location::Zero(), const Scale& scale = Scale::Identity());
   /// Copy constructor
-  StudentDistribution(const StudentDistribution<M>& other);
+  StudentDistribution(const StudentDistribution& other);
   /// Assignment operator
-  StudentDistribution<M>& operator = (const StudentDistribution<M>& other);
+  StudentDistribution& operator = (const StudentDistribution& other);
   /// Destructor
   virtual ~StudentDistribution();
   /** @}

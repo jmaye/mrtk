@@ -20,6 +20,8 @@
     \brief This file contains a plotting tool for bivariate scatter plots
   */
 
+#include <vector>
+
 #include <QtCore/QVector>
 
 #include <qwt-qt4/qwt_plot.h>
@@ -28,9 +30,7 @@
 #include <qwt-qt4/qwt_plot_panner.h>
 #include <qwt-qt4/qwt_plot_magnifier.h>
 
-#include <Eigen/Core>
-
-#include <vector>
+#include "data-structures/PointCloud.h"
 
 /** The ScatterPlot2v class is a plotting tool for bivariate scatter plots.
     \brief 2-v scatter plot
@@ -41,9 +41,9 @@ template <> class ScatterPlot<2> :
     @{
     */
   /// Copy constructor
-  ScatterPlot(const ScatterPlot<2>& other);
+  ScatterPlot(const ScatterPlot& other);
   /// Assignment operator
-  ScatterPlot<2>& operator = (const ScatterPlot<2>& other);
+  ScatterPlot& operator = (const ScatterPlot& other);
   /** @}
     */
 
@@ -52,8 +52,8 @@ public:
     @{
     */
   /// Constructs plot from parameters
-  ScatterPlot(const std::string& title, const
-    std::vector<Eigen::Matrix<double, 2, 1> >& data);
+  ScatterPlot(const std::string& title, const PointCloud<double, 2>::Container&
+    data);
   /// Destructor
   virtual ~ScatterPlot();
   /** @}

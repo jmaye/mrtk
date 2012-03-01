@@ -62,9 +62,9 @@ public:
   NormalDistribution(const Mean& mean = Mean::Zero(), const Covariance&
     covariance = Covariance::Identity());
   /// Copy constructor
-  NormalDistribution(const NormalDistribution<M>& other);
+  NormalDistribution(const NormalDistribution& other);
   /// Assignment operator
-  NormalDistribution<M>& operator = (const NormalDistribution<M>& other);
+  NormalDistribution<M>& operator = (const NormalDistribution& other);
   /// Destructor
   virtual ~NormalDistribution();
   /** @}

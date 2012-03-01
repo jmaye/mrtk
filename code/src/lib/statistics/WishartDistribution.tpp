@@ -35,8 +35,7 @@ WishartDistribution<M>::WishartDistribution(double degrees,
 }
 
 template <size_t M>
-WishartDistribution<M>::WishartDistribution(const WishartDistribution<M>&
-    other) :
+WishartDistribution<M>::WishartDistribution(const WishartDistribution& other) :
     mDegrees(other.mDegrees),
     mScale(other.mScale),
     mInverseScale(other.mInverseScale),
@@ -47,7 +46,7 @@ WishartDistribution<M>::WishartDistribution(const WishartDistribution<M>&
 
 template <size_t M>
 WishartDistribution<M>& WishartDistribution<M>::operator = (const
-    WishartDistribution<M>& other) {
+    WishartDistribution& other) {
   if (this != &other) {
     mDegrees = other.mDegrees;
     mScale = other.mScale;

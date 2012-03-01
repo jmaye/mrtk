@@ -36,7 +36,7 @@ NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(size_t
 
 template <size_t M>
 NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(const
-    NegativeMultinomialDistribution<M>& other) :
+    NegativeMultinomialDistribution& other) :
     mProbabilities(other.mProbabilities),
     mNumTrials(other.mNumTrials) {
 }
@@ -44,7 +44,7 @@ NegativeMultinomialDistribution<M>::NegativeMultinomialDistribution(const
 template <size_t M>
 NegativeMultinomialDistribution<M>&
     NegativeMultinomialDistribution<M>::operator =
-    (const NegativeMultinomialDistribution<M>& other) {
+    (const NegativeMultinomialDistribution& other) {
   if (this != &other) {
     mProbabilities = other.mProbabilities;
     mNumTrials = other.mNumTrials;

@@ -88,9 +88,9 @@ public:
   DCMDistribution(size_t numTrials = 1, const Eigen::Matrix<double, M, 1>&
     alpha = Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
-  DCMDistribution(const DCMDistribution<M>& other);
+  DCMDistribution(const DCMDistribution& other);
   /// Assignment operator
-  DCMDistribution& operator = (const DCMDistribution<M>& other);
+  DCMDistribution& operator = (const DCMDistribution& other);
   /// Destructor
   virtual ~DCMDistribution();
   /** @}

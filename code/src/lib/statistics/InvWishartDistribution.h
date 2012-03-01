@@ -64,10 +64,9 @@ public:
   InvWishartDistribution(double degrees = M, const Scale&
     scale = Scale::Identity());
   /// Copy constructor
-  InvWishartDistribution(const InvWishartDistribution<M>& other);
+  InvWishartDistribution(const InvWishartDistribution& other);
   /// Assignment operator
-  InvWishartDistribution<M>& operator = (const InvWishartDistribution<M>&
-    other);
+  InvWishartDistribution& operator = (const InvWishartDistribution& other);
   /// Destructor
   virtual ~InvWishartDistribution();
   /** @}

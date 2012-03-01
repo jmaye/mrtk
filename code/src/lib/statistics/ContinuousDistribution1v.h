@@ -35,9 +35,9 @@ template <typename X> class ContinuousDistribution<X> :
     @{
     */
   /// Copy constructor
-  ContinuousDistribution(const ContinuousDistribution<X>& other);
+  ContinuousDistribution(const ContinuousDistribution& other);
   /// Assignment operator
-  ContinuousDistribution& operator = (const ContinuousDistribution<X>& other);
+  ContinuousDistribution& operator = (const ContinuousDistribution& other);
   /** @}
     */
 
@@ -74,7 +74,7 @@ public:
     @{
     */
   /// Access the probablity density function at the given value
-  virtual double pdf(const X& value) const = 0;
+  virtual double pdf(const RandomVariable& value) const = 0;
   /// Interface to function
   virtual double getValue(const X& argument) const;
   /** @}

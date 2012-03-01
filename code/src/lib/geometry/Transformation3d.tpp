@@ -36,15 +36,15 @@ Transformation<T, 3>::Transformation(T x, T y, T z, T roll, T pitch, T yaw) {
 }
 
 template <typename T>
-Transformation<T, 3>::Transformation(const Transformation<T, 3>& other) :
+Transformation<T, 3>::Transformation(const Transformation& other) :
     mTransformationMatrix(other.mTransformationMatrix),
     mRotationMatrix(other.mRotationMatrix),
     mTranslationMatrix(other.mTranslationMatrix) {
 }
 
 template <typename T>
-Transformation<T, 3>& Transformation<T, 3>::operator = (const
-    Transformation<T, 3>& other) {
+Transformation<T, 3>& Transformation<T, 3>::operator = (const Transformation&
+    other) {
   if (this != &other) {
     mTransformationMatrix = other.mTransformationMatrix;
     mRotationMatrix = other.mRotationMatrix;

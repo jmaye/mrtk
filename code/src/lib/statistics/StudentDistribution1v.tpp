@@ -34,8 +34,7 @@ StudentDistribution<1>::StudentDistribution(double degrees, double location,
   setDegrees(degrees);
 }
 
-StudentDistribution<1>::StudentDistribution(const StudentDistribution<1>&
-    other) :
+StudentDistribution<1>::StudentDistribution(const StudentDistribution& other) :
     mLocation(other.mLocation),
     mScale(other.mScale),
     mDegrees(other.mDegrees),
@@ -44,7 +43,7 @@ StudentDistribution<1>::StudentDistribution(const StudentDistribution<1>&
 }
 
 StudentDistribution<1>& StudentDistribution<1>::operator =
-    (const StudentDistribution<1>& other) {
+    (const StudentDistribution& other) {
   if (this != &other) {
     mLocation = other.mLocation;
     mScale = other.mScale;

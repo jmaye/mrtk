@@ -25,12 +25,12 @@ PointCloud<X, M>::PointCloud() {
 }
 
 template <typename X, size_t M>
-PointCloud<X, M>::PointCloud(const PointCloud<X, M>& other) :
+PointCloud<X, M>::PointCloud(const PointCloud& other) :
   mPoints(other.mPoints) {
 }
 
 template <typename X, size_t M>
-PointCloud<X, M>& PointCloud<X, M>::operator = (const PointCloud<X, M>& other) {
+PointCloud<X, M>& PointCloud<X, M>::operator = (const PointCloud& other) {
   if (this != &other) {
     mPoints = other.mPoints;
   }

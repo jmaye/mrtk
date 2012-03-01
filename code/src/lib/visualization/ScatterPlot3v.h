@@ -21,8 +21,7 @@
   */
 
 #include "visualization/PointViewer3d.h"
-
-template <size_t M> class ScatterPlot;
+#include "data-structures/PointCloud.h"
 
 /** The ScatterPlot3v class is a plotting tool for trivariate scatter plots.
     \brief 3-v scatter plot
@@ -32,9 +31,9 @@ template <> class ScatterPlot<3> {
     @{
     */
   /// Copy constructor
-  ScatterPlot(const ScatterPlot<3>& other);
+  ScatterPlot(const ScatterPlot& other);
   /// Assignment operator
-  ScatterPlot<3>& operator = (const ScatterPlot<3>& other);
+  ScatterPlot& operator = (const ScatterPlot& other);
   /** @}
     */
 
@@ -43,8 +42,7 @@ public:
     @{
     */
   /// Constructs plot from parameters
-  ScatterPlot(const std::string& title,
-    const std::vector<Eigen::Matrix<double, 3, 1> >& data);
+  ScatterPlot(const std::string& title, const PointCloud<>::Container& data);
   /// Destructor
   virtual ~ScatterPlot();
   /** @}

@@ -35,10 +35,9 @@ template <typename X, size_t M, size_t N> class ContinuousDistribution :
     @{
     */
   /// Copy constructor
-  ContinuousDistribution(const ContinuousDistribution<X, M, N>& other);
+  ContinuousDistribution(const ContinuousDistribution& other);
   /// Assignment operator
-  ContinuousDistribution& operator =
-    (const ContinuousDistribution<X, M, N>& other);
+  ContinuousDistribution& operator = (const ContinuousDistribution& other);
   /** @}
     */
 

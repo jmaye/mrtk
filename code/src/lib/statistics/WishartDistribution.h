@@ -65,9 +65,9 @@ public:
   WishartDistribution(double degrees = M, const Scale& scale =
     Scale::Identity());
   /// Copy constructor
-  WishartDistribution(const WishartDistribution<M>& other);
+  WishartDistribution(const WishartDistribution& other);
   /// Assignment operator
-  WishartDistribution<M>& operator = (const WishartDistribution<M>& other);
+  WishartDistribution& operator = (const WishartDistribution& other);
   /// Destructor
   virtual ~WishartDistribution();
   /** @}

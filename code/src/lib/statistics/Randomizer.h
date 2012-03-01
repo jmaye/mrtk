@@ -58,9 +58,9 @@ public:
   /// Constructs randomizer from seed
   Randomizer(const T& seed = getSeed());
   /// Copy constructor
-  Randomizer(const Randomizer<T, M>& other);
+  Randomizer(const Randomizer& other);
   /// Assignment operator
-  Randomizer<T, M>& operator = (const Randomizer<T, M>& other);
+  Randomizer& operator = (const Randomizer& other);
   /// Destructor
   virtual ~Randomizer();
   /** @}

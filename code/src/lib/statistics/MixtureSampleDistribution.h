@@ -35,13 +35,13 @@
   */
 template <typename D, size_t M> class MixtureSampleDistribution :
   public MixtureDistribution<D, M>,
-  public SampleDistribution<typename D::VariableType> {
+  public SampleDistribution<typename D::RandomVariable> {
 public:
   /** \name Types definitions
     @{
     */
   /// Random variable type
-  typedef typename D::VariableType RandomVariable;
+  typedef typename D::RandomVariable RandomVariable;
   /** @}
     */
 

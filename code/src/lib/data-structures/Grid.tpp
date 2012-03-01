@@ -37,9 +37,9 @@ Grid<T, C, M>::Grid(const Coordinate& minimum, const Coordinate& maximum, const
     throw BadArgumentException<Coordinate>(minimum,
       "Grid<T, C, M>::Grid(): minimum must be strictly smaller than maximum",
        __FILE__, __LINE__);
-  if ((resolution.cwise() >= maximum - minimum).any())
+  if ((resolution.cwise() > maximum - minimum).any())
     throw BadArgumentException<Coordinate>(resolution,
-      "Grid<T, C, M>::Grid(): resolution must be strictly smaller than range",
+      "Grid<T, C, M>::Grid(): resolution must be smaller than range",
        __FILE__, __LINE__);
   mNumCells.resize(resolution.size());
   mNumCellsTot = 1.0;
@@ -67,7 +67,7 @@ Grid<T, C, M>::Grid(const Grid& other) :
 }
 
 template <typename T, typename C, size_t M>
-Grid<T, C, M>& Grid<T, C, M>::operator = (const Grid<T, C, M>& other) {
+Grid<T, C, M>& Grid<T, C, M>::operator = (const Grid& other) {
   if (this != &other) {
     mCells = other.mCells;
     mMinimum = other.mMinimum;
@@ -266,6 +266,23 @@ template <typename T, typename C, size_t M>
 void Grid<T, C, M>::reset() {
   for (CellIterator it = getCellBegin(); it != getCellEnd(); ++it)
     *it = C();
+}
+
+template <typename T, typename C, size_t M>
+typename Grid<T, C, M>::Index& Grid<T, C, M>::incrementIndex(Index& idx) const {
+  for (size_t i = 0; i < (size_t)idx.size(); ++i) {
+    if (idx(i) + 1 < mNumCells(i)) {
+      idx(i)++;
+      break;
+    }
+    else {
+      if (i < (size_t)idx.size() - 1)
+        idx(i) = 0;
+      else
+        idx = mNumCells;
+    }
+  }
+  return idx;
 }
 
 template <typename T, typename C, size_t M>

@@ -25,28 +25,32 @@
 #define LINEARBASISFUNCTION_H
 
 #include "functions/ContinuousFunction.h"
+#include "base/Serializable.h"
 
 /** The LinearBasisFunction class represents the linear basis function model.
     \brief Linear basis function model
   */
 template <typename X, size_t M> class LinearBasisFunction :
-  public ContinuousFunction<double, X, M> {
-  /** \name Private constructors
+  public ContinuousFunction<double, X, M>,
+  public virtual Serializable {
+public:
+  /** \name Types
     @{
     */
-  /// Copy constructor
-  LinearBasisFunction(const LinearBasisFunction<X, M>& other);
-  /// Assignment operator
-  LinearBasisFunction& operator = (const LinearBasisFunction<X, M>& other);
+  /// Variable type
+  typedef typename ContinuousFunction<double, X, M>::Domain VariableType;
   /** @}
     */
 
-public:
   /** \name Constructors/destructor
     @{
     */
   /// Constructors with the linear coefficients
-  LinearBasisFunction(const Eigen::Matrix<X, M, 1>& coefficients);
+  LinearBasisFunction(const VariableType& coefficients);
+  /// Copy constructor
+  LinearBasisFunction(const LinearBasisFunction& other);
+  /// Assignment operator
+  LinearBasisFunction& operator = (const LinearBasisFunction& other);
   /// Destructor
   virtual ~LinearBasisFunction();
   /** @}
@@ -56,20 +60,34 @@ public:
     @{
     */
   /// Returns the linear coefficients
-  const Eigen::Matrix<X, M, 1>& getCoefficients() const;
+  const VariableType& getCoefficients() const;
   /// Sets the linear coefficients
-  void setCoefficients(const Eigen::Matrix<X, M, 1>& coefficients);
+  void setCoefficients(const VariableType& coefficients);
   /// Access the function value for the given argument
-  virtual double getValue(const Eigen::Matrix<X, M, 1>& argument) const;
+  virtual double getValue(const VariableType& argument) const;
   /** @}
     */
 
 protected:
+  /** \name Stream methods
+    @{
+    */
+  /// Reads from standard input
+  virtual void read(std::istream& stream);
+  /// Writes to standard output
+  virtual void write(std::ostream& stream) const;
+  /// Reads from a file
+  virtual void read(std::ifstream& stream);
+  /// Writes to a file
+  virtual void write(std::ofstream& stream) const;
+  /** @}
+    */
+
   /** \name Protected members
     @{
     */
   /// Linear coefficients
-  Eigen::Matrix<X, M, 1> mCoefficients;
+  VariableType mCoefficients;
   /** @}
     */
 

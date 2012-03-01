@@ -30,13 +30,13 @@ MixtureSampleDistribution<D, M>::MixtureSampleDistribution(const std::vector<D>&
 
 template <typename D, size_t M>
 MixtureSampleDistribution<D, M>::MixtureSampleDistribution(const
-    MixtureSampleDistribution<D, M>& other) :
+    MixtureSampleDistribution& other) :
     MixtureDistribution<D, M>(other) {
 }
 
 template <typename D, size_t M>
 MixtureSampleDistribution<D, M>& MixtureSampleDistribution<D, M>::operator =
-    (const MixtureSampleDistribution<D, M>& other) {
+    (const MixtureSampleDistribution& other) {
   if (this != &other) {
     this->MixtureDistribution<D, M>::operator=(other);
   }

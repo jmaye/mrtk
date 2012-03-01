@@ -32,7 +32,7 @@ TypeCreationException<X>::TypeCreationException(const X& argument,
 }
 
 template <typename X>
-TypeCreationException<X>::TypeCreationException(const TypeCreationException<X>&
+TypeCreationException<X>::TypeCreationException(const TypeCreationException&
     other) throw () :
     mMsg(other.mMsg),
     mArg(other.mArg),
@@ -42,7 +42,7 @@ TypeCreationException<X>::TypeCreationException(const TypeCreationException<X>&
 
 template <typename X>
 TypeCreationException<X>& TypeCreationException<X>::operator =
-    (const TypeCreationException<X>& other) throw () {
+    (const TypeCreationException& other) throw () {
   if (this != &other) {
     mMsg = other.mMsg;
     mArg = other.mArg;

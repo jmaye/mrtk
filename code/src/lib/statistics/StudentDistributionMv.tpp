@@ -35,8 +35,7 @@ StudentDistribution<M>::StudentDistribution(double degrees, const Location&
 }
 
 template <size_t M>
-StudentDistribution<M>::StudentDistribution(const StudentDistribution<M>&
-    other) :
+StudentDistribution<M>::StudentDistribution(const StudentDistribution& other) :
     mLocation(other.mLocation),
     mScale(other.mScale),
     mDegrees(other.mDegrees),
@@ -48,7 +47,7 @@ StudentDistribution<M>::StudentDistribution(const StudentDistribution<M>&
 
 template <size_t M>
 StudentDistribution<M>& StudentDistribution<M>::operator = (const
-    StudentDistribution<M>& other) {
+    StudentDistribution& other) {
   if (this != &other) {
     mLocation = other.mLocation;
     mScale = other.mScale;

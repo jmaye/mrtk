@@ -43,9 +43,9 @@ friend class Singleton<Factory<T, C> >;
     @{
     */
   /// Copy constructor
-  Factory(const Factory<T, C>& other);
+  Factory(const Factory& other);
   /// Assignment operator
-  Factory& operator = (const Factory<T, C>& other);
+  Factory& operator = (const Factory& other);
   /** @}
     */
 

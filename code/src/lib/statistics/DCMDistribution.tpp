@@ -34,7 +34,7 @@ DCMDistribution<M>::DCMDistribution(size_t numTrials, const
 }
 
 template <size_t M>
-DCMDistribution<M>::DCMDistribution(const DCMDistribution<M>& other) :
+DCMDistribution<M>::DCMDistribution(const DCMDistribution& other) :
     mAlpha(other.mAlpha),
     mNumTrials(other.mNumTrials),
     mDirDist(other.mDirDist) {
@@ -42,7 +42,7 @@ DCMDistribution<M>::DCMDistribution(const DCMDistribution<M>& other) :
 
 template <size_t M>
 DCMDistribution<M>& DCMDistribution<M>::operator =
-    (const DCMDistribution<M>& other) {
+    (const DCMDistribution& other) {
   if (this != &other) {
     mAlpha = other.mAlpha;
     mNumTrials = other.mNumTrials;

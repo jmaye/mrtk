@@ -30,12 +30,12 @@ Randomizer<T, M>::Randomizer(const T& seed) :
 }
 
 template <typename T, size_t M>
-Randomizer<T, M>::Randomizer(const Randomizer<T, M>& other) :
+Randomizer<T, M>::Randomizer(const Randomizer& other) :
     mSeed(other.mSeed) {
 }
 
 template <typename T, size_t M>
-Randomizer<T, M>& Randomizer<T, M>::operator = (const Randomizer<T, M>& other) {
+Randomizer<T, M>& Randomizer<T, M>::operator = (const Randomizer& other) {
   if (this != &other) {
     mSeed = other.mSeed;
   }

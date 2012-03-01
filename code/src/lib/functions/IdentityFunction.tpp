@@ -33,7 +33,7 @@ IdentityFunction<X, X>::~IdentityFunction() {
 /******************************************************************************/
 
 template <typename X>
-typename IdentityFunction<X, X>::Domain
-IdentityFunction<X, X>::getValue(const Domain& argument) const {
+typename IdentityFunction<X, X>::VariableType
+IdentityFunction<X, X>::getValue(const VariableType& argument) const {
   return argument;
 }

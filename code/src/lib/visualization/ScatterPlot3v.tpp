@@ -21,8 +21,8 @@
 /******************************************************************************/
 
 ScatterPlot<3>::ScatterPlot(const std::string& title, const
-  std::vector<Eigen::Matrix<double, 3, 1> >& data) :
-  mPointViewer3d(data) {
+    PointCloud<>::Container& data) :
+    mPointViewer3d(data) {
 }
 
 ScatterPlot<3>::~ScatterPlot() {

@@ -33,9 +33,9 @@ template <typename Y, typename X> class DiscreteFunction<Y, X> :
     @{
     */
   /// Copy constructor
-  DiscreteFunction(const DiscreteFunction<Y, X>& other);
+  DiscreteFunction(const DiscreteFunction& other);
   /// Assignment operator
-  DiscreteFunction& operator = (const DiscreteFunction<Y, X>& other);
+  DiscreteFunction& operator = (const DiscreteFunction& other);
   /** @}
     */
 

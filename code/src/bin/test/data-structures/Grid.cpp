@@ -64,6 +64,11 @@ int main (int argc, char** argv) {
     << std::endl;
   std::cout << "resetting the grid" << std::endl;
   grid2d.reset();
+  std::cout << "iterating over the indices:" << std::endl;
+  Grid<double, size_t, 2>::Index idx = Grid<double, size_t, 2>::Index::Zero();
+  std::cout << idx.transpose() << std::endl;
+  for (size_t i = 0; i < grid2d.getNumCellsTot(); ++i)
+    std::cout << grid2d.incrementIndex(idx).transpose() << std::endl;
 
   try {
     grid2d(Eigen::Matrix<double, 2, 1>(4.1, 4.1));

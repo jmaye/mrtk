@@ -35,9 +35,9 @@ template <typename X, size_t M, size_t N> class DiscreteDistribution :
     @{
     */
   /// Copy constructor
-  DiscreteDistribution(const DiscreteDistribution<X, M, N>& other);
+  DiscreteDistribution(const DiscreteDistribution& other);
   /// Assignment operator
-  DiscreteDistribution& operator = (const DiscreteDistribution<X, M, N>& other);
+  DiscreteDistribution& operator = (const DiscreteDistribution& other);
   /** @}
     */
 

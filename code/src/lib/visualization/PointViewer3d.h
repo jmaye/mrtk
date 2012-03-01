@@ -23,16 +23,17 @@
 #ifndef POINTVIEWER3D_H
 #define POINTVIEWER3D_H
 
+#include "data-structures/PointCloud.h"
 #include "visualization/GLView.h"
-
-#include <Eigen/Core>
 
 /** The PointViewer3d class is a plotting tool 3d points.
     \brief 3d points viewer
   */
 class PointViewer3d :
   public QObject {
+
 Q_OBJECT
+
   /** \name Private constructors
     @{
     */
@@ -48,7 +49,7 @@ public:
     @{
     */
   /// Constructs viewer with points
-  PointViewer3d(const std::vector<Eigen::Matrix<double, 3, 1> >& data);
+  PointViewer3d(const PointCloud<>::Container& data);
   /// Destructor
   virtual ~PointViewer3d();
   /** @}
@@ -99,8 +100,8 @@ protected:
     */
   /// GL viewer
   GLView mGLView;
-  /// Points to be displayed
-  std::vector<Eigen::Matrix<double, 3, 1> > mData;
+  /// Point cloud to be displayed
+  PointCloud<> mPointCloud;
   /// Palette
   Palette mPalette;
   /** @}

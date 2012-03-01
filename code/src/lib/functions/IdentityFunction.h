@@ -37,16 +37,18 @@ template <typename X> class IdentityFunction<X, X> :
     @{
     */
   /// Copy constructor
-  IdentityFunction(const IdentityFunction<X>& other);
+  IdentityFunction(const IdentityFunction& other);
   /// Assignment operator
-  IdentityFunction& operator = (const IdentityFunction<X>& other);
+  IdentityFunction& operator = (const IdentityFunction& other);
   /** @}
     */
 
 public:
-  /** Types definitions
+  /** \name Types
+    @{
     */
-  typedef typename Function<X, X>::Domain Domain;
+  /// Variable type
+  typedef typename Function<X, X>::Domain VariableType;
   /** @}
     */
 
@@ -64,7 +66,7 @@ public:
     @{
     */
   /// Access the function value for the given argument
-  virtual Domain getValue(const Domain& argument) const;
+  virtual VariableType getValue(const VariableType& argument) const;
   /** @}
     */
 

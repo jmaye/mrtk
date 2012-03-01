@@ -89,9 +89,9 @@ public:
   UniformDistribution(const RandomVariable& minSupport = X(0), const
     RandomVariable& maxSupport = X(1));
   /// Copy constructor
-  UniformDistribution(const UniformDistribution<X>& other);
+  UniformDistribution(const UniformDistribution& other);
   /// Assignment operator
-  UniformDistribution& operator = (const UniformDistribution<X>& other);
+  UniformDistribution& operator = (const UniformDistribution& other);
   /// Destructor
   virtual ~UniformDistribution();
   /** @}

@@ -32,8 +32,8 @@ BadArgumentException<X>::BadArgumentException(const X& argument,
 }
 
 template <typename X>
-BadArgumentException<X>::BadArgumentException(const BadArgumentException<X>&
-    other) throw() :
+BadArgumentException<X>::BadArgumentException(const BadArgumentException& other)
+    throw() :
     mMsg(other.mMsg),
     mArg(other.mArg),
     mFilename(other.mFilename),
@@ -42,7 +42,7 @@ BadArgumentException<X>::BadArgumentException(const BadArgumentException<X>&
 
 template <typename X>
 BadArgumentException<X>& BadArgumentException<X>::operator =
-    (const BadArgumentException<X>& other) throw() {
+    (const BadArgumentException& other) throw() {
   if (this != &other) {
     mMsg = other.mMsg;
     mArg = other.mArg;

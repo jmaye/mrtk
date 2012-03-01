@@ -44,9 +44,9 @@ public:
   /// Constructs distribution from parameters
   InvGammaDistribution(const T& shape = T(1), double scale = 1.0);
   /// Copy constructor
-  InvGammaDistribution(const InvGammaDistribution<T>& other);
+  InvGammaDistribution(const InvGammaDistribution& other);
   /// Assignment operator
-  InvGammaDistribution<T>& operator = (const InvGammaDistribution<T>& other);
+  InvGammaDistribution<T>& operator = (const InvGammaDistribution& other);
   /// Destructor
   virtual ~InvGammaDistribution();
   /** @}

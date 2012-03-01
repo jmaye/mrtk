@@ -32,7 +32,7 @@ OutOfBoundException<X>::OutOfBoundException(const X& argument, const
 }
 
 template <typename X>
-OutOfBoundException<X>::OutOfBoundException(const OutOfBoundException<X>& other)
+OutOfBoundException<X>::OutOfBoundException(const OutOfBoundException& other)
     throw() :
     mMsg(other.mMsg),
     mArg(other.mArg),
@@ -42,7 +42,7 @@ OutOfBoundException<X>::OutOfBoundException(const OutOfBoundException<X>& other)
 
 template <typename X>
 OutOfBoundException<X>& OutOfBoundException<X>::operator =
-    (const OutOfBoundException<X>& other) throw() {
+    (const OutOfBoundException& other) throw() {
   if (this != &other) {
     mMsg = other.mMsg;
     mArg = other.mArg;

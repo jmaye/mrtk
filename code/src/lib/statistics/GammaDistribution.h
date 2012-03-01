@@ -47,9 +47,9 @@ public:
   /// Constructs distribution from parameters
   GammaDistribution(const T& shape = T(1), double invScale = 1.0);
   /// Copy constructor
-  GammaDistribution(const GammaDistribution<T>& other);
+  GammaDistribution(const GammaDistribution& other);
   /// Assignment operator
-  GammaDistribution<T>& operator = (const GammaDistribution<T>& other);
+  GammaDistribution& operator = (const GammaDistribution& other);
   /// Destructor
   virtual ~GammaDistribution();
   /** @}

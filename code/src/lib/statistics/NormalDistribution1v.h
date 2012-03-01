@@ -49,9 +49,9 @@ public:
   /// Constructs a normal distribution from the parameters
   NormalDistribution(Mean mean = 0.0, Variance variance = 1.0);
   /// Copy constructor
-  NormalDistribution(const NormalDistribution<1>& other);
+  NormalDistribution(const NormalDistribution& other);
   /// Assignment operator
-  NormalDistribution& operator = (const NormalDistribution<1>& other);
+  NormalDistribution& operator = (const NormalDistribution& other);
   /// Destructor
   virtual ~NormalDistribution();
   /** @}

@@ -91,9 +91,9 @@ public:
   DirichletDistribution(const Eigen::Matrix<double, M, 1>& alpha =
     Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
-  DirichletDistribution(const DirichletDistribution<M>& other);
+  DirichletDistribution(const DirichletDistribution& other);
   /// Assignment operator
-  DirichletDistribution& operator = (const DirichletDistribution<M>& other);
+  DirichletDistribution& operator = (const DirichletDistribution& other);
   /// Destructor
   virtual ~DirichletDistribution();
   /** @}
