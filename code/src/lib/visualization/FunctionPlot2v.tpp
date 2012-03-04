@@ -20,17 +20,14 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 2>::DiscreteFunctionPlot(const std::string& title,
-  const DiscreteFunction<Y, X, 2>& function, const Eigen::Matrix<X, 2, 1>&
-  minimum, const Eigen::Matrix<X, 2, 1>& maximum)
-  throw (BadArgumentException<Eigen::Matrix<X, 2, 1> >) :
-  FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >(title, minimum, maximum) {
-  if (maximum(0) < minimum(0) || maximum(1) < minimum(1))
-    throw BadArgumentException<Eigen::Matrix<X, 2, 1> >(maximum,
-      "DiscreteFunctionPlot<Y, X, 2>::DiscreteFunctionPlot(): "
-      "maximum must be larger than minimum",
-      __FILE__, __LINE__);
+template <typename F>
+FunctionPlot<F, 2>::FunctionPlot(const std::string& title, const F& function,
+    const Domain& minimum, const Domain& maximum, const Domain& resolution) :
+    mTitle(title),
+    mMinimum(minimum),
+    mMaximum(maximum),
+    mResolution(resolution),
+    mDataGrid(minimum, maximum, resolution) {
   Qwt3D::SurfacePlot::setTitle(title.c_str());
   setRotation(30, 0, 15);
   setScale(1, 1, 1);
@@ -45,39 +42,52 @@ DiscreteFunctionPlot<Y, X, 2>::DiscreteFunctionPlot(const std::string& title,
   coordinates()->axes[Qwt3D::Z1].setLabelString("z-axis");
   setCoordinateStyle(Qwt3D::FRAME);
   setPlotStyle(Qwt3D::FILLED);
-  X xValue = minimum(0);
-  size_t xSize = maximum(0) - minimum(0);
-  size_t ySize = maximum(1) - minimum(1);
-  mData = new Y*[xSize];
-  for (size_t i = 0; i < xSize; ++i) {
-    Qwt3D::Cell cell;
-    X yValue = minimum(1);
-    mData[i] = new Y[ySize];
-    for (size_t j = 0; j < ySize; ++j) {
-      mData[i][j] = function((Eigen::Matrix<X, 2, 1>() << xValue, yValue).
-        finished());
-      yValue++;
+  const Index& numCells = mDataGrid.getNumCells();
+  mData = new double*[numCells(0)];
+  for (size_t i = 0; i < numCells(0); ++i) {
+    mData[i] = new double[numCells(1)];
+    for (size_t j = 0; j < numCells(1); ++j) {
+      mData[i][j] = function(mDataGrid.getCoordinates(
+        (Index() << i, j).finished()));
+      mDataGrid[(Index() << i, j).finished()] = mData[i][j];
     }
-    xValue++;
   }
-  loadFromData(mData, xSize, ySize, minimum(0), maximum(0), minimum(1),
-    maximum(1));
+  loadFromData(mData, numCells(0), numCells(1), minimum(0), maximum(0),
+    minimum(1), maximum(1));
 }
 
-template <typename Y, typename X>
-DiscreteFunctionPlot<Y, X, 2>::~DiscreteFunctionPlot() {
-  size_t xSize = this->getMaximum()(0) - this->getMinimum()(0);
-  for (size_t i = 0; i < xSize; ++i) {
+template <typename F>
+FunctionPlot<F, 2>::~FunctionPlot() {
+  const Index& numCells = mDataGrid.getNumCells();
+  for (size_t i = 0; i < numCells(0); ++i) {
     delete []mData[i];
   }
   delete []mData;
 }
 
 /******************************************************************************/
-/* Methods                                                                    */
+/* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void DiscreteFunctionPlot<Y, X, 2>::show() {
-  QWidget::show();
+template <typename F>
+const std::string& FunctionPlot<F, 2>::getTitle() const {
+  return mTitle;
+}
+
+template <typename F>
+const typename FunctionPlot<F, 2>::Domain& FunctionPlot<F, 2>::getMinimum()
+    const {
+  return mMinimum;
+}
+
+template <typename F>
+const typename FunctionPlot<F, 2>::Domain& FunctionPlot<F, 2>::getMaximum()
+    const {
+  return mMaximum;
+}
+
+template <typename F>
+const typename FunctionPlot<F, 2>::Domain& FunctionPlot<F, 2>::getResolution()
+    const {
+  return mResolution;
 }

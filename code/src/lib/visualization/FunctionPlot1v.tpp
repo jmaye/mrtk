@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <QtCore/QString>
+#include <QtCore/QVector>
 #include <qwt-qt4/qwt_plot_canvas.h>
 #include <qwt-qt4/qwt_symbol.h>
 
@@ -24,46 +24,31 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
-  title, const ContinuousFunction<Y, X>& function, const X& minimum, const X&
-  maximum, const X& resolution) throw (BadArgumentException<X>) :
-  FunctionPlot<Y, X>(title, minimum, maximum),
-  QwtPlot(0),
-  mPanner(canvas()),
-  mMagnifier(canvas()),
-  mResolution(resolution) {
-  if (maximum < minimum)
-    throw BadArgumentException<X>(maximum,
-      "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): "
-      "maximum must be larger than minimum",
-      __FILE__, __LINE__);
-  if (resolution <= 0)
-    throw BadArgumentException<X>(resolution,
-      "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): "
-      "resolution must be strictly positive",
-      __FILE__, __LINE__);
-  if (resolution > maximum - minimum)
-    throw BadArgumentException<X>(resolution,
-    "ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(): "
-    "resolution must be smaller than the range",
-    __FILE__, __LINE__);
-  QwtPlot::setTitle(QString(title.c_str()));
-  mXData.resize(round((maximum - minimum) / resolution));
-  mYData.resize(round((maximum - minimum) / resolution));
-  X xValue = minimum;
-  for (size_t i = 0; i < (size_t)mXData.size(); ++i) {
-    mXData[i] = xValue;
-    mYData[i] = function(xValue);
-    xValue += resolution;
+template <typename F>
+FunctionPlot<F, 1>::FunctionPlot(const std::string& title, const F& function,
+    const Domain& minimum, const Domain& maximum, const Domain& resolution) :
+    mTitle(title),
+    mMinimum(minimum),
+    mMaximum(maximum),
+    mResolution(resolution),
+    mDataGrid((Coordinate() << minimum).finished(),
+      (Coordinate() << maximum).finished(),
+      (Coordinate() << resolution).finished()),
+    mPanner(canvas()),
+    mMagnifier(canvas()) {
+  QVector<double> xData;
+  QVector<double> yData;
+  const Index& numCells = mDataGrid.getNumCells();
+  xData.reserve(numCells(0));
+  yData.reserve(numCells(0));
+  for (Index i = Index::Zero(numCells.size()); i != numCells;
+      mDataGrid.incrementIndex(i)) {
+    mDataGrid[i] = function(mDataGrid.getCoordinates(i)(0));
+    xData.push_back(mDataGrid.getCoordinates(i)(0));
+    yData.push_back(mDataGrid[i]);
   }
-  mCurve.setData(mXData, mYData);
-  mCurve.setPen(QPen(QColor(Qt::blue)));
-  //mCurve.setCurveAttribute(QwtPlotCurve::Fitted, true);
-  //mCurve.setBrush(QBrush(QColor(Qt::blue)));
-  //mCurve.setSymbol(QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-    //QPen(Qt::black), QSize(5, 5)));
-  mCurve.setStyle(QwtPlotCurve::Lines);
+  mCurve.setData(xData, yData);
+  Traits::template setCurveStyle<DomainType, true>(mCurve);
   mCurve.attach(this);
   mGrid.enableX(true);
   mGrid.enableY(true);
@@ -71,6 +56,7 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
   mGrid.enableYMin(false);
   mGrid.setMajPen(QPen(Qt::black, 0, Qt::DotLine));
   mGrid.attach(this);
+  QwtPlot::setTitle(QString(title.c_str()));
   canvas()->setLineWidth(2);
   QPalette palette = canvas()->palette();
   palette.setColor(backgroundRole(), Qt::white);
@@ -79,19 +65,36 @@ ContinuousFunctionPlot<Y, X, 1>::ContinuousFunctionPlot(const std::string&
   setAxisTitle(QwtPlot::xBottom, QString('x'));
   setAxisTitle(QwtPlot::yLeft, QString('y'));
   replot();
-  //setFixedSize(sizeHint());
 }
 
-template <typename Y, typename X>
-ContinuousFunctionPlot<Y, X, 1>::~ContinuousFunctionPlot() {
+template <typename F>
+FunctionPlot<F, 1>::~FunctionPlot() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename Y, typename X>
-const X& ContinuousFunctionPlot<Y, X, 1>::getResolution() const {
+template <typename F>
+const std::string& FunctionPlot<F, 1>::getTitle() const {
+  return mTitle;
+}
+
+template <typename F>
+const typename FunctionPlot<F, 1>::Domain& FunctionPlot<F, 1>::getMinimum()
+    const {
+  return mMinimum;
+}
+
+template <typename F>
+const typename FunctionPlot<F, 1>::Domain& FunctionPlot<F, 1>::getMaximum()
+    const {
+  return mMaximum;
+}
+
+template <typename F>
+const typename FunctionPlot<F, 1>::Domain& FunctionPlot<F, 1>::getResolution()
+    const {
   return mResolution;
 }
 
@@ -99,7 +102,18 @@ const X& ContinuousFunctionPlot<Y, X, 1>::getResolution() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-template <typename Y, typename X>
-void ContinuousFunctionPlot<Y, X, 1>::show() {
-  QWidget::show();
+template <typename F>
+template <typename Z, typename IsReal<Z>::Result::Numeric>
+void FunctionPlot<F, 1>::Traits::setCurveStyle(QwtPlotCurve& curve) {
+  curve.setPen(QPen(QColor(Qt::blue)));
+  curve.setStyle(QwtPlotCurve::Lines);
+}
+
+template <typename F>
+template <typename Z, typename IsInteger<Z>::Result::Numeric>
+void FunctionPlot<F, 1>::Traits::setCurveStyle(QwtPlotCurve& curve) {
+  curve.setStyle(QwtPlotCurve::Lines);
+  curve.setPen(QPen(QBrush(QColor(Qt::blue)), 1, Qt::DotLine));
+  curve.setSymbol(QwtSymbol(QwtSymbol::Star1, Qt::NoBrush,
+    QPen(Qt::black), QSize(10, 10)));
 }

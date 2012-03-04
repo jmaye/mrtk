@@ -16,32 +16,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunctionPlot2v.h
-    \brief This file contains a plotting tool for bivariate continuous
-           functions
+/** \file FunctionPlot2v.h
+    \brief This file is an interface for plotting bivariate functions
   */
+
+#include <string>
 
 #include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
 
-#include "functions/ContinuousFunction.h"
-#include "visualization/FunctionPlot.h"
-#include "exceptions/BadArgumentException.h"
+#include "data-structures/Grid.h"
+#include "utils/IsReal.h"
+#include "utils/IsInteger.h"
 
-/** The ContinuousFunctionPlot1v class is a plotting tool for bivariate
-    continuous functions.
-    \brief 2-v continuous function plotting tool
+/** The FunctionPlot2v class is an interface for plotting bivariate
+    functions.
+    \brief Bivariate function plotter
   */
-template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 2> :
-  public FunctionPlot<Y, Eigen::Matrix<X, 2, 1> >,
-  public Qwt3D::SurfacePlot {
+template <typename F> class FunctionPlot<F, 2> :
+   public Qwt3D::SurfacePlot {
+  /** \name Types definitions
+    @{
+    */
+  /// Domain type
+  typedef typename F::Domain Domain;
+  /// Domain type
+  typedef typename F::DomainType DomainType;
+  /// Coordinate type
+  typedef typename Grid<DomainType, double, 2>::Coordinate Coordinate;
+  /// Index type
+  typedef typename Grid<DomainType, double, 2>::Index Index;
+  /** @}
+    */
+
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 2>& other);
+  FunctionPlot(const FunctionPlot& other);
   /// Assignment operator
-  ContinuousFunctionPlot<Y, X, 2>& operator =
-    (const ContinuousFunctionPlot<Y, X, 2>& other);
+  FunctionPlot& operator = (const FunctionPlot& other);
   /** @}
     */
 
@@ -50,29 +63,24 @@ public:
     @{
     */
   /// Constructs plot from parameters
-  ContinuousFunctionPlot(const std::string& title, const
-    ContinuousFunction<Y, X, 2>& function, const Eigen::Matrix<X, 2, 1>&
-    minimum, const Eigen::Matrix<X, 2, 1>& maximum, const
-    Eigen::Matrix<X, 2, 1>& resolution) throw
-    (BadArgumentException<Eigen::Matrix<X, 2, 1> >);
+  FunctionPlot(const std::string& title, const F& function, const Domain&
+    minimum, const Domain& maximum, const Domain& resolution = Domain::Ones());
   /// Destructor
-  virtual ~ContinuousFunctionPlot();
+  virtual ~FunctionPlot();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
+  /// Returns the plot's title
+  const std::string& getTitle() const;
+  /// Returns the plot's minimum
+  const Domain& getMinimum() const;
+  /// Returns the plot's maximum
+  const Domain& getMaximum() const;
   /// Returns the plot's resolution
-  const Eigen::Matrix<X, 2, 1>& getResolution() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Show the plot
-  virtual void show();
+  const Domain& getResolution() const;
   /** @}
     */
 
@@ -80,13 +88,21 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Title of the graph
+  std::string mTitle;
+  /// Minimum value on the x-axis
+  Domain mMinimum;
+  /// Maximum value on the x-axis
+  Domain mMaximum;
+  /// Resolution of the plot
+  Domain mResolution;
+  /// Data grid
+  Grid<DomainType, double, 2> mDataGrid;
   /// Data on to be plotted
   double** mData;
-  /// Resolution on the axis
-  Eigen::Matrix<X, 2, 1> mResolution;
   /** @}
     */
 
 };
 
-#include "visualization/ContinuousFunctionPlot2v.tpp"
+#include "visualization/FunctionPlot2v.tpp"

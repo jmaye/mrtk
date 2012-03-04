@@ -16,12 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file ContinuousFunctionPlot1v.h
-    \brief This file contains a plotting tool for univariate continuous
-           functions
+/** \file FunctionPlot1v.h
+    \brief This file is an interface for plotting univariate functions
   */
 
-#include <QtCore/QVector>
+#include <string>
 
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
@@ -29,25 +28,53 @@
 #include <qwt-qt4/qwt_plot_panner.h>
 #include <qwt-qt4/qwt_plot_magnifier.h>
 
-#include "functions/ContinuousFunction.h"
-#include "visualization/FunctionPlot.h"
-#include "exceptions/BadArgumentException.h"
+#include "data-structures/Grid.h"
+#include "utils/IsReal.h"
+#include "utils/IsInteger.h"
 
-/** The ContinuousFunctionPlot1v class is a plotting tool for univariate
-    continuous functions.
-    \brief 1-v continuous function plotting tool
+/** The FunctionPlot1v class is an interface for plotting univariate
+    functions.
+    \brief Univariate function plotter
   */
-template <typename Y, typename X> class ContinuousFunctionPlot<Y, X, 1> :
-  public FunctionPlot<Y, X>,
-  public QwtPlot {
+template <typename F> class FunctionPlot<F, 1> :
+   public QwtPlot {
+  /** \name Types definitions
+    @{
+    */
+  /// Domain type
+  typedef typename F::Domain Domain;
+  /// Domain type
+  typedef typename F::DomainType DomainType;
+  /// Coordinate type
+  typedef typename Grid<DomainType, double, 1>::Coordinate Coordinate;
+  /// Index type
+  typedef typename Grid<DomainType, double, 1>::Index Index;
+  /** @}
+    */
+
+  /** \name Traits
+    @{
+    */
+  /// Specialization for integer or real types
+  struct Traits {
+  public:
+    /// Style for real types
+    template <typename Z, typename IsReal<Z>::Result::Numeric>
+      static void setCurveStyle(QwtPlotCurve& curve);
+    /// Style for integer types
+    template <typename Z, typename IsInteger<Z>::Result::Numeric>
+      static void setCurveStyle(QwtPlotCurve& curve);
+  };
+  /** @}
+    */
+
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  ContinuousFunctionPlot(const ContinuousFunctionPlot<Y, X, 1>& other);
+  FunctionPlot(const FunctionPlot& other);
   /// Assignment operator
-  ContinuousFunctionPlot<Y, X, 1>& operator =
-    (const ContinuousFunctionPlot<Y, X, 1>& other);
+  FunctionPlot& operator = (const FunctionPlot& other);
   /** @}
     */
 
@@ -56,27 +83,24 @@ public:
     @{
     */
   /// Constructs plot from parameters
-  ContinuousFunctionPlot(const std::string& title, const
-    ContinuousFunction<Y, X>& function, const X& minimum, const X& maximum,
-    const X& resolution) throw (BadArgumentException<X>);
+  FunctionPlot(const std::string& title, const F& function, const Domain&
+    minimum, const Domain& maximum, const Domain& resolution = Domain(1));
   /// Destructor
-  virtual ~ContinuousFunctionPlot();
+  virtual ~FunctionPlot();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
+  /// Returns the plot's title
+  const std::string& getTitle() const;
+  /// Returns the plot's minimum
+  const Domain& getMinimum() const;
+  /// Returns the plot's maximum
+  const Domain& getMaximum() const;
   /// Returns the plot's resolution
-  const X& getResolution() const;
-  /** @}
-    */
-
-  /** \name Methods
-    @{
-    */
-  /// Show the plot
-  virtual void show();
+  const Domain& getResolution() const;
   /** @}
     */
 
@@ -84,23 +108,27 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Curve plotted
+  /// Title of the graph
+  std::string mTitle;
+  /// Minimum value on the x-axis
+  Domain mMinimum;
+  /// Maximum value on the x-axis
+  Domain mMaximum;
+  /// Resolution of the plot
+  Domain mResolution;
+  /// Data grid
+  Grid<DomainType, double, 1> mDataGrid;
+  /// Plotted curve
   QwtPlotCurve mCurve;
-  /// Grid
+  /// Displayed grid
   QwtPlotGrid mGrid;
   /// Panner
   QwtPlotPanner mPanner;
   /// Magnifier
   QwtPlotMagnifier mMagnifier;
-  /// Data on the x-axis
-  QVector<double> mXData;
-  /// Data on the y-axis
-  QVector<double> mYData;
-  /// Resolution on the axis
-  X mResolution;
   /** @}
     */
 
 };
 
-#include "visualization/ContinuousFunctionPlot1v.tpp"
+#include "visualization/FunctionPlot1v.tpp"
