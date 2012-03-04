@@ -33,9 +33,9 @@ template <typename T> class HistogramPlot<T, 2> :
     @{
     */
   /// Copy constructor
-  HistogramPlot(const HistogramPlot<T, 2>& other);
+  HistogramPlot(const HistogramPlot& other);
   /// Assignment operator
-  HistogramPlot<T, 2>& operator = (const HistogramPlot<T, 2>& other);
+  HistogramPlot& operator = (const HistogramPlot& other);
   /** @}
     */
 
@@ -50,11 +50,13 @@ public:
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Show the plot
-  virtual void show();
+  /// Returns the plot's title
+  const std::string& getTitle() const;
+  /// Returns the histogram
+  const Histogram<T, 2>& getHistogram() const;
   /** @}
     */
 
@@ -62,6 +64,10 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Title of the graph
+  std::string mTitle;
+  /// Plotted histogram
+  Histogram<T, 2> mHistogram;
   /// Data on to be plotted
   double** mData;
   /** @}

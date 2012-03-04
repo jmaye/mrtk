@@ -21,10 +21,10 @@
            univariate linear regression
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/ScatterPlot.h"
 #include "statistics/LinearRegression.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

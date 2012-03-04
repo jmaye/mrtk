@@ -21,10 +21,11 @@
            BernoulliDistribution class
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/HistogramPlot.h"
 #include "statistics/BernoulliDistribution.h"
 
-#include <QtGui/QApplication>
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<int, 1> hist(0, 10, 1);

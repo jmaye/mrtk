@@ -21,10 +21,10 @@
            StudentDistribution1v
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/HistogramPlot.h"
 #include "statistics/StudentDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

@@ -21,11 +21,11 @@
            normal distributions pdf
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/FunctionPlot.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/MixtureDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

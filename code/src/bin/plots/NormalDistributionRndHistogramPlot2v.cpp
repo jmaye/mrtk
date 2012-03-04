@@ -21,10 +21,10 @@
            NormalDistribution2v class
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/HistogramPlot.h"
 #include "statistics/NormalDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
@@ -36,17 +36,14 @@ int main(int argc, char** argv) {
   std::vector<Eigen::Matrix<double, 2, 1> > data;
   dist.getSamples(data, 100000);
   hist.addSamples(data);
-  std::cout << "Sample mean: " << std::endl << hist.getSampleMean()
-    << std::endl;
-  std::cout << "Sample mode: " << std::endl
-    << hist.getBinCenter(hist.getMaximumBin()) << std::endl;
-  std::cout << "Sample covariance: " << std::endl << hist.getSampleCovariance()
+  std::cout << "Sample mean: " << std::endl << hist.getMean() << std::endl;
+  std::cout << "Sample mode: " << std::endl << hist.getMode() << std::endl;
+  std::cout << "Sample covariance: " << std::endl << hist.getCovariance()
     << std::endl;
   std::cout << "Dist. mean: " << std::endl << dist.getMean() << std::endl;
   std::cout << "Dist. mode: " << std::endl << dist.getMode() << std::endl;
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;
-  hist.normalize();
   HistogramPlot<double, 2> plot("NormalDistributionRndHistogramPlot2v", hist);
   plot.show();
   return app.exec();

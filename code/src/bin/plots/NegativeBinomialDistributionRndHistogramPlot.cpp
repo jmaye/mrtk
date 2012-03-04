@@ -21,10 +21,10 @@
            NegativeBinomialDistribution class
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/HistogramPlot.h"
 #include "statistics/NegativeBinomialDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

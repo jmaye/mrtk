@@ -101,6 +101,8 @@ public:
   const Domain& getMaximum() const;
   /// Returns the plot's resolution
   const Domain& getResolution() const;
+  /// Returns the data grid
+  const Grid<DomainType, double, 1>& getDataGrid() const;
   /** @}
     */
 

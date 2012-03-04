@@ -21,10 +21,10 @@
            StudentDistribution2v class
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/ScatterPlot.h"
 #include "statistics/StudentDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

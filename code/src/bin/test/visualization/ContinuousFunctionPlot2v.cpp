@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 /** \file ContinuousFunctionPlot2v.cpp
-    \brief This file is a testing binary for the FunctionPlot class
+    \brief This file is a testing binary for the continuous FunctionPlot2v class
   */
 
 #include <iostream>
@@ -33,12 +33,10 @@ int main(int argc, char** argv) {
     NormalDistribution<2>(), Eigen::Matrix<double, 2, 1>(-10, -10),
       Eigen::Matrix<double, 2, 1>(10, 10),
       Eigen::Matrix<double, 2, 1>(0.1, 0.1));
-
   std::cout << "Title: " << plot.getTitle() << std::endl;
   std::cout << "Minimum: " << plot.getMinimum() << std::endl;
   std::cout << "Maximum: " << plot.getMaximum() << std::endl;
   std::cout << "Resolution: " << plot.getResolution() << std::endl;
-
   app.closeAllWindows();
   return 0;
 }

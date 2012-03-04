@@ -21,11 +21,11 @@
            distribution pdf and saving it to pdf
   */
 
-#include "visualization/FunctionPlot.h"
-#include "statistics/StudentDistribution.h"
-
 #include <QtGui/QApplication>
 #include <QtGui/QPrinter>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/StudentDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

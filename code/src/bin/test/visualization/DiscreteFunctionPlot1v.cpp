@@ -16,32 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file GeometricDistributionRndHistogramPlot.cpp
-    \brief This file is a testing binary for plotting random samples from the
-           GeometricDistribution class
+/** \file DiscreteFunctionPlot1v.cpp
+    \brief This file is a testing binary for the discrete FunctionPlot1v class
   */
+
+#include <iostream>
 
 #include <QtGui/QApplication>
 
-#include "visualization/HistogramPlot.h"
-#include "statistics/GeometricDistribution.h"
+#include "visualization/FunctionPlot.h"
+#include "statistics/PoissonDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<int, 1> hist(0, 100, 1);
-  GeometricDistribution dist(0.7);
-  std::vector<int> data;
-  dist.getSamples(data, 100000);
-  hist.addSamples(data);
-  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
-  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
-    << std::endl;
-  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
-  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
-  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
-  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-  hist.normalize();
-  HistogramPlot<int, 1> plot("GeometricDistributionRndHistogramPlot", hist);
-  plot.show();
-  return app.exec();
+  FunctionPlot<PoissonDistribution> plot("PoissonDistribution",
+    PoissonDistribution(2.5), 0, 10, 1);
+  std::cout << "Title: " << plot.getTitle() << std::endl;
+  std::cout << "Minimum: " << plot.getMinimum() << std::endl;
+  std::cout << "Maximum: " << plot.getMaximum() << std::endl;
+  std::cout << "Resolution: " << plot.getResolution() << std::endl;
+  app.closeAllWindows();
+  return 0;
 }

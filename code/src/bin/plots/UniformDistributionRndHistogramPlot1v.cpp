@@ -21,10 +21,10 @@
            UniformDistribution1v
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/HistogramPlot.h"
 #include "statistics/UniformDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

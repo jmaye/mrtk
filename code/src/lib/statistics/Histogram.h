@@ -28,7 +28,7 @@
 template <typename T, size_t M = 1> class Histogram;
 
 #include "statistics/Histogram1v.h"
-#include "statistics/Histogram2v.h"
+//#include "statistics/Histogram2v.h"
 #include "statistics/HistogramMv.h"
 
 #endif // HISTOGRAM_H

@@ -21,10 +21,10 @@
            Dirichlet3v distribution
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/ScatterPlot.h"
 #include "statistics/DirichletDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

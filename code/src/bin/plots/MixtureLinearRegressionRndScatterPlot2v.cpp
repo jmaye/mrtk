@@ -21,11 +21,11 @@
            a mixture of bivariate linear regressions
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/ScatterPlot.h"
 #include "statistics/LinearRegression.h"
 #include "statistics/MixtureSampleDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

@@ -135,7 +135,6 @@ size_t Randomizer<T, M>::sampleCategorical(const
       "Randomizer<T, M>::sampleCategorical: success probabilities must sum "
       "to 1 and probabilities bigger or equal to 0",
       __FILE__, __LINE__);
-
   double sum = probabilities(0);
   const double u = sampleUniform();
   for (size_t i = 1; i < (size_t)probabilities.size(); ++i)

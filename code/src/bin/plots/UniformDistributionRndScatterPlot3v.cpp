@@ -21,10 +21,10 @@
            UniformDistribution3v class
   */
 
+#include <QtGui/QApplication>
+
 #include "visualization/ScatterPlot.h"
 #include "statistics/UniformDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);

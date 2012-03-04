@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 /** \file ContinuousFunctionPlot1v.cpp
-    \brief This file is a testing binary for the FunctionPlot class
+    \brief This file is a testing binary for the continuous FunctionPlot1v class
   */
 
 #include <iostream>
@@ -31,12 +31,10 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
   FunctionPlot<LogFunction<double>, 1> plot("LogFunction",
     LogFunction<double>(), 0.1, 10, 0.1);
-
   std::cout << "Title: " << plot.getTitle() << std::endl;
   std::cout << "Minimum: " << plot.getMinimum() << std::endl;
   std::cout << "Maximum: " << plot.getMaximum() << std::endl;
   std::cout << "Resolution: " << plot.getResolution() << std::endl;
-
   app.closeAllWindows();
   return 0;
 }

@@ -98,6 +98,12 @@ const typename FunctionPlot<F, 1>::Domain& FunctionPlot<F, 1>::getResolution()
   return mResolution;
 }
 
+template <typename F>
+const Grid<typename FunctionPlot<F, 1>::DomainType, double, 1>&
+    FunctionPlot<F, 1>::getDataGrid() const {
+  return mDataGrid;
+}
+
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/

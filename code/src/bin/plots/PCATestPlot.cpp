@@ -20,14 +20,14 @@
     \brief This file is a testing binary for plotting PCA result
   */
 
+#include <QtGui/QApplication>
+
 #include "ml/PCA.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/CategoricalDistribution.h"
 #include "statistics/MixtureSampleDistribution.h"
 #include "visualization/ScatterPlot.h"
 #include "visualization/HistogramPlot.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   std::vector<NormalDistribution<2> > distributions;
