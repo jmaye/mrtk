@@ -25,23 +25,42 @@
 #include "geometry/Transformation.h"
 
 int main (int argc, char** argv) {
+  std::cout << "Testing transformation 2d" << std::endl;
   Transformation<double, 2> trans2d;
+  std::cout << "Setting transformation to (1.0, 2.0, 1.5)" << std::endl;
   trans2d.setTransformation(1.0, 2.0, 1.5);
-  Transformation<double, 3> trans3d;
-  trans3d.setTransformation(1.0, 2.0, 3.0, 1.5, 1.5, 1.5);
+  std::cout << "Transformation matrix: " << std::endl
+    << trans2d.getTransformationMatrix() << std::endl;
   Eigen::Matrix<double, 2, 1> point2d(1.0, 2.0);
-  Eigen::Matrix<double, 3, 1> point3d(1.0, 2.0, 3.0);
   Eigen::Matrix<double, 2, 1> point2dTrans;
-  Eigen::Matrix<double, 3, 1> point3dTrans;
+  std::cout << "Transforming point (1.0, 2.0): " << std::endl;
   trans2d.transform(point2d, point2dTrans);
-  std::cout << point2dTrans << std::endl << std::endl;
-  std::cout << trans2d(point2d) << std::endl << std::endl;
+  std::cout << point2dTrans << std::endl;
+  std::cout << "Transforming point (1.0, 2.0) with operator: " << std::endl;
+  std::cout << trans2d(point2d) << std::endl;
+  std::cout << "Inversing transformation" << std::endl;
   trans2d.inverse();
-  std::cout << trans2d(point2dTrans) << std::endl << std::endl;
+  std::cout << "Retrieving original point: " << std::endl
+    << trans2d(point2dTrans) << std::endl;
+
+  std::cout << std::endl;
+  std::cout << "Testing transformation 3d" << std::endl;
+  Transformation<double, 3> trans3d;
+  std::cout << "Setting transformation to (1.0, 2.0, 3.0, 1.5, 1.5, 1.5)"
+    << std::endl;
+  trans3d.setTransformation(1.0, 2.0, 3.0, 1.5, 1.5, 1.5);
+  std::cout << "Transformation matrix: " << std::endl
+    << trans3d.getTransformationMatrix() << std::endl;
+  Eigen::Matrix<double, 3, 1> point3d(1.0, 2.0, 3.0);
+  Eigen::Matrix<double, 3, 1> point3dTrans;
+  std::cout << "Transforming point (1.0, 2.0, 3.0): " << std::endl;
   trans3d.transform(point3d, point3dTrans);
-  std::cout << point3dTrans << std::endl << std::endl;
-  std::cout << trans3d(point3d) << std::endl << std::endl;
+  std::cout << point3dTrans << std::endl;
+  std::cout << "Transforming point (1.0, 2.0, 3.0) with operator: "
+    << std::endl << trans3d(point3d) << std::endl;
+  std::cout << "Inversing transformation" << std::endl;
   trans3d.inverse();
-  std::cout << trans3d(point3dTrans) << std::endl << std::endl;
+  std::cout << "Retrieving original point: " << std::endl
+    << trans3d(point3dTrans) << std::endl;
   return 0;
 }

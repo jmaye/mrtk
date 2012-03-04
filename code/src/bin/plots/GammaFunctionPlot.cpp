@@ -20,14 +20,14 @@
     \brief This file is a testing binary for plotting the gamma function
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "functions/GammaFunction.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "functions/GammaFunction.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("GammaFunction",
+  FunctionPlot<GammaFunction<double> > plot("GammaFunction",
     GammaFunction<double>(), -5, 5, 0.1);
   plot.show();
   return app.exec();

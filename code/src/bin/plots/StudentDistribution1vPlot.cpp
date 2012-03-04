@@ -21,14 +21,14 @@
            distribution pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/StudentDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/StudentDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("StudentDistribution1v",
+  FunctionPlot<StudentDistribution<> > plot("StudentDistribution1v",
     StudentDistribution<1>(5, 1, 2), -5, 5, 0.1);
   plot.show();
   return app.exec();

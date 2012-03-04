@@ -21,7 +21,7 @@
            normal distributions pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
+#include "visualization/FunctionPlot.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/MixtureDistribution.h"
 
@@ -37,8 +37,8 @@ int main(int argc, char** argv) {
   distributions.push_back(NormalDistribution<1>(-10, 1));
   MixtureDistribution<NormalDistribution<1>, 5> dist(distributions,
     CategoricalDistribution<5>());
-  ContinuousFunctionPlot<double, double, 1> plot("MixtureNormalDistribution1v",
-    dist, -15, 15, 0.1);
+  FunctionPlot<MixtureDistribution<NormalDistribution<1>, 5> >
+    plot("MixtureNormalDistribution1v", dist, -15, 15, 0.1);
   plot.show();
   return app.exec();
 }

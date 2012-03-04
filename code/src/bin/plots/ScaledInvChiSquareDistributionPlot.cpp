@@ -21,14 +21,14 @@
            chi-square distribution pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/ScaledInvChiSquareDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/ScaledInvChiSquareDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot(
+  FunctionPlot<ScaledInvChiSquareDistribution> plot(
     "ScaledInvChiSquareDistribution", ScaledInvChiSquareDistribution(5, 4), 0,
      50, 0.1);
   plot.show();

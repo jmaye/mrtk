@@ -21,17 +21,17 @@
            distribution pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/StudentDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/StudentDistribution.h"
 
 int main(int argc, char** argv) {
   Eigen::Matrix<double, 2, 1> minimum(-2, -2);
   Eigen::Matrix<double, 2, 1> maximum(2, 2);
   Eigen::Matrix<double, 2, 1> resolution(0.05, 0.05);
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 2> plot("StudentDistribution2v",
+  FunctionPlot<StudentDistribution<2>, 2> plot("StudentDistribution2v",
     StudentDistribution<2>(5, Eigen::Matrix<double, 2, 1>(1.0, 1.0),
     (Eigen::Matrix<double, 2, 2>() << 2, 0, 0, 2).finished()), minimum,
     maximum, resolution);

@@ -20,14 +20,14 @@
     \brief This file is a testing binary for plotting the Poisson pmf
   */
 
-#include "visualization/DiscreteFunctionPlot.h"
-#include "statistics/PoissonDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/PoissonDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  DiscreteFunctionPlot<double, int, 1> plot("PoissonDistribution",
+  FunctionPlot<PoissonDistribution> plot("PoissonDistribution",
     PoissonDistribution(2.5), 0, 10);
   plot.show();
   return app.exec();

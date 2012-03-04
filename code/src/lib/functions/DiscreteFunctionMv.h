@@ -44,6 +44,16 @@ template <typename Y, typename X, size_t M, size_t N> class DiscreteFunction :
     */
 
 public:
+  /** \name Types
+    @{
+    */
+  /// Domain type
+  typedef X DomainType;
+  /// Codomain type
+  typedef Y CodomainType;
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */

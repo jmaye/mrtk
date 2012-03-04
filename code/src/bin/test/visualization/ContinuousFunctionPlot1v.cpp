@@ -16,24 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DirichletDistributionPlot.cpp
-    \brief This file is a testing binary for plotting the Dirichlet
-           distribution pdf
+/** \file ContinuousFunctionPlot1v.cpp
+    \brief This file is a testing binary for the FunctionPlot class
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/DirichletDistribution.h"
+#include <iostream>
 
 #include <QtGui/QApplication>
 
+#include "visualization/FunctionPlot.h"
+#include "functions/LogFunction.h"
+
 int main(int argc, char** argv) {
-  Eigen::Matrix<double, 2, 1> minimum(-1, -1);
-  Eigen::Matrix<double, 2, 1> maximum(2, 2);
-  Eigen::Matrix<double, 2, 1> resolution(0.05, 0.05);
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 2> plot("DirichletDistribution",
-    DirichletDistribution<3>(Eigen::Matrix<double, 3, 1>(2.0, 5.0, 10.0)),
-    minimum, maximum, resolution);
-  plot.show();
-  return app.exec();
+  FunctionPlot<LogFunction<double>, 1> plot("LogFunction",
+    LogFunction<double>(), 0.1, 10, 0.1);
+
+  std::cout << "Title: " << plot.getTitle() << std::endl;
+  std::cout << "Minimum: " << plot.getMinimum() << std::endl;
+  std::cout << "Maximum: " << plot.getMaximum() << std::endl;
+  std::cout << "Resolution: " << plot.getResolution() << std::endl;
+
+  app.closeAllWindows();
+  return 0;
 }

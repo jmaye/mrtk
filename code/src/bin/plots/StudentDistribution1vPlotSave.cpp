@@ -21,7 +21,7 @@
            distribution pdf and saving it to pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
+#include "visualization/FunctionPlot.h"
 #include "statistics/StudentDistribution.h"
 
 #include <QtGui/QApplication>
@@ -29,7 +29,7 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("StudentDistribution1v",
+  FunctionPlot<StudentDistribution<> > plot("StudentDistribution1v",
     StudentDistribution<1>(), -5, 5, 0.1);
   plot.show();
   QPrinter printer(QPrinter::HighResolution);

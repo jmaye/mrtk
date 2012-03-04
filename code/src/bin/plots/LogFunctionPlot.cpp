@@ -20,14 +20,14 @@
     \brief This file is a testing binary for plotting the log function
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "functions/LogFunction.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "functions/LogFunction.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("LogFunction",
+  FunctionPlot<LogFunction<double> > plot("LogFunction",
     LogFunction<double>(), 0.1, 10, 0.1);
   plot.show();
   return app.exec();

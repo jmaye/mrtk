@@ -20,15 +20,15 @@
     \brief This file is a testing binary for plotting the factorial function
   */
 
-#include "visualization/DiscreteFunctionPlot.h"
-#include "functions/FactorialFunction.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "functions/FactorialFunction.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  DiscreteFunctionPlot<size_t, size_t, 1> plot("FactorialFunction",
-    FactorialFunction(), 0, 10);
+  FunctionPlot<FactorialFunction> plot("FactorialFunction", FactorialFunction(),
+    0, 10);
   plot.show();
   return app.exec();
 }

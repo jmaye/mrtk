@@ -21,14 +21,14 @@
            pmf
   */
 
-#include "visualization/DiscreteFunctionPlot.h"
-#include "statistics/GeometricDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/GeometricDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  DiscreteFunctionPlot<double, int, 1> plot("GeometricDistribution",
+  FunctionPlot<GeometricDistribution> plot("GeometricDistribution",
     GeometricDistribution(0.7), 0, 10);
   plot.show();
   return app.exec();

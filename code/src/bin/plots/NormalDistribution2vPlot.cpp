@@ -21,17 +21,17 @@
            distribution pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/NormalDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/NormalDistribution.h"
 
 int main(int argc, char** argv) {
   Eigen::Matrix<double, 2, 1> minimum(-2, -2);
   Eigen::Matrix<double, 2, 1> maximum(2, 2);
   Eigen::Matrix<double, 2, 1> resolution(0.05, 0.05);
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 2> plot("NormalDistribution2v",
+  FunctionPlot<NormalDistribution<2>, 2> plot("NormalDistribution2v",
     NormalDistribution<2>(Eigen::Matrix<double, 2, 1>(1.0, 1.0),
     (Eigen::Matrix<double, 2, 2>() << 2, 0, 0, 2).finished()), minimum, maximum,
     resolution);

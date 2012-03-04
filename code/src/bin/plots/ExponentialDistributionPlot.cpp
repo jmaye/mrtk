@@ -20,14 +20,14 @@
     \brief This file is a testing binary for plotting the gamma distribution pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/ExponentialDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/ExponentialDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("ExponentialDistribution",
+  FunctionPlot<ExponentialDistribution> plot("ExponentialDistribution",
     ExponentialDistribution(1.5), 0, 100, 0.1);
   plot.show();
   return app.exec();

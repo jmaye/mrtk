@@ -21,14 +21,14 @@
            distribution pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/InvGammaDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/InvGammaDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("InvGammaDistribution",
+  FunctionPlot<InvGammaDistribution<> > plot("InvGammaDistribution",
     InvGammaDistribution<>(3.0, 2.5), 0, 5, 0.1);
   plot.show();
   return app.exec();

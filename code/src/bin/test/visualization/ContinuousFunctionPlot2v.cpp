@@ -16,28 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file DiscreteFunctionPlot1v.cpp
-    \brief This file is a testing binary for the DiscreteFunctionPlot1v class
+/** \file ContinuousFunctionPlot2v.cpp
+    \brief This file is a testing binary for the FunctionPlot class
   */
 
 #include <iostream>
 
 #include <QtGui/QApplication>
 
-#include "visualization/DiscreteFunctionPlot.h"
-#include "functions/FactorialFunction.h"
+#include "visualization/FunctionPlot.h"
+#include "statistics/NormalDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  DiscreteFunctionPlot<size_t, size_t, 1> plot("FactorialFunction",
-    FactorialFunction(), 0, 10);
-  try {
-    DiscreteFunctionPlot<size_t, size_t, 1> plotWrong1("FactorialFunction",
-      FactorialFunction(), 10, 0);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
+  FunctionPlot<NormalDistribution<2>, 2> plot("NormalDistribution2v",
+    NormalDistribution<2>(), Eigen::Matrix<double, 2, 1>(-10, -10),
+      Eigen::Matrix<double, 2, 1>(10, 10),
+      Eigen::Matrix<double, 2, 1>(0.1, 0.1));
+
+  std::cout << "Title: " << plot.getTitle() << std::endl;
+  std::cout << "Minimum: " << plot.getMinimum() << std::endl;
+  std::cout << "Maximum: " << plot.getMaximum() << std::endl;
+  std::cout << "Resolution: " << plot.getResolution() << std::endl;
+
   app.closeAllWindows();
   return 0;
 }

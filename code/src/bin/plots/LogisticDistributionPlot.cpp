@@ -20,14 +20,14 @@
     \brief This file is a testing binary for plotting the logistic distribution
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/LogisticDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/LogisticDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("LogisticDistribution",
+  FunctionPlot<LogisticDistribution> plot("LogisticDistribution",
     LogisticDistribution(1.0, 2.0), -5, 5, 0.1);
   plot.show();
   return app.exec();

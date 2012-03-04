@@ -21,11 +21,11 @@
            normal distributions pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
+#include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
 #include "statistics/NormalDistribution.h"
 #include "statistics/MixtureDistribution.h"
-
-#include <QtGui/QApplication>
 
 int main(int argc, char** argv) {
   Eigen::Matrix<double, 2, 1> minimum(-15, -15);
@@ -50,8 +50,8 @@ int main(int argc, char** argv) {
   MixtureDistribution<NormalDistribution<2>, 5> dist(distributions,
     CategoricalDistribution<5>());
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 2> plot("MixtureNormalDistribution2v",
-    dist, minimum, maximum, resolution);
+  FunctionPlot<MixtureDistribution<NormalDistribution<2>, 5>, 2>
+    plot("MixtureNormalDistribution2v", dist, minimum, maximum, resolution);
   plot.show();
   return app.exec();
 }

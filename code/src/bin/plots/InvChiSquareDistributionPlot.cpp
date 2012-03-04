@@ -21,14 +21,14 @@
            distribution pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/InvChiSquareDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/InvChiSquareDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("InvChiSquareDistribution",
+  FunctionPlot<InvChiSquareDistribution> plot("InvChiSquareDistribution",
     InvChiSquareDistribution(5), 0, 8, 0.1);
   plot.show();
   return app.exec();

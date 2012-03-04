@@ -21,14 +21,14 @@
            distribution pdf
   */
 
-#include "visualization/ContinuousFunctionPlot.h"
-#include "statistics/NormalDistribution.h"
-
 #include <QtGui/QApplication>
+
+#include "visualization/FunctionPlot.h"
+#include "statistics/NormalDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  ContinuousFunctionPlot<double, double, 1> plot("NormalDistribution1v",
+  FunctionPlot< NormalDistribution<1> > plot("NormalDistribution1v",
     NormalDistribution<1>(1.0, 2.0), -5, 5, 0.1);
   plot.show();
   return app.exec();
