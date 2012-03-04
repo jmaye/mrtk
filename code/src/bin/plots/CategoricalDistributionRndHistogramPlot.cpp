@@ -31,12 +31,12 @@ int main(int argc, char** argv) {
   Histogram<int, 1> hist(0, 10, 1);
   CategoricalDistribution<5> dist((Eigen::Matrix<double, 5, 1>()
     << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
-  for (size_t i = 0; i < 100000; ++i) {
-    Eigen::Matrix<int, 5, 1> sample = dist.getSample();
-    for (size_t j = 0; j < 5; ++j)
-      hist.setBinContent(j, hist.getBinContent(j) + sample(j));
-  }
-  hist.normalize();
+//  for (size_t i = 0; i < 100000; ++i) {
+//    Eigen::Matrix<int, 5, 1> sample = dist.getSample();
+//    for (size_t j = 0; j < 5; ++j)
+//      hist.setBinContent(j, hist.getBinContent(j) + sample(j));
+//  }
+//  hist.normalize();
   std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;

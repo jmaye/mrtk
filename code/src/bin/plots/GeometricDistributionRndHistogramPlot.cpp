@@ -33,14 +33,13 @@ int main(int argc, char** argv) {
   std::vector<int> data;
   dist.getSamples(data, 100000);
   hist.addSamples(data);
-  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
-  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
-    << std::endl;
-  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Sample mean: " << hist.getMean() << std::endl;
+  std::cout << "Sample mode: " << hist.getMode() << std::endl;
+  std::cout << "Sample variance: " << hist.getVariance() << std::endl;
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-  hist.normalize();
+//  hist.normalize();
   HistogramPlot<int, 1> plot("GeometricDistributionRndHistogramPlot", hist);
   plot.show();
   return app.exec();

@@ -46,8 +46,8 @@ HistogramPlot<T, 2>::HistogramPlot(const std::string& title, const
       mData[i][j] = mHistogram.getCell(
         (typename Histogram<T, 2>::Index() << i, j).finished());
   }
-  typename Histogram<T, 2>::Coordinate minimum = mHistogram.getMinimum();
-  typename Histogram<T, 2>::Coordinate maximum = mHistogram.getMaximum();
+  const typename Histogram<T, 2>::Coordinate minimum = mHistogram.getMinimum();
+  const typename Histogram<T, 2>::Coordinate maximum = mHistogram.getMaximum();
   loadFromData(mData, numCells(0), numCells(1), minimum(0), maximum(0),
     minimum(1), maximum(1));
 }

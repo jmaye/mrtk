@@ -33,17 +33,16 @@ int main(int argc, char** argv) {
   std::vector<double> data;
   dist.getSamples(data, 100000);
   hist.addSamples(data);
-  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
-  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
-  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
-    << std::endl;
-  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Sample mean: " << hist.getMean() << std::endl;
+//  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
+  std::cout << "Sample mode: " << hist.getMode() << std::endl;
+  std::cout << "Sample variance: " << hist.getVariance() << std::endl;
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   std::cout << "Dist degrees: " << dist.getDegrees() << std::endl;
   std::cout << "Dist scale: " << dist.getScale() << std::endl;
-  hist.normalize();
+//  hist.normalize();
   HistogramPlot<double, 1> plot(
     "ScaledInvChiSquareDistributionRndHistogramPlot", hist);
   plot.show();

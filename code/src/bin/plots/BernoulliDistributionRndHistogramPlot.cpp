@@ -28,18 +28,17 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  Histogram<int, 1> hist(0, 10, 1);
+  Histogram<int, 1> hist(-10, 10, 1);
   BernoulliDistribution dist(0.1);
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(dist.getSample()(0));
-  std::cout << "Sample mean: " << hist.getSampleMean() << std::endl;
-  std::cout << "Sample mode: " << hist.getBinCenter(hist.getMaximumBin())
-    << std::endl;
-  std::cout << "Sample variance: " << hist.getSampleVariance() << std::endl;
+  std::cout << "Sample mean: " << hist.getMean() << std::endl;
+  std::cout << "Sample mode: " << hist.getMode() << std::endl;
+  std::cout << "Sample variance: " << hist.getVariance() << std::endl;
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-  hist.normalize();
+  //hist.normalize();
   HistogramPlot<int, 1> plot("BernoulliDistributionRndHistogramPlot", hist);
   plot.show();
   return app.exec();

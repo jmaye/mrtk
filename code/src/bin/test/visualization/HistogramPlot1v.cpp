@@ -29,8 +29,6 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<size_t, 1> histogram;
-  histogram.setBinContent(0, 10);
-  histogram.setBinContent(1, 5);
   HistogramPlot<size_t, 1> plot("HistogramPlot1v", histogram);
   app.closeAllWindows();
   return 0;

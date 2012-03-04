@@ -27,222 +27,59 @@
 
 int main(int argc, char** argv) {
   std::cout << "Testing discrete histograms 1-D" << std::endl;
-  Histogram<size_t, 1> hist1DiscDefault;
-  std::cout << "Histogram default parameters: " << std::endl << hist1DiscDefault
+  Histogram<size_t, 1> hist1Disc(0, 10, 1);
+
+  std::cout << "Adding sample 0" << std::endl;
+  hist1Disc.addSample(0);
+  std::cout << "Adding sample 2" << std::endl;
+  hist1Disc.addSample(2);
+  std::cout << "Adding sample 3" << std::endl;
+  hist1Disc.addSample(3);
+
+  std::cout << "hist.getMean(): " << std::endl << hist1Disc.getMean()
     << std::endl << std::endl;
+  std::cout << "hist.getMode(): " << std::endl << hist1Disc.getMode()
+    << std::endl << std::endl;
+  std::cout << "hist.getVariance(): " << std::endl <<
+    hist1Disc.getVariance() << std::endl << std::endl;
 
-  std::cout << "hist.getMinValue(): " << std::endl << hist1DiscDefault.
-    getMinValue() << std::endl << std::endl;
-  std::cout << "hist.getMaxValue(): " << std::endl << hist1DiscDefault.
-    getMaxValue() << std::endl << std::endl;
-  std::cout << "hist.getBinWidth(): " << std::endl << hist1DiscDefault.
-    getBinWidth() << std::endl << std::endl;
-  std::cout << "hist.getNumBins(): " << std::endl << hist1DiscDefault.
-    getNumBins() << std::endl << std::endl;
-  std::cout << "hist.getBins(): " << std::endl << hist1DiscDefault.
-    getBins() << std::endl << std::endl;
+  std::cout << "hist.getNormalized():" << std::endl <<
+    hist1Disc.getNormalized() << std::endl;
 
-  std::cout << "hist.addBinContent(0)" << std::endl;
-  std::cout << "hist.addBinContent(1)" << std::endl;
-  hist1DiscDefault.addBinContent(0);
-  hist1DiscDefault.addBinContent(1);
-  std::cout << "hist.getBinContent(0): " << std::endl << hist1DiscDefault.
-    getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(0) - 1.0) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.getBinContent(1): " << std::endl << hist1DiscDefault.
-    getBinContent(1) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(1) - 1.0) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.setBinContent(1, 10)" << std::endl;
-  hist1DiscDefault.setBinContent(1, 10);
-  std::cout << "hist.getBinContent(1): " << std::endl << hist1DiscDefault.
-    getBinContent(1) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(1) - 10.0) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.addSample(1)" << std::endl;
-  hist1DiscDefault.addSample(1);
-  std::cout << "hist.addSample(2)" << std::endl;
-  hist1DiscDefault.addSample(2);
-  std::cout << "hist.getBinContent(1): " << std::endl << hist1DiscDefault.
-    getBinContent(1) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(1) - 11.0) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.getNormFactor(): " << std::endl << hist1DiscDefault.
-    getNormFactor() << std::endl << std::endl;
-  std::cout << "hist.getBinsSum(): " << std::endl << hist1DiscDefault.
-    getBinsSum() << std::endl << std::endl;
-  std::cout << "hist.getMaximumBinCount(): " << std::endl << hist1DiscDefault.
-    getMaximumBinCount() << std::endl << std::endl;
-  std::cout << "hist.getMaximumBin(): " << std::endl << hist1DiscDefault.
-    getMaximumBin() << std::endl << std::endl;
-  std::cout << "hist.getMinimumBinCount(): " << std::endl << hist1DiscDefault.
-    getMinimumBinCount() << std::endl << std::endl;
-  std::cout << "hist.getMinimumBin(): " << std::endl << hist1DiscDefault.
-    getMinimumBin() << std::endl << std::endl;
-  std::cout << "hist.getSample(): " << std::endl << hist1DiscDefault.
-    getSample() << std::endl << std::endl;
-  std::cout << "hist.getSampleMean(): " << std::endl << hist1DiscDefault.
-    getSampleMean() << std::endl << std::endl;
-  std::cout << "hist.getSampleVariance(): " << std::endl << hist1DiscDefault.
-    getSampleVariance() << std::endl << std::endl;
-  std::cout << "hist.getBinCenter(0): " << std::endl << hist1DiscDefault.
-    getBinCenter(0) << std::endl << std::endl;
-  std::cout << "hist.getBinCenter(1): " << std::endl << hist1DiscDefault.
-    getBinCenter(1) << std::endl << std::endl;
-  std::cout << "hist.normalize()" << std::endl;
-  hist1DiscDefault.normalize();
-  std::cout << "hist.getBinContent(0): " << std::endl << hist1DiscDefault.
-    getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(0) - 1.0 / 12) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.getBinContent(1): " << std::endl << hist1DiscDefault.
-    getBinContent(1) << std::endl << std::endl;
-  if (fabs(hist1DiscDefault.getBinContent(1) - 11.0 / 12) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.clear()" << std::endl;
-  hist1DiscDefault.clear();
-  std::cout << "hist.getBins(): " << std::endl << hist1DiscDefault.
-    getBins() << std::endl << std::endl;
-  try {
-    std::cout << "hist.setBinContent(2, 10)" << std::endl;
-    hist1DiscDefault.setBinContent(2, 10);
-  }
-  catch (OutOfBoundException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-  try {
-    std::cout << "hist.getBinContent(2)" << std::endl;
-    hist1DiscDefault.getBinContent(2);
-  }
-  catch (OutOfBoundException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-  try {
-    std::cout << "hist.addBinContent(2)" << std::endl;
-    hist1DiscDefault.addBinContent(2);
-  }
-  catch (OutOfBoundException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-  try {
-    Histogram<size_t, 1> hist1discWrong1(10, 0, 2);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-  try {
-    Histogram<size_t, 1> hist1discWrong2(0, 5, 10);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
+  Histogram<size_t, 1> hist1Copy(hist1Disc);
+  std::cout << "Copy constructor: " << std::endl << hist1Copy << std::endl
+    << std::endl;
+  Histogram<size_t, 1> hist1Assign = hist1Disc;
+  std::cout << "Assignment operator: " << std::endl << hist1Assign << std::endl;
 
-  Histogram<double, 1> hist1ContDefault;
+  std::cout << std::endl;
+
   std::cout << "Testing continuous histograms 1-D" << std::endl;
-  std::cout << "Histogram default parameters: " << std::endl << hist1ContDefault
+  Histogram<double, 1> hist1Cont(0, 10, 1);
+
+  std::cout << "Adding sample 0" << std::endl;
+  hist1Cont.addSample(0);
+  std::cout << "Adding sample 2" << std::endl;
+  hist1Cont.addSample(2);
+  std::cout << "Adding sample 3" << std::endl;
+  hist1Cont.addSample(3);
+
+  std::cout << "hist.getMean(): " << std::endl << hist1Cont.getMean()
     << std::endl << std::endl;
-  std::cout << "hist.getMinValue(): " << std::endl << hist1ContDefault.
-    getMinValue() << std::endl << std::endl;
-  std::cout << "hist.getMaxValue(): " << std::endl << hist1ContDefault.
-    getMaxValue() << std::endl << std::endl;
-  std::cout << "hist.getBinWidth(): " << std::endl << hist1ContDefault.
-    getBinWidth() << std::endl << std::endl;
-  std::cout << "hist.getNumBins(): " << std::endl << hist1ContDefault.
-    getNumBins() << std::endl << std::endl;
-  std::cout << "hist.addBinContent(0)" << std::endl;
-  hist1ContDefault.addBinContent(0);
-  std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
-    getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1ContDefault.getBinContent(0) - 1.0) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.setBinContent(0, 10)" << std::endl;
-  hist1ContDefault.setBinContent(0, 10);
-  std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
-    getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1ContDefault.getBinContent(0) - 10.0) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.addSample(0.5)" << std::endl;
-  hist1ContDefault.addSample(0.5);
-  std::cout << "hist.addSample(1.5)" << std::endl;
-  hist1ContDefault.addSample(1.5);
-  std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
-    getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1ContDefault.getBinContent(0) - 11.0) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.getNormFactor(): " << std::endl << hist1ContDefault.
-    getNormFactor() << std::endl << std::endl;
-  std::cout << "hist.getBinsSum(): " << std::endl << hist1ContDefault.
-    getBinsSum() << std::endl << std::endl;
-  std::cout << "hist.getMaximumBinCount(): " << std::endl << hist1ContDefault.
-    getMaximumBinCount() << std::endl << std::endl;
-  std::cout << "hist.getMaximumBin(): " << std::endl << hist1ContDefault.
-    getMaximumBin() << std::endl << std::endl;
-  std::cout << "hist.getMinimumBinCount(): " << std::endl << hist1ContDefault.
-    getMinimumBinCount() << std::endl << std::endl;
-  std::cout << "hist.getMinimumBin(): " << std::endl << hist1ContDefault.
-    getMinimumBin() << std::endl << std::endl;
-  std::cout << "hist.getSample(): " << std::endl << hist1ContDefault.
-    getSample() << std::endl << std::endl;
-  std::cout << "hist.getSampleMean(): " << std::endl << hist1ContDefault.
-    getSampleMean() << std::endl << std::endl;
-  std::cout << "hist.getSampleVariance(): " << std::endl << hist1ContDefault.
-    getSampleVariance() << std::endl << std::endl;
-  std::cout << "hist.getBinCenter(0): " << std::endl << hist1ContDefault.
-    getBinCenter(0) << std::endl << std::endl;
-  std::cout << "hist.normalize()" << std::endl;
-  hist1ContDefault.normalize();
-  std::cout << "hist.getBinContent(0): " << std::endl << hist1ContDefault.
-    getBinContent(0) << std::endl << std::endl;
-  if (fabs(hist1ContDefault.getBinContent(0) - 1.0) >
-      std::numeric_limits<double>::epsilon())
-    return 1;
-  std::cout << "hist.clear()" << std::endl;
-  hist1ContDefault.clear();
-  std::cout << "hist.getBins(): " << std::endl << hist1ContDefault.
-    getBins() << std::endl << std::endl;
-  try {
-    std::cout << "hist.setBinContent(2, 10)" << std::endl;
-    hist1ContDefault.setBinContent(2, 10);
-  }
-  catch (OutOfBoundException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-  try {
-    std::cout << "hist.getBinContent(2)" << std::endl;
-    hist1ContDefault.getBinContent(2);
-  }
-  catch (OutOfBoundException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-  try {
-    std::cout << "hist.addBinContent(2)" << std::endl;
-    hist1ContDefault.addBinContent(2);
-  }
-  catch (OutOfBoundException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-  try {
-    Histogram<double, 1> hist1ContWrong1(10, 0, 2);
-  }
-  catch (BadArgumentException<double>& e) {
-    std::cout << e.what() << std::endl;
-  }
-  try {
-    Histogram<double, 1> hist1ContWrong2(0, 5, 10);
-  }
-  catch (BadArgumentException<double>& e) {
-    std::cout << e.what() << std::endl;
-  }
+  std::cout << "hist.getMode(): " << std::endl << hist1Cont.getMode()
+    << std::endl << std::endl;
+  std::cout << "hist.getVariance(): " << std::endl <<
+    hist1Cont.getVariance() << std::endl << std::endl;
+
+  std::cout << "hist.getNormalized():" << std::endl <<
+    hist1Cont.getNormalized() << std::endl;
+
+  Histogram<double, 1> hist1Copyd(hist1Cont);
+  std::cout << "Copy constructor: " << std::endl << hist1Copyd << std::endl
+    << std::endl;
+  Histogram<double, 1> hist1Assignd = hist1Cont;
+  std::cout << "Assignment operator: " << std::endl << hist1Assignd
+    << std::endl;
 
   std::cout << std::endl;
 
@@ -269,7 +106,7 @@ int main(int argc, char** argv) {
     hist3Cont.getNormalized() << std::endl;
 
   Histogram<double, 3> histCopy(hist3Cont);
-  std::cout << "Copy constructor: " << std::endl << hist3Cont << std::endl
+  std::cout << "Copy constructor: " << std::endl << histCopy << std::endl
     << std::endl;
   Histogram<double, 3> histAssign = hist3Cont;
   std::cout << "Assignment operator: " << std::endl << histAssign << std::endl;

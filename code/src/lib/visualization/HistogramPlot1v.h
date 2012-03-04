@@ -20,9 +20,7 @@
     \brief This file contains a plotting tool for univariate histograms
   */
 
-
-
-#include <QtCore/QVector>
+#include <string>
 
 #include <qwt-qt4/qwt_plot.h>
 #include <qwt-qt4/qwt_plot_curve.h>
@@ -41,9 +39,9 @@ template <typename T> class HistogramPlot<T, 1> :
     @{
     */
   /// Copy constructor
-  HistogramPlot(const HistogramPlot<T, 1>& other);
+  HistogramPlot(const HistogramPlot& other);
   /// Assignment operator
-  HistogramPlot<T, 1>& operator = (const HistogramPlot<T, 1>& other);
+  HistogramPlot& operator = (const HistogramPlot& other);
   /** @}
     */
 
@@ -58,11 +56,13 @@ public:
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Show the plot
-  virtual void show();
+  /// Returns the plot's title
+  const std::string& getTitle() const;
+  /// Returns the histogram
+  const Histogram<T, 1>& getHistogram() const;
   /** @}
     */
 
@@ -70,18 +70,18 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Title of the graph
+  std::string mTitle;
+  /// Histogram data
+  Histogram<T, 1> mHistogram;
   /// Histogram plotted
-  QwtPlotCurve mHistogram;
+  QwtPlotCurve mCurve;
   /// Grid
   QwtPlotGrid mGrid;
   /// Panner
   QwtPlotPanner mPanner;
   /// Magnifier
   QwtPlotMagnifier mMagnifier;
-  /// Data on the x-axis
-  QVector<double> mXData;
-  /// Data on the y-axis
-  QVector<double> mYData;
   /** @}
     */
 

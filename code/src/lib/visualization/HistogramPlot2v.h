@@ -20,6 +20,8 @@
     \brief This file contains a plotting tool for bivariate histogram plots
   */
 
+#include <string>
+
 #include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
 
 #include "statistics/Histogram.h"

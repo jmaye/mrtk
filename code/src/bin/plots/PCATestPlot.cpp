@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
   Histogram<double, 1> hist(-20, 20, 0.05);
   for (size_t i = 0; i < transformedSamples.size(); ++i)
     hist.addSample(transformedSamples[i](0));
-  hist.normalize();
+//  hist.normalize();
 
   QApplication app(argc, argv);
   ScatterPlot<2> plotOriginal("Original Data", samples);

@@ -31,12 +31,12 @@ int main(int argc, char** argv) {
   Histogram<int, 1> histogram(0, 10, 1);
   MultinomialDistribution<5> dist(20, (Eigen::Matrix<double, 5, 1>()
     << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
-  for (size_t i = 0; i < 100000; ++i) {
-    Eigen::Matrix<int, 5, 1> sample = dist.getSample();
-    for (size_t j = 0; j < 5; ++j)
-      histogram.setBinContent(j, histogram.getBinContent(j) + sample(j));
-  }
-  histogram.normalize();
+//  for (size_t i = 0; i < 100000; ++i) {
+//    Eigen::Matrix<int, 5, 1> sample = dist.getSample();
+//    for (size_t j = 0; j < 5; ++j)
+//      histogram.setBinContent(j, histogram.getBinContent(j) + sample(j));
+//  }
+//  histogram.normalize();
   HistogramPlot<int, 1> plot("MultinomialDistributionRndHistogramPlot",
     histogram);
   plot.show();
