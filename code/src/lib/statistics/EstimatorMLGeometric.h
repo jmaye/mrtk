@@ -35,7 +35,7 @@ public:
     @{
     */
   /// Point type
-  typedef int Point;
+  typedef GeometricDistribution::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -49,10 +49,9 @@ public:
   /// Default constructor
   EstimatorML();
   /// Copy constructor
-  EstimatorML(const EstimatorML<GeometricDistribution>& other);
+  EstimatorML(const EstimatorML& other);
   /// Assignment operator
-  EstimatorML<GeometricDistribution>& operator =
-    (const EstimatorML<GeometricDistribution>& other);
+  EstimatorML& operator = (const EstimatorML& other);
   /// Destructor
   virtual ~EstimatorML();
   /** @}
@@ -65,8 +64,8 @@ public:
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
   bool getValid() const;
-  /// Returns the estimated success probability
-  double getProbability() const;
+  /// Returns the estimated distribution
+  const GeometricDistribution& getDistribution() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -97,10 +96,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Estimated success probability
-  double mProbability;
-  /// Estimated mean
-  double mMean;
+  /// Estimated distribution
+  GeometricDistribution mDistribution;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

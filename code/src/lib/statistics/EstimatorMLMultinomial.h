@@ -28,14 +28,14 @@
 /** The class EstimatorML is implemented for multinomial distributions.
     \brief Multinomial distribution ML estimator
   */
-template <size_t M> class EstimatorML<MultinomialDistribution<M>, M> :
+template <size_t M> class EstimatorML<MultinomialDistribution<M> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
     @{
     */
   /// Point type
-  typedef Eigen::Matrix<int, M, 1> Point;
+  typedef typename MultinomialDistribution<M>::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -47,12 +47,11 @@ public:
     @{
     */
   /// Default constructor
-  EstimatorML(size_t numTrials);
+  EstimatorML();
   /// Copy constructor
-  EstimatorML(const EstimatorML<MultinomialDistribution<M>, M>& other);
+  EstimatorML(const EstimatorML& other);
   /// Assignment operator
-  EstimatorML<MultinomialDistribution<M>, M>& operator =
-    (const EstimatorML<MultinomialDistribution<M>, M>& other);
+  EstimatorML& operator = (const EstimatorML& other);
   /// Destructor
   virtual ~EstimatorML();
   /** @}
@@ -65,10 +64,8 @@ public:
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
   bool getValid() const;
-  /// Returns the estimated success probabilities
-  const Eigen::Matrix<double, M, 1>& getProbabilities() const;
-  /// Returns the number of trials of the distribution
-  size_t getNumTrials() const;
+  /// Returns the estimated distribution
+  const MultinomialDistribution<M>& getDistribution() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -99,10 +96,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Estimated success probabilities
-  Eigen::Matrix<double, M, 1> mProbabilities;
-  /// Number of trials of the distribution (fixed parameter)
-  size_t mNumTrials;
+  /// Estimated distribution
+  MultinomialDistribution<M> mDistribution;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

@@ -35,7 +35,7 @@ public:
     @{
     */
   /// Point type
-  typedef int Point;
+  typedef PoissonDistribution::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -49,10 +49,9 @@ public:
   /// Default constructor
   EstimatorML();
   /// Copy constructor
-  EstimatorML(const EstimatorML<PoissonDistribution>& other);
+  EstimatorML(const EstimatorML& other);
   /// Assignment operator
-  EstimatorML<PoissonDistribution>& operator =
-    (const EstimatorML<PoissonDistribution>& other);
+  EstimatorML& operator = (const EstimatorML& other);
   /// Destructor
   virtual ~EstimatorML();
   /** @}
@@ -65,8 +64,8 @@ public:
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
   bool getValid() const;
-  /// Returns the estimated mean
-  double getMean() const;
+  /// Returns the estimated distribution
+  const PoissonDistribution& getDistribution() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -97,8 +96,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Estimated mean
-  double mMean;
+  /// Estimated distribution
+  PoissonDistribution mDistribution;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

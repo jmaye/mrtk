@@ -38,7 +38,7 @@ public:
     @{
     */
   /// Point type
-  typedef double Point;
+  typedef ExponentialDistribution::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -49,13 +49,12 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs estimator with hyperparameters prior
-  EstimatorBayes(double alpha = 1.0, double beta = 1.0);
+  /// Constructs estimator with prior
+  EstimatorBayes(const GammaDistribution<double>& prior);
   /// Copy constructor
-  EstimatorBayes(const EstimatorBayes<ExponentialDistribution>& other);
+  EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator
-  EstimatorBayes<ExponentialDistribution>& operator =
-    (const EstimatorBayes<ExponentialDistribution>& other);
+  EstimatorBayes& operator = (const EstimatorBayes& other);
   /// Destructor
   virtual ~EstimatorBayes();
   /** @}
@@ -64,10 +63,8 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the posterior rate distribution
-  const GammaDistribution<double>& getPostRateDist() const;
-  /// Returns the posterior predictive distribution
-  const NegativeBinomialDistribution& getPostPredDist() const;
+  /// Returns the rate distribution
+  const GammaDistribution<double>& getRateDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -96,14 +93,12 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Posterior rate distribution
-  GammaDistribution<double> mPostRateDist;
-  /// Posterior predictive distribution
-  NegativeBinomialDistribution mPostPredDist;
-  /// Hyperparameter alpha (corresponds to alpha - 1 prior observations)
-  double mAlpha;
-  /// Hyperparameter beta (corresponds to beta prior total waiting time)
-  double mBeta;
+  /*! \brief Rate distribution
+  *
+  * Hyperparameter alpha (corresponds to alpha - 1 prior observations) and 
+  * hyperparameter beta (corresponds to beta prior total waiting time)
+  */
+  GammaDistribution<double> mRateDist;
   /** @}
     */
 

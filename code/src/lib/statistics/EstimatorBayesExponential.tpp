@@ -20,30 +20,21 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorBayes<ExponentialDistribution>::EstimatorBayes(double alpha, double
-    beta) :
-    mPostRateDist(alpha, beta),
-    mPostPredDist(alpha, 1.0 / (beta + 1)),
-    mAlpha(alpha),
-    mBeta(beta) {
+EstimatorBayes<ExponentialDistribution>::EstimatorBayes(const
+    GammaDistribution<double>& prior) :
+    mRateDist(prior) {
 }
 
-EstimatorBayes<ExponentialDistribution>::EstimatorBayes(const
-    EstimatorBayes<ExponentialDistribution>& other) :
-    mPostRateDist(other.mPostRateDist),
-    mPostPredDist(other.mPostPredDist),
-    mAlpha(other.mAlpha),
-    mBeta(other.mBeta) {
+EstimatorBayes<ExponentialDistribution>::EstimatorBayes(const EstimatorBayes&
+    other) :
+    mRateDist(other.mRateDist) {
 }
 
 EstimatorBayes<ExponentialDistribution>&
-    EstimatorBayes<ExponentialDistribution>::operator =
-    (const EstimatorBayes<ExponentialDistribution>& other) {
+    EstimatorBayes<ExponentialDistribution>::operator = (const EstimatorBayes&
+    other) {
   if (this != &other) {
-    mPostRateDist = other.mPostRateDist;
-    mPostPredDist = other.mPostPredDist;
-    mAlpha = other.mAlpha;
-    mBeta = other.mBeta;
+    mRateDist = other.mRateDist;
   }
   return *this;
 }
@@ -60,9 +51,9 @@ void EstimatorBayes<ExponentialDistribution>::read(std::istream& stream) {
 
 void EstimatorBayes<ExponentialDistribution>::write(std::ostream& stream)
     const {
-  stream << "posterior rate distribution: " << std::endl << mPostRateDist
-    << std::endl << "posterior predictive distribution: " << std::endl
-    << mPostPredDist;
+  stream << "Rate distribution: " << std::endl << mRateDist << std::endl <<
+    "Rate mode: " << mRateDist.getMode() << std::endl <<
+    "Rate variance: " << mRateDist.getVariance();
 }
 
 void EstimatorBayes<ExponentialDistribution>::read(std::ifstream& stream) {
@@ -76,24 +67,14 @@ void EstimatorBayes<ExponentialDistribution>::write(std::ofstream& stream)
 /* Accessors                                                                  */
 /******************************************************************************/
 
-const GammaDistribution<double>& EstimatorBayes<ExponentialDistribution>::
-    getPostRateDist() const {
-  return mPostRateDist;
-}
-
-const NegativeBinomialDistribution& EstimatorBayes<ExponentialDistribution>::
-    getPostPredDist() const {
-  return mPostPredDist;
+const GammaDistribution<double>&
+    EstimatorBayes<ExponentialDistribution>::getRateDist() const {
+  return mRateDist;
 }
 
 void EstimatorBayes<ExponentialDistribution>::addPoint(const Point& point) {
-  mAlpha += 1;
-  mBeta += point;
-  mPostRateDist.setShape(mAlpha);
-  mPostRateDist.setInvScale(mBeta);
-  // TODO: POST PRED DIST CHECK
-  mPostPredDist.setProbability(1.0 / (mBeta + 1));
-  mPostPredDist.setNumTrials(mAlpha);
+  mRateDist.setShape(mRateDist.getShape() + 1);
+  mRateDist.setInvScale(mRateDist.getInvScale() + point);
 }
 
 void EstimatorBayes<ExponentialDistribution>::addPoints(const

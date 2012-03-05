@@ -16,29 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayesPoisson.h
-    \brief This file implements a Bayesian estimator for Poisson distributions
+/** \file EstimatorBayesGeometric.h
+    \brief This file implements a Bayesian estimator for geometric distributions
            with conjugate prior
   */
 
 #include <vector>
 
-#include "statistics/PoissonDistribution.h"
-#include "statistics/GammaDistribution.h"
-#include "statistics/NegativeBinomialDistribution.h"
+#include "statistics/GeometricDistribution.h"
+#include "statistics/BetaDistribution.h"
 
-/** The class EstimatorBayes is implemented for Poisson distributions with
+/** The class EstimatorBayes is implemented for geometric distributions with
     conjugate prior.
-    \brief Poisson distribution Bayesian estimator
+    \brief Geometric distribution Bayesian estimator
   */
-template <> class EstimatorBayes<PoissonDistribution> :
+template <> class EstimatorBayes<GeometricDistribution> :
   public virtual Serializable {
 public:
   /** \name Types definitions
     @{
     */
   /// Point type
-  typedef PoissonDistribution::RandomVariable Point;
+  typedef GeometricDistribution::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -50,7 +49,7 @@ public:
     @{
     */
   /// Constructs estimator with prior
-  EstimatorBayes(const GammaDistribution<double>& prior);
+  EstimatorBayes(const BetaDistribution& prior);
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator
@@ -63,10 +62,8 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the mean distribution
-  const GammaDistribution<double>& getMeanDist() const;
-  /// Returns the predictive distribution
-  const NegativeBinomialDistribution& getPredDist() const;
+  /// Returns the probabiliy distribution
+  const BetaDistribution& getProbDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -95,17 +92,15 @@ protected:
   /** \name Protected members
     @{
     */
-  /*! \brief Mean distribution
+  /*! \brief Probability distribution
   *
-  * Hyperparameter alpha (alpha - 1 prior counts) and
-  * hyperparameter beta (beta prior observations)
+  * Hyperparameter alpha (prior success) and
+  * hyperparameter beta (prior failure)
   */
-  GammaDistribution<double> mMeanDist;
-  /// Predictive distribution
-  NegativeBinomialDistribution mPredDist;
+  BetaDistribution mProbDist;
   /** @}
     */
 
 };
 
-#include "statistics/EstimatorBayesPoisson.tpp"
+#include "statistics/EstimatorBayesGeometric.tpp"

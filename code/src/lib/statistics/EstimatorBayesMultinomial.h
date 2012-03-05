@@ -31,14 +31,14 @@
     distributions with conjugate prior.
     \brief Multinomial distribution Bayesian estimator
   */
-template <size_t M> class EstimatorBayes<MultinomialDistribution<M>, M> :
+template <size_t M> class EstimatorBayes<MultinomialDistribution<M> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
     @{
     */
   /// Point type
-  typedef Eigen::Matrix<int, M, 1> Point;
+  typedef typename MultinomialDistribution<M>::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -49,14 +49,12 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs estimator with hyperparameters prior
-  EstimatorBayes(size_t numTrials = 1, const Eigen::Matrix<double, M, 1>&
-    alpha = Eigen::Matrix<double, M, 1>::Ones());
+  /// Constructs estimator with prior
+  EstimatorBayes(const DirichletDistribution<M>& prior);
   /// Copy constructor
-  EstimatorBayes(const EstimatorBayes<MultinomialDistribution<M>, M>& other);
+  EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator
-  EstimatorBayes<MultinomialDistribution<M>, M>& operator =
-    (const EstimatorBayes<MultinomialDistribution<M>, M>& other);
+  EstimatorBayes& operator = (const EstimatorBayes& other);
   /// Destructor
   virtual ~EstimatorBayes();
   /** @}
@@ -65,14 +63,10 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the number of trials
-  size_t getNumTrials() const;
-  /// Returns the posterior success probablities distribution
-  const DirichletDistribution<M>& getPostSuccessDist() const;
-  /// Returns the posterior predictive distribution
-  const DCMDistribution<M>& getPostPredDist() const;
-  /// Returns the validity state of the estimator
-  bool getValid() const;
+  /// Returns the probablities distribution
+  const DirichletDistribution<M>& getProbDist() const;
+  /// Returns the predictive distribution
+  const DCMDistribution<M>& getPredDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -101,14 +95,13 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Number of trials
-  size_t mNumTrials;
-  /// Posterior success probablities distribution
-  DirichletDistribution<M> mPostSuccessDist;
-  /// Posterior predictive distribution
-  DCMDistribution<M> mPostPredDist;
-  /// Hyperparameter alpha (alpha_i - 1 pseudo-counts for i, alpha.sum = conf.)
-  Eigen::Matrix<double, M, 1> mAlpha;
+  /*! \brief Probabilities distribution
+  *
+  * Hyperparameter alpha (alpha_i - 1 pseudo-counts for i, alpha.sum = conf.)
+  */
+  DirichletDistribution<M> mProbDist;
+  /// Predictive distribution
+  DCMDistribution<M> mPredDist;
   /** @}
     */
 

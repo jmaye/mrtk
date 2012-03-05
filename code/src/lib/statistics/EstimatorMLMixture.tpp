@@ -22,9 +22,9 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename D, size_t M>
-EstimatorMLMixture<D, M>::EstimatorMLMixture(const MixtureDistribution<D, M>&
-    initDist, size_t maxNumIter, double tol) :
+template <typename C, size_t M>
+EstimatorML<MixtureDistribution<C, M> >::EstimatorML(const
+    MixtureDistribution<C, M>& initDist, size_t maxNumIter, double tol) :
     mMixtureDist(initDist),
     mLogLikelihood(0),
     mMaxNumIter(maxNumIter),
@@ -33,9 +33,8 @@ EstimatorMLMixture<D, M>::EstimatorMLMixture(const MixtureDistribution<D, M>&
     mValid(false) {
 }
 
-template <typename D, size_t M>
-EstimatorMLMixture<D, M>::EstimatorMLMixture(const EstimatorMLMixture<D, M>&
-    other) :
+template <typename C, size_t M>
+EstimatorML<MixtureDistribution<C, M> >::EstimatorML(const EstimatorML& other) :
     mMixtureDist(other.mMixtureDist),
     mResponsibilities(other.mResponsibilities),
     mLogLikelihood(other.mLogLikelihood),
@@ -45,9 +44,10 @@ EstimatorMLMixture<D, M>::EstimatorMLMixture(const EstimatorMLMixture<D, M>&
     mValid(other.mValid) {
 }
 
-template <typename D, size_t M>
-EstimatorMLMixture<D, M>& EstimatorMLMixture<D, M>::operator =
-    (const EstimatorMLMixture<D, M>& other) {
+template <typename C, size_t M>
+EstimatorML<MixtureDistribution<C, M> >&
+    EstimatorML<MixtureDistribution<C, M> >::operator = (const EstimatorML&
+    other) {
   if (this != &other) {
     mMixtureDist = other.mMixtureDist;
     mResponsibilities = other.mResponsibilities;
@@ -60,21 +60,22 @@ EstimatorMLMixture<D, M>& EstimatorMLMixture<D, M>::operator =
   return *this;
 }
 
-template <typename D, size_t M>
-EstimatorMLMixture<D, M>::~EstimatorMLMixture() {
+template <typename C, size_t M>
+EstimatorML<MixtureDistribution<C, M> >::~EstimatorML() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-template <typename D, size_t M>
-void EstimatorMLMixture<D, M>::read(std::istream& stream) {
+template <typename C, size_t M>
+void EstimatorML<MixtureDistribution<C, M> >::read(std::istream& stream) {
 }
 
-template <typename D, size_t M>
-void EstimatorMLMixture<D, M>::write(std::ostream& stream) const {
-  stream << "estimated mixture distribution: " << std::endl << mMixtureDist
+template <typename C, size_t M>
+void EstimatorML<MixtureDistribution<C, M> >::write(std::ostream& stream)
+    const {
+  stream << "mixture distribution: " << std::endl << mMixtureDist << std::endl
     << "log-likelihood: " << mLogLikelihood << std::endl
     << "maxNumIter: " << mMaxNumIter << std::endl
     << "tolerance: " << mTol << std::endl
@@ -82,69 +83,71 @@ void EstimatorMLMixture<D, M>::write(std::ostream& stream) const {
     << "valid: " << mValid;
 }
 
-template <typename D, size_t M>
-void EstimatorMLMixture<D, M>::read(std::ifstream& stream) {
+template <typename C, size_t M>
+void EstimatorML<MixtureDistribution<C, M> >::read(std::ifstream& stream) {
 }
 
-template <typename D, size_t M>
-void EstimatorMLMixture<D, M>::write(std::ofstream& stream) const {
+template <typename C, size_t M>
+void EstimatorML<MixtureDistribution<C, M> >::write(std::ofstream& stream)
+    const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename D, size_t M>
-const MixtureDistribution<D, M>& EstimatorMLMixture<D, M>::getMixtureDist()
-    const {
+template <typename C, size_t M>
+const MixtureDistribution<C, M>&
+    EstimatorML<MixtureDistribution<C, M> >::getMixtureDist() const {
   return mMixtureDist;
 }
 
-template <typename D, size_t M>
-size_t EstimatorMLMixture<D, M>::getNumPoints() const {
+template <typename C, size_t M>
+size_t EstimatorML<MixtureDistribution<C, M> >::getNumPoints() const {
   return mNumPoints;
 }
 
-template <typename D, size_t M>
-bool EstimatorMLMixture<D, M>::getValid() const {
+template <typename C, size_t M>
+bool EstimatorML<MixtureDistribution<C, M> >::getValid() const {
   return mValid;
 }
 
-template <typename D, size_t M>
-double EstimatorMLMixture<D, M>::getLogLikelihood() const {
+template <typename C, size_t M>
+double EstimatorML<MixtureDistribution<C, M> >::getLogLikelihood() const {
   return mLogLikelihood;
 }
 
-template <typename D, size_t M>
-double EstimatorMLMixture<D, M>::getTolerance() const {
+template <typename C, size_t M>
+double EstimatorML<MixtureDistribution<C, M> >::getTolerance() const {
   return mTol;
 }
 
-template <typename D, size_t M>
-void EstimatorMLMixture<D, M>::setTolerance(double tol) {
+template <typename C, size_t M>
+void EstimatorML<MixtureDistribution<C, M> >::setTolerance(double tol) {
   mTol = tol;
 }
 
-template <typename D, size_t M>
-size_t EstimatorMLMixture<D, M>::getMaxNumIter() const {
+template <typename C, size_t M>
+size_t EstimatorML<MixtureDistribution<C, M> >::getMaxNumIter() const {
   return mMaxNumIter;
 }
 
-template <typename D, size_t M>
-void EstimatorMLMixture<D, M>::setMaxNumIter(size_t maxNumIter) {
+template <typename C, size_t M>
+void EstimatorML<MixtureDistribution<C, M> >::setMaxNumIter(size_t maxNumIter) {
   mMaxNumIter = maxNumIter;
 }
 
-template <typename D, size_t M>
-void EstimatorMLMixture<D, M>::reset() {
-  mNumPoints = 0;
+template <typename C, size_t M>
+void EstimatorML<MixtureDistribution<C, M> >::reset() {
   mLogLikelihood = 0;
+  mNumPoints = 0;
   mValid = false;
 }
 
-template <typename D, size_t M>
-size_t EstimatorMLMixture<D, M>::
-addPoints(const ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+template <typename C, size_t M>
+size_t EstimatorML<MixtureDistribution<C, M> >::
+    addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
   reset();
   size_t numIter = 0;
   const size_t K = mMixtureDist.getCompDistributions().size();
@@ -159,8 +162,9 @@ addPoints(const ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
       double probability = 0.0;
       const size_t row = it - itStart;
       for (size_t j = 0; j < K; ++j) {
-        mResponsibilities(row, j) = mWeights(j) *
-          NormalDistribution<1>(mMeans(j), mVariances(j))(*it);
+        mResponsibilities(row, j) =
+          mMixtureDist.getAssignDistribution().getProbability(j) *
+          mMixtureDist.getCompDistribution(j)(*it);
         probability += mResponsibilities(row, j);
       }
       newLogLikelihood += log(probability);
@@ -169,32 +173,24 @@ addPoints(const ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
     if (fabs(mLogLikelihood - newLogLikelihood) < mTol)
       break;
     mLogLikelihood = newLogLikelihood;
-    Eigen::Matrix<double, N, 1> numPoints(K);
+    Eigen::Matrix<double, M, 1> numPoints(K);
     for (size_t j = 0; j < K; ++j)
       numPoints(j) = mResponsibilities.col(j).sum();
-    mWeights = numPoints / mNumPoints;
-    mMeans = Eigen::Matrix<double, N, 1>::Zero(K);
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-      const size_t row = it - itStart;
-      for (size_t j = 0; j < K; ++j)
-        mMeans(j) += mResponsibilities(row, j) * (*it);
+    Eigen::Matrix<double, M, 1> weights = numPoints / mNumPoints;
+    mMixtureDist.setAssignDistribution(
+      CategoricalDistribution<M>(weights / weights.sum()));
+    for (size_t j = 0; j < K; ++j) {
+      EstimatorML<C> estComp;
+      estComp.addPoints(itStart, itEnd, mResponsibilities.col(j), numPoints(j));
+      mMixtureDist.setCompDistribution(estComp.getDistribution(), j);
     }
-    mMeans.cwise() /= numPoints;
-    mVariances = Eigen::Matrix<double, N, 1>::Zero(K);
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-      const size_t row = it - itStart;
-      for (size_t j = 0; j < K; ++j)
-        mVariances(j) += mResponsibilities(row, j) * ((*it) - mMeans(j)) *
-          ((*it) - mMeans(j));
-    }
-    mVariances.cwise() /= numPoints;
     numIter++;
   }
-  mValid = true;
   return numIter;
 }
 
-template <typename D, size_t M>
-void EstimatorMLMixture<D, M>::addPoints(const Container& points) {
+template <typename C, size_t M>
+void EstimatorML<MixtureDistribution<C, M> >::addPoints(const Container&
+    points) {
   addPoints(points.begin(), points.end());
 }

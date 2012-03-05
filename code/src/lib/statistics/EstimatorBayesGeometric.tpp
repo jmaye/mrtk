@@ -20,94 +20,63 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorML<PoissonDistribution>::EstimatorML() :
-    mNumPoints(0),
-    mValid(false) {
+EstimatorBayes<GeometricDistribution>::EstimatorBayes(const BetaDistribution&
+    prior) :
+    mProbDist(prior) {
 }
 
-EstimatorML<PoissonDistribution>::EstimatorML(const EstimatorML& other) :
-    mDistribution(other.mDistribution),
-    mNumPoints(other.mNumPoints),
-    mValid(other.mValid) {
+EstimatorBayes<GeometricDistribution>::EstimatorBayes(const EstimatorBayes&
+    other) :
+    mProbDist(other.mProbDist) {
 }
 
-EstimatorML<PoissonDistribution>&
-    EstimatorML<PoissonDistribution>::operator = (const EstimatorML& other) {
+EstimatorBayes<GeometricDistribution>&
+    EstimatorBayes<GeometricDistribution>::operator = (const EstimatorBayes&
+    other) {
   if (this != &other) {
-    mDistribution = other.mDistribution;
-    mNumPoints = other.mNumPoints;
-    mValid = other.mValid;
+    mProbDist = other.mProbDist;
   }
   return *this;
 }
 
-EstimatorML<PoissonDistribution>::~EstimatorML() {
+EstimatorBayes<GeometricDistribution>::~EstimatorBayes() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorML<PoissonDistribution>::read(std::istream& stream) {
+void EstimatorBayes<GeometricDistribution>::read(std::istream& stream) {
 }
 
-void EstimatorML<PoissonDistribution>::write(std::ostream& stream) const {
-  stream << "distribution: " << std::endl << mDistribution << std::endl
-    << "number of points: " << mNumPoints << std::endl
-    << "valid: " << mValid;
+void EstimatorBayes<GeometricDistribution>::write(std::ostream& stream) const {
+  stream << "Mean distribution: " << std::endl << mProbDist << std::endl <<
+    "Mean mode: " << mProbDist.getMode() << std::endl <<
+    "Mean variance: " << mProbDist.getVariance();
 }
 
-void EstimatorML<PoissonDistribution>::read(std::ifstream& stream) {
+void EstimatorBayes<GeometricDistribution>::read(std::ifstream& stream) {
 }
 
-void EstimatorML<PoissonDistribution>::write(std::ofstream& stream) const {
+void EstimatorBayes<GeometricDistribution>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-size_t EstimatorML<PoissonDistribution>::getNumPoints() const {
-  return mNumPoints;
+const BetaDistribution&
+    EstimatorBayes<GeometricDistribution>::getProbDist() const {
+  return mProbDist;
 }
 
-bool EstimatorML<PoissonDistribution>::getValid() const {
-  return mValid;
+void EstimatorBayes<GeometricDistribution>::addPoint(const Point& point) {
+  mProbDist.setAlpha(mProbDist.getAlpha() + 1);
+  mProbDist.setBeta(mProbDist.getBeta() + point);
 }
 
-const PoissonDistribution&
-    EstimatorML<PoissonDistribution>::getDistribution() const {
-  return mDistribution;
-}
-
-void EstimatorML<PoissonDistribution>::reset() {
-  mNumPoints = 0;
-  mValid = false;
-}
-
-void EstimatorML<PoissonDistribution>::addPoint(const Point& point) {
-  mNumPoints++;
-  try {
-    mValid = true;
-    double mean;
-    if (mNumPoints == 1)
-      mean = point;
-    else
-      mean = mDistribution.getMean();
-    mean += 1.0 / mNumPoints * (point - mean);
-    mDistribution.setMean(mean);
-  }
-  catch (...) {
-    mValid = false;
-  }
-}
-
-void EstimatorML<PoissonDistribution>::addPoints(const
-    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+void EstimatorBayes<GeometricDistribution>::addPoints(const ConstPointIterator&
+    itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
-}
-
-void EstimatorML<PoissonDistribution>::addPoints(const Container& points) {
-  addPoints(points.begin(), points.end());
 }

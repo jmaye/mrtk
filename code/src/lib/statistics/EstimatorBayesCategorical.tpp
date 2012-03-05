@@ -20,94 +20,90 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorML<PoissonDistribution>::EstimatorML() :
-    mNumPoints(0),
-    mValid(false) {
+template <size_t M>
+EstimatorBayes<CategoricalDistribution<M> >::EstimatorBayes(const
+    DirichletDistribution<M>& prior) :
+    mProbDist(prior) {
 }
 
-EstimatorML<PoissonDistribution>::EstimatorML(const EstimatorML& other) :
-    mDistribution(other.mDistribution),
-    mNumPoints(other.mNumPoints),
-    mValid(other.mValid) {
+template <size_t M>
+EstimatorBayes<CategoricalDistribution<M> >::EstimatorBayes(const
+    EstimatorBayes& other) :
+    mProbDist(other.mProbDist),
+    mPredDist(other.mPredDist) {
 }
 
-EstimatorML<PoissonDistribution>&
-    EstimatorML<PoissonDistribution>::operator = (const EstimatorML& other) {
+template <size_t M>
+EstimatorBayes<CategoricalDistribution<M> >&
+    EstimatorBayes<CategoricalDistribution<M> >::operator =
+    (const EstimatorBayes& other) {
   if (this != &other) {
-    mDistribution = other.mDistribution;
-    mNumPoints = other.mNumPoints;
-    mValid = other.mValid;
+    mProbDist = other.mProbDist;
+    mPredDist = other.mPredDist;
   }
   return *this;
 }
 
-EstimatorML<PoissonDistribution>::~EstimatorML() {
+template <size_t M>
+EstimatorBayes<CategoricalDistribution<M> >::~EstimatorBayes() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorML<PoissonDistribution>::read(std::istream& stream) {
+template <size_t M>
+void EstimatorBayes<CategoricalDistribution<M> >::read(std::istream& stream) {
 }
 
-void EstimatorML<PoissonDistribution>::write(std::ostream& stream) const {
-  stream << "distribution: " << std::endl << mDistribution << std::endl
-    << "number of points: " << mNumPoints << std::endl
-    << "valid: " << mValid;
+template <size_t M>
+void EstimatorBayes<CategoricalDistribution<M> >::write(std::ostream& stream) 
+    const {
+  stream << "Probablities distribution: " << std::endl << mProbDist
+    << std::endl <<
+    "Probablities mode: " << std::endl << mProbDist.getMode();
 }
 
-void EstimatorML<PoissonDistribution>::read(std::ifstream& stream) {
+template <size_t M>
+void EstimatorBayes<CategoricalDistribution<M> >::read(std::ifstream& stream) {
 }
 
-void EstimatorML<PoissonDistribution>::write(std::ofstream& stream) const {
+template <size_t M>
+void EstimatorBayes<CategoricalDistribution<M> >::write(std::ofstream& stream)
+    const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-size_t EstimatorML<PoissonDistribution>::getNumPoints() const {
-  return mNumPoints;
+template <size_t M>
+const DirichletDistribution<M>&
+    EstimatorBayes<CategoricalDistribution<M> >::getProbDist() const {
+  return mProbDist;
 }
 
-bool EstimatorML<PoissonDistribution>::getValid() const {
-  return mValid;
+template <size_t M>
+const DCMDistribution<M>& EstimatorBayes<CategoricalDistribution<M> >::
+    getPredDist() const {
+  return mPredDist;
 }
 
-const PoissonDistribution&
-    EstimatorML<PoissonDistribution>::getDistribution() const {
-  return mDistribution;
+template <size_t M>
+void EstimatorBayes<CategoricalDistribution<M> >::addPoint(const Point& point) {
+  mProbDist.setAlpha(mProbDist.getAlpha() + point.template cast<double>());
+  mPredDist.setAlpha(mProbDist.getAlpha());
 }
 
-void EstimatorML<PoissonDistribution>::reset() {
-  mNumPoints = 0;
-  mValid = false;
-}
-
-void EstimatorML<PoissonDistribution>::addPoint(const Point& point) {
-  mNumPoints++;
-  try {
-    mValid = true;
-    double mean;
-    if (mNumPoints == 1)
-      mean = point;
-    else
-      mean = mDistribution.getMean();
-    mean += 1.0 / mNumPoints * (point - mean);
-    mDistribution.setMean(mean);
-  }
-  catch (...) {
-    mValid = false;
-  }
-}
-
-void EstimatorML<PoissonDistribution>::addPoints(const
+template <size_t M>
+void EstimatorBayes<CategoricalDistribution<M> >::addPoints(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 
-void EstimatorML<PoissonDistribution>::addPoints(const Container& points) {
+template <size_t M>
+void EstimatorBayes<CategoricalDistribution<M> >::addPoints(const Container&
+    points) {
   addPoints(points.begin(), points.end());
 }

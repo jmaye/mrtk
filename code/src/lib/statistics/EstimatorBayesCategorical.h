@@ -16,33 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayesPoisson.h
-    \brief This file implements a Bayesian estimator for Poisson distributions
-           with conjugate prior
+/** \file EstimatorBayesCategorical.h
+    \brief This file implements a Bayesian estimator for categorical
+           distributions with conjugate prior
   */
 
 #include <vector>
 
-#include "statistics/PoissonDistribution.h"
-#include "statistics/GammaDistribution.h"
-#include "statistics/NegativeBinomialDistribution.h"
+#include "statistics/CategoricalDistribution.h"
+#include "statistics/DirichletDistribution.h"
+#include "statistics/DCMDistribution.h"
 
-/** The class EstimatorBayes is implemented for Poisson distributions with
-    conjugate prior.
-    \brief Poisson distribution Bayesian estimator
+/** The class EstimatorBayes is implemented for categorical
+    distributions with conjugate prior.
+    \brief Categorical distribution Bayesian estimator
   */
-template <> class EstimatorBayes<PoissonDistribution> :
+template <size_t M> class EstimatorBayes<CategoricalDistribution<M> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
     @{
     */
   /// Point type
-  typedef PoissonDistribution::RandomVariable Point;
+  typedef typename CategoricalDistribution<M>::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
-  typedef Container::const_iterator ConstPointIterator;
+  typedef typename Container::const_iterator ConstPointIterator;
   /** @}
     */
 
@@ -50,7 +50,7 @@ public:
     @{
     */
   /// Constructs estimator with prior
-  EstimatorBayes(const GammaDistribution<double>& prior);
+  EstimatorBayes(const DirichletDistribution<M>& prior);
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator
@@ -63,10 +63,10 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the mean distribution
-  const GammaDistribution<double>& getMeanDist() const;
+  /// Returns the probablities distribution
+  const DirichletDistribution<M>& getProbDist() const;
   /// Returns the predictive distribution
-  const NegativeBinomialDistribution& getPredDist() const;
+  const DCMDistribution<M>& getPredDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -95,17 +95,16 @@ protected:
   /** \name Protected members
     @{
     */
-  /*! \brief Mean distribution
+  /*! \brief Probabilities distribution
   *
-  * Hyperparameter alpha (alpha - 1 prior counts) and
-  * hyperparameter beta (beta prior observations)
+  * Hyperparameter alpha (alpha_i - 1 pseudo-counts for i, alpha.sum = conf.)
   */
-  GammaDistribution<double> mMeanDist;
+  DirichletDistribution<M> mProbDist;
   /// Predictive distribution
-  NegativeBinomialDistribution mPredDist;
+  DCMDistribution<M> mPredDist;
   /** @}
     */
 
 };
 
-#include "statistics/EstimatorBayesPoisson.tpp"
+#include "statistics/EstimatorBayesCategorical.tpp"

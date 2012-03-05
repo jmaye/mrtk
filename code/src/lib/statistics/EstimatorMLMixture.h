@@ -20,25 +20,21 @@
     \brief This file implements a batch ML estimator for mixture distributions.
   */
 
-#ifndef ESTIMATORMLMIXTURE_H
-#define ESTIMATORMLMIXTURE_H
-
 #include <vector>
 
 #include "statistics/MixtureDistribution.h"
 
-/** The class EstimatorMLMixture is implemented for mixture distributions.
+/** The class EstimatorML is implemented for mixture distributions.
     \brief Mixture distributions ML estimator
   */
-template <typename D, size_t M>
-class EstimatorMLMixture :
+template <typename C, size_t M> class EstimatorML<MixtureDistribution<C, M> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
     @{
     */
   /// Point type
-  typedef typename D::VariableType Point;
+  typedef typename C::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -50,14 +46,14 @@ public:
     @{
     */
   /// Constructs estimator with initial guess of the parameters
-  EstimatorMLMixture(const MixtureDistribution<D, M>& initDist,
-    size_t maxNumIter = 200, double tol = 1e-6);
+  EstimatorML(const MixtureDistribution<C, M>& initDist, size_t
+    maxNumIter = 200, double tol = 1e-6);
   /// Copy constructor
-  EstimatorMLMixture(const EstimatorMLMixture& other);
+  EstimatorML(const EstimatorML& other);
   /// Assignment operator
-  EstimatorMLMixture& operator = (const EstimatorMLMixture& other);
+  EstimatorML& operator = (const EstimatorML& other);
   /// Destructor
-  virtual ~EstimatorMLMixture();
+  virtual ~EstimatorML();
   /** @}
     */
 
@@ -65,7 +61,7 @@ public:
     @{
     */
   /// Returns the estimated mixture distribution
-  const MixtureDistribution<D, M>& getMixtureDist() const;
+  const MixtureDistribution<C, M>& getMixtureDist() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
@@ -111,7 +107,7 @@ protected:
     @{
     */
   /// Estimated distribution
-  MixtureDistribution<D, M> mMixtureDist;
+  MixtureDistribution<C, M> mMixtureDist;
   /// Estimated responsibilities
   Eigen::Matrix<double, Eigen::Dynamic, M> mResponsibilities;
   /// Log-likelihood of the data
@@ -130,5 +126,3 @@ protected:
 };
 
 #include "statistics/EstimatorMLMixture.tpp"
-
-#endif // ESTIMATORMLMIXTURE_H
