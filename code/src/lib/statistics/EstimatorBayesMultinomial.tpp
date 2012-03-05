@@ -23,7 +23,8 @@
 template <size_t M>
 EstimatorBayes<MultinomialDistribution<M> >::EstimatorBayes(const
     DirichletDistribution<M>& prior) :
-    mProbDist(prior) {
+    mProbDist(prior),
+    mPredDist(1, mProbDist.getAlpha()) {
 }
 
 template <size_t M>
@@ -61,7 +62,9 @@ void EstimatorBayes<MultinomialDistribution<M> >::write(std::ostream& stream)
     const {
   stream << "Probablities distribution: " << std::endl << mProbDist
     << std::endl <<
-    "Probablities mode: " << std::endl << mProbDist.getMode();
+    "Probablities mode: " << std::endl << mProbDist.getMode() << std::endl <<
+    "Predictive distribution: " << std::endl << mPredDist << std::endl <<
+    "Predictive mean: " << std::endl << mPredDist.getMean();
 }
 
 template <size_t M>
@@ -93,6 +96,7 @@ template <size_t M>
 void EstimatorBayes<MultinomialDistribution<M> >::addPoint(const Point& point) {
   mProbDist.setAlpha(mProbDist.getAlpha() + point.template cast<double>());
   mPredDist.setAlpha(mProbDist.getAlpha());
+  mPredDist.setNumTrials(point.sum());
 }
 
 template <size_t M>
