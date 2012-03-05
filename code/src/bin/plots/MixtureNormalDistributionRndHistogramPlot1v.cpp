@@ -41,9 +41,8 @@ int main(int argc, char** argv) {
   std::vector<double> data;
   dist.getSamples(data, 100000);
   hist.addSamples(data);
-//  hist.normalize();
   HistogramPlot<double, 1> plot("MixtureNormalDistributionRndHistogramPlot1v",
-    hist);
+    hist.getNormalized());
   plot.show();
   return app.exec();
 }

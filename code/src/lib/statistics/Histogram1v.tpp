@@ -59,6 +59,19 @@ double Histogram<T, 1>::getMean() const {
 }
 
 template <typename T>
+double Histogram<T, 1>::getMedian() const {
+  const double sum = getSum();
+  double currentSum = 0;
+  for (Index i = Index::Zero(this->mNumCells.size()); i != this->mNumCells;
+      incrementIndex(i)) {
+    currentSum += this->getCell(i);
+    if (currentSum >= sum * 0.5)
+      return this->getCoordinates(i)(0);
+  }
+  return this->getMinimum()(0);
+}
+
+template <typename T>
 double Histogram<T, 1>::getMode() const {
   double max = -std::numeric_limits<double>::infinity();
   Index modeIdx;

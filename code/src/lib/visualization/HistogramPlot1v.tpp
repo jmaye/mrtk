@@ -38,13 +38,15 @@ HistogramPlot<T, 1>::HistogramPlot(const std::string& title, const
   for (typename Histogram<T, 1>::Index i =
       (typename Histogram<T, 1>::Index() << 0).finished(); i != numCells;
       mHistogram.incrementIndex(i)) {
-    xData.push_back(mHistogram.getCoordinates(i)(0));
-    yData.push_back(mHistogram[i]);
+    if (mHistogram[i]) {
+      xData.push_back(mHistogram.getCoordinates(i)(0));
+      yData.push_back(mHistogram[i]);
+    }
   }
   mCurve.setData(xData, yData);
   mCurve.setBrush(QBrush(QColor(Qt::blue)));
-  mCurve.setPen(QPen(QColor(Qt::blue)));
-  mCurve.setStyle(QwtPlotCurve::Steps);
+  mCurve.setPen(QPen(QColor(Qt::blue), 10));
+  mCurve.setStyle(QwtPlotCurve::Sticks);
   mCurve.attach(this);
   mGrid.enableX(true);
   mGrid.enableY(true);

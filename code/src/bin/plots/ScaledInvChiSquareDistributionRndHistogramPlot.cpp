@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
   dist.getSamples(data, 100000);
   hist.addSamples(data);
   std::cout << "Sample mean: " << hist.getMean() << std::endl;
-//  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
+  std::cout << "Sample median: " << hist.getMedian() << std::endl;
   std::cout << "Sample mode: " << hist.getMode() << std::endl;
   std::cout << "Sample variance: " << hist.getVariance() << std::endl;
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
@@ -42,9 +42,8 @@ int main(int argc, char** argv) {
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
   std::cout << "Dist degrees: " << dist.getDegrees() << std::endl;
   std::cout << "Dist scale: " << dist.getScale() << std::endl;
-//  hist.normalize();
   HistogramPlot<double, 1> plot(
-    "ScaledInvChiSquareDistributionRndHistogramPlot", hist);
+    "ScaledInvChiSquareDistributionRndHistogramPlot", hist.getNormalized());
   plot.show();
   return app.exec();
 }

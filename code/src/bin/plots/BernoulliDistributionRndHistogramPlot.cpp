@@ -38,8 +38,8 @@ int main(int argc, char** argv) {
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-  //hist.normalize();
-  HistogramPlot<int, 1> plot("BernoulliDistributionRndHistogramPlot", hist);
+  HistogramPlot<int, 1> plot("BernoulliDistributionRndHistogramPlot",
+    hist.getNormalized());
   plot.show();
   return app.exec();
 }

@@ -35,12 +35,6 @@ public:
   typedef typename Grid<T, double, 1>::Coordinate Coordinate;
   /// Index type
   typedef typename Grid<T, double, 1>::Index Index;
-  /// Mean type
-  typedef Eigen::Matrix<double, 1, 1> Mean;
-  /// Mode type
-  typedef Eigen::Matrix<double, 1, 1> Mode;
-  /// Covariance type
-  typedef Eigen::Matrix<double, 1, 1> Covariance;
   /** @}
     */
 
@@ -63,6 +57,8 @@ public:
     */
   /// Returns the mean value of the histogram
   double getMean() const;
+  /// Returns the median value of the histogram
+  double getMedian() const;
   /// Returns the mode value of the histogram
   double getMode() const;
   /// Returns the variance of the histogram

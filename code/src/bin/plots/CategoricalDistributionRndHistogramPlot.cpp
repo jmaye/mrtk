@@ -25,23 +25,22 @@
 
 #include "visualization/HistogramPlot.h"
 #include "statistics/CategoricalDistribution.h"
+#include "statistics/Randomizer.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<int, 1> hist(0, 10, 1);
   CategoricalDistribution<5> dist((Eigen::Matrix<double, 5, 1>()
     << 0.1, 0.2, 0.2, 0.4, 0.1).finished());
-//  for (size_t i = 0; i < 100000; ++i) {
-//    Eigen::Matrix<int, 5, 1> sample = dist.getSample();
-//    for (size_t j = 0; j < 5; ++j)
-//      hist.setBinContent(j, hist.getBinContent(j) + sample(j));
-//  }
-//  hist.normalize();
+  Randomizer<double, 5> randomizer;
+  for (size_t i = 0; i < 100000; ++i)
+    hist.addSample(randomizer.sampleCategorical((Eigen::Matrix<double, 5, 1>()
+    << 0.1, 0.2, 0.2, 0.4, 0.1).finished()));
   std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;
   HistogramPlot<int, 1> plot("CategoricalDistributionRndHistogramPlot",
-    hist);
+    hist.getNormalized());
   plot.show();
   return app.exec();
 }

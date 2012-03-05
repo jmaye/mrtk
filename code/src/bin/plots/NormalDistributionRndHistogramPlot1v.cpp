@@ -34,15 +34,15 @@ int main(int argc, char** argv) {
   dist.getSamples(data, 100000);
   hist.addSamples(data);
   std::cout << "Sample mean: " << hist.getMean() << std::endl;
-//  std::cout << "Sample median: " << hist.getSampleMedian() << std::endl;
+  std::cout << "Sample median: " << hist.getMedian() << std::endl;
   std::cout << "Sample mode: " << hist.getMode() << std::endl;
   std::cout << "Sample variance: " << hist.getVariance() << std::endl;
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
   std::cout << "Dist. median: " << dist.getMedian() << std::endl;
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-//  hist.normalize();
-  HistogramPlot<double, 1> plot("NormalDistributionRndHistogramPlot1v", hist);
+  HistogramPlot<double, 1> plot("NormalDistributionRndHistogramPlot1v",
+    hist.getNormalized());
   plot.show();
   return app.exec();
 }
