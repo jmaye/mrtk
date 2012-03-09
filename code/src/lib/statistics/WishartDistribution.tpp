@@ -167,6 +167,17 @@ typename WishartDistribution<M>::Mode WishartDistribution<M>::getMode() const
 }
 
 template <size_t M>
+typename WishartDistribution<M>::Covariance
+    WishartDistribution<M>::getCovariance() const {
+  Covariance covariance = Covariance::Zero(mScale.rows(), mScale.cols());
+  for (size_t i = 0; i < mScale.rows(); ++i)
+    for (size_t j = 0; j < mScale.cols(); ++j)
+      covariance(i, j) = mScale(i, j) * mScale(i, j) +
+        mScale(i, i) * mScale(j, j);
+  return covariance * mDegrees;
+}
+
+template <size_t M>
 double WishartDistribution<M>::pdf(const RandomVariable& value) const {
   return exp(logpdf(value));
 }

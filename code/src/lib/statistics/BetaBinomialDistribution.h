@@ -61,6 +61,8 @@ public:
   double getBeta() const;
   /// Returns the mean of the distribution
   double getMean() const;
+  /// Returns the mode of the distribution
+  int getMode() const;
   /// Returns the variance of the distribution
   double getVariance() const;
   /** @}

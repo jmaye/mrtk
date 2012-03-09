@@ -20,109 +20,249 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(double mu, double kappa,
-    double nu, double sigma) :
-    mPostMeanDist(nu, mu, sigma / kappa / nu),
-    mPostVarianceDist(nu, sigma / nu),
-    mPostPredDist(nu, mu, sigma * (kappa + 1) / kappa / nu),
-    mMu(mu),
-    mKappa(kappa),
-    mNu(nu),
-    mSigma(sigma) {
+EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    EstimatorBayes(double variance, const NormalDistribution<1>& prior) :
+    mMeanDist(prior),
+    mPredDist(prior.getMean(), prior.getVariance() + variance),
+    mVariance(variance),
+    mPrecision(1 / variance) {
 }
 
-EstimatorBayes<NormalDistribution<1> >::EstimatorBayes(const
-    EstimatorBayes<NormalDistribution<1> >& other) :
-    mPostMeanDist(other.mPostMeanDist),
-    mPostVarianceDist(other.mPostVarianceDist),
-    mPostPredDist(other.mPostPredDist),
-    mMu(other.mMu),
-    mKappa(other.mKappa),
-    mNu(other.mNu),
-    mSigma(other.mSigma) {
+EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    EstimatorBayes(double mean, const ScaledInvChiSquareDistribution& prior) :
+    mVarianceDist(prior),
+    mMean(mean) {
 }
 
-EstimatorBayes<NormalDistribution<1> >&
-    EstimatorBayes<NormalDistribution<1> >::operator =
-    (const EstimatorBayes<NormalDistribution<1> >& other) {
+EstimatorBayes<NormalDistribution<1>, NormalScaledInvChiSquareDistribution>::
+    EstimatorBayes(const NormalScaledInvChiSquareDistribution& prior) :
+    mMeanVarianceDist(prior),
+    mPredDist(prior.getNu(), prior.getMu(), (prior.getKappa() + 1.0) /
+      prior.getKappa() * prior.getSigma()) {
+}
+
+EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::EstimatorBayes(
+    const EstimatorBayes& other) :
+    mMeanDist(other.mMeanDist),
+    mPredDist(other.mPredDist),
+    mVariance(other.mVariance),
+    mPrecision(other.mPrecision) {
+}
+
+EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    EstimatorBayes(const EstimatorBayes& other) :
+    mVarianceDist(other.mVarianceDist),
+    mMean(other.mMean) {
+}
+
+EstimatorBayes<NormalDistribution<1>, NormalScaledInvChiSquareDistribution>::
+    EstimatorBayes(const EstimatorBayes& other) :
+    mMeanVarianceDist(other.mMeanVarianceDist),
+    mPredDist(other.mPredDist) {
+}
+
+EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >&
+    EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::operator =
+    (const EstimatorBayes& other) {
   if (this != &other) {
-    mPostMeanDist = other.mPostMeanDist;
-    mPostVarianceDist = other.mPostVarianceDist;
-    mPostPredDist = other.mPostPredDist;
-    mMu = other.mMu;
-    mKappa = other.mKappa;
-    mNu = other.mNu;
-    mSigma = other.mSigma;
+    mMeanDist = other.mMeanDist;
+    mPredDist = other.mPredDist;
+    mVariance = other.mVariance;
+    mPrecision = other.mPrecision;
   }
   return *this;
 }
 
-EstimatorBayes<NormalDistribution<1> >::~EstimatorBayes() {
+EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>&
+    EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    operator = (const EstimatorBayes& other) {
+  if (this != &other) {
+    mVarianceDist = other.mVarianceDist;
+    mMean = other.mMean;
+  }
+  return *this;
+}
+
+EstimatorBayes<NormalDistribution<1>, NormalScaledInvChiSquareDistribution>&
+    EstimatorBayes<NormalDistribution<1>, NormalScaledInvChiSquareDistribution>
+    ::operator = (const EstimatorBayes& other) {
+  if (this != &other) {
+    mMeanVarianceDist = other.mMeanVarianceDist;
+    mPredDist = other.mPredDist;
+  }
+  return *this;
+}
+
+EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    ~EstimatorBayes() {
+}
+
+EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    ~EstimatorBayes() {
+}
+
+EstimatorBayes<NormalDistribution<1>, NormalScaledInvChiSquareDistribution>::
+    ~EstimatorBayes() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorBayes<NormalDistribution<1> >::read(std::istream& stream) {
+void EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    read(std::istream& stream) {
 }
 
-void EstimatorBayes<NormalDistribution<1> >::write(std::ostream& stream) const {
-  stream << "posterior mean distribution: " << std::endl << mPostMeanDist
-    << std::endl << "posterior variance distribution: " << std::endl
-    << mPostVarianceDist
-    << std::endl << "posterior predictive distribution: " << std::endl
-    << mPostPredDist;
+void EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    read(std::istream& stream) {
 }
 
-void EstimatorBayes<NormalDistribution<1> >::read(std::ifstream& stream) {
+void EstimatorBayes<NormalDistribution<1>,
+    NormalScaledInvChiSquareDistribution>::read(std::istream& stream) {
 }
 
-void EstimatorBayes<NormalDistribution<1> >::write(std::ofstream& stream)
-    const {
+void EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    write(std::ostream& stream) const {
+  stream << "Mean distribution: " << std::endl << mMeanDist << std::endl
+    << "Mean mode: " << mMeanDist.getMode() << std::endl
+    << "Mean variance: " << mMeanDist.getVariance() << std::endl
+    << "Predictive distribution: " << std::endl << mPredDist << std::endl
+    << "Predictive mean: " << mPredDist.getMean() << std::endl
+    << "Predictive variance: " << mPredDist.getVariance();
+}
+
+void EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    write(std::ostream& stream) const {
+  stream << "Variance distribution: " << std::endl << mVarianceDist << std::endl
+    << "Variance mode: " << mVarianceDist.getMode() << std::endl
+    << "Variance variance: " << mVarianceDist.getVariance();
+}
+
+void EstimatorBayes<NormalDistribution<1>,
+    NormalScaledInvChiSquareDistribution>::write(std::ostream& stream) const {
+  stream << "Mean and variance distribution: " << std::endl << mMeanVarianceDist
+    << std::endl << "Mean and variance mode: " << std::endl <<
+      std::get<0>(mMeanVarianceDist.getMode()) << std::endl
+    << std::get<1>(mMeanVarianceDist.getMode())
+    << std::endl << "Predictive distribution: " << std::endl << mPredDist <<
+    std::endl << "Predictive mean: " << mPredDist.getMean() << std::endl
+    << "Predictive variance: " << mPredDist.getVariance();
+}
+
+void EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    read(std::ifstream& stream) {
+}
+
+void EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    read(std::ifstream& stream) {
+}
+
+void EstimatorBayes<NormalDistribution<1>,
+    NormalScaledInvChiSquareDistribution>::read(std::ifstream& stream) {
+}
+
+void EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    write(std::ofstream& stream) const {
+}
+
+void EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    write(std::ofstream& stream) const {
+}
+
+void EstimatorBayes<NormalDistribution<1>,
+    NormalScaledInvChiSquareDistribution>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-const StudentDistribution<1>& EstimatorBayes<NormalDistribution<1> >::
-    getPostMeanDist() const {
-  return mPostMeanDist;
+const NormalDistribution<1>&
+    EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    getMeanDist() const {
+  return mMeanDist;
 }
 
 const ScaledInvChiSquareDistribution&
-EstimatorBayes<NormalDistribution<1> >::getPostVarianceDist() const {
-  return mPostVarianceDist;
+    EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    getVarianceDist() const {
+  return mVarianceDist;
 }
 
-const StudentDistribution<1>& EstimatorBayes<NormalDistribution<1> >::
-    getPostPredDist() const {
-  return mPostPredDist;
+const NormalScaledInvChiSquareDistribution&
+    EstimatorBayes<NormalDistribution<1>,
+    NormalScaledInvChiSquareDistribution>::getMeanVarianceDist() const {
+  return mMeanVarianceDist;
 }
 
-void EstimatorBayes<NormalDistribution<1> >::addPoint(const Point& point) {
-  const double newMu = (mKappa * mMu + point) / (mKappa + 1);
-  const double newKappa = mKappa + 1;
-  const double newNu = mNu + 1;
-  const double newSigma = mSigma + (mKappa / (mKappa + 1)) * (point - mMu) *
-    (point - mMu);
-  mMu = newMu;
-  mKappa = newKappa;
-  mNu = newNu;
-  mSigma = newSigma;
-  mPostMeanDist.setDegrees(mNu);
-  mPostMeanDist.setLocation(mMu);
-  mPostMeanDist.setScale(mSigma / mKappa / mNu);
-  mPostVarianceDist.setDegrees(mNu);
-  mPostVarianceDist.setScale(mSigma / mNu);
-  mPostPredDist.setDegrees(mNu);
-  mPostPredDist.setLocation(mMu);
-  mPostPredDist.setScale(mSigma * (mKappa + 1) / mKappa / mNu);
+const NormalDistribution<1>&
+    EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    getPredDist() const {
+  return mPredDist;
 }
 
-void EstimatorBayes<NormalDistribution<1> >::addPoints(const ConstPointIterator&
-    itStart, const ConstPointIterator& itEnd) {
+const StudentDistribution<1>&
+    EstimatorBayes<NormalDistribution<1>,
+    NormalScaledInvChiSquareDistribution>::getPredDist() const {
+  return mPredDist;
+}
+
+void EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    addPoint(const Point& point) {
+  const double mean = (mMeanDist.getPrecision() * mMeanDist.getMean() +
+    mPrecision * point) / (mMeanDist.getPrecision() + mPrecision);
+  const double variance = 1.0 / (mMeanDist.getPrecision() +
+    mPrecision);
+  mMeanDist.setMean(mean);
+  mMeanDist.setVariance(variance);
+  mPredDist.setMean(mean);
+  mPredDist.setVariance(mVariance + variance);
+}
+
+void EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    addPoint(const Point& point) {
+  const double degrees = mVarianceDist.getDegrees() + 1;
+  const double scale = (mVarianceDist.getDegrees() * mVarianceDist.getScale() +
+    (point - mMean) * (point - mMean)) / degrees;
+  mVarianceDist.setDegrees(degrees);
+  mVarianceDist.setScale(scale);
+}
+
+void EstimatorBayes<NormalDistribution<1>,
+    NormalScaledInvChiSquareDistribution>::addPoint(const Point& point) {
+  const double mu = mMeanVarianceDist.getMu();
+  const double kappa = mMeanVarianceDist.getKappa();
+  const double nu = mMeanVarianceDist.getNu();
+  const double sigma = mMeanVarianceDist.getSigma();
+  mMeanVarianceDist.setMu((kappa * mu + point) / (kappa + 1));
+  mMeanVarianceDist.setKappa(kappa + 1);
+  mMeanVarianceDist.setNu(nu + 1);
+  mMeanVarianceDist.setSigma(sigma * nu / (nu + 1) + kappa / (kappa + 1) *
+    (point - mu) * (point - mu) / (nu + 1));
+  mPredDist.setDegrees(mMeanVarianceDist.getNu());
+  mPredDist.setLocation(mMeanVarianceDist.getMu());
+  mPredDist.setScale(mMeanVarianceDist.getSigma() *
+    (mMeanVarianceDist.getKappa() + 1) / mMeanVarianceDist.getKappa());
+}
+
+void EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
+    addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
+  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+    addPoint(*it);
+}
+
+void EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
+    addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
+  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+    addPoint(*it);
+}
+
+void EstimatorBayes<NormalDistribution<1>,
+    NormalScaledInvChiSquareDistribution>::
+    addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

@@ -36,6 +36,11 @@ int main(int argc, char** argv) {
   for (size_t i = 0; i < 100000; ++i)
     hist.addSample(randomizer.sampleCategorical((Eigen::Matrix<double, 5, 1>()
     << 0.1, 0.2, 0.2, 0.4, 0.1).finished()));
+  std::cout << "Sample mode: " << hist.getMode() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean().transpose() << std::endl;
+  std::cout << "Dist. mode: " << dist.getMode().transpose() << std::endl;
+  std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
+    << std::endl;
   HistogramPlot<int, 1> plot("MultinomialDistributionRndHistogramPlot",
     hist.getNormalized());
   plot.show();

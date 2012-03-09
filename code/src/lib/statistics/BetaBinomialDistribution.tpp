@@ -83,6 +83,10 @@ double BetaBinomialDistribution::getMean() const {
   return DCMDistribution<2>::getMean()(0);
 }
 
+int BetaBinomialDistribution::getMode() const {
+  return DCMDistribution<2>::getMode()(0);
+}
+
 double BetaBinomialDistribution::getVariance() const {
   return DCMDistribution<2>::getCovariance()(0, 0);
 }

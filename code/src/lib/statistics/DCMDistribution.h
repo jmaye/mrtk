@@ -50,6 +50,8 @@ public:
   typedef typename DistributionType::RandomVariable RandomVariable;
   /// Mean type
   typedef typename DistributionType::Mean Mean;
+  /// Mode type
+  typedef typename DistributionType::Mode Mode;
   /// Covariance type
   typedef typename DistributionType::Covariance Covariance;
   /** @}
@@ -110,6 +112,8 @@ public:
   size_t getNumTrials() const;
   /// Returns the mean of the distribution
   Mean getMean() const;
+  /// Returns the mode of the distribution
+  Mode getMode() const;
   /// Returns the covariance of the distribution
   Covariance getCovariance() const;
   /// Access the probability mass function at the given value

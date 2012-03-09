@@ -20,47 +20,50 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorBayes<ExponentialDistribution>::EstimatorBayes(const
-    GammaDistribution<double>& prior) :
+EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    EstimatorBayes(const GammaDistribution<double>& prior) :
     mRateDist(prior) {
 }
 
-EstimatorBayes<ExponentialDistribution>::EstimatorBayes(const EstimatorBayes&
-    other) :
+EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    EstimatorBayes(const EstimatorBayes& other) :
     mRateDist(other.mRateDist) {
 }
 
-EstimatorBayes<ExponentialDistribution>&
-    EstimatorBayes<ExponentialDistribution>::operator = (const EstimatorBayes&
-    other) {
+EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >&
+    EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    operator = (const EstimatorBayes& other) {
   if (this != &other) {
     mRateDist = other.mRateDist;
   }
   return *this;
 }
 
-EstimatorBayes<ExponentialDistribution>::~EstimatorBayes() {
+EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    ~EstimatorBayes() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorBayes<ExponentialDistribution>::read(std::istream& stream) {
+void EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    read(std::istream& stream) {
 }
 
-void EstimatorBayes<ExponentialDistribution>::write(std::ostream& stream)
-    const {
+void EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    write(std::ostream& stream) const {
   stream << "Rate distribution: " << std::endl << mRateDist << std::endl <<
     "Rate mode: " << mRateDist.getMode() << std::endl <<
     "Rate variance: " << mRateDist.getVariance();
 }
 
-void EstimatorBayes<ExponentialDistribution>::read(std::ifstream& stream) {
+void EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    read(std::ifstream& stream) {
 }
 
-void EstimatorBayes<ExponentialDistribution>::write(std::ofstream& stream)
-    const {
+void EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -68,17 +71,20 @@ void EstimatorBayes<ExponentialDistribution>::write(std::ofstream& stream)
 /******************************************************************************/
 
 const GammaDistribution<double>&
-    EstimatorBayes<ExponentialDistribution>::getRateDist() const {
+    EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    getRateDist() const {
   return mRateDist;
 }
 
-void EstimatorBayes<ExponentialDistribution>::addPoint(const Point& point) {
+void EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    addPoint(const Point& point) {
   mRateDist.setShape(mRateDist.getShape() + 1);
   mRateDist.setInvScale(mRateDist.getInvScale() + point);
 }
 
-void EstimatorBayes<ExponentialDistribution>::addPoints(const
-    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+void EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
+    addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

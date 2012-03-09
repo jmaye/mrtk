@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "utils/OuterProduct.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -112,14 +114,14 @@ void EstimatorML<NormalDistribution<M> >::addPoint(const Point& point) {
   }
   mNumPoints++;
   mValuesSum += point;
-  mSquaredValuesSum += point * point.transpose();
+  mSquaredValuesSum += outerProduct<double, M>(point);
   try {
     mValid = true;
     const Eigen::Matrix<double, M, 1> mean = 1.0 / mNumPoints * mValuesSum;
     mDistribution.setMean(mean);
     mDistribution.setCovariance(1.0 / mNumPoints * mSquaredValuesSum -
       2.0 / mNumPoints * mean * mValuesSum.transpose() +
-      mean * mean.transpose());
+      outerProduct<double, M>(mean));
   }
   catch (...) {
     mValid = false;
@@ -151,12 +153,9 @@ void EstimatorML<NormalDistribution<M> >::addPoints(const ConstPointIterator&
   Eigen::Matrix<double, M, M> covariance =
     Eigen::Matrix<double, M, M>::Zero(itStart->size(), itStart->size());
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
-    covariance += responsibilities(it - itStart) * (*it - mean) *
-      (*it - mean).transpose();
+    covariance += responsibilities(it - itStart) *
+      outerProduct<double, M>(*it - mean);
   covariance /= numPoints;
-  for (size_t i = 0; i < (size_t)itStart->size(); ++i)
-    for (size_t j = i + 1; j < (size_t)itStart->size(); ++j)
-      covariance(i, j) = covariance(j, i);
   mDistribution.setMean(mean);
   mDistribution.setCovariance(covariance);
 }

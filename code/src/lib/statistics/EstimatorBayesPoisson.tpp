@@ -20,21 +20,21 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorBayes<PoissonDistribution>::EstimatorBayes(const
-    GammaDistribution<double>& prior) :
+EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    EstimatorBayes(const GammaDistribution<double>& prior) :
     mMeanDist(prior),
     mPredDist(mMeanDist.getShape(), 1.0 / (mMeanDist.getInvScale() + 1)) {
 }
 
-EstimatorBayes<PoissonDistribution>::EstimatorBayes(const EstimatorBayes&
-    other) :
+EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    EstimatorBayes(const EstimatorBayes& other) :
     mMeanDist(other.mMeanDist),
     mPredDist(other.mPredDist) {
 }
 
-EstimatorBayes<PoissonDistribution>&
-    EstimatorBayes<PoissonDistribution>::operator = (const EstimatorBayes&
-    other) {
+EstimatorBayes<PoissonDistribution, GammaDistribution<double> >&
+    EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    operator = (const EstimatorBayes& other) {
   if (this != &other) {
     mMeanDist = other.mMeanDist;
     mPredDist = other.mPredDist;
@@ -42,29 +42,34 @@ EstimatorBayes<PoissonDistribution>&
   return *this;
 }
 
-EstimatorBayes<PoissonDistribution>::~EstimatorBayes() {
+EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    ~EstimatorBayes() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorBayes<PoissonDistribution>::read(std::istream& stream) {
+void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    read(std::istream& stream) {
 }
 
-void EstimatorBayes<PoissonDistribution>::write(std::ostream& stream) const {
+void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    write(std::ostream& stream) const {
   stream << "Mean distribution: " << std::endl << mMeanDist << std::endl <<
     "Mean mode: " << mMeanDist.getMode() << std::endl <<
     "Mean variance: " << mMeanDist.getVariance() << std::endl <<
     "Predictive distribution: " << std::endl << mPredDist << std::endl <<
-    "Predictive mode: " << mPredDist.getMode() << std::endl <<
+    "Predictive mean: " << mPredDist.getMean() << std::endl <<
     "Predictive variance: " << mPredDist.getVariance();
 }
 
-void EstimatorBayes<PoissonDistribution>::read(std::ifstream& stream) {
+void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    read(std::ifstream& stream) {
 }
 
-void EstimatorBayes<PoissonDistribution>::write(std::ofstream& stream) const {
+void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -72,24 +77,28 @@ void EstimatorBayes<PoissonDistribution>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 const GammaDistribution<double>&
-    EstimatorBayes<PoissonDistribution>::getMeanDist() const {
+    EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    getMeanDist() const {
   return mMeanDist;
 }
 
 const NegativeBinomialDistribution&
-    EstimatorBayes<PoissonDistribution>::getPredDist() const {
+    EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    getPredDist() const {
   return mPredDist;
 }
 
-void EstimatorBayes<PoissonDistribution>::addPoint(const Point& point) {
+void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    addPoint(const Point& point) {
   mMeanDist.setShape(mMeanDist.getShape() + point);
   mMeanDist.setInvScale(mMeanDist.getInvScale() + 1);
   mPredDist.setProbability(1.0 / (mMeanDist.getInvScale() + 1));
   mPredDist.setNumTrials(mMeanDist.getShape());
 }
 
-void EstimatorBayes<PoissonDistribution>::addPoints(const ConstPointIterator&
-    itStart, const ConstPointIterator& itEnd) {
+void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
+    addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

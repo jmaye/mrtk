@@ -56,6 +56,8 @@ int main(int argc, char** argv) {
   if (fabs(dist.getMean() - numTrials * alpha / (alpha + beta)) >
       std::numeric_limits<double>::epsilon())
     return 1;
+  std::cout << "dist.getMode(): " << std::fixed << dist.getMode() << std::endl
+    << std::endl;
   std::cout << "dist.getVariance(): " << std::fixed << dist.getVariance()
     << std::endl << std::endl;
   if (fabs(dist.getVariance() - numTrials * alpha * beta *

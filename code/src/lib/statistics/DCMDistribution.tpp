@@ -203,6 +203,14 @@ typename DCMDistribution<M>::Mean DCMDistribution<M>::getMean() const {
 }
 
 template <size_t M>
+typename DCMDistribution<M>::Mode DCMDistribution<M>::getMode() const {
+  static MultinomialDistribution<M> multDist;
+  multDist.setNumTrials(mNumTrials);
+  multDist.setProbabilities(mDirDist.getMode());
+  return multDist.getMode();
+}
+
+template <size_t M>
 typename DCMDistribution<M>::Covariance DCMDistribution<M>::getCovariance()
     const {
   Covariance covariance(mAlpha.size(), mAlpha.size());

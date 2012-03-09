@@ -72,6 +72,8 @@ int main(int argc, char** argv) {
 
   std::cout << "dist.getMean(): " << std::endl <<
     dist.getMean() << std::endl << std::endl;
+  std::cout << "dist.getMode(): " << std::endl <<
+    dist.getMode() << std::endl << std::endl;
   std::cout << "dist.getCovariance(): " << std::endl <<
     dist.getCovariance() << std::endl << std::endl;
 
@@ -126,6 +128,8 @@ int main(int argc, char** argv) {
   std::cout << "distMd.getSample(): " << distMd.getSample().transpose()
     << std::endl << std::endl;
   std::cout << "distMd.getMean(): " << distMd.getMean().transpose()
+    << std::endl << std::endl;
+  std::cout << "distMd.getMode(): " << distMd.getMode().transpose()
     << std::endl << std::endl;
   std::cout << "distMd.getCovariance(): " << std::endl << distMd.getCovariance()
     << std::endl << std::endl;

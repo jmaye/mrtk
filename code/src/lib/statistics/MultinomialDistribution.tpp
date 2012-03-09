@@ -221,6 +221,17 @@ typename MultinomialDistribution<M>::Mean MultinomialDistribution<M>::getMean()
 }
 
 template <size_t M>
+typename MultinomialDistribution<M>::Mode MultinomialDistribution<M>::getMode()
+    const throw (InvalidOperationException) {
+  Mode mode = (mProbabilities * (mNumTrials + 1)).template cast<int>();
+  if (mode.sum() == (int)mNumTrials)
+    return mode;
+  else
+    throw InvalidOperationException("MultinomialDistribution<M>::getMode(): "
+      "invalid mode");
+}
+
+template <size_t M>
 typename MultinomialDistribution<M>::Covariance
     MultinomialDistribution<M>::getCovariance() const {
   Covariance covariance(mProbabilities.size(), mProbabilities.size());

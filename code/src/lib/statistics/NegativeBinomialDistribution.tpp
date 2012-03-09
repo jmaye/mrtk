@@ -82,9 +82,9 @@ double NegativeBinomialDistribution::getMean() const {
   return NegativeMultinomialDistribution<2>::getMean()(0);
 }
 
-double NegativeBinomialDistribution::getMode() const {
+int NegativeBinomialDistribution::getMode() const {
   if (mNumTrials > 1)
-    return floor(mProbabilities(0) * (mNumTrials - 1) / mProbabilities(1));
+    return mProbabilities(0) * (mNumTrials - 1) / mProbabilities(1);
   else
     return 0.0;
 }

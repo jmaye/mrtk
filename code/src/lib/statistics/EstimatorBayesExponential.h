@@ -31,7 +31,8 @@
     conjugate prior.
     \brief Exponential distribution Bayesian estimator
   */
-template <> class EstimatorBayes<ExponentialDistribution> :
+template <>
+class EstimatorBayes<ExponentialDistribution, GammaDistribution<double> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
@@ -50,7 +51,8 @@ public:
     @{
     */
   /// Constructs estimator with prior
-  EstimatorBayes(const GammaDistribution<double>& prior);
+  EstimatorBayes(const GammaDistribution<double>& prior =
+    GammaDistribution<double>());
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator

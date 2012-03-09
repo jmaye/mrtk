@@ -83,8 +83,8 @@ double BinomialDistribution::getMedian() const {
   return floor(mNumTrials * mProbabilities(0));
 }
 
-double BinomialDistribution::getMode() const {
-  return floor((mNumTrials + 1) * mProbabilities(0));
+int BinomialDistribution::getMode() const {
+  return MultinomialDistribution<2>::getMode()(0);
 }
 
 double BinomialDistribution::getVariance() const {

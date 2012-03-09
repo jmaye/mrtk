@@ -60,7 +60,7 @@ public:
   /// Returns the median of the distribution
   double getMedian() const;
   /// Returns the mode of the distribution
-  double getMode() const;
+  int getMode() const;
   /// Returns the variance of the distribution
   double getVariance() const;
   /// Access the cumulative mass function at the given value

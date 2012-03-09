@@ -20,7 +20,7 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-ChiSquareDistribution::ChiSquareDistribution(size_t degrees) :
+ChiSquareDistribution::ChiSquareDistribution(double degrees) :
     GammaDistribution<>(0.5 * degrees, 0.5) {
 }
 
@@ -61,11 +61,11 @@ void ChiSquareDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void ChiSquareDistribution::setDegrees(size_t degrees) {
+void ChiSquareDistribution::setDegrees(double degrees) {
   setShape(degrees * 0.5);
 }
 
-size_t ChiSquareDistribution::getDegrees() const {
+double ChiSquareDistribution::getDegrees() const {
   return getShape() * 2;
 }
 

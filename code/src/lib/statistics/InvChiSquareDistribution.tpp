@@ -20,7 +20,7 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-InvChiSquareDistribution::InvChiSquareDistribution(size_t degrees) :
+InvChiSquareDistribution::InvChiSquareDistribution(double degrees) :
     InvGammaDistribution<>(0.5 * degrees, 0.5) {
 }
 
@@ -61,10 +61,10 @@ void InvChiSquareDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void InvChiSquareDistribution::setDegrees(size_t degrees) {
+void InvChiSquareDistribution::setDegrees(double degrees) {
   setShape(degrees * 0.5);
 }
 
-size_t InvChiSquareDistribution::getDegrees() const {
+double InvChiSquareDistribution::getDegrees() const {
   return getShape() * 2;
 }

@@ -16,31 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file BetaBinomialDistributionRndHistogramPlot.cpp
-    \brief This file is a testing binary for plotting random samples from the
-           BetaBinomialDistribution class
+/** \file OuterProduct.h
+    \brief This file defines the outer product
   */
 
-#include <QtGui/QApplication>
+#ifndef OUTERPRODUCT_H
+#define OUTERPRODUCT_H
 
-#include "visualization/HistogramPlot.h"
-#include "statistics/BetaBinomialDistribution.h"
+#include <cstdlib>
 
-int main(int argc, char** argv) {
-  QApplication app(argc, argv);
-  Histogram<int, 1> hist(0, 20, 1);
-  BetaBinomialDistribution dist(5, 2, 5);
-  for (size_t i = 0; i < 100000; ++i)
-    hist.addSample(dist.getSample()(0));
-  std::cout << "Sample mean: " << hist.getMean() << std::endl;
-  std::cout << "Sample median: " << hist.getMedian() << std::endl;
-  std::cout << "Sample mode: " << hist.getMode() << std::endl;
-  std::cout << "Sample variance: " << hist.getVariance() << std::endl;
-  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
-  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
-  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-  HistogramPlot<int, 1> plot("BetaBinomialDistributionRndHistogramPlot",
-    hist.getNormalized());
-  plot.show();
-  return app.exec();
-}
+#include <Eigen/Core>
+
+/** The outerProduct function generates the outer product of 2 vectors
+*/
+template <typename X, size_t M, size_t N>
+static Eigen::Matrix<X, M, N> outerProduct(const Eigen::Matrix<X, M, 1>& v1,
+    const Eigen::Matrix<X, N, 1>& v2) {
+  return v1 * v2.transpose();
+};
+
+/** The outerProduct function generates the self outer product of a vector
+*/
+template <typename X, size_t M>
+static Eigen::Matrix<X, M, M> outerProduct(const Eigen::Matrix<X, M, 1>& v) {
+  Eigen::Matrix<X, M, M> result = Eigen::Matrix<X, M, M>::Zero(v.size(),
+    v.size());
+  for (size_t i = 0; i < v.size(); ++i)
+    for (size_t j = i; j < v.size(); ++j) {
+      result(i, j) = v(i) * v(j);
+      result(j, i) = result(i, j);
+    }
+  return result;
+};
+
+#endif // OUTERPRODUCT_H

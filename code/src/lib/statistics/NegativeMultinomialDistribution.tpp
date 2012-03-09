@@ -20,6 +20,7 @@
 
 #include <Eigen/Array>
 
+#include "utils/OuterProduct.h"
 #include "functions/LogGammaFunction.h"
 #include "functions/LogFactorialFunction.h"
 
@@ -219,6 +220,6 @@ typename NegativeMultinomialDistribution<M>::Covariance
   // TODO: COVARIANCE NOT IMPLEMENTED
   const double fail = mProbabilities(mProbabilities.size() - 1);
   return mNumTrials / fail / fail *
-    mProbabilities * mProbabilities.transpose() + mNumTrials /
+    outerProduct<double, M>(mProbabilities) + mNumTrials /
     fail * mProbabilities.asDiagonal();
 }

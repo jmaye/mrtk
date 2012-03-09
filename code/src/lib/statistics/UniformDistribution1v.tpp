@@ -149,8 +149,10 @@ typename UniformDistribution<X>::Median UniformDistribution<X>::getMedian()
 }
 
 template <typename X>
-typename UniformDistribution<X>::Mode UniformDistribution<X>::getMode() const {
-  return mMinSupport;
+typename UniformDistribution<X>::Mode UniformDistribution<X>::getMode() const
+    throw (InvalidOperationException) {
+  throw InvalidOperationException("UniformDistribution<X>::getMode(): "
+    "undefined mode");
 }
 
 template <typename X>

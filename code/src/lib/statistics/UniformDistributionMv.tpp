@@ -157,8 +157,10 @@ typename UniformDistribution<X, M>::Mean
 
 template <typename X, size_t M>
 typename UniformDistribution<X, M>::Mode
-    UniformDistribution<X, M>::getMode() const {
-  return mMinSupport.template cast<double>();
+    UniformDistribution<X, M>::getMode() const
+    throw (InvalidOperationException) {
+  throw InvalidOperationException("UniformDistribution<X, M>::getMode(): "
+    "undefined mode");
 }
 
 template <typename X, size_t M>

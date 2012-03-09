@@ -26,10 +26,10 @@
 
 #include <cstdlib>
 
-template <typename D> class EstimatorBayes;
+template <typename D, typename P> class EstimatorBayes;
 
-//#include "statistics/EstimatorBayesNormal1v.h"
-//#include "statistics/EstimatorBayesNormalMv.h"
+#include "statistics/EstimatorBayesNormal1v.h"
+#include "statistics/EstimatorBayesNormalMv.h"
 #include "statistics/EstimatorBayesMultinomial.h"
 #include "statistics/EstimatorBayesCategorical.h"
 #include "statistics/EstimatorBayesPoisson.h"

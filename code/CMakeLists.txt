@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.6)
 
 include(ReMake)
 
+remake_set(CMAKE_CXX_FLAGS -std=c++0x CACHE FORCE INIT)
+
 remake_project(
   online-recog
   VERSION 0.1

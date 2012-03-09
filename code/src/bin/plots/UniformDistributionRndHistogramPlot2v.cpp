@@ -40,7 +40,6 @@ int main(int argc, char** argv) {
   std::cout << "Sample covariance: " << std::endl << hist.getCovariance()
     << std::endl;
   std::cout << "Dist. mean: " << std::endl << dist.getMean() << std::endl;
-  std::cout << "Dist. mode: " << std::endl << dist.getMode() << std::endl;
   std::cout << "Dist. covariance: " << std::endl << dist.getCovariance()
     << std::endl;
   HistogramPlot<double, 2> plot("UniformDistributionRndHistogramPlot2v", hist);

@@ -31,7 +31,8 @@
     distributions with conjugate prior.
     \brief Multinomial distribution Bayesian estimator
   */
-template <size_t M> class EstimatorBayes<MultinomialDistribution<M> > :
+template <size_t M>
+class EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
@@ -50,7 +51,8 @@ public:
     @{
     */
   /// Constructs estimator with prior
-  EstimatorBayes(const DirichletDistribution<M>& prior);
+  EstimatorBayes(const DirichletDistribution<M>& prior =
+    DirichletDistribution<M>());
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator

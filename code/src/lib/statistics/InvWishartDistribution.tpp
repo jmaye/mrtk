@@ -164,6 +164,27 @@ typename InvWishartDistribution<M>::Mode
 }
 
 template <size_t M>
+typename InvWishartDistribution<M>::Covariance
+    InvWishartDistribution<M>::getCovariance() const
+    throw (InvalidOperationException) {
+  const double denominator = (mDegrees - mScale.rows()) *
+    (mDegrees - mScale.rows() - 1) * (mDegrees - mScale.rows() - 1) *
+    (mDegrees - mScale.rows() - 3);
+  if (denominator) {
+    Covariance covariance = Covariance::Zero(mScale.rows(), mScale.cols());
+    for (size_t i = 0; i < mScale.rows(); ++i)
+      for (size_t j = 0; j < mScale.cols(); ++j)
+        covariance(i, j) = (mDegrees - mScale.rows() + 1) * mScale(i, j) *
+          mScale(i, j) + (mDegrees - mScale.rows() - 1) * mScale(i, i) *
+          mScale(j, j);
+    return covariance / denominator;
+  }
+  else
+    throw InvalidOperationException(
+      "InvWishartDistribution<M>::getCovariance(): invalid covariance");
+}
+
+template <size_t M>
 double InvWishartDistribution<M>::pdf(const RandomVariable& value) const {
   return exp(logpdf(value));
 }

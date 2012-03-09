@@ -20,45 +20,49 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EstimatorBayes<GeometricDistribution>::EstimatorBayes(const BetaDistribution&
-    prior) :
+EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    EstimatorBayes(const BetaDistribution& prior) :
     mProbDist(prior) {
 }
 
-EstimatorBayes<GeometricDistribution>::EstimatorBayes(const EstimatorBayes&
-    other) :
+EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    EstimatorBayes(const EstimatorBayes& other) :
     mProbDist(other.mProbDist) {
 }
 
-EstimatorBayes<GeometricDistribution>&
-    EstimatorBayes<GeometricDistribution>::operator = (const EstimatorBayes&
-    other) {
+EstimatorBayes<GeometricDistribution, BetaDistribution>&
+    EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    operator = (const EstimatorBayes& other) {
   if (this != &other) {
     mProbDist = other.mProbDist;
   }
   return *this;
 }
 
-EstimatorBayes<GeometricDistribution>::~EstimatorBayes() {
+EstimatorBayes<GeometricDistribution, BetaDistribution>::~EstimatorBayes() {
 }
 
 /******************************************************************************/
 /* Streaming operations                                                       */
 /******************************************************************************/
 
-void EstimatorBayes<GeometricDistribution>::read(std::istream& stream) {
+void EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    read(std::istream& stream) {
 }
 
-void EstimatorBayes<GeometricDistribution>::write(std::ostream& stream) const {
+void EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    write(std::ostream& stream) const {
   stream << "Mean distribution: " << std::endl << mProbDist << std::endl <<
     "Mean mode: " << mProbDist.getMode() << std::endl <<
     "Mean variance: " << mProbDist.getVariance();
 }
 
-void EstimatorBayes<GeometricDistribution>::read(std::ifstream& stream) {
+void EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    read(std::ifstream& stream) {
 }
 
-void EstimatorBayes<GeometricDistribution>::write(std::ofstream& stream) const {
+void EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -66,17 +70,20 @@ void EstimatorBayes<GeometricDistribution>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 const BetaDistribution&
-    EstimatorBayes<GeometricDistribution>::getProbDist() const {
+    EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    getProbDist() const {
   return mProbDist;
 }
 
-void EstimatorBayes<GeometricDistribution>::addPoint(const Point& point) {
+void EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    addPoint(const Point& point) {
   mProbDist.setAlpha(mProbDist.getAlpha() + 1);
   mProbDist.setBeta(mProbDist.getBeta() + point);
 }
 
-void EstimatorBayes<GeometricDistribution>::addPoints(const ConstPointIterator&
-    itStart, const ConstPointIterator& itEnd) {
+void EstimatorBayes<GeometricDistribution, BetaDistribution>::
+    addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
   for (ConstPointIterator it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

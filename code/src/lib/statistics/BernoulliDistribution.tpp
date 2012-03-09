@@ -74,13 +74,8 @@ double BernoulliDistribution::getMean() const {
   return CategoricalDistribution<2>::getMean()(0);
 }
 
-double BernoulliDistribution::getMode() const {
-  if (mProbabilities(1) > mProbabilities(0))
-    return 0;
-  else if (mProbabilities(1) == mProbabilities(0))
-    return 0;
-  else
-    return 1;
+int BernoulliDistribution::getMode() const {
+  return CategoricalDistribution<2>::getMode()(0);
 }
 
 double BernoulliDistribution::getVariance() const {

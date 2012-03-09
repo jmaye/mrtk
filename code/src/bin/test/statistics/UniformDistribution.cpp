@@ -74,10 +74,13 @@ int main(int argc, char** argv) {
   if (fabs(distCont.getVariance() - 9.0 / 12.0) >
       std::numeric_limits<double>::epsilon())
     return 1;
-  std::cout << "dist.getMode(): " << std::fixed << distCont.getMode()
-    << std::endl << std::endl;
-  if (fabs(distCont.getMode() - 2) > std::numeric_limits<double>::epsilon())
-    return 1;
+  try {
+    std::cout << "dist.getMode(): " << std::endl;
+    distCont.getMode();
+  }
+  catch (InvalidOperationException& e) {
+    std::cout << e.what() << std::endl;
+  }
   std::cout << "dist.getMedian(): " << std::fixed << distCont.getMedian()
     << std::endl << std::endl;
   if (fabs(distCont.getMedian() - 1.5) > std::numeric_limits<double>::epsilon())
@@ -165,10 +168,13 @@ int main(int argc, char** argv) {
   if (fabs(distDisc.getVariance() - 15.0 / 12.0) >
       std::numeric_limits<double>::epsilon())
     return 1;
-  std::cout << "dist.getMode(): " << std::fixed << distDisc.getMode()
-    << std::endl << std::endl;
-  if (fabs(distDisc.getMode() - 2) > std::numeric_limits<double>::epsilon())
-    return 1;
+  try {
+    std::cout << "dist.getMode(): " << std::endl;
+    distDisc.getMode();
+  }
+  catch (InvalidOperationException& e) {
+    std::cout << e.what() << std::endl;
+  }
   std::cout << "dist.getMedian(): " << std::fixed << distDisc.getMedian()
     << std::endl << std::endl;
   if (fabs(distDisc.getMedian() - 1.5) > std::numeric_limits<double>::epsilon())
@@ -284,8 +290,13 @@ int main(int argc, char** argv) {
     << distDisc2D.getMean() << std::endl << std::endl;
   std::cout << "dist.getCovariance(): " << std::endl << std::fixed
     << distDisc2D.getCovariance() << std::endl << std::endl;
-  std::cout << "dist.getMode(): " << std::endl << std::fixed
-    << distDisc2D.getMode() << std::endl << std::endl;
+  try {
+    std::cout << "dist.getMode(): " << std::endl;
+    distDisc2D.getMode();
+  }
+  catch (InvalidOperationException& e) {
+    std::cout << e.what() << std::endl;
+  }
   std::cout << "dist.getMedian(): " << std::endl << std::fixed
     << distDisc2D.getMedian() << std::endl << std::endl;
 

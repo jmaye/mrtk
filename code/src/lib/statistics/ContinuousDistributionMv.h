@@ -54,7 +54,7 @@ public:
   /// Covariance type
   typedef Eigen::Matrix<double, M, M> Covariance;
   /// Mode type
-  typedef Eigen::Matrix<double, M, N> Mode;
+  typedef Eigen::Matrix<X, M, N> Mode;
   /// Median type
   typedef Eigen::Matrix<double, M, N> Median;
   /** @}

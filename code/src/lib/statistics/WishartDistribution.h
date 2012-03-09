@@ -53,6 +53,8 @@ public:
   typedef typename DistributionType::Mean Mean;
   /// Mode type
   typedef typename DistributionType::Mode Mode;
+  /// Covariance type
+  typedef typename DistributionType::Covariance Covariance;
   /// Scale type
   typedef typename DistributionType::Covariance Scale;
   /** @}
@@ -96,6 +98,8 @@ public:
   Mean getMean() const;
   /// Returns the mode of the distribution
   Mode getMode() const throw (InvalidOperationException);
+  /// Returns the covariance of the distribution
+  Covariance getCovariance() const;
   /// Access the probability density function at the given value
   virtual double pdf(const RandomVariable& value) const;
   /// Access the log-probability density function at the given value

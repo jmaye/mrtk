@@ -30,7 +30,7 @@
     conjugate prior.
     \brief Geometric distribution Bayesian estimator
   */
-template <> class EstimatorBayes<GeometricDistribution> :
+template <> class EstimatorBayes<GeometricDistribution, BetaDistribution> :
   public virtual Serializable {
 public:
   /** \name Types definitions
@@ -49,7 +49,7 @@ public:
     @{
     */
   /// Constructs estimator with prior
-  EstimatorBayes(const BetaDistribution& prior);
+  EstimatorBayes(const BetaDistribution& prior = BetaDistribution());
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator

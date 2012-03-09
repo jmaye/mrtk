@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
   std::cout << "dist.getVariance(): " << std::fixed << dist.getVariance()
     << std::endl << std::endl;
   if (fabs(dist.getVariance() - p * n / (1 - p) / (1 - p)) >
-      std::numeric_limits<double>::epsilon())
+      1e-12)
     return 1;
   std::cout << "dist.getMode(): " << std::fixed << dist.getMode() << std::endl
     << std::endl;

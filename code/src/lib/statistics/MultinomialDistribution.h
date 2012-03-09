@@ -29,6 +29,7 @@
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 #include "exceptions/OutOfBoundException.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The MultinomialDistribution class represents a multinomial distribution,
     i.e., the discrete distribution of N independent categorical distribution
@@ -50,6 +51,8 @@ public:
   typedef typename DistributionType::RandomVariable RandomVariable;
   /// Mean type
   typedef typename DistributionType::Mean Mean;
+  /// Mode type
+  typedef typename DistributionType::Mode Mode;
   /// Covariance type
   typedef typename DistributionType::Covariance Covariance;
   /** @}
@@ -115,6 +118,8 @@ public:
   size_t getNumTrials() const;
   /// Returns the mean of the distribution
   Mean getMean() const;
+  /// Returns the mode of the distribution
+  Mode getMode() const throw (InvalidOperationException);
   /// Returns the covariance of the distribution
   Covariance getCovariance() const;
   /// Returns the probability mass function at a point

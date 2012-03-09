@@ -54,7 +54,7 @@ public:
   /// Variance type
   typedef double Variance;
   /// Mode type
-  typedef double Mode;
+  typedef X Mode;
   /// Median type
   typedef double Median;
   /** @}
