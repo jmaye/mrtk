@@ -9,33 +9,31 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayes.h
-    \brief This file defines the EstimatorBayes class, which implements Bayesian
-           estimators for various distributions
-  */
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#ifndef ESTIMATORBAYES_H
-#define ESTIMATORBAYES_H
+template <typename... X>
+DistributionTuple<X...>::DistributionTuple() {
+}
 
-#include <cstdlib>
+template <typename... X>
+DistributionTuple<X...>::~DistributionTuple() {
+}
 
-template <typename D, typename... P> class EstimatorBayes;
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
 
-#include "statistics/EstimatorBayesNormal1v.h"
-#include "statistics/EstimatorBayesNormalMv.h"
-#include "statistics/EstimatorBayesMultinomial.h"
-#include "statistics/EstimatorBayesCategorical.h"
-#include "statistics/EstimatorBayesPoisson.h"
-#include "statistics/EstimatorBayesGeometric.h"
-#include "statistics/EstimatorBayesExponential.h"
-#include "statistics/EstimatorBayesMixture.h"
-//#include "statistics/EstimatorBayesLinearRegression.h"
-
-#endif // ESTIMATORBAYES_H
+template <typename... X>
+double DistributionTuple<X...>::getValue(const std::tuple<X...>& argument)
+    const {
+  return pdf(argument);
+}

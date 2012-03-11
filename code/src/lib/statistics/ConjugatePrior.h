@@ -16,26 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayes.h
-    \brief This file defines the EstimatorBayes class, which implements Bayesian
-           estimators for various distributions
+/** \file ConjugatePrior.h
+    \brief This file defines the conjugate priors
   */
 
-#ifndef ESTIMATORBAYES_H
-#define ESTIMATORBAYES_H
+#ifndef CONJUGATEPRIOR_H
+#define CONJUGATEPRIOR_H
 
-#include <cstdlib>
+#include "statistics/NormalScaledInvChiSquareDistribution.h"
 
-template <typename D, typename... P> class EstimatorBayes;
+template <typename D> struct ConjugatePrior;
 
-#include "statistics/EstimatorBayesNormal1v.h"
-#include "statistics/EstimatorBayesNormalMv.h"
-#include "statistics/EstimatorBayesMultinomial.h"
-#include "statistics/EstimatorBayesCategorical.h"
-#include "statistics/EstimatorBayesPoisson.h"
-#include "statistics/EstimatorBayesGeometric.h"
-#include "statistics/EstimatorBayesExponential.h"
-#include "statistics/EstimatorBayesMixture.h"
-//#include "statistics/EstimatorBayesLinearRegression.h"
+template <> struct ConjugatePrior<NormalDistribution<1> > {
+public:
+  typedef NormalScaledInvChiSquareDistribution Result;
+};
 
-#endif // ESTIMATORBAYES_H
+
+#endif // CONJUGATEPRIOR_H

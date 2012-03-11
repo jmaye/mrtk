@@ -177,8 +177,7 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     for (size_t j = 0; j < K; ++j)
       numPoints(j) = mResponsibilities.col(j).sum();
     Eigen::Matrix<double, M, 1> weights = numPoints / mNumPoints;
-    mMixtureDist.setAssignDistribution(
-      CategoricalDistribution<M>(weights / weights.sum()));
+    mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
     for (size_t j = 0; j < K; ++j) {
       EstimatorML<C> estComp;
       estComp.addPoints(itStart, itEnd, mResponsibilities.col(j), numPoints(j));

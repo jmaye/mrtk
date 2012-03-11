@@ -115,7 +115,7 @@ void EstimatorML<MultinomialDistribution<M> >::addPoint(const Point& point) {
         mDistribution.getProbabilities();
       probabilities += 1.0 / mNumPoints *
         (point.template cast<double>() / numTrials - probabilities);
-      mDistribution.setProbabilities(probabilities / probabilities.sum());
+      mDistribution.setProbabilities(probabilities);
     }
   }
   catch (...) {

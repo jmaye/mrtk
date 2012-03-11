@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include "statistics/EstimatorBayes.h"
+#include "statistics/MixtureSampleDistribution.h"
 
 int main(int argc, char** argv) {
   NormalDistribution<1> distNorm1(5, 2);
@@ -90,6 +91,27 @@ int main(int argc, char** argv) {
   EstimatorBayes<GeometricDistribution, BetaDistribution> estGeom;
   estGeom.addPoints(samplesGeom.begin(), samplesGeom.end());
   std::cout << "Estimation11: " << std::endl << estGeom << std::endl;
+  std::vector<NormalDistribution<1> > distributionsNorm1;
+  distributionsNorm1.push_back(NormalDistribution<1>(0, 1.5));
+  distributionsNorm1.push_back(NormalDistribution<1>(5, 1.7));
+  distributionsNorm1.push_back(NormalDistribution<1>(10, 1.2));
+  distributionsNorm1.push_back(NormalDistribution<1>(-5, 1.3));
+  distributionsNorm1.push_back(NormalDistribution<1>(-10, 1.5));
+  MixtureSampleDistribution<NormalDistribution<1>, 5> distMixtNorm1(
+    distributionsNorm1, CategoricalDistribution<5>());
+  std::vector<double> samplesMixtNorm1;
+  distMixtNorm1.getSamples(samplesMixtNorm1, 1000);
+  DirichletDistribution<5> dirPrior;
+  std::vector<NormalScaledInvChiSquareDistribution> compPrior;
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(0, 1, 1, 1.5));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(5, 1, 1, 1.7));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(10, 1, 1, 1.2));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(-5, 1, 1, 1.3));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(-10, 1, 1, 1.5));
+  EstimatorBayes<MixtureDistribution<NormalDistribution<1>, 5> >
+    estMixtNorm1(dirPrior, compPrior);
+  estMixtNorm1.addPoints(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
+  std::cout << "Estimation12: " << std::endl << estMixtNorm1 << std::endl;
 //  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);
 //  std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
 //  for (double x = -10; x < 10; x += 0.01) {

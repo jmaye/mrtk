@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <limits>
-
 #include <Eigen/Array>
 
 #include "functions/LogFactorialFunction.h"
@@ -86,8 +84,7 @@ template <size_t M>
 void MultinomialDistribution<M>::setProbabilities(const
     Eigen::Matrix<double, M, 1>& probabilities) throw
     (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if (fabs(probabilities.sum() - 1.0) >
-    std::numeric_limits<double>::epsilon() ||
+  if (fabs(probabilities.sum() - 1.0) > 1e-12 ||
     (probabilities.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
       probabilities,

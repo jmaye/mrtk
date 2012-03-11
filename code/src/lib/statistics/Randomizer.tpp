@@ -127,8 +127,7 @@ template <typename T, size_t M>
 size_t Randomizer<T, M>::sampleCategorical(const
     Eigen::Matrix<double, M, 1>& probabilities) const
     throw (BadArgumentException<Eigen::Matrix<double, M, 1> >) {
-  if (fabs(probabilities.sum() - 1.0) >
-      std::numeric_limits<double>::epsilon() ||
+  if (fabs(probabilities.sum() - 1.0) > 1e-12 ||
       (probabilities.cwise() < 0).any())
     throw BadArgumentException<Eigen::Matrix<double, M, 1> >(
       probabilities,
@@ -213,7 +212,7 @@ double Randomizer<T, M>::sampleGamma(double shape, double invScale) const
     y += sampleExponential(1.0);
   double b = (M_E + fractionalPart) / M_E;
   double z = 0;
-  if (fabs(fractionalPart - 0) > std::numeric_limits<double>::epsilon())
+  if (fabs(fractionalPart) > std::numeric_limits<double>::epsilon())
     while (true) {
       const double p = b * sampleUniform();
       if (p > 1) {

@@ -16,26 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file EstimatorBayes.h
-    \brief This file defines the EstimatorBayes class, which implements Bayesian
-           estimators for various distributions
+/** \file NormalScaledInvChiSquareDistributionRndScatterPlot.cpp
+    \brief This file is a testing binary for plotting random samples of the 
+           NormalScaledInvChiSquareDistribution class
   */
 
-#ifndef ESTIMATORBAYES_H
-#define ESTIMATORBAYES_H
+#include <QtGui/QApplication>
 
-#include <cstdlib>
+#include "visualization/ScatterPlot.h"
+#include "statistics/NormalScaledInvChiSquareDistribution.h"
 
-template <typename D, typename... P> class EstimatorBayes;
-
-#include "statistics/EstimatorBayesNormal1v.h"
-#include "statistics/EstimatorBayesNormalMv.h"
-#include "statistics/EstimatorBayesMultinomial.h"
-#include "statistics/EstimatorBayesCategorical.h"
-#include "statistics/EstimatorBayesPoisson.h"
-#include "statistics/EstimatorBayesGeometric.h"
-#include "statistics/EstimatorBayesExponential.h"
-#include "statistics/EstimatorBayesMixture.h"
-//#include "statistics/EstimatorBayesLinearRegression.h"
-
-#endif // ESTIMATORBAYES_H
+int main(int argc, char** argv) {
+  QApplication app(argc, argv);
+  std::vector<Eigen::Matrix<double, 2, 1> > data;
+  std::vector<NormalScaledInvChiSquareDistribution::RandomVariable> dataTuple;
+  NormalScaledInvChiSquareDistribution dist(5, 1000, 1000, 2.0);
+  data.reserve(10000);
+  for (size_t i = 0; i < 10000; ++i) {
+    NormalScaledInvChiSquareDistribution::RandomVariable sample =
+      dist.getSample();
+    data.push_back(Eigen::Matrix<double, 2, 1>(std::get<0>(sample),
+      std::get<1>(sample)));
+  }
+  ScatterPlot<2> plot("NormalScaledInvChiSquareDistributionRndScatterPlot",
+    data);
+  plot.show();
+  return app.exec();
+}
