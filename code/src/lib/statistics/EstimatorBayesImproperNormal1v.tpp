@@ -21,7 +21,6 @@
 /******************************************************************************/
 
 EstimatorBayesImproper<NormalDistribution<1> >::EstimatorBayesImproper() :
-    mSampleVariance(0),
     mNumPoints(0),
     mValid(false),
     mValuesSum(0),
@@ -29,12 +28,10 @@ EstimatorBayesImproper<NormalDistribution<1> >::EstimatorBayesImproper() :
 }
 
 EstimatorBayesImproper<NormalDistribution<1> >::EstimatorBayesImproper(const
-    EstimatorBayesImproper<NormalDistribution<1> >& other) :
+    EstimatorBayesImproper& other) :
     mPostMeanDist(other.mPostMeanDist),
     mPostVarianceDist(other.mPostVarianceDist),
     mPostPredDist(other.mPostPredDist),
-    mSampleMean(other.mSampleMean),
-    mSampleVariance(other.mSampleVariance),
     mNumPoints(other.mNumPoints),
     mValid(other.mValid),
     mValuesSum(other.mValuesSum),
@@ -43,13 +40,11 @@ EstimatorBayesImproper<NormalDistribution<1> >::EstimatorBayesImproper(const
 
 EstimatorBayesImproper<NormalDistribution<1> >&
     EstimatorBayesImproper<NormalDistribution<1> >::operator =
-    (const EstimatorBayesImproper<NormalDistribution<1> >& other) {
+    (const EstimatorBayesImproper& other) {
   if (this != &other) {
     mPostMeanDist = other.mPostMeanDist;
     mPostVarianceDist = other.mPostVarianceDist;
     mPostPredDist = other.mPostPredDist;
-    mSampleMean = other.mSampleMean;
-    mSampleVariance = other.mSampleVariance;
     mNumPoints = other.mNumPoints;
     mValid = other.mValid;
     mValuesSum = other.mValuesSum;
@@ -72,12 +67,20 @@ void EstimatorBayesImproper<NormalDistribution<1> >::read(std::istream&
 void EstimatorBayesImproper<NormalDistribution<1> >::write(std::ostream& stream)
     const {
   stream << "posterior mean distribution: " << std::endl << mPostMeanDist
-    << std::endl << "posterior variance distribution: " << std::endl
+    << std::endl
+    << "posterior mean mode: " << mPostMeanDist.getMode() << std::endl
+    << "posterior mean variance: " << mPostMeanDist.getVariance() << std::endl
+    << "posterior variance distribution: " << std::endl
     << mPostVarianceDist
-    << std::endl << "posterior predictive distribution: " << std::endl
+    << std::endl
+    << "posterior variance mode: " << mPostVarianceDist.getMode() << std::endl
+    << "posterior variance variance: " << mPostVarianceDist.getVariance()
+    << std::endl
+    << "posterior predictive distribution: " << std::endl
     << mPostPredDist << std::endl
-    << "sample mean: " << mSampleMean << std::endl
-    << "sample variance: " << mSampleVariance << std::endl
+    << "posterior predictive mean: " << mPostPredDist.getMean() << std::endl
+    << "posterior predictive variance: " << mPostPredDist.getVariance()
+    << std::endl
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }
@@ -94,28 +97,20 @@ void EstimatorBayesImproper<NormalDistribution<1> >::write(std::ofstream&
 /* Accessors                                                                  */
 /******************************************************************************/
 
-const StudentDistribution<1>& EstimatorBayesImproper<NormalDistribution<1> >::
-    getPostMeanDist() const {
+const StudentDistribution<1>&
+    EstimatorBayesImproper<NormalDistribution<1> >::getPostMeanDist() const {
   return mPostMeanDist;
 }
 
 const ScaledInvChiSquareDistribution&
-EstimatorBayesImproper<NormalDistribution<1> >::getPostVarianceDist() const {
+    EstimatorBayesImproper<NormalDistribution<1> >::getPostVarianceDist()
+    const {
   return mPostVarianceDist;
 }
 
-const StudentDistribution<1>& EstimatorBayesImproper<NormalDistribution<1> >::
-    getPostPredDist() const {
+const StudentDistribution<1>&
+    EstimatorBayesImproper<NormalDistribution<1> >::getPostPredDist() const {
   return mPostPredDist;
-}
-
-double EstimatorBayesImproper<NormalDistribution<1> >::getSampleMean() const {
-  return mSampleMean;
-}
-
-double EstimatorBayesImproper<NormalDistribution<1> >::getSampleVariance()
-    const {
-  return mSampleVariance;
 }
 
 size_t EstimatorBayesImproper<NormalDistribution<1> >::getNumPoints() const {
@@ -131,7 +126,6 @@ void EstimatorBayesImproper<NormalDistribution<1> >::reset() {
   mValid = false;
   mValuesSum = 0;
   mSquaredValuesSum = 0;
-  mSampleVariance = 0;
 }
 
 void EstimatorBayesImproper<NormalDistribution<1> >::addPoint(const Point&
@@ -139,23 +133,24 @@ void EstimatorBayesImproper<NormalDistribution<1> >::addPoint(const Point&
   mNumPoints++;
   mValuesSum += point;
   mSquaredValuesSum += point * point;
-  mSampleMean = 1.0 / mNumPoints * mValuesSum;
-  if (mNumPoints > 1)
-    mSampleVariance = 1.0 / (mNumPoints - 1) * (mSquaredValuesSum -
-    2.0 * mSampleMean * mValuesSum + mNumPoints * mSampleMean * mSampleMean);
-  if (mSampleVariance > 0.0) {
-    mPostMeanDist.setDegrees(mNumPoints - 1);
-    mPostMeanDist.setLocation(mSampleMean);
-    mPostMeanDist.setScale(mSampleVariance / mNumPoints);
-    mPostVarianceDist.setDegrees(mNumPoints - 1);
-    mPostVarianceDist.setScale(mSampleVariance);
-    mPostPredDist.setDegrees(mNumPoints - 1);
-    mPostPredDist.setLocation(mSampleMean);
-    mPostPredDist.setScale(mSampleVariance * (1 + 1.0 / mNumPoints));
+  try {
     mValid = true;
+    const double mean = mValuesSum / mNumPoints;
+    const double variance = mSquaredValuesSum / (mNumPoints - 1) -
+      mValuesSum * mValuesSum * 2 / ((mNumPoints - 1) * mNumPoints) +
+      mean * mean * ((double)mNumPoints / (mNumPoints - 1));
+    mPostMeanDist.setDegrees(mNumPoints - 1);
+    mPostMeanDist.setLocation(mean);
+    mPostMeanDist.setScale(variance / mNumPoints);
+    mPostVarianceDist.setDegrees(mNumPoints - 1);
+    mPostVarianceDist.setScale(variance);
+    mPostPredDist.setDegrees(mNumPoints - 1);
+    mPostPredDist.setLocation(mean);
+    mPostPredDist.setScale(variance * (1 + 1.0 / mNumPoints));
   }
-  else
+  catch (...) {
     mValid = false;
+  }
 }
 
 void EstimatorBayesImproper<NormalDistribution<1> >::addPoints(const

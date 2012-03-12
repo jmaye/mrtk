@@ -68,7 +68,7 @@ public:
     @{
     */
   /// Returns the mean distribution
-  const NormalDistribution<M>& getMeanDist() const;
+  const NormalDistribution<M>& getDist() const;
   /// Returns the predictive distribution
   const NormalDistribution<M>& getPredDist() const;
   /// Add a point to the estimator
@@ -153,7 +153,7 @@ public:
     @{
     */
   /// Returns the covariance distribution
-  const InvWishartDistribution<M>& getCovarianceDist() const;
+  const InvWishartDistribution<M>& getDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -231,7 +231,7 @@ public:
     @{
     */
   /// Returns the mean and covariance distribution
-  const NormalInvWishartDistribution<M>& getMeanCovarianceDist() const;
+  const NormalInvWishartDistribution<M>& getDist() const;
   /// Returns the predictive distribution
   const StudentDistribution<M>& getPredDist() const;
   /// Add a point to the estimator

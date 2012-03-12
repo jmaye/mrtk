@@ -26,7 +26,10 @@
 
 #include <cstdlib>
 
-template <typename D, typename... P> class EstimatorBayes;
+#include "statistics/ConjugatePrior.h"
+
+template <typename D, typename P = typename ConjugatePrior<D>::Result>
+  class EstimatorBayes;
 
 #include "statistics/EstimatorBayesNormal1v.h"
 #include "statistics/EstimatorBayesNormalMv.h"

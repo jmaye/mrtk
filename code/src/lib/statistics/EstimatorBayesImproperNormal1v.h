@@ -38,7 +38,7 @@ public:
     @{
     */
   /// Point type
-  typedef double Point;
+  typedef NormalDistribution<1>::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -52,11 +52,9 @@ public:
   /// Default constructor
   EstimatorBayesImproper();
   /// Copy constructor
-  EstimatorBayesImproper(const EstimatorBayesImproper<NormalDistribution<1> >&
-    other);
+  EstimatorBayesImproper(const EstimatorBayesImproper& other);
   /// Assignment operator
-  EstimatorBayesImproper<NormalDistribution<1> >& operator =
-    (const EstimatorBayesImproper<NormalDistribution<1> >& other);
+  EstimatorBayesImproper& operator = (const EstimatorBayesImproper& other);
   /// Destructor
   virtual ~EstimatorBayesImproper();
   /** @}
@@ -71,10 +69,6 @@ public:
   const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
   /// Returns the posterior predictive distribution
   const StudentDistribution<1>& getPostPredDist() const;
-  /// Returns the sample mean
-  double getSampleMean() const;
-  /// Returns the sample variance
-  double getSampleVariance() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
@@ -115,10 +109,6 @@ protected:
   ScaledInvChiSquareDistribution mPostVarianceDist;
   /// Posterior predictive distribution
   StudentDistribution<1> mPostPredDist;
-  /// Sample mean
-  double mSampleMean;
-  /// Sample variance
-  double mSampleVariance;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

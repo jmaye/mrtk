@@ -113,8 +113,9 @@ void EstimatorML<MultinomialDistribution<M> >::addPoint(const Point& point) {
     else {
       Eigen::Matrix<double, M, 1> probabilities =
         mDistribution.getProbabilities();
-      probabilities += 1.0 / mNumPoints *
-        (point.template cast<double>() / numTrials - probabilities);
+      probabilities +=
+        (point.template cast<double>() / numTrials - probabilities) /
+        mNumPoints;
       mDistribution.setProbabilities(probabilities);
     }
   }

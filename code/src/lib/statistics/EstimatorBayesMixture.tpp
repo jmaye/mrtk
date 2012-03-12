@@ -21,31 +21,39 @@
 /******************************************************************************/
 
 template <typename C, size_t M>
-EstimatorBayes<MixtureDistribution<C, M> >::EstimatorBayes(const
-    DirichletDistribution<M>& dirPrior, const
+EstimatorBayes<MixtureDistribution<C, M>, typename ConjugatePrior<C>::Result>::
+    EstimatorBayes(const DirichletDistribution<M>& dirPrior, const
     std::vector<typename ConjugatePrior<C>::Result>& compPrior, size_t
     maxNumIter) :
+    mDirPrior(dirPrior),
+    mCompPrior(compPrior),
     mMaxNumIter(maxNumIter) {
 }
 
 template <typename C, size_t M>
-EstimatorBayes<MixtureDistribution<C, M> >::EstimatorBayes(const EstimatorBayes&
-    other) :
+EstimatorBayes<MixtureDistribution<C, M>, typename ConjugatePrior<C>::Result>::
+    EstimatorBayes(const EstimatorBayes& other) :
+    mDirPrior(other.mDirPrior),
+    mCompPrior(other.mCompPrior),
     mMaxNumIter(other.mMaxNumIter) {
 }
 
 template <typename C, size_t M>
-EstimatorBayes<MixtureDistribution<C, M> >&
-    EstimatorBayes<MixtureDistribution<C, M> >::operator = (const
-    EstimatorBayes& other) {
+EstimatorBayes<MixtureDistribution<C, M>, typename ConjugatePrior<C>::Result>&
+    EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::operator = (const EstimatorBayes&
+    other) {
   if (this != &other) {
+    mDirPrior = other.mDirPrior;
+    mCompPrior = other.mCompPrior;
     mMaxNumIter = other.mMaxNumIter;
   }
   return *this;
 }
 
 template <typename C, size_t M>
-EstimatorBayes<MixtureDistribution<C, M> >::~EstimatorBayes() {
+EstimatorBayes<MixtureDistribution<C, M>, typename ConjugatePrior<C>::Result>::
+    ~EstimatorBayes() {
 }
 
 /******************************************************************************/
@@ -53,21 +61,23 @@ EstimatorBayes<MixtureDistribution<C, M> >::~EstimatorBayes() {
 /******************************************************************************/
 
 template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M> >::read(std::istream& stream) {
+void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::read(std::istream& stream) {
 }
 
 template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M> >::write(std::ostream& stream)
-    const {
+void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::write(std::ostream& stream) const {
 }
 
 template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M> >::read(std::ifstream& stream) {
+void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::read(std::ifstream& stream) {
 }
 
 template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M> >::write(std::ofstream& stream)
-    const {
+void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
@@ -75,47 +85,41 @@ void EstimatorBayes<MixtureDistribution<C, M> >::write(std::ofstream& stream)
 /******************************************************************************/
 
 template <typename C, size_t M>
-size_t EstimatorBayes<MixtureDistribution<C, M> >::getMaxNumIter() const {
+size_t EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::getMaxNumIter() const {
   return mMaxNumIter;
 }
 
 template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M> >::setMaxNumIter(size_t
-    maxNumIter) {
+void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::setMaxNumIter(size_t maxNumIter) {
   mMaxNumIter = maxNumIter;
 }
 
 template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M> >::addPoints(const
+void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::addPoints(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
-  DirichletDistribution<M> dirPrior;
-  std::vector<NormalScaledInvChiSquareDistribution> compPrior;
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(0, 1, 1, 1.5));
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(5, 1, 1, 1.7));
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(10, 1, 1, 1.2));
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(-5, 1, 1, 1.3));
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(-10, 1, 1, 1.5));
   typename DirichletDistribution<M>::RandomVariable weights =
-    dirPrior.getSample();
-  std::vector<typename NormalScaledInvChiSquareDistribution::RandomVariable>
+    mDirPrior.getSample();
+  std::vector<typename ConjugatePrior<C>::Result::RandomVariable>
     components;
-  for (size_t i = 0; i < 5; ++i)
-    components.push_back(compPrior[i].getSample());
+  components.reserve(mCompPrior.size());
+  for (size_t i = 0; i < mCompPrior.size(); ++i)
+    components.push_back(mCompPrior[i].getSample());
   size_t numIter = 0;
   while (numIter != mMaxNumIter) {
     EstimatorBayes<CategoricalDistribution<M>, DirichletDistribution<M> >
-      estDir(dirPrior);
-    std::vector<EstimatorBayes<NormalDistribution<>,
-      NormalScaledInvChiSquareDistribution> > estComp;
-    for (size_t i = 0; i < 5; ++i)
-      estComp.push_back(EstimatorBayes<NormalDistribution<>,
-        NormalScaledInvChiSquareDistribution>(compPrior[i]));
+      estDir(mDirPrior);
+    std::vector<EstimatorBayes<C> > estComp;
+    estComp.reserve(mCompPrior.size());
+    for (size_t i = 0; i < mCompPrior.size(); ++i)
+      estComp.push_back(EstimatorBayes<C>(mCompPrior[i]));
     double newLogLikelihood = 0;
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-      Eigen::Matrix<double, 5, 1> probabilities;
-      for (size_t i = 0; i < 5; ++i)
-        probabilities(i) = weights(i) *
-          NormalDistribution<>(std::get<0>(components[i]),
+      Eigen::Matrix<double, M, 1> probabilities(mCompPrior.size());
+      for (size_t i = 0; i < mCompPrior.size(); ++i)
+        probabilities(i) = weights(i) * C(std::get<0>(components[i]),
           std::get<1>(components[i]))(*it);
       newLogLikelihood += log(probabilities.sum());
       probabilities /= probabilities.sum();
@@ -123,17 +127,15 @@ void EstimatorBayes<MixtureDistribution<C, M> >::addPoints(const
       typename CategoricalDistribution<M>::RandomVariable assignment =
         assignDist.getSample();
       estDir.addPoint(assignment);
-      for (size_t i = 0; i < 5; ++i)
+      for (size_t i = 0; i < mCompPrior.size(); ++i)
         if (assignment(i))
           estComp[i].addPoint(*it);
     }
-    std::ofstream logFile("log.txt", std::ios::app);
-    logFile << newLogLikelihood << std::endl;
-    weights = estDir.getProbDist().getSample();
-    for (size_t i = 0; i < 5; ++i)
-      components[i] = estComp[i].getMeanVarianceDist().getSample();
+    weights = estDir.getDist().getSample();
+    for (size_t i = 0; i < mCompPrior.size(); ++i)
+      components[i] = estComp[i].getDist().getSample();
     std::cout << "weights: " << weights.transpose() << std::endl;
-    for (size_t i = 0; i < 5; ++i)
+    for (size_t i = 0; i < mCompPrior.size(); ++i)
       std::cout << "mean: " << std::get<0>(components[i]) << " variance: "
         << std::get<1>(components[i]) << std::endl;
     numIter++;
@@ -141,7 +143,7 @@ void EstimatorBayes<MixtureDistribution<C, M> >::addPoints(const
 }
 
 template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M> >::addPoints(const Container&
-    points) {
+void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::addPoints(const Container& points) {
   addPoints(points.begin(), points.end());
 }

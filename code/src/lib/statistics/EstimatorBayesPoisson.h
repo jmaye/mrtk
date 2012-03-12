@@ -66,7 +66,7 @@ public:
     @{
     */
   /// Returns the mean distribution
-  const GammaDistribution<double>& getMeanDist() const;
+  const GammaDistribution<double>& getDist() const;
   /// Returns the predictive distribution
   const NegativeBinomialDistribution& getPredDist() const;
   /// Add a point to the estimator

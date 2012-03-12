@@ -72,7 +72,7 @@ void EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
 
 const GammaDistribution<double>&
     EstimatorBayes<ExponentialDistribution, GammaDistribution<double> >::
-    getRateDist() const {
+    getDist() const {
   return mRateDist;
 }
 

@@ -86,7 +86,7 @@ void EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> >::
 template <size_t M>
 const DirichletDistribution<M>&
     EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> >::
-    getProbDist() const {
+    getDist() const {
   return mProbDist;
 }
 

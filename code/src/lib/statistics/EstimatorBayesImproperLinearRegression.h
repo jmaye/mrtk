@@ -31,7 +31,7 @@
     regression models.
     \brief Ordinary linear regresssion Bayesian estimator with improper prior
   */
-template <size_t M> class EstimatorBayesImproper<LinearRegression<M>, M> :
+template <size_t M> class EstimatorBayesImproper<LinearRegression<M> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
@@ -52,11 +52,9 @@ public:
   /// Default constructor
   EstimatorBayesImproper();
   /// Copy constructor
-  EstimatorBayesImproper(const EstimatorBayesImproper<LinearRegression<M>, M>&
-    other);
+  EstimatorBayesImproper(const EstimatorBayesImproper& other);
   /// Assignment operator
-  EstimatorBayesImproper<LinearRegression<M>, M>& operator =
-    (const EstimatorBayesImproper<LinearRegression<M>, M>& other);
+  EstimatorBayesImproper& operator = (const EstimatorBayesImproper& other);
   /// Destructor
   virtual ~EstimatorBayesImproper();
   /** @}

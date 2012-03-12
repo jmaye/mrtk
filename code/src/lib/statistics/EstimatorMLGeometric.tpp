@@ -94,7 +94,7 @@ void EstimatorML<GeometricDistribution>::addPoint(const Point& point) {
       mean = point;
     else
       mean = mDistribution.getMean();
-    mean += 1.0 / mNumPoints * (point - mean);
+    mean += (point - mean) / mNumPoints;
     mDistribution.setProbability(1.0 / (1 + mean));
   }
   catch (...) {

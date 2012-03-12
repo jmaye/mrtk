@@ -20,6 +20,8 @@
     \brief This file defines the univariate normal distribution
   */
 
+#include <tuple>
+
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
@@ -48,6 +50,8 @@ public:
     */
   /// Constructs a normal distribution from the parameters
   NormalDistribution(Mean mean = 0.0, Variance variance = 1.0);
+  /// Constructs a normal distribution from the parameters
+  NormalDistribution(const std::tuple<Mean, Variance>& parameters);
   /// Copy constructor
   NormalDistribution(const NormalDistribution& other);
   /// Assignment operator

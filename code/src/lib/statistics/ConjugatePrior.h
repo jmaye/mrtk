@@ -24,13 +24,94 @@
 #define CONJUGATEPRIOR_H
 
 #include "statistics/NormalScaledInvChiSquareDistribution.h"
+#include "statistics/NormalInvWishartDistribution.h"
+#include "statistics/DirichletDistribution.h"
+#include "statistics/GammaDistribution.h"
+#include "statistics/BetaDistribution.h"
+#include "statistics/NormalDistribution.h"
+#include "statistics/MultinomialDistribution.h"
+#include "statistics/CategoricalDistribution.h"
+#include "statistics/GeometricDistribution.h"
+#include "statistics/ExponentialDistribution.h"
+#include "statistics/PoissonDistribution.h"
+#include "statistics/MixtureDistribution.h"
 
+/** The ConjugatePrior structure defines the ConjugatePrior template.
+    \brief ConjugatePrior template
+  */
 template <typename D> struct ConjugatePrior;
 
+/** The ConjugatePrior prior is defined for univariate normal distribution.
+    \brief ConjugatePrior prior for univariate normal distribution
+  */
 template <> struct ConjugatePrior<NormalDistribution<1> > {
 public:
+  /// Conjugate prior for univariate normal distribution
   typedef NormalScaledInvChiSquareDistribution Result;
 };
 
+/** The ConjugatePrior prior is defined for multivariate normal distribution.
+    \brief ConjugatePrior prior for multivariate normal distribution
+  */
+template <size_t M> struct ConjugatePrior<NormalDistribution<M> > {
+public:
+  /// Conjugate prior for multivariate normal distribution
+  typedef NormalInvWishartDistribution<M> Result;
+};
+
+/** The ConjugatePrior prior is defined for categorical distribution.
+    \brief ConjugatePrior prior for categorical distribution
+  */
+template <size_t M> struct ConjugatePrior<CategoricalDistribution<M> > {
+public:
+  /// Conjugate prior for categorical distribution
+  typedef DirichletDistribution<M> Result;
+};
+
+/** The ConjugatePrior prior is defined for multinomial distribution.
+    \brief ConjugatePrior prior for multinomial distribution
+  */
+template <size_t M> struct ConjugatePrior<MultinomialDistribution<M> > {
+public:
+  /// Conjugate prior for multinomial distribution
+  typedef DirichletDistribution<M> Result;
+};
+
+/** The ConjugatePrior prior is defined for exponential distribution.
+    \brief ConjugatePrior prior for exponential distribution
+  */
+template <> struct ConjugatePrior<ExponentialDistribution> {
+public:
+  /// Conjugate prior for exponential distribution
+  typedef GammaDistribution<double> Result;
+};
+
+/** The ConjugatePrior prior is defined for geometric distribution.
+    \brief ConjugatePrior prior for geometric distribution
+  */
+template <> struct ConjugatePrior<GeometricDistribution> {
+public:
+  /// Conjugate prior for geometric distribution
+  typedef BetaDistribution Result;
+};
+
+/** The ConjugatePrior prior is defined for Poisson distribution.
+    \brief ConjugatePrior prior for Poisson distribution
+  */
+template <> struct ConjugatePrior<PoissonDistribution> {
+public:
+  /// Conjugate prior for Poisson distribution
+  typedef GammaDistribution<double> Result;
+};
+
+/** The ConjugatePrior prior is defined for mixture distribution.
+    \brief ConjugatePrior prior for mixture distribution
+  */
+template <typename D, size_t M>
+struct ConjugatePrior<MixtureDistribution<D, M> > {
+public:
+  /// Conjugate prior for mixture distribution
+  typedef typename ConjugatePrior<D>::Result Result;
+};
 
 #endif // CONJUGATEPRIOR_H

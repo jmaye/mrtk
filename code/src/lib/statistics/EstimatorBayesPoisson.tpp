@@ -77,8 +77,8 @@ void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
 /******************************************************************************/
 
 const GammaDistribution<double>&
-    EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
-    getMeanDist() const {
+    EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::getDist()
+    const {
   return mMeanDist;
 }
 

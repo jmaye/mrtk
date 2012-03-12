@@ -31,7 +31,8 @@
     \brief Mixture distributions Bayes estimator
   */
 template <typename C, size_t M>
-class EstimatorBayes<MixtureDistribution<C, M> > :
+class EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result> :
   public virtual Serializable {
 public:
   /** \name Types definitions
@@ -95,6 +96,10 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Dirichlet prior
+  DirichletDistribution<M> mDirPrior;
+  /// Components prior
+  std::vector<typename ConjugatePrior<C>::Result> mCompPrior;
   /// Maximum number of iterations for Gibbs sampling
   size_t mMaxNumIter;
   /** @}

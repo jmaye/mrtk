@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     estNorm1Variance(5);
   estNorm1Variance.addPoints(samplesNorm1.begin(), samplesNorm1.end());
   std::cout << "Estimation2: " << std::endl << estNorm1Variance << std::endl;
-  EstimatorBayes<NormalDistribution<1>, NormalScaledInvChiSquareDistribution>
+  EstimatorBayes<NormalDistribution<1> >
     estNorm1MeanVariance;
   estNorm1MeanVariance.addPoints(samplesNorm1.begin(), samplesNorm1.end());
   std::cout << "Estimation3: " << std::endl << estNorm1MeanVariance
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     estNorm2Covariance(Eigen::Matrix<double, 2, 1>(5, 5));
   estNorm2Covariance.addPoints(samplesNorm2.begin(), samplesNorm2.end());
   std::cout << "Estimation5: " << std::endl << estNorm2Covariance << std::endl;
-  EstimatorBayes<NormalDistribution<2>, NormalInvWishartDistribution<2> >
+  EstimatorBayes<NormalDistribution<2> >
     estNorm2MeanCovariance;
   estNorm2MeanCovariance.addPoints(samplesNorm2.begin(), samplesNorm2.end());
   std::cout << "Estimation6: " << std::endl << estNorm2MeanCovariance
@@ -62,33 +62,33 @@ int main(int argc, char** argv) {
   MultinomialDistribution<4> distMult4(20);
   std::vector<Eigen::Matrix<int, 4, 1> > samplesMult4;
   distMult4.getSamples(samplesMult4, 1000);
-  EstimatorBayes<MultinomialDistribution<4>, DirichletDistribution<4> >
+  EstimatorBayes<MultinomialDistribution<4> >
     estMult4;
   estMult4.addPoints(samplesMult4.begin(), samplesMult4.end());
   std::cout << "Estimation7: " << std::endl << estMult4 << std::endl;
   CategoricalDistribution<4> distCat4;
   std::vector<Eigen::Matrix<int, 4, 1> > samplesCat4;
   distCat4.getSamples(samplesCat4, 1000);
-  EstimatorBayes<CategoricalDistribution<4>, DirichletDistribution<4> >
+  EstimatorBayes<CategoricalDistribution<4> >
     estCat4;
   estCat4.addPoints(samplesCat4.begin(), samplesCat4.end());
   std::cout << "Estimation8: " << std::endl << estCat4 << std::endl;
   PoissonDistribution distPois(5.0);
   std::vector<int> samplesPois;
   distPois.getSamples(samplesPois, 1000);
-  EstimatorBayes<PoissonDistribution, GammaDistribution<double> > estPois;
+  EstimatorBayes<PoissonDistribution> estPois;
   estPois.addPoints(samplesPois.begin(), samplesPois.end());
   std::cout << "Estimation9: " << std::endl << estPois << std::endl;
   ExponentialDistribution distExp(5);
   std::vector<double> samplesExp;
   distExp.getSamples(samplesExp, 1000);
-  EstimatorBayes<ExponentialDistribution, GammaDistribution<double> > estExp;
+  EstimatorBayes<ExponentialDistribution> estExp;
   estExp.addPoints(samplesExp.begin(), samplesExp.end());
   std::cout << "Estimation10: " << std::endl << estExp << std::endl;
   GeometricDistribution distGeom(0.8);
   std::vector<int> samplesGeom;
   distGeom.getSamples(samplesGeom, 1000);
-  EstimatorBayes<GeometricDistribution, BetaDistribution> estGeom;
+  EstimatorBayes<GeometricDistribution> estGeom;
   estGeom.addPoints(samplesGeom.begin(), samplesGeom.end());
   std::cout << "Estimation11: " << std::endl << estGeom << std::endl;
   std::vector<NormalDistribution<1> > distributionsNorm1;
@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
   compPrior.push_back(NormalScaledInvChiSquareDistribution(-5, 1, 1, 1.3));
   compPrior.push_back(NormalScaledInvChiSquareDistribution(-10, 1, 1, 1.5));
   EstimatorBayes<MixtureDistribution<NormalDistribution<1>, 5> >
-    estMixtNorm1(dirPrior, compPrior);
+    estMixtNorm1(dirPrior, compPrior, 100);
   estMixtNorm1.addPoints(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
   std::cout << "Estimation12: " << std::endl << estMixtNorm1 << std::endl;
 //  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);

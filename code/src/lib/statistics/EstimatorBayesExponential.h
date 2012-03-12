@@ -66,7 +66,7 @@ public:
     @{
     */
   /// Returns the rate distribution
-  const GammaDistribution<double>& getRateDist() const;
+  const GammaDistribution<double>& getDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator

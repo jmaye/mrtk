@@ -65,8 +65,8 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the probablities distribution
-  const DirichletDistribution<M>& getProbDist() const;
+  /// Returns the probabilities distribution
+  const DirichletDistribution<M>& getDist() const;
   /// Returns the predictive distribution
   const DCMDistribution<M>& getPredDist() const;
   /// Add a point to the estimator

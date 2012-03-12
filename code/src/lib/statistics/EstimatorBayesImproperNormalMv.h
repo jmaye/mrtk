@@ -32,14 +32,14 @@
     \brief Multivariate normal distribution Bayesian estimator with improper
            prior
   */
-template <size_t M> class EstimatorBayesImproper<NormalDistribution<M>, M> :
+template <size_t M> class EstimatorBayesImproper<NormalDistribution<M> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
     @{
     */
   /// Point type
-  typedef Eigen::Matrix<double, M, 1> Point;
+  typedef typename NormalDistribution<M>::RandomVariable Point;
   /// Points container
   typedef std::vector<Point> Container;
   /// Constant point iterator
@@ -53,11 +53,9 @@ public:
   /// Default constructor
   EstimatorBayesImproper();
   /// Copy constructor
-  EstimatorBayesImproper(const EstimatorBayesImproper<NormalDistribution<M>, M>&
-    other);
+  EstimatorBayesImproper(const EstimatorBayesImproper& other);
   /// Assignment operator
-  EstimatorBayesImproper<NormalDistribution<M>, M>& operator =
-    (const EstimatorBayesImproper<NormalDistribution<M>, M>& other);
+  EstimatorBayesImproper& operator = (const EstimatorBayesImproper& other);
   /// Destructor
   virtual ~EstimatorBayesImproper();
   /** @}
@@ -72,10 +70,6 @@ public:
   const InvWishartDistribution<M>& getPostCovarianceDist() const;
   /// Returns the posterior predictive distribution
   const StudentDistribution<M>& getPostPredDist() const;
-  /// Returns the sample mean
-  const Eigen::Matrix<double, M, 1>& getSampleMean() const;
-  /// Returns the sample covariance
-  const Eigen::Matrix<double, M, M>& getSampleCovariance() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
@@ -116,10 +110,6 @@ protected:
   InvWishartDistribution<M> mPostCovarianceDist;
   /// Posterior predictive distribution
   StudentDistribution<M> mPostPredDist;
-  /// Sample mean
-  Eigen::Matrix<double, M, 1> mSampleMean;
-  /// Sample covariance
-  Eigen::Matrix<double, M, M> mSampleCovariance;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

@@ -214,22 +214,22 @@ void EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >::
 
 template <size_t M>
 const NormalDistribution<M>&
-    EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::
-    getMeanDist() const {
+    EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::getDist()
+    const {
   return mMeanDist;
 }
 
 template <size_t M>
 const InvWishartDistribution<M>&
-    EstimatorBayes<NormalDistribution<M>, InvWishartDistribution<M> >::
-    getCovarianceDist() const {
+    EstimatorBayes<NormalDistribution<M>, InvWishartDistribution<M> >::getDist()
+    const {
   return mCovarianceDist;
 }
 
 template <size_t M>
 const NormalInvWishartDistribution<M>&
     EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >::
-    getMeanCovarianceDist() const {
+    getDist() const {
   return mMeanCovarianceDist;
 }
 

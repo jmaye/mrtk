@@ -27,6 +27,12 @@ NormalDistribution<1>::NormalDistribution(Mean mean, Variance variance) :
   setVariance(variance);
 }
 
+NormalDistribution<1>::NormalDistribution(const std::tuple<Mean, Variance>&
+    parameters) :
+    mMean(std::get<0>(parameters)) {
+  setVariance(std::get<1>(parameters));
+}
+
 NormalDistribution<1>::NormalDistribution(const NormalDistribution& other) :
     mMean(other.mMean),
     mVariance(other.mVariance),

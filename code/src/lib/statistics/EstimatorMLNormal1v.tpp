@@ -101,10 +101,10 @@ void EstimatorML<NormalDistribution<1> >::addPoint(const Point& point) {
   mSquaredValuesSum += point * point;
   try {
     mValid = true;
-    const double mean = 1.0 / mNumPoints * mValuesSum;
+    const double mean = mValuesSum / mNumPoints;
     mDistribution.setMean(mean);
-    mDistribution.setVariance(1.0 / mNumPoints * mSquaredValuesSum -
-      2.0 / mNumPoints * mean * mValuesSum + mean * mean);
+    mDistribution.setVariance(mSquaredValuesSum / mNumPoints -
+      mValuesSum * mValuesSum * 2 / (mNumPoints * mNumPoints) + mean * mean);
   }
   catch (...) {
     mValid = false;

@@ -70,8 +70,7 @@ void EstimatorBayes<GeometricDistribution, BetaDistribution>::
 /******************************************************************************/
 
 const BetaDistribution&
-    EstimatorBayes<GeometricDistribution, BetaDistribution>::
-    getProbDist() const {
+    EstimatorBayes<GeometricDistribution, BetaDistribution>::getDist() const {
   return mProbDist;
 }
 

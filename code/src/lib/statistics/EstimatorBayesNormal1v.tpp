@@ -178,20 +178,20 @@ void EstimatorBayes<NormalDistribution<1>,
 /******************************************************************************/
 
 const NormalDistribution<1>&
-    EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
-    getMeanDist() const {
+    EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::getDist()
+    const {
   return mMeanDist;
 }
 
 const ScaledInvChiSquareDistribution&
     EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
-    getVarianceDist() const {
+    getDist() const {
   return mVarianceDist;
 }
 
 const NormalScaledInvChiSquareDistribution&
     EstimatorBayes<NormalDistribution<1>,
-    NormalScaledInvChiSquareDistribution>::getMeanVarianceDist() const {
+    NormalScaledInvChiSquareDistribution>::getDist() const {
   return mMeanVarianceDist;
 }
 

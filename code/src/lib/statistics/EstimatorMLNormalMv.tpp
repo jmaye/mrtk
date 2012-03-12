@@ -117,10 +117,10 @@ void EstimatorML<NormalDistribution<M> >::addPoint(const Point& point) {
   mSquaredValuesSum += outerProduct<double, M>(point);
   try {
     mValid = true;
-    const Eigen::Matrix<double, M, 1> mean = 1.0 / mNumPoints * mValuesSum;
+    const Eigen::Matrix<double, M, 1> mean = mValuesSum / mNumPoints;
     mDistribution.setMean(mean);
-    mDistribution.setCovariance(1.0 / mNumPoints * mSquaredValuesSum -
-      2.0 / mNumPoints * mean * mValuesSum.transpose() +
+    mDistribution.setCovariance(mSquaredValuesSum / mNumPoints -
+      outerProduct<double, M>(mValuesSum) * 2 / (mNumPoints * mNumPoints) +
       outerProduct<double, M>(mean));
   }
   catch (...) {

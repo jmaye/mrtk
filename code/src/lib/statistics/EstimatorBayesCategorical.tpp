@@ -86,7 +86,7 @@ void EstimatorBayes<CategoricalDistribution<M>, DirichletDistribution<M> >::
 template <size_t M>
 const DirichletDistribution<M>&
     EstimatorBayes<CategoricalDistribution<M>, DirichletDistribution<M> >::
-    getProbDist() const {
+    getDist() const {
   return mProbDist;
 }
 

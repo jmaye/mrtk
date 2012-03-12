@@ -67,7 +67,7 @@ public:
     @{
     */
   /// Returns the mean distribution
-  const NormalDistribution<1>& getMeanDist() const;
+  const NormalDistribution<1>& getDist() const;
   /// Returns the predictive distribution
   const NormalDistribution<1>& getPredDist() const;
   /// Add a point to the estimator
@@ -150,7 +150,7 @@ public:
     @{
     */
   /// Returns the variance distribution
-  const ScaledInvChiSquareDistribution& getVarianceDist() const;
+  const ScaledInvChiSquareDistribution& getDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -229,7 +229,7 @@ public:
     @{
     */
   /// Returns the mean and variance distribution
-  const NormalScaledInvChiSquareDistribution& getMeanVarianceDist() const;
+  const NormalScaledInvChiSquareDistribution& getDist() const;
   /// Returns the predictive distribution
   const StudentDistribution<1>& getPredDist() const;
   /// Add a point to the estimator

@@ -63,7 +63,7 @@ public:
     @{
     */
   /// Returns the probabiliy distribution
-  const BetaDistribution& getProbDist() const;
+  const BetaDistribution& getDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
