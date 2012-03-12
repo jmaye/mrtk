@@ -91,9 +91,21 @@ int main(int argc, char** argv) {
     distributionsNorm1Init, CategoricalDistribution<5>());
   EstimatorML<MixtureDistribution<NormalDistribution<1>, 5> >
     estMixtNorm1(distMixtNorm1Init);
-  size_t numIter = estMixtNorm1.addPoints(samplesMixtNorm1.begin(),
+  size_t numIter = estMixtNorm1.addPointsEM(samplesMixtNorm1.begin(),
     samplesMixtNorm1.end());
   std::cout << "Estimation10: " << std::endl << estMixtNorm1 << std::endl;
+  std::cout << "Converged in: " << numIter << " iterations" << std::endl;
+  estMixtNorm1 = EstimatorML<MixtureDistribution<NormalDistribution<1>, 5> >
+    (distMixtNorm1Init);
+  numIter = estMixtNorm1.addPointsCEM(samplesMixtNorm1.begin(),
+    samplesMixtNorm1.end());
+  std::cout << "Estimation11: " << std::endl << estMixtNorm1 << std::endl;
+  std::cout << "Converged in: " << numIter << " iterations" << std::endl;
+  estMixtNorm1 = EstimatorML<MixtureDistribution<NormalDistribution<1>, 5> >
+    (distMixtNorm1Init);
+  numIter = estMixtNorm1.addPointsSEM(samplesMixtNorm1.begin(),
+    samplesMixtNorm1.end());
+  std::cout << "Estimation12: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   std::vector<NormalDistribution<3> > distributionsNorm3;
   distributionsNorm3.push_back(NormalDistribution<3>(
@@ -130,9 +142,9 @@ int main(int argc, char** argv) {
     distributionsNorm3Init, CategoricalDistribution<5>());
   EstimatorML<MixtureDistribution<NormalDistribution<3>, 5> > estMixtNorm3(
     distMixtNorm3Init);
-  numIter = estMixtNorm3.addPoints(samplesMixtNorm3.begin(),
+  numIter = estMixtNorm3.addPointsEM(samplesMixtNorm3.begin(),
     samplesMixtNorm3.end());
-  std::cout << "Estimation11: " << std::endl << estMixtNorm3 << std::endl;
+  std::cout << "Estimation13: " << std::endl << estMixtNorm3 << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   return 0;
 }

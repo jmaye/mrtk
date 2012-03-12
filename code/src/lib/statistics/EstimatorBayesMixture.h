@@ -71,7 +71,10 @@ public:
   /// Sets the maximum number of iterations for Gibbs sampling
   void setMaxNumIter(size_t maxNumIter);
   /// Add points to the estimator
-  void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+  void addPoints1(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd);
+  /// Add points to the estimator
+  void addPoints2(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
   /// Add points to the estimator
   void addPoints(const Container& points);

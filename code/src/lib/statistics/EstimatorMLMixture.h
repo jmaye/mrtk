@@ -74,15 +74,21 @@ public:
   double getTolerance() const;
   /// Sets the tolerance of the estimator
   void setTolerance(double tol);
-  /// Returns the maximum number of iterations for EM
+  /// Returns the maximum number of iterations for EM, CEM, SEM
   size_t getMaxNumIter() const;
-  /// Sets the maximum number of iterations for EM
+  /// Sets the maximum number of iterations for EM, CEM, SEM
   void setMaxNumIter(size_t maxNumIter);
   /// Add points to the estimator / Returns number of EM iterationss
-  size_t addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
-    itEnd);
+  size_t addPointsEM(const ConstPointIterator& itStart, const
+    ConstPointIterator& itEnd);
   /// Add points to the estimator
-  void addPoints(const Container& points);
+  size_t addPoints(const Container& points);
+  /// Add points to the estimator / Returns number of CEM iterations
+  size_t addPointsCEM(const ConstPointIterator& itStart, const
+    ConstPointIterator& itEnd);
+  /// Add points to the estimator / Returns number of SEM iterations
+  size_t addPointsSEM(const ConstPointIterator& itStart, const
+    ConstPointIterator& itEnd);
   /// Reset the estimator
   void reset();
   /** @}
@@ -112,7 +118,7 @@ protected:
   Eigen::Matrix<double, Eigen::Dynamic, M> mResponsibilities;
   /// Log-likelihood of the data
   double mLogLikelihood;
-  /// Maximum number of iterations for EM
+  /// Maximum number of iterations for EM, CEM, SEM
   size_t mMaxNumIter;
   /// Tolerance for the determinant
   double mTol;

@@ -18,6 +18,8 @@
 
 #include <limits>
 
+#include "statistics/Randomizer.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -146,7 +148,7 @@ void EstimatorML<MixtureDistribution<C, M> >::reset() {
 
 template <typename C, size_t M>
 size_t EstimatorML<MixtureDistribution<C, M> >::
-    addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
+    addPointsEM(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
   reset();
   size_t numIter = 0;
@@ -157,7 +159,12 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
   mResponsibilities.resize(mNumPoints, K);
   mLogLikelihood = -std::numeric_limits<double>::infinity();
   while (numIter != mMaxNumIter) {
-    double newLogLikelihood = 0;
+    mValid = true;
+    double logLikelihood = 0;
+    Eigen::Matrix<double, M, 1> numPoints =
+      Eigen::Matrix<double, M, 1>::Zero(K);
+    for (size_t j = 0; j < K; ++j)
+      numPoints(j) = mResponsibilities.col(j).sum();
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
       double probability = 0.0;
       const size_t row = it - itStart;
@@ -167,21 +174,25 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
           mMixtureDist.getCompDistribution(j)(*it);
         probability += mResponsibilities(row, j);
       }
-      newLogLikelihood += log(probability);
+      logLikelihood += log(probability);
       mResponsibilities.row(row) /= mResponsibilities.row(row).sum();
+      numPoints += mResponsibilities.row(row).transpose();
     }
-    if (fabs(mLogLikelihood - newLogLikelihood) < mTol)
+    if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
-    mLogLikelihood = newLogLikelihood;
-    Eigen::Matrix<double, M, 1> numPoints(K);
-    for (size_t j = 0; j < K; ++j)
-      numPoints(j) = mResponsibilities.col(j).sum();
+    mLogLikelihood = logLikelihood;
     Eigen::Matrix<double, M, 1> weights = numPoints / mNumPoints;
-    mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
-    for (size_t j = 0; j < K; ++j) {
-      EstimatorML<C> estComp;
-      estComp.addPoints(itStart, itEnd, mResponsibilities.col(j), numPoints(j));
-      mMixtureDist.setCompDistribution(estComp.getDistribution(), j);
+    try {
+      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
+      for (size_t j = 0; j < K; ++j) {
+        EstimatorML<C> estComp;
+        estComp.addPoints(itStart, itEnd, mResponsibilities.col(j),
+          numPoints(j));
+        mMixtureDist.setCompDistribution(estComp.getDistribution(), j);
+      }
+    }
+    catch (...) {
+      mValid = false;
     }
     numIter++;
   }
@@ -189,7 +200,116 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
 }
 
 template <typename C, size_t M>
-void EstimatorML<MixtureDistribution<C, M> >::addPoints(const Container&
+size_t EstimatorML<MixtureDistribution<C, M> >::
+    addPointsCEM(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
+  reset();
+  size_t numIter = 0;
+  const size_t K = mMixtureDist.getCompDistributions().size();
+  mNumPoints = itEnd - itStart;
+  if (mNumPoints == 0)
+    return numIter;
+  mResponsibilities.resize(mNumPoints, K);
+  mLogLikelihood = -std::numeric_limits<double>::infinity();
+  while (numIter != mMaxNumIter) {
+    mValid = true;
+    double logLikelihood = 0;
+    std::vector<EstimatorML<C> > estComp(K);
+    Eigen::Matrix<size_t, M, 1> numPoints =
+      Eigen::Matrix<size_t, M, 1>::Zero(K);
+    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+      double probability = 0.0;
+      const size_t row = it - itStart;
+      double max = -std::numeric_limits<double>::infinity();
+      size_t argmax = 0;
+      for (size_t j = 0; j < K; ++j) {
+        mResponsibilities(row, j) =
+          mMixtureDist.getAssignDistribution().getProbability(j) *
+          mMixtureDist.getCompDistribution(j)(*it);
+        probability += mResponsibilities(row, j);
+        if (mResponsibilities(row, j) > max) {
+          max = mResponsibilities(row, j);
+          argmax = j;
+        }
+      }
+      logLikelihood += log(probability);
+      mResponsibilities.row(row) /= mResponsibilities.row(row).sum();
+      estComp[argmax].addPoint(*it);
+      numPoints(argmax)++;
+    }
+    if (fabs(mLogLikelihood - logLikelihood) < mTol)
+      break;
+    mLogLikelihood = logLikelihood;
+    Eigen::Matrix<double, M, 1> weights =
+      numPoints.template cast<double>() / mNumPoints;
+    try {
+      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
+      for (size_t j = 0; j < K; ++j)
+        mMixtureDist.setCompDistribution(estComp[j].getDistribution(), j);
+    }
+    catch (...) {
+      mValid = false;
+    }
+    numIter++;
+  }
+  return numIter;
+}
+
+template <typename C, size_t M>
+size_t EstimatorML<MixtureDistribution<C, M> >::
+    addPointsSEM(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd) {
+  reset();
+  size_t numIter = 0;
+  const size_t K = mMixtureDist.getCompDistributions().size();
+  mNumPoints = itEnd - itStart;
+  if (mNumPoints == 0)
+    return numIter;
+  mResponsibilities.resize(mNumPoints, K);
+  mLogLikelihood = -std::numeric_limits<double>::infinity();
+  const static Randomizer<double, M> randomizer;
+  while (numIter != mMaxNumIter) {
+    mValid = true;
+    double logLikelihood = 0;
+    std::vector<EstimatorML<C> > estComp(K);
+    Eigen::Matrix<size_t, M, 1> numPoints =
+      Eigen::Matrix<size_t, M, 1>::Zero(K);
+    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+      double probability = 0.0;
+      const size_t row = it - itStart;
+      for (size_t j = 0; j < K; ++j) {
+        mResponsibilities(row, j) =
+          mMixtureDist.getAssignDistribution().getProbability(j) *
+          mMixtureDist.getCompDistribution(j)(*it);
+        probability += mResponsibilities(row, j);
+      }
+      logLikelihood += log(probability);
+      mResponsibilities.row(row) /= mResponsibilities.row(row).sum();
+      const size_t assignment =
+        randomizer.sampleCategorical(mResponsibilities.row(row));
+      estComp[assignment].addPoint(*it);
+      numPoints(assignment)++;
+    }
+    if (fabs(mLogLikelihood - logLikelihood) < mTol)
+      break;
+    mLogLikelihood = logLikelihood;
+    Eigen::Matrix<double, M, 1> weights =
+      numPoints.template cast<double>() / mNumPoints;
+    try {
+      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
+      for (size_t j = 0; j < K; ++j)
+        mMixtureDist.setCompDistribution(estComp[j].getDistribution(), j);
+    }
+    catch (...) {
+      mValid = false;
+    }
+    numIter++;
+  }
+  return numIter;
+}
+
+template <typename C, size_t M>
+size_t EstimatorML<MixtureDistribution<C, M> >::addPoints(const Container&
     points) {
-  addPoints(points.begin(), points.end());
+  return addPointsEM(points.begin(), points.end());
 }
