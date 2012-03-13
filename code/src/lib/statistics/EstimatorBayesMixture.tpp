@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <set>
-
 #include "statistics/Randomizer.h"
 
 /******************************************************************************/
@@ -206,62 +204,47 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   size_t numIter = 0;
   const static Randomizer<double, Eigen::Dynamic> randomizer;
   size_t K = 0;
-  std::set<size_t> compId;
-  compId.insert(K);
+  std::vector<EstimatorBayes<C> > estComp;
+  estComp.push_back(EstimatorBayes<C>(mCompPrior[0]));
+  std::vector<size_t> numPointsComp(1, numPoints);
   while (numIter != mMaxNumIter) {
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-      Eigen::Matrix<double, Eigen::Dynamic, 1> probabilities(compId.size() + 1);
       const size_t row = it - itStart;
-      std::vector<size_t> numPointsComp(compId.size(), 0);
-      size_t comp = 0;
-      for (std::set<size_t>::const_iterator itComp = compId.begin();
-          itComp != compId.end(); ++itComp) {
-        EstimatorBayes<C> estComp(mCompPrior[0]);
-        for (ConstPointIterator itInt = itStart; itInt != itEnd; ++itInt) {
-          const size_t rowInt = itInt - itStart;
-          if (assignments(rowInt) == *itComp && rowInt != row) {
-            estComp.addPoint(*itInt);
-            numPointsComp[comp]++;
-          }
-        }
-        probabilities(comp) = numPointsComp[comp] * estComp.getPredDist()(*it);
-        comp++;
+      numPointsComp[assignments(row)]--;
+      if (numPointsComp[assignments(row)] == 0) {
+        numPointsComp.erase(numPointsComp.begin() + assignments(row));
+        estComp.erase(estComp.begin() + assignments(row));
+        for (size_t i = 0; i < numPoints; ++i)
+          if (assignments(i) > assignments(row))
+            assignments(i)--;
+        K--;
       }
-      std::set<size_t> compIdCopy = compId;
-      comp = 0;
-      for (std::set<size_t>::const_iterator itComp = compId.begin();
-          itComp != compId.end(); ++itComp) {
-        if (numPointsComp[comp] == 0) {
-          compIdCopy.erase(*itComp);
-        }
-        comp++;
-      }
-      compId = compIdCopy;
-      EstimatorBayes<C> estComp(mCompPrior[0]);
-      estComp.addPoint(*it);
-      probabilities(probabilities.size() - 1) =
-        alpha * estComp.getPredDist()(*it);
+      Eigen::Matrix<double, Eigen::Dynamic, 1>
+        probabilities(estComp.size() + 1);
+      for (size_t i = 0; i < estComp.size(); ++i)
+        probabilities(i) = numPointsComp[i] * estComp[i].getPredDist()(*it);
+      EstimatorBayes<C> estCompNew(mCompPrior[0]);
+      probabilities(estComp.size()) = alpha * estCompNew.getPredDist()(*it);
       probabilities /= probabilities.sum();
       const size_t assignment = randomizer.sampleCategorical(probabilities);
-      if (assignment == (probabilities.size() - 1))
+      if (assignment == K + 1) {
+        estComp.push_back(estCompNew);
+        numPointsComp.push_back(1);
         K++;
-      assignments(row) = K;
-      compId.insert(K);
-    }
-    std::cout << "Iteration: " << numIter << " K=" << compId.size()
-      << std::endl;
-    for (std::set<size_t>::const_iterator itComp = compId.begin();
-        itComp != compId.end(); ++itComp) {
-      EstimatorBayes<C> estComp(mCompPrior[0]);
-      for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-        const size_t row = it - itStart;
-        if (assignments(row) == *itComp)
-          estComp.addPoint(*it);
       }
-      std::cout << "mean: " << std::get<0>(estComp.getDist().getMode())
-        << " variance: " << std::get<1>(estComp.getDist().getMode())
-        << std::endl;
+      else
+        numPointsComp[assignment]++;
+      assignments(row) = assignment;
     }
+    for (size_t i = 0; i < K; ++i)
+      estComp[i] = EstimatorBayes<C>(mCompPrior[0]);
+    for (ConstPointIterator it = itStart; it != itEnd; ++it)
+      estComp[assignments[it - itStart]].addPoint(*it);
+    std::cout << "Iteration: " << numIter << " K=" << K << std::endl;
+    for (size_t i = 0; i < K; ++i)
+      std::cout << "mean: " << std::get<0>(estComp[i].getDist().getMode())
+        << " variance: " << std::get<1>(estComp[i].getDist().getMode())
+        << " points: " << numPointsComp[i] << std::endl;
     numIter++;
   }
 }
