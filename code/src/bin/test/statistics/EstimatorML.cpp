@@ -78,7 +78,8 @@ int main(int argc, char** argv) {
   distributionsNorm1.push_back(NormalDistribution<1>(-5, 1.3));
   distributionsNorm1.push_back(NormalDistribution<1>(-10, 1.5));
   MixtureSampleDistribution<NormalDistribution<1>, 5> distMixtNorm1(
-    distributionsNorm1, CategoricalDistribution<5>());
+    distributionsNorm1, CategoricalDistribution<5>(
+    (Eigen::Matrix<double, 5, 1>() << 0.1, 0.2, 0.2, 0.4, 0.1).finished()));
   std::vector<double> samplesMixtNorm1;
   distMixtNorm1.getSamples(samplesMixtNorm1, 1000);
   std::vector<NormalDistribution<1> > distributionsNorm1Init;

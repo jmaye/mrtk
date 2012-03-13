@@ -99,16 +99,17 @@ int main(int argc, char** argv) {
   distributionsNorm1.push_back(NormalDistribution<1>(-5, 1.3));
   distributionsNorm1.push_back(NormalDistribution<1>(-10, 1.5));
   MixtureSampleDistribution<NormalDistribution<1>, 5> distMixtNorm1(
-    distributionsNorm1, CategoricalDistribution<5>());
+    distributionsNorm1, CategoricalDistribution<5>(
+    (Eigen::Matrix<double, 5, 1>() << 0.1, 0.2, 0.2, 0.4, 0.1).finished()));
   std::vector<double> samplesMixtNorm1;
   distMixtNorm1.getSamples(samplesMixtNorm1, 1000);
   DirichletDistribution<5> dirPrior;
   std::vector<NormalScaledInvChiSquareDistribution> compPrior;
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(0, 1, 1, 1.5));
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(5, 1, 1, 1.7));
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(10, 1, 1, 1.2));
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(-5, 1, 1, 1.3));
-  compPrior.push_back(NormalScaledInvChiSquareDistribution(-10, 1, 1, 1.5));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(0.5, 1, 1, 1.3));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(5.2, 1, 1, 1.2));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(10.6, 1, 1, 1.5));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(-5.4, 1, 1, 1.8));
+  compPrior.push_back(NormalScaledInvChiSquareDistribution(-10.2, 1, 1, 1.2));
   EstimatorBayes<MixtureDistribution<NormalDistribution<1>, 5> >
     estMixtNorm1(dirPrior, compPrior, 100);
   double before = Timestamp::now();
@@ -120,6 +121,11 @@ int main(int argc, char** argv) {
   estMixtNorm1.addPoints2(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
   after = Timestamp::now();
   std::cout << "Estimation12: " << std::endl << estMixtNorm1 << std::endl;
+  std::cout << "Time: " << after - before << " [s]" << std::endl;
+  before = Timestamp::now();
+  estMixtNorm1.addPoints3(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
+  after = Timestamp::now();
+  std::cout << "Estimation13: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Time: " << after - before << " [s]" << std::endl;
 //  LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);
 //  std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;

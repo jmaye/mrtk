@@ -16,7 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/PredictiveDistribution.h"
+#include <set>
+
+#include "statistics/Randomizer.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -109,84 +111,157 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   components.reserve(mCompPrior.size());
   for (size_t i = 0; i < mCompPrior.size(); ++i)
     components.push_back(mCompPrior[i].getSample());
+  EstimatorBayes<CategoricalDistribution<M> > estDir(mDirPrior);
+  std::vector<EstimatorBayes<C> > estComp;
+  estComp.reserve(mCompPrior.size());
+  for (size_t i = 0; i < mCompPrior.size(); ++i)
+    estComp.push_back(EstimatorBayes<C>(mCompPrior[i]));
   size_t numIter = 0;
   while (numIter != mMaxNumIter) {
-    EstimatorBayes<CategoricalDistribution<M>, DirichletDistribution<M> >
-      estDir(mDirPrior);
-    std::vector<EstimatorBayes<C> > estComp;
-    estComp.reserve(mCompPrior.size());
+    estDir = EstimatorBayes<CategoricalDistribution<M> >(mDirPrior);
     for (size_t i = 0; i < mCompPrior.size(); ++i)
-      estComp.push_back(EstimatorBayes<C>(mCompPrior[i]));
-    double newLogLikelihood = 0;
+      estComp[i] = EstimatorBayes<C>(mCompPrior[i]);
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
       Eigen::Matrix<double, M, 1> probabilities(mCompPrior.size());
       for (size_t i = 0; i < mCompPrior.size(); ++i)
         probabilities(i) = weights(i) * C(components[i])(*it);
-      newLogLikelihood += log(probabilities.sum());
       probabilities /= probabilities.sum();
       CategoricalDistribution<M> assignDist(probabilities);
       typename CategoricalDistribution<M>::RandomVariable assignment =
         assignDist.getSample();
       estDir.addPoint(assignment);
       for (size_t i = 0; i < mCompPrior.size(); ++i)
-        if (assignment(i))
+        if (assignment(i)) {
           estComp[i].addPoint(*it);
+          break;
+        }
     }
     weights = estDir.getDist().getSample();
     for (size_t i = 0; i < mCompPrior.size(); ++i)
       components[i] = estComp[i].getDist().getSample();
-//    std::cout << "weights: " << weights.transpose() << std::endl;
-//    for (size_t i = 0; i < mCompPrior.size(); ++i)
-//      std::cout << "mean: " << std::get<0>(components[i]) << " variance: "
-//        << std::get<1>(components[i]) << std::endl;
     numIter++;
   }
+  std::cout << "weights mode: " << estDir.getDist().getMode().transpose()
+    << std::endl;
+  std::cout << "components mode: " << std::endl;
+  for (size_t i = 0; i < mCompPrior.size(); ++i)
+    std::cout << "mean: " << std::get<0>(estComp[i].getDist().getMode())
+      << " variance: " << std::get<1>(estComp[i].getDist().getMode())
+      << std::endl;
 }
 
 template <typename C, size_t M>
 void EstimatorBayes<MixtureDistribution<C, M>,
     typename ConjugatePrior<C>::Result>::addPoints2(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
-  typename DirichletDistribution<M>::RandomVariable weights =
-    mDirPrior.getSample();
   EstimatorBayes<CategoricalDistribution<M> > estDir(mDirPrior);
   std::vector<EstimatorBayes<C> > estComp;
   estComp.reserve(mCompPrior.size());
-  std::vector<typename PredictiveDistribution<C>::Result> predDist;
-  predDist.reserve(mCompPrior.size());
-  for (size_t i = 0; i < mCompPrior.size(); ++i) {
+  for (size_t i = 0; i < mCompPrior.size(); ++i)
     estComp.push_back(EstimatorBayes<C>(mCompPrior[i]));
-    predDist.push_back(estComp[i].getPredDist());
-  }
   size_t numIter = 0;
   while (numIter != mMaxNumIter) {
-    double newLogLikelihood = 0;
+    EstimatorBayes<CategoricalDistribution<M> > estDirNew(mDirPrior);
+    std::vector<EstimatorBayes<C> > estCompNew;
+    estCompNew.reserve(mCompPrior.size());
     for (size_t i = 0; i < mCompPrior.size(); ++i)
-      estComp[i] = EstimatorBayes<C>(mCompPrior[i]);
-    estDir = EstimatorBayes<CategoricalDistribution<M> >(mDirPrior);
+      estCompNew.push_back(EstimatorBayes<C>(mCompPrior[i]));
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
       Eigen::Matrix<double, M, 1> probabilities(mCompPrior.size());
       for (size_t i = 0; i < mCompPrior.size(); ++i)
-        probabilities(i) = weights(i) * predDist[i](*it);
-      newLogLikelihood += log(probabilities.sum());
+        probabilities(i) = estDir.getDist().getAlpha(i) *
+          estComp[i].getPredDist()(*it);
       probabilities /= probabilities.sum();
       CategoricalDistribution<M> assignDist(probabilities);
       typename CategoricalDistribution<M>::RandomVariable assignment =
         assignDist.getSample();
-      estDir.addPoint(assignment);
+      estDirNew.addPoint(assignment);
       for (size_t i = 0; i < mCompPrior.size(); ++i)
-        if (assignment(i))
-          estComp[i].addPoint(*it);
+        if (assignment(i)) {
+          estCompNew[i].addPoint(*it);
+          break;
+        }
     }
-    weights = estDir.getDist().getSample();
-    for (size_t i = 0; i < mCompPrior.size(); ++i)
-      predDist[i] = estComp[i].getPredDist();
-//    std::cout << "weights mode: " << estDir.getDist().getMode().transpose()
-//      << std::endl;
-//    for (size_t i = 0; i < mCompPrior.size(); ++i)
-//      std::cout << "mean mode: " << std::get<0>(estComp[i].getDist().getMode())
-//        << " variance mode: " << std::get<1>(estComp[i].getDist().getMode())
-//        << std::endl;
+    estDir = estDirNew;
+    estComp = estCompNew;
+    numIter++;
+  }
+  std::cout << "weights mode: " << estDir.getDist().getMode().transpose()
+    << std::endl;
+  std::cout << "components mode: " << std::endl;
+  for (size_t i = 0; i < mCompPrior.size(); ++i)
+    std::cout << "mean: " << std::get<0>(estComp[i].getDist().getMode())
+      << " variance: " << std::get<1>(estComp[i].getDist().getMode())
+      << std::endl;
+}
+
+template <typename C, size_t M>
+void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::addPoints3(const
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+  const size_t numPoints = itEnd - itStart;
+  Eigen::Matrix<int, Eigen::Dynamic, 1> assignments =
+    Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(numPoints);
+  const double alpha = 1.0;
+  size_t numIter = 0;
+  const static Randomizer<double, Eigen::Dynamic> randomizer;
+  size_t K = 0;
+  std::set<size_t> compId;
+  compId.insert(K);
+  while (numIter != mMaxNumIter) {
+    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+      Eigen::Matrix<double, Eigen::Dynamic, 1> probabilities(compId.size() + 1);
+      const size_t row = it - itStart;
+      std::vector<size_t> numPointsComp(compId.size(), 0);
+      size_t comp = 0;
+      for (std::set<size_t>::const_iterator itComp = compId.begin();
+          itComp != compId.end(); ++itComp) {
+        EstimatorBayes<C> estComp(mCompPrior[0]);
+        for (ConstPointIterator itInt = itStart; itInt != itEnd; ++itInt) {
+          const size_t rowInt = itInt - itStart;
+          if (assignments(rowInt) == *itComp && rowInt != row) {
+            estComp.addPoint(*itInt);
+            numPointsComp[comp]++;
+          }
+        }
+        probabilities(comp) = numPointsComp[comp] * estComp.getPredDist()(*it);
+        comp++;
+      }
+      std::set<size_t> compIdCopy = compId;
+      comp = 0;
+      for (std::set<size_t>::const_iterator itComp = compId.begin();
+          itComp != compId.end(); ++itComp) {
+        if (numPointsComp[comp] == 0) {
+          compIdCopy.erase(*itComp);
+        }
+        comp++;
+      }
+      compId = compIdCopy;
+      EstimatorBayes<C> estComp(mCompPrior[0]);
+      estComp.addPoint(*it);
+      probabilities(probabilities.size() - 1) =
+        alpha * estComp.getPredDist()(*it);
+      probabilities /= probabilities.sum();
+      const size_t assignment = randomizer.sampleCategorical(probabilities);
+      if (assignment == (probabilities.size() - 1))
+        K++;
+      assignments(row) = K;
+      compId.insert(K);
+    }
+    std::cout << "Iteration: " << numIter << " K=" << compId.size()
+      << std::endl;
+    for (std::set<size_t>::const_iterator itComp = compId.begin();
+        itComp != compId.end(); ++itComp) {
+      EstimatorBayes<C> estComp(mCompPrior[0]);
+      for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+        const size_t row = it - itStart;
+        if (assignments(row) == *itComp)
+          estComp.addPoint(*it);
+      }
+      std::cout << "mean: " << std::get<0>(estComp.getDist().getMode())
+        << " variance: " << std::get<1>(estComp.getDist().getMode())
+        << std::endl;
+    }
     numIter++;
   }
 }

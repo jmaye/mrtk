@@ -77,6 +77,9 @@ public:
   void addPoints2(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
   /// Add points to the estimator
+  void addPoints3(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd);
+  /// Add points to the estimator
   void addPoints(const Container& points);
   /** @}
     */
