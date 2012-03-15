@@ -32,7 +32,7 @@
 #include <qwt-qt4/qwt_plot_magnifier.h>
 
 #include "data-structures/PointCloud.h"
-#include "utils/RandomColors.h"
+#include "utils/Colors.h"
 
 /** The ScatterPlot2v class is a plotting tool for bivariate scatter plots.
     \brief 2-v scatter plot
@@ -69,8 +69,8 @@ protected:
     @{
     */
   /// Add a points plot with the specified color
-  void addPoints(const PointCloud<double, 2>::Container& data, const Color&
-    color);
+  void addPoints(const PointCloud<double, 2>::Container& data, const
+    Colors::Color& color);
   /** @}
     */
 

@@ -28,7 +28,7 @@
 
 #include "data-structures/PointCloud.h"
 #include "visualization/GLView.h"
-#include "utils/RandomColors.h"
+#include "utils/Colors.h"
 
 /** The PointViewer3d class is a plotting tool 3d points.
     \brief 3d points viewer
@@ -106,7 +106,7 @@ protected:
   /// GL viewer
   GLView mGLView;
   /// Point cloud to be displayed
-  std::vector<std::tuple<PointCloud<>, Color> > mPointClouds;
+  std::vector<std::tuple<PointCloud<>, Colors::Color> > mPointClouds;
   /// Palette
   Palette mPalette;
   /** @}

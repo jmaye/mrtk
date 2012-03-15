@@ -31,10 +31,10 @@ ScatterPlot<2>::ScatterPlot(const std::string& title, const
     mPanner(canvas()),
     mMagnifier(canvas()) {
   QwtPlot::setTitle(QString(title.c_str()));
-  Color color;
-  color.mRedColor = 0;
-  color.mGreenColor = 0;
-  color.mBlueColor = 1;
+  Colors::Color color;
+  color.mRed = 0;
+  color.mGreen = 0;
+  color.mBlue = 1;
   addPoints(data, color);
   mGrid.enableX(true);
   mGrid.enableY(true);
@@ -73,12 +73,8 @@ ScatterPlot<2>::ScatterPlot(const std::string& title, const
   std::unordered_map<size_t, std::vector<PointCloud<double, 2>::Point> > points;
   for (auto it = data.cbegin(); it != data.cend(); ++it)
     points[std::get<1>(*it)].push_back(std::get<0>(*it));
-  std::vector<Color> colors;
-  randomColors(colors, points.size());
-  std::vector<Color>::const_iterator itColors;
-  for (auto itPoints = points.cbegin(), itColors = colors.cbegin();
-      itPoints != points.cend(); ++itPoints, ++itColors)
-    addPoints(itPoints->second, *itColors);
+  for (auto it = points.cbegin(); it != points.cend(); ++it)
+    addPoints(it->second, Colors::genColor(it->first));
   replot();
 }
 
@@ -92,7 +88,7 @@ ScatterPlot<2>::~ScatterPlot() {
 /******************************************************************************/
 
 void ScatterPlot<2>::addPoints(const PointCloud<double, 2>::Container& data,
-    const Color& color) {
+    const Colors::Color& color) {
   QVector<double> xData;
   QVector<double> yData;
   xData.reserve(data.size());
@@ -103,8 +99,8 @@ void ScatterPlot<2>::addPoints(const PointCloud<double, 2>::Container& data,
   }
   QwtPlotCurve* points = new QwtPlotCurve();
   points->setData(xData, yData);
-  points->setPen(QPen(QColor(color.mRedColor * 255, color.mGreenColor * 255,
-    color.mBlueColor * 255)));
+  points->setPen(QPen(QColor(color.mRed * 255, color.mGreen* 255,
+    color.mBlue * 255)));
   points->setStyle(QwtPlotCurve::Dots);
   points->attach(this);
   mPoints.push_back(points);

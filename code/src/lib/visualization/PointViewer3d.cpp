@@ -28,11 +28,12 @@ PointViewer3d::PointViewer3d(const PointCloud<>::Container& data) {
   PointCloud<> pointCloud;
   for (auto it = data.cbegin(); it != data.cend(); ++it)
     pointCloud.insertPoint(*it);
-  Color color;
-  color.mRedColor = 0;
-  color.mGreenColor = 0;
-  color.mBlueColor = 1;
-  mPointClouds.push_back(std::tuple<PointCloud<>, Color>(pointCloud, color));
+  Colors::Color color;
+  color.mRed = 0;
+  color.mGreen = 0;
+  color.mBlue = 1;
+  mPointClouds.push_back(std::tuple<PointCloud<>, Colors::Color>(pointCloud,
+    color));
   connect(&GLView::getInstance().getScene(), SIGNAL(render(GLView&, Scene&)),
     this, SLOT(render(GLView&, Scene&)));
   setBackgroundColor(Qt::white);
@@ -45,17 +46,12 @@ PointViewer3d::PointViewer3d(const
   std::unordered_map<size_t, std::vector<PointCloud<>::Point> > points;
   for (auto it = data.cbegin(); it != data.cend(); ++it)
     points[std::get<1>(*it)].push_back(std::get<0>(*it));
-  std::vector<Color> colors;
-  randomColors(colors, points.size());
-  std::vector<Color>::const_iterator itColors;
-  for (auto itPoints = points.cbegin(), itColors = colors.cbegin();
-      itPoints != points.cend(); ++itPoints, ++itColors) {
+  for (auto it = points.cbegin(); it != points.cend(); ++it) {
     PointCloud<> pointCloud;
-    for (auto itP = itPoints->second.cbegin(); itP != itPoints->second.cend();
-        ++itP)
+    for (auto itP = it->second.cbegin(); itP != it->second.cend(); ++itP)
       pointCloud.insertPoint(*itP);
-    mPointClouds.push_back(std::tuple<PointCloud<>, Color>(pointCloud,
-      *itColors));
+    mPointClouds.push_back(std::tuple<PointCloud<>, Colors::Color>(pointCloud,
+      Colors::genColor(it->first)));
   }
   connect(&GLView::getInstance().getScene(), SIGNAL(render(GLView&, Scene&)),
     this, SLOT(render(GLView&, Scene&)));
@@ -175,8 +171,8 @@ void PointViewer3d::renderPoints(double size, bool smooth) {
     glDisable(GL_POINT_SMOOTH);
   glBegin(GL_POINTS);
   for (auto it = mPointClouds.cbegin(); it != mPointClouds.cend(); ++it) {
-    const Color& color = std::get<1>(*it);
-    glColor3f(color.mRedColor, color.mGreenColor, color.mBlueColor);
+    const Colors::Color& color = std::get<1>(*it);
+    glColor3f(color.mRed, color.mGreen, color.mBlue);
     const PointCloud<>& pointCloud = std::get<0>(*it);
     for (auto itP = pointCloud.getPointBegin(); itP != pointCloud.getPointEnd();
         ++itP)
