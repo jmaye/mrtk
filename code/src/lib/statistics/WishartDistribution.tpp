@@ -27,9 +27,7 @@
 
 template <size_t M>
 WishartDistribution<M>::WishartDistribution(double degrees,
-    const Scale& scale) :
-    mDegrees(degrees),
-    mScale(scale) {
+    const Scale& scale) {
   setDegrees(degrees);
   setScale(scale);
 }
@@ -97,9 +95,7 @@ void WishartDistribution<M>::setDegrees(double degrees)
       "than the dimension",
       __FILE__, __LINE__);
   mDegrees = degrees;
-  LogGammaFunction<double> logGammaFunction((size_t)mScale.rows());
-  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) + mDegrees * 0.5 *
-    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
+  computeNormalizer();
 }
 
 template <size_t M>
@@ -118,9 +114,7 @@ void WishartDistribution<M>::setScale(const Scale& scale)
   mDeterminant = scale.determinant();
   mInverseScale = scale.inverse();
   mScale = scale;
-  LogGammaFunction<double> logGammaFunction((size_t)mScale.rows());
-  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) + mDegrees * 0.5 *
-    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
+  computeNormalizer();
 }
 
 template <size_t M>
@@ -138,6 +132,13 @@ const typename WishartDistribution<M>::Scale&
 template <size_t M>
 double WishartDistribution<M>::getDeterminant() const {
   return mDeterminant;
+}
+
+template <size_t M>
+void WishartDistribution<M>::computeNormalizer() {
+  LogGammaFunction<double> logGammaFunction((size_t)mScale.rows());
+  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) + mDegrees * 0.5 *
+    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
 }
 
 template <size_t M>

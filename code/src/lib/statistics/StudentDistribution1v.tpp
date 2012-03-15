@@ -96,9 +96,7 @@ void StudentDistribution<1>::setScale(double scale)
       __FILE__, __LINE__);
   mInverseScale = 1.0 / scale;
   mScale = scale;
-  const LogGammaFunction<double> logGammaFunction;
-  mNormalizer = logGammaFunction(mDegrees * 0.5) + 0.5 * log(mDegrees *
-    M_PI) + 0.5 * log(mScale) - logGammaFunction(0.5 * (mDegrees + 1));
+  computeNormalizer();
 }
 
 double StudentDistribution<1>::getScale() const {
@@ -112,9 +110,7 @@ void StudentDistribution<1>::setDegrees(double degrees)
       "StudentDistribution<1>::setDegrees(): degrees must be strictly positive",
       __FILE__, __LINE__);
   mDegrees = degrees;
-  const LogGammaFunction<double> logGammaFunction;
-  mNormalizer = logGammaFunction(mDegrees * 0.5) +  0.5 * log(mDegrees *
-    M_PI) + 0.5 * log(mScale) - logGammaFunction(0.5 * (mDegrees + 1));
+  computeNormalizer();
 }
 
 double StudentDistribution<1>::getDegrees() const {
@@ -123,6 +119,12 @@ double StudentDistribution<1>::getDegrees() const {
 
 double StudentDistribution<1>::getInverseScale() const {
   return mInverseScale;
+}
+
+void StudentDistribution<1>::computeNormalizer() {
+  const LogGammaFunction<double> logGammaFunction;
+  mNormalizer = logGammaFunction(mDegrees * 0.5) + 0.5 * log(mDegrees *
+    M_PI) + 0.5 * log(mScale) - logGammaFunction(0.5 * (mDegrees + 1));
 }
 
 double StudentDistribution<1>::getNormalizer() const {

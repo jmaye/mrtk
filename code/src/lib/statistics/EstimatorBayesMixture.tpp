@@ -102,17 +102,24 @@ void EstimatorBayes<MixtureDistribution<C, M>,
 }
 
 template <typename C, size_t M>
+const Eigen::Matrix<int, Eigen::Dynamic, 1>&
+    EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::getAssignments() const {
+  return mAssignments;
+}
+
+template <typename C, size_t M>
 void EstimatorBayes<MixtureDistribution<C, M>,
     typename ConjugatePrior<C>::Result>::addPoints1(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   const size_t numPoints = itEnd - itStart;
   const size_t K = mCompPrior.size();
-  Eigen::Matrix<int, Eigen::Dynamic, 1> assignments(numPoints);
+  mAssignments.resize(numPoints);
   typename DirichletDistribution<M>::RandomVariable weights =
     mDirPrior.getSample();
   const static Randomizer<double, M> randomizer;
   for (size_t i = 0; i < numPoints; ++i)
-    assignments(i) = randomizer.sampleCategorical(weights);
+    mAssignments(i) = randomizer.sampleCategorical(weights);
   std::vector<typename ConjugatePrior<C>::Result::RandomVariable>
     components;
   components.reserve(K);
@@ -135,14 +142,14 @@ void EstimatorBayes<MixtureDistribution<C, M>,
         probabilities(i) = weights(i) * C(components[i])(*it);
       probabilities /= probabilities.sum();
       const size_t assignment = randomizer.sampleCategorical(probabilities);
-      assignments(row) = assignment;
+      mAssignments(row) = assignment;
     }
     typename MultinomialDistribution<M>::RandomVariable numPointsComp =
       MultinomialDistribution<M>::RandomVariable::Zero(K);
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
       const size_t row = it - itStart;
-      estComp[assignments(row)].addPoint(*it);
-      numPointsComp(assignments(row))++;
+      estComp[mAssignments(row)].addPoint(*it);
+      numPointsComp(mAssignments(row))++;
     }
     estDir.addPoint(numPointsComp);
     weights = estDir.getDist().getSample();
@@ -154,9 +161,10 @@ void EstimatorBayes<MixtureDistribution<C, M>,
     << std::endl;
   std::cout << "components mode: " << std::endl;
   for (size_t i = 0; i < mCompPrior.size(); ++i)
-    std::cout << "mean: " << std::get<0>(estComp[i].getDist().getMode())
-      << " variance: " << std::get<1>(estComp[i].getDist().getMode())
-      << std::endl;
+    std::cout << "mean: " << std::endl <<
+      std::get<0>(estComp[i].getDist().getMode()) << std::endl
+      << "(co)variance: " << std::endl <<
+      std::get<1>(estComp[i].getDist().getMode()) << std::endl;
 }
 
 template <typename C, size_t M>
@@ -167,12 +175,12 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   const size_t K = mCompPrior.size();
   Eigen::Matrix<double, M, 1> numPointsComp =
     Eigen::Matrix<double, M, 1>::Zero(K);
-  Eigen::Matrix<int, Eigen::Dynamic, 1> assignments(numPoints);
+  mAssignments.resize(numPoints);
   Eigen::Matrix<double, M, 1> probabilities = mDirPrior.getSample();
   const static Randomizer<double, M> randomizer;
   for (size_t i = 0; i < numPoints; ++i) {
-    assignments(i) = randomizer.sampleCategorical(probabilities);
-    numPointsComp(assignments(i))++;
+    mAssignments(i) = randomizer.sampleCategorical(probabilities);
+    numPointsComp(mAssignments(i))++;
   }
   std::vector<EstimatorBayes<C> > estComp;
   estComp.reserve(K);
@@ -183,7 +191,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   while (numIter != mMaxNumIter) {
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
       const size_t row = it - itStart;
-      numPointsComp(assignments(row))--;
+      numPointsComp(mAssignments(row))--;
       Eigen::Matrix<double, M, 1> probabilities(K);
       for (size_t i = 0; i < K; ++i)
         probabilities(i) = (numPointsComp(i) + alpha / K) *
@@ -191,13 +199,13 @@ void EstimatorBayes<MixtureDistribution<C, M>,
       probabilities /= probabilities.sum();
       const size_t assignment = randomizer.sampleCategorical(probabilities);
       numPointsComp(assignment)++;
-      assignments(row) = assignment;
+      mAssignments(row) = assignment;
     }
     for (size_t i = 0; i < K; ++i)
       estComp[i] = EstimatorBayes<C>(mCompPrior[i]);
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
       const size_t row = it - itStart;
-      estComp[assignments[row]].addPoint(*it);
+      estComp[mAssignments[row]].addPoint(*it);
     }
     numIter++;
   }
@@ -205,9 +213,10 @@ void EstimatorBayes<MixtureDistribution<C, M>,
     << std::endl;
   std::cout << "components mode: " << std::endl;
   for (size_t i = 0; i < mCompPrior.size(); ++i)
-    std::cout << "mean: " << std::get<0>(estComp[i].getDist().getMode())
-      << " variance: " << std::get<1>(estComp[i].getDist().getMode())
-      << std::endl;
+    std::cout << "mean: " << std::endl <<
+      std::get<0>(estComp[i].getDist().getMode()) << std::endl
+      << "(co)variance: " << std::endl <<
+      std::get<1>(estComp[i].getDist().getMode()) << std::endl;
 }
 
 template <typename C, size_t M>
@@ -215,9 +224,8 @@ void EstimatorBayes<MixtureDistribution<C, M>,
     typename ConjugatePrior<C>::Result>::addPoints3(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   const size_t numPoints = itEnd - itStart;
-  Eigen::Matrix<int, Eigen::Dynamic, 1> assignments =
-    Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(numPoints);
-  double alpha = 0.5;
+  mAssignments = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(numPoints);
+  double alpha = 30.0;
   const double a = 1.0;
   const double b = 1.0;
   size_t numIter = 0;
@@ -229,13 +237,13 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   while (numIter != mMaxNumIter) {
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
       const size_t row = it - itStart;
-      numPointsComp[assignments(row)]--;
-      if (numPointsComp[assignments(row)] == 0) {
-        numPointsComp.erase(numPointsComp.begin() + assignments(row));
-        estComp.erase(estComp.begin() + assignments(row));
+      numPointsComp[mAssignments(row)]--;
+      if (numPointsComp[mAssignments(row)] == 0) {
+        numPointsComp.erase(numPointsComp.begin() + mAssignments(row));
+        estComp.erase(estComp.begin() + mAssignments(row));
         for (size_t i = 0; i < numPoints; ++i)
-          if (assignments(i) > assignments(row))
-            assignments(i)--;
+          if (mAssignments(i) > mAssignments(row))
+            mAssignments(i)--;
         K--;
       }
       Eigen::Matrix<double, Eigen::Dynamic, 1>
@@ -243,7 +251,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
       for (size_t i = 0; i < estComp.size(); ++i)
         probabilities(i) = numPointsComp[i] * estComp[i].getPredDist()(*it);
       EstimatorBayes<C> estCompNew(mCompPrior[0]);
-      estCompNew.addPoint(*it);
+      //estCompNew.addPoint(*it);
       probabilities(estComp.size()) = alpha * estCompNew.getPredDist()(*it);
       probabilities /= probabilities.sum();
       const size_t assignment = randomizer.sampleCategorical(probabilities);
@@ -254,28 +262,29 @@ void EstimatorBayes<MixtureDistribution<C, M>,
       }
       else
         numPointsComp[assignment]++;
-      assignments(row) = assignment;
+      mAssignments(row) = assignment;
     }
     for (size_t i = 0; i < estComp.size(); ++i)
       estComp[i] = EstimatorBayes<C>(mCompPrior[0]);
     for (ConstPointIterator it = itStart; it != itEnd; ++it) {
       const size_t row = it - itStart;
-      estComp[assignments(row)].addPoint(*it);
+      estComp[mAssignments(row)].addPoint(*it);
     }
-    const double eta = BetaDistribution(alpha + 1, numPoints).getSample()(0);
-    const double pi = (a + K - 1) / (a + K - 1 + numPoints * (b - log(eta)));
-    const size_t assignment =
-      randomizer.sampleCategorical(Eigen::Matrix<double, 2, 1>(pi, 1 - pi));
+//    const double eta = BetaDistribution(alpha + 1, numPoints).getSample()(0);
+////    const double pi = (a + K - 1) / (a + K - 1 + numPoints * (b - log(eta)));
+//    const double pi = (a + K - 1) / (numPoints * (a + K - 1 + (b - log(eta))));
+//    const size_t assignment =
+//      randomizer.sampleCategorical(Eigen::Matrix<double, 2, 1>(pi, 1 - pi));
 //    if (assignment)
 //      alpha = randomizer.sampleGamma(a + K, b - log(eta));
 //    else
 //      alpha = randomizer.sampleGamma(a + K - 1, b - log(eta));
-    std::cout << "Iteration: " << numIter << " K = " << K << " alpha = "
-      << alpha << std::endl;
-    for (size_t i = 0; i < K; ++i)
-      std::cout << "mean: " << std::get<0>(estComp[i].getDist().getMode())
-        << " variance: " << std::get<1>(estComp[i].getDist().getMode())
-        << " points: " << numPointsComp[i] << std::endl;
+//    std::cout << "Iteration: " << numIter << " K = " << K << " alpha = "
+//      << alpha << std::endl;
+//    for (size_t i = 0; i < K; ++i)
+//      std::cout << "mean: " << std::get<0>(estComp[i].getDist().getMode())
+//        << " variance: " << std::get<1>(estComp[i].getDist().getMode())
+//        << " points: " << numPointsComp[i] << std::endl;
     numIter++;
   }
 }

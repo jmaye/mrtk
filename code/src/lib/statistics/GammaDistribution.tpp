@@ -88,8 +88,7 @@ void GammaDistribution<T>::setShape(const T& shape)
       "GammaDistribution::setShape(): shape must be strictly positive",
       __FILE__, __LINE__);
   mShape = shape;
-  LogGammaFunction<T> logGammaFunction;
-  mNormalizer = logGammaFunction(mShape) - mShape * log(mInvScale);
+  computeNormalizer();
 }
 
 template <typename T>
@@ -105,13 +104,18 @@ void GammaDistribution<T>::setInvScale(double invScale)
       "GammaDistribution::setScale(): inverse scale must be strictly positive",
       __FILE__, __LINE__);
   mInvScale = invScale;
-  LogGammaFunction<T> logGammaFunction;
-  mNormalizer = logGammaFunction(mShape) - mShape * log(mInvScale);
+  computeNormalizer();
 }
 
 template <typename T>
 double GammaDistribution<T>::getInvScale() const {
   return mInvScale;
+}
+
+template <typename T>
+void GammaDistribution<T>::computeNormalizer() {
+  LogGammaFunction<T> logGammaFunction;
+  mNormalizer = logGammaFunction(mShape) - mShape * log(mInvScale);
 }
 
 template <typename T>

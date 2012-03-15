@@ -32,6 +32,13 @@ NormalDistribution<M>::NormalDistribution(const Mean& mean, const Covariance&
 }
 
 template <size_t M>
+NormalDistribution<M>::NormalDistribution(const std::tuple<Mean, Covariance>&
+    parameters):
+    mMean(std::get<0>(parameters)) {
+  setCovariance(std::get<1>(parameters));
+}
+
+template <size_t M>
 NormalDistribution<M>::NormalDistribution(const NormalDistribution& other) :
     mMean(other.mMean),
     mCovariance(other.mCovariance),

@@ -121,11 +121,8 @@ void StudentDistribution<M>::setScale(const Scale& scale)
       __FILE__, __LINE__);
   mDeterminant = scale.determinant();
   mInverseScale = scale.inverse();
-  const LogGammaFunction<double> logGammaFunction;
-  mNormalizer = logGammaFunction(mDegrees * 0.5) + mLocation.size() * 0.5 *
-    log(mDegrees * M_PI) + 0.5 * log(mDeterminant) - logGammaFunction(0.5 *
-    (mDegrees + mLocation.size()));
   mScale = scale;
+  computeNormalizer();
 }
 
 template <size_t M>
@@ -142,10 +139,7 @@ void StudentDistribution<M>::setDegrees(double degrees)
       "StudentDistribution<M>::setDegrees(): degrees must be strictly positive",
       __FILE__, __LINE__);
   mDegrees = degrees;
-  const LogGammaFunction<double> logGammaFunction;
-  mNormalizer = logGammaFunction(mDegrees * 0.5) + mLocation.size() * 0.5 *
-    log(mDegrees * M_PI) + 0.5 * log(mDeterminant) - logGammaFunction(0.5 *
-    (mDegrees + mLocation.size()));
+  computeNormalizer();
 }
 
 template <size_t M>
@@ -162,6 +156,14 @@ const typename StudentDistribution<M>::Scale&
 template <size_t M>
 double StudentDistribution<M>::getDeterminant() const {
   return mDeterminant;
+}
+
+template <size_t M>
+void StudentDistribution<M>::computeNormalizer() {
+  const LogGammaFunction<double> logGammaFunction;
+  mNormalizer = logGammaFunction(mDegrees * 0.5) + mLocation.size() * 0.5 *
+    log(mDegrees * M_PI) + 0.5 * log(mDeterminant) - logGammaFunction(0.5 *
+    (mDegrees + mLocation.size()));
 }
 
 template <size_t M>

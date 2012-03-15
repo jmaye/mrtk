@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
   compPrior.push_back(NormalScaledInvChiSquareDistribution(-5.4, 1, 1, 1.8));
   compPrior.push_back(NormalScaledInvChiSquareDistribution(-10.2, 1, 1, 1.2));
   EstimatorBayes<MixtureDistribution<NormalDistribution<1>, 5> >
-    estMixtNorm1(dirPrior, compPrior, 200);
+    estMixtNorm1(dirPrior, compPrior, 10);
   double before = Timestamp::now();
   estMixtNorm1.addPoints1(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
   double after = Timestamp::now();

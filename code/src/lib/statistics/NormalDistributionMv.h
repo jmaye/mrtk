@@ -21,6 +21,8 @@
            multivariate normal distribution
   */
 
+#include <tuple>
+
 #include <Eigen/Cholesky>
 
 #include "statistics/ContinuousDistribution.h"
@@ -61,6 +63,8 @@ public:
   /// Constructs the distribution from the parameters
   NormalDistribution(const Mean& mean = Mean::Zero(), const Covariance&
     covariance = Covariance::Identity());
+  /// Constructs a normal distribution from the parameters
+  NormalDistribution(const std::tuple<Mean, Covariance>& parameters);
   /// Copy constructor
   NormalDistribution(const NormalDistribution& other);
   /// Assignment operator

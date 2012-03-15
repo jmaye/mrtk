@@ -88,8 +88,7 @@ void InvGammaDistribution<T>::setShape(const T& shape)
       "InvGammaDistribution::setShape(): shape must be strictly positive",
       __FILE__, __LINE__);
   mShape = shape;
-  const LogGammaFunction<T> logGammaFunction;
-  mNormalizer = logGammaFunction(mShape) - mShape * log(mScale);
+  computeNormalizer();
 }
 
 template <typename T>
@@ -105,13 +104,18 @@ void InvGammaDistribution<T>::setScale(double scale)
       "InvGammaDistribution::setScale(): scale must be strictly positive",
       __FILE__, __LINE__);
   mScale = scale;
-  const LogGammaFunction<T> logGammaFunction;
-  mNormalizer = logGammaFunction(mShape) - mShape * log(mScale);
+  computeNormalizer();
 }
 
 template <typename T>
 double InvGammaDistribution<T>::getScale() const {
   return mScale;
+}
+
+template <typename T>
+void InvGammaDistribution<T>::computeNormalizer() {
+  const LogGammaFunction<T> logGammaFunction;
+  mNormalizer = logGammaFunction(mShape) - mShape * log(mScale);
 }
 
 template <typename T>

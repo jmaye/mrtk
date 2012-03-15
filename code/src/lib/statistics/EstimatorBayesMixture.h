@@ -66,6 +66,8 @@ public:
   /** \name Accessors
     @{
     */
+  /// Returns the assignments
+  const Eigen::Matrix<int, Eigen::Dynamic, 1>& getAssignments() const;
   /// Returns the maximum number of iterations for Gibbs sampling
   size_t getMaxNumIter() const;
   /// Sets the maximum number of iterations for Gibbs sampling
@@ -108,6 +110,8 @@ protected:
   std::vector<typename ConjugatePrior<C>::Result> mCompPrior;
   /// Maximum number of iterations for Gibbs sampling
   size_t mMaxNumIter;
+  /// Assignments
+  Eigen::Matrix<int, Eigen::Dynamic, 1> mAssignments;
   /** @}
     */
 

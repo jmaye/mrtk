@@ -27,9 +27,7 @@
 
 template <size_t M>
 InvWishartDistribution<M>::InvWishartDistribution(double degrees, const
-    Scale& scale) :
-    mDegrees(degrees),
-    mScale(scale) {
+    Scale& scale) {
   setDegrees(degrees);
   setScale(scale);
 }
@@ -98,10 +96,8 @@ void InvWishartDistribution<M>::setDegrees(double degrees)
       "bigger than the dimension",
       __FILE__, __LINE__);
   mDegrees = degrees;
-  const LogGammaFunction<double> logGammaFunction(mScale.rows());
-  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) - mDegrees * 0.5 *
-    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
   mWishartDist.setDegrees(degrees);
+  computeNormalizer();
 }
 
 template <size_t M>
@@ -119,10 +115,8 @@ void InvWishartDistribution<M>::setScale(const Scale& scale)
       __FILE__, __LINE__);
   mDeterminant = scale.determinant();
   mScale = scale;
-  const LogGammaFunction<double> logGammaFunction(mScale.rows());
-  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) - mDegrees * 0.5 *
-    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
-  mWishartDist.setScale(scale);
+  mWishartDist.setScale(scale.inverse());
+  computeNormalizer();
 }
 
 template <size_t M>
@@ -134,6 +128,13 @@ const typename InvWishartDistribution<M>::Scale&
 template <size_t M>
 double InvWishartDistribution<M>::getDeterminant() const {
   return mDeterminant;
+}
+
+template <size_t M>
+void InvWishartDistribution<M>::computeNormalizer() {
+  const LogGammaFunction<double> logGammaFunction(mScale.rows());
+  mNormalizer = mDegrees * mScale.rows() * 0.5 * log(2) - mDegrees * 0.5 *
+    log(mDeterminant) + logGammaFunction(0.5 * mDegrees);
 }
 
 template <size_t M>
@@ -203,5 +204,5 @@ double InvWishartDistribution<M>::logpdf(const RandomVariable& value) const
 template <size_t M>
 typename InvWishartDistribution<M>::RandomVariable
     InvWishartDistribution<M>::getSample() const {
-  return mWishartDist.getSample();
+  return mWishartDist.getSample().inverse();
 }

@@ -92,6 +92,14 @@ public:
     */
 
 protected:
+  /** \name Protected methods
+    @{
+    */
+  /// Computes the normalizer
+  void computeNormalizer();
+  /** @}
+    */
+
   /** \name Stream methods
     @{
     */
