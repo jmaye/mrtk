@@ -248,14 +248,14 @@ void EstimatorBayes<NormalDistribution<1>,
 void EstimatorBayes<NormalDistribution<1>, NormalDistribution<1> >::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 
 void EstimatorBayes<NormalDistribution<1>, ScaledInvChiSquareDistribution>::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 
@@ -263,6 +263,6 @@ void EstimatorBayes<NormalDistribution<1>,
     NormalScaledInvChiSquareDistribution>::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

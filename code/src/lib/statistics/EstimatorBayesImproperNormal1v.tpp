@@ -155,7 +155,7 @@ void EstimatorBayesImproper<NormalDistribution<1> >::addPoint(const Point&
 
 void EstimatorBayesImproper<NormalDistribution<1> >::addPoints(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 

@@ -109,7 +109,7 @@ void EstimatorML<CategoricalDistribution<M> >::addPoint(const Point& point) {
     if (mNumPoints == 1)
       mDistribution.setProbabilities(point.template cast<double>());
     else {
-      Eigen::Matrix<double, M, 1> probabilities =
+      auto probabilities =
         mDistribution.getProbabilities();
       probabilities += (point.template cast<double>() - probabilities) /
         mNumPoints;
@@ -124,7 +124,7 @@ void EstimatorML<CategoricalDistribution<M> >::addPoint(const Point& point) {
 template <size_t M>
 void EstimatorML<CategoricalDistribution<M> >::addPoints(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 

@@ -16,6 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include <unordered_map>
+
 #include "visualization/PointViewer3d.h"
 
 /******************************************************************************/
@@ -23,15 +25,43 @@
 /******************************************************************************/
 
 PointViewer3d::PointViewer3d(const PointCloud<>::Container& data) {
-  for (PointCloud<>::ConstPointIterator it = data.begin(); it != data.end();
-      ++it)
-    mPointCloud.insertPoint(*it);
+  PointCloud<> pointCloud;
+  for (auto it = data.cbegin(); it != data.cend(); ++it)
+    pointCloud.insertPoint(*it);
+  Color color;
+  color.mRedColor = 0;
+  color.mGreenColor = 0;
+  color.mBlueColor = 1;
+  mPointClouds.push_back(std::tuple<PointCloud<>, Color>(pointCloud, color));
   connect(&GLView::getInstance().getScene(), SIGNAL(render(GLView&, Scene&)),
     this, SLOT(render(GLView&, Scene&)));
   setBackgroundColor(Qt::white);
   setFogColor(Qt::white);
   setGroundColor(Qt::lightGray);
-  setPointColor(Qt::blue);
+}
+
+PointViewer3d::PointViewer3d(const
+    std::vector<std::tuple<PointCloud<>::Point, size_t> >& data) {
+  std::unordered_map<size_t, std::vector<PointCloud<>::Point> > points;
+  for (auto it = data.cbegin(); it != data.cend(); ++it)
+    points[std::get<1>(*it)].push_back(std::get<0>(*it));
+  std::vector<Color> colors;
+  randomColors(colors, points.size());
+  std::vector<Color>::const_iterator itColors;
+  for (auto itPoints = points.cbegin(), itColors = colors.cbegin();
+      itPoints != points.cend(); ++itPoints, ++itColors) {
+    PointCloud<> pointCloud;
+    for (auto itP = itPoints->second.cbegin(); itP != itPoints->second.cend();
+        ++itP)
+      pointCloud.insertPoint(*itP);
+    mPointClouds.push_back(std::tuple<PointCloud<>, Color>(pointCloud,
+      *itColors));
+  }
+  connect(&GLView::getInstance().getScene(), SIGNAL(render(GLView&, Scene&)),
+    this, SLOT(render(GLView&, Scene&)));
+  setBackgroundColor(Qt::white);
+  setFogColor(Qt::white);
+  setGroundColor(Qt::lightGray);
 }
 
 PointViewer3d::~PointViewer3d() {
@@ -51,10 +81,6 @@ void PointViewer3d::setFogColor(const QColor& color) {
 
 void PointViewer3d::setGroundColor(const QColor& color) {
   mPalette.setColor("Ground", color);
-}
-
-void PointViewer3d::setPointColor(const QColor& color) {
-  mPalette.setColor("Point", color);
 }
 
 /******************************************************************************/
@@ -148,10 +174,14 @@ void PointViewer3d::renderPoints(double size, bool smooth) {
   else
     glDisable(GL_POINT_SMOOTH);
   glBegin(GL_POINTS);
-  GLView::getInstance().setColor(mPalette, "Point");
-  for (PointCloud<>::ConstPointIterator it =
-      mPointCloud.getPointBegin(); it != mPointCloud.getPointEnd(); ++it)
-    glVertex3f((*it)(0), (*it)(1), (*it)(2));
+  for (auto it = mPointClouds.cbegin(); it != mPointClouds.cend(); ++it) {
+    const Color& color = std::get<1>(*it);
+    glColor3f(color.mRedColor, color.mGreenColor, color.mBlueColor);
+    const PointCloud<>& pointCloud = std::get<0>(*it);
+    for (auto itP = pointCloud.getPointBegin(); itP != pointCloud.getPointEnd();
+        ++itP)
+      glVertex3f((*itP)(0), (*itP)(1), (*itP)(2));
+  }
   glEnd();
   glPointSize(1.0);
   glDisable(GL_POINT_SMOOTH);
@@ -166,7 +196,7 @@ void PointViewer3d::render(GLView& view, Scene& scene) {
   renderBackground();
   glEnable(GL_FOG);
   renderFog(10, 2.0 * 10, 1.0);
-  renderGround(10, 0, 30.0 * M_PI / 180.0, 5.0);
+  //renderGround(10, 0, 30.0 * M_PI / 180.0, 5.0);
   renderAxes(2.5);
   renderPoints(1.0, true);
 }

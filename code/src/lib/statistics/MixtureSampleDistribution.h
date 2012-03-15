@@ -25,6 +25,7 @@
 #define MIXTURESAMPLEDISTRIBUTION_H
 
 #include <vector>
+#include <tuple>
 
 #include "statistics/MixtureDistribution.h"
 #include "statistics/SampleDistribution.h"
@@ -42,6 +43,8 @@ public:
     */
   /// Random variable type
   typedef typename D::RandomVariable RandomVariable;
+  /// Joint random variable type
+  typedef std::tuple<RandomVariable, size_t> JointRandomVariable;
   /** @}
     */
 
@@ -64,10 +67,16 @@ public:
   /** \name Accessors
     @{
     */
-  /// Access a sample drawn from the distribution
-  RandomVariable getSample() const;
+  /// Access a marginal sample drawn from the distribution
+  virtual RandomVariable getSample() const;
+  /// Access a joint sample drawn from the distribution
+  JointRandomVariable getJointSample() const;
   /// Access samples drawn from the distribution
-  void getSamples(std::vector<RandomVariable>& samples, size_t numSamples) const;
+  void getSamples(std::vector<RandomVariable>& samples, size_t numSamples)
+    const;
+  /// Access joint samples drawn from the distribution
+  void getJointSamples(std::vector<JointRandomVariable>& samples, size_t
+    numSamples) const;
   /** @}
     */
 

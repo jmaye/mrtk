@@ -42,7 +42,7 @@ FunctionPlot<F, 2>::FunctionPlot(const std::string& title, const F& function,
   coordinates()->axes[Qwt3D::Z1].setLabelString("z-axis");
   setCoordinateStyle(Qwt3D::FRAME);
   setPlotStyle(Qwt3D::FILLED);
-  const Index& numCells = mDataGrid.getNumCells();
+  auto numCells = mDataGrid.getNumCells();
   mData = new double*[numCells(0)];
   for (size_t i = 0; i < numCells(0); ++i) {
     mData[i] = new double[numCells(1)];
@@ -58,10 +58,9 @@ FunctionPlot<F, 2>::FunctionPlot(const std::string& title, const F& function,
 
 template <typename F>
 FunctionPlot<F, 2>::~FunctionPlot() {
-  const Index& numCells = mDataGrid.getNumCells();
-  for (size_t i = 0; i < numCells(0); ++i) {
+  auto numCells = mDataGrid.getNumCells();
+  for (size_t i = 0; i < numCells(0); ++i)
     delete []mData[i];
-  }
   delete []mData;
 }
 

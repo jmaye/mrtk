@@ -250,11 +250,9 @@ const StudentDistribution<M>&
 template <size_t M>
 void EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::
     addPoint(const Point& point) {
-  const Eigen::Matrix<double, M, 1> mean =
-    (mMeanDist.getPrecision() + mPrecision).inverse() *
+  auto mean = (mMeanDist.getPrecision() + mPrecision).inverse() *
     (mMeanDist.getPrecision() * mMeanDist.getMean() + mPrecision * point);
-  const Eigen::Matrix<double, M, M> covariance =
-    (mMeanDist.getPrecision() + mPrecision).inverse();
+  auto covariance = (mMeanDist.getPrecision() + mPrecision).inverse();
   mMeanDist.setMean(mean);
   mMeanDist.setCovariance(covariance);
   mPredDist.setMean(mean);
@@ -265,7 +263,7 @@ template <size_t M>
 void EstimatorBayes<NormalDistribution<M>, InvWishartDistribution<M> >::
     addPoint(const Point& point) {
   const double degrees = mCovarianceDist.getDegrees() + 1;
-  const Eigen::Matrix<double, M, M> scale = mCovarianceDist.getScale() +
+  auto scale = mCovarianceDist.getScale() +
     outerProduct<double, M>(point - mMean);
   mCovarianceDist.setDegrees(degrees);
   mCovarianceDist.setScale(scale);
@@ -274,10 +272,10 @@ void EstimatorBayes<NormalDistribution<M>, InvWishartDistribution<M> >::
 template <size_t M>
 void EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >::
     addPoint(const Point& point) {
-  const Eigen::Matrix<double, M, 1>& mu = mMeanCovarianceDist.getMu();
+  auto mu = mMeanCovarianceDist.getMu();
   const double kappa = mMeanCovarianceDist.getKappa();
   const double nu = mMeanCovarianceDist.getNu();
-  const Eigen::Matrix<double, M, M>& sigma = mMeanCovarianceDist.getSigma();
+  auto sigma = mMeanCovarianceDist.getSigma();
   mMeanCovarianceDist.setMu((kappa * mu + point) / (kappa + 1));
   mMeanCovarianceDist.setKappa(kappa + 1);
   mMeanCovarianceDist.setNu(nu + 1);
@@ -295,7 +293,7 @@ template <size_t M>
 void EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 
@@ -303,7 +301,7 @@ template <size_t M>
 void EstimatorBayes<NormalDistribution<M>, InvWishartDistribution<M> >::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 
@@ -312,6 +310,6 @@ void EstimatorBayes<NormalDistribution<M>,
     NormalInvWishartDistribution<M> >::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

@@ -88,8 +88,7 @@ typename Histogram<T, M>::Covariance Histogram<T, M>::getCovariance() const {
 template <typename T, size_t M>
 double Histogram<T, M>::getSum() const {
   double sum = 0;
-  for (typename Grid<T, double, M>::ConstCellIterator it = this->getCellBegin();
-      it != this->getCellEnd(); ++it)
+  for (auto it = this->getCellBegin(); it != this->getCellEnd(); ++it)
     sum += *it;
   return sum;
 }
@@ -109,9 +108,8 @@ void Histogram<T, M>::addSamples(const std::vector<Coordinate>& samples) {
 template <typename T, size_t M>
 Histogram<T, M> Histogram<T, M>::getNormalized() const {
   const double sum = getSum();
-  Histogram<T, M> histCopy = *this;
-  for (typename Grid<T, double, M>::CellIterator it = histCopy.getCellBegin();
-      it != histCopy.getCellEnd(); ++it)
+  auto histCopy = *this;
+  for (auto it = histCopy.getCellBegin(); it != histCopy.getCellEnd(); ++it)
     *it /= sum;
   return histCopy;
 }

@@ -32,17 +32,15 @@ HistogramPlot<T, 1>::HistogramPlot(const std::string& title, const
     mMagnifier(canvas()) {
   QVector<double> xData;
   QVector<double> yData;
-  const typename Histogram<T, 1>::Index& numCells = mHistogram.getNumCells();
+  auto numCells = mHistogram.getNumCells();
   xData.reserve(numCells(0));
   yData.reserve(numCells(0));
-  for (typename Histogram<T, 1>::Index i =
-      (typename Histogram<T, 1>::Index() << 0).finished(); i != numCells;
-      mHistogram.incrementIndex(i)) {
+  for (auto i = (typename Histogram<T, 1>::Index() << 0).finished();
+      i != numCells; mHistogram.incrementIndex(i))
     if (mHistogram[i]) {
       xData.push_back(mHistogram.getCoordinates(i)(0));
       yData.push_back(mHistogram[i]);
     }
-  }
   mCurve.setData(xData, yData);
   mCurve.setBrush(QBrush(QColor(Qt::blue)));
   mCurve.setPen(QPen(QColor(Qt::blue), 10));

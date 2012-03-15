@@ -60,10 +60,29 @@ typename MixtureSampleDistribution<D, M>::RandomVariable
 }
 
 template <typename D, size_t M>
+typename MixtureSampleDistribution<D, M>::JointRandomVariable
+    MixtureSampleDistribution<D, M>::getJointSample() const {
+  const static Randomizer<double, M> randomizer;
+  const size_t assignment = randomizer.sampleCategorical(
+    this->mAssignDistribution.getProbabilities());
+  return JointRandomVariable(this->mCompDistributions[assignment].getSample(),
+    assignment);
+}
+
+template <typename D, size_t M>
 void MixtureSampleDistribution<D, M>::getSamples(std::vector<RandomVariable>&
     samples, size_t numSamples) const {
   samples.clear();
   samples.reserve(numSamples);
   for (size_t i = 0; i < numSamples; ++i)
     samples.push_back(getSample());
+}
+
+template <typename D, size_t M>
+void MixtureSampleDistribution<D, M>::getJointSamples(
+    std::vector<JointRandomVariable>& samples, size_t numSamples) const {
+  samples.clear();
+  samples.reserve(numSamples);
+  for (size_t i = 0; i < numSamples; ++i)
+    samples.push_back(getJointSample());
 }

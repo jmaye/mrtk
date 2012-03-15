@@ -99,6 +99,6 @@ void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
 void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

@@ -52,7 +52,7 @@ void PointCloud<X, M>::read(std::istream& stream) {
 template <typename X, size_t M>
 void PointCloud<X, M>::write(std::ostream& stream) const {
   stream << "points: " << std::endl;
-  for (ConstPointIterator it = getPointBegin(); it != getPointEnd(); ++it)
+  for (auto it = getPointBegin(); it != getPointEnd(); ++it)
     stream << it->transpose() << std::endl;
 }
 
@@ -76,7 +76,7 @@ template <typename X, size_t M>
 void PointCloud<X, M>::write(std::ofstream& stream) const {
   if (!stream.is_open())
     throw IOException("PointCloud<X, M>::write(): could not open file");
-  for (ConstPointIterator it = getPointBegin(); it != getPointEnd(); ++it)
+  for (auto it = getPointBegin(); it != getPointEnd(); ++it)
     stream << it->transpose() << std::endl;
 }
 
@@ -124,8 +124,7 @@ void PointCloud<X, M>::insertPoint(const Point& point) {
 
 template <typename X, size_t M>
 void PointCloud<X, M>::merge(const PointCloud& other) {
-  for (ConstPointIterator it = other.getPointBegin(); it != other.getPointEnd();
-    ++it)
+  for (auto it = other.getPointBegin(); it != other.getPointEnd(); ++it)
     insertPoint(*it);
 }
 
@@ -170,7 +169,7 @@ template <typename X, size_t M>
 void PointCloud<X, M>::writeBinary(std::ostream& stream) const {
   const size_t numPoints = mPoints.size();
   stream.write(reinterpret_cast<const char*>(&numPoints), sizeof(numPoints));
-  for (ConstPointIterator it = getPointBegin(); it != getPointEnd(); ++it) {
+  for (auto it = getPointBegin(); it != getPointEnd(); ++it) {
     for (size_t i = 0; i < M; ++i) {
       X value = (*it)(i);
       stream.write(reinterpret_cast<const char*>(&value), sizeof(value));

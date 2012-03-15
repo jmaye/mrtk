@@ -38,7 +38,7 @@ HistogramPlot<T, 2>::HistogramPlot(const std::string& title, const
   coordinates()->axes[Qwt3D::Z1].setLabelString("z-axis");
   setCoordinateStyle(Qwt3D::FRAME);
   setPlotStyle(Qwt3D::FILLED);
-  const typename Histogram<T, 2>::Index& numCells = mHistogram.getNumCells();
+  auto numCells = mHistogram.getNumCells();
   mData = new double*[numCells(0)];
   for (size_t i = 0; i < numCells(0); ++i) {
     mData[i] = new double[numCells(1)];
@@ -46,18 +46,17 @@ HistogramPlot<T, 2>::HistogramPlot(const std::string& title, const
       mData[i][j] = mHistogram.getCell(
         (typename Histogram<T, 2>::Index() << i, j).finished());
   }
-  const typename Histogram<T, 2>::Coordinate minimum = mHistogram.getMinimum();
-  const typename Histogram<T, 2>::Coordinate maximum = mHistogram.getMaximum();
+  auto minimum = mHistogram.getMinimum();
+  auto maximum = mHistogram.getMaximum();
   loadFromData(mData, numCells(0), numCells(1), minimum(0), maximum(0),
     minimum(1), maximum(1));
 }
 
 template <typename T>
 HistogramPlot<T, 2>::~HistogramPlot() {
-  const typename Histogram<T, 2>::Index& numCells = mHistogram.getNumCells();
-  for (size_t i = 0; i < numCells(0); ++i) {
+  auto numCells = mHistogram.getNumCells();
+  for (size_t i = 0; i < numCells(0); ++i)
     delete []mData[i];
-  }
   delete []mData;
 }
 

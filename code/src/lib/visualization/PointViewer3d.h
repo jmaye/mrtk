@@ -23,8 +23,12 @@
 #ifndef POINTVIEWER3D_H
 #define POINTVIEWER3D_H
 
+#include <vector>
+#include <tuple>
+
 #include "data-structures/PointCloud.h"
 #include "visualization/GLView.h"
+#include "utils/RandomColors.h"
 
 /** The PointViewer3d class is a plotting tool 3d points.
     \brief 3d points viewer
@@ -50,6 +54,9 @@ public:
     */
   /// Constructs viewer with points
   PointViewer3d(const PointCloud<>::Container& data);
+  /// Constructs viewer with points with different colors
+  PointViewer3d(const std::vector<std::tuple<PointCloud<>::Point, size_t> >&
+    data);
   /// Destructor
   virtual ~PointViewer3d();
   /** @}
@@ -64,8 +71,6 @@ public:
   void setFogColor(const QColor& color);
   /// Sets the ground color
   void setGroundColor(const QColor& color);
-  /// Sets the point color
-  void setPointColor(const QColor& color);
   /** @}
     */
 
@@ -101,7 +106,7 @@ protected:
   /// GL viewer
   GLView mGLView;
   /// Point cloud to be displayed
-  PointCloud<> mPointCloud;
+  std::vector<std::tuple<PointCloud<>, Color> > mPointClouds;
   /// Palette
   Palette mPalette;
   /** @}

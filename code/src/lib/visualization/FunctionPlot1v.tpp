@@ -38,7 +38,7 @@ FunctionPlot<F, 1>::FunctionPlot(const std::string& title, const F& function,
     mMagnifier(canvas()) {
   QVector<double> xData;
   QVector<double> yData;
-  const Index& numCells = mDataGrid.getNumCells();
+  auto numCells = mDataGrid.getNumCells();
   xData.reserve(numCells(0));
   yData.reserve(numCells(0));
   for (Index i = Index::Zero(numCells.size()); i != numCells;

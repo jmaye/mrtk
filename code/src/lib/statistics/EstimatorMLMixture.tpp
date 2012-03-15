@@ -217,7 +217,7 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     std::vector<EstimatorML<C> > estComp(K);
     Eigen::Matrix<size_t, M, 1> numPoints =
       Eigen::Matrix<size_t, M, 1>::Zero(K);
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+    for (auto it = itStart; it != itEnd; ++it) {
       double probability = 0.0;
       const size_t row = it - itStart;
       double max = -std::numeric_limits<double>::infinity();
@@ -240,8 +240,7 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
     mLogLikelihood = logLikelihood;
-    Eigen::Matrix<double, M, 1> weights =
-      numPoints.template cast<double>() / mNumPoints;
+    auto weights = numPoints.template cast<double>() / mNumPoints;
     try {
       mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
       for (size_t j = 0; j < K; ++j)
@@ -274,7 +273,7 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     std::vector<EstimatorML<C> > estComp(K);
     Eigen::Matrix<size_t, M, 1> numPoints =
       Eigen::Matrix<size_t, M, 1>::Zero(K);
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+    for (auto it = itStart; it != itEnd; ++it) {
       double probability = 0.0;
       const size_t row = it - itStart;
       for (size_t j = 0; j < K; ++j) {
@@ -293,8 +292,7 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
     mLogLikelihood = logLikelihood;
-    Eigen::Matrix<double, M, 1> weights =
-      numPoints.template cast<double>() / mNumPoints;
+    auto weights = numPoints.template cast<double>() / mNumPoints;
     try {
       mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
       for (size_t j = 0; j < K; ++j)

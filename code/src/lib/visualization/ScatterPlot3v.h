@@ -20,6 +20,8 @@
     \brief This file contains a plotting tool for trivariate scatter plots
   */
 
+#include <tuple>
+
 #include "visualization/PointViewer3d.h"
 #include "data-structures/PointCloud.h"
 
@@ -43,6 +45,9 @@ public:
     */
   /// Constructs plot from parameters
   ScatterPlot(const std::string& title, const PointCloud<>::Container& data);
+  /// Constructs plot from parameters with different color for points
+  ScatterPlot(const std::string& title, const
+    std::vector<std::tuple<PointCloud<>::Point, size_t> >& data);
   /// Destructor
   virtual ~ScatterPlot();
   /** @}

@@ -108,7 +108,7 @@ template <size_t M>
 void EstimatorBayes<CategoricalDistribution<M>, DirichletDistribution<M> >::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 

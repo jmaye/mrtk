@@ -99,8 +99,7 @@ double Histogram<T, 1>::getVariance() const {
 template <typename T>
 double Histogram<T, 1>::getSum() const {
   double sum = 0;
-  for (typename Grid<T, double, 1>::ConstCellIterator it = this->getCellBegin();
-      it != this->getCellEnd(); ++it)
+  for (auto it = this->getCellBegin(); it != this->getCellEnd(); ++it)
     sum += *it;
   return sum;
 }
@@ -120,9 +119,8 @@ void Histogram<T, 1>::addSamples(const std::vector<T>& samples) {
 template <typename T>
 Histogram<T, 1> Histogram<T, 1>::getNormalized() const {
   const double sum = getSum();
-  Histogram<T, 1> histCopy = *this;
-  for (typename Grid<T, double, 1>::CellIterator it = histCopy.getCellBegin();
-      it != histCopy.getCellEnd(); ++it)
+  auto histCopy = *this;
+  for (auto it = histCopy.getCellBegin(); it != histCopy.getCellEnd(); ++it)
     *it /= sum;
   return histCopy;
 }

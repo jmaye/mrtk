@@ -159,7 +159,7 @@ double NormalInvWishartDistribution<M>::pdf(const RandomVariable& value) const {
 template <size_t M>
 typename NormalInvWishartDistribution<M>::Mode
     NormalInvWishartDistribution<M>::getMode() const {
-  const Eigen::Matrix<double, M, M> covariance = mCovarianceDist.getMode();
+  auto covariance = mCovarianceDist.getMode();
   return Mode(NormalDistribution<M>(mMu, covariance / mKappa).getMode(),
     covariance);
 }
@@ -167,7 +167,7 @@ typename NormalInvWishartDistribution<M>::Mode
 template <size_t M>
 typename NormalInvWishartDistribution<M>::RandomVariable
     NormalInvWishartDistribution<M>::getSample() const {
-  const Eigen::Matrix<double, M, M> covariance = mCovarianceDist.getSample();
+  auto covariance = mCovarianceDist.getSample();
   return RandomVariable(
     NormalDistribution<M>(mMu, covariance / mKappa).getSample(), covariance);
 }

@@ -83,6 +83,6 @@ void EstimatorBayes<GeometricDistribution, BetaDistribution>::
 void EstimatorBayes<GeometricDistribution, BetaDistribution>::
     addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }

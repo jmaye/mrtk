@@ -100,7 +100,7 @@ void Grid<T, C, M>::write(std::ostream& stream) const {
     << "number of cells per dim: " << mNumCells.transpose() << std:: endl
     << "total number of cells: " << mNumCellsTot << std::endl
     << "cells: " << std::endl;
-    for (ConstCellIterator it = getCellBegin(); it != getCellEnd(); ++it)
+    for (auto it = getCellBegin(); it != getCellEnd(); ++it)
       stream << *it << std::endl;
 }
 
@@ -264,7 +264,7 @@ size_t Grid<T, C, M>::computeLinearIndex(const Index& idx) const {
 
 template <typename T, typename C, size_t M>
 void Grid<T, C, M>::reset() {
-  for (CellIterator it = getCellBegin(); it != getCellEnd(); ++it)
+  for (auto it = getCellBegin(); it != getCellEnd(); ++it)
     *it = C();
 }
 

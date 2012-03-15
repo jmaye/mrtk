@@ -113,7 +113,7 @@ void EstimatorML<NormalDistribution<1> >::addPoint(const Point& point) {
 
 void EstimatorML<NormalDistribution<1> >::addPoints(const ConstPointIterator&
     itStart, const ConstPointIterator& itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 
@@ -126,11 +126,11 @@ void EstimatorML<NormalDistribution<1> >::addPoints(const ConstPointIterator&
     Eigen::Matrix<double, Eigen::Dynamic, 1>& responsibilities, double
     numPoints) {
   double mean = 0;
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     mean += responsibilities(it - itStart) * (*it);
   mean /= numPoints;
   double variance = 0;
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+  for (auto it = itStart; it != itEnd; ++it)
     variance += responsibilities(it - itStart) * (*it - mean) * (*it - mean);
   variance /= numPoints;
   mDistribution.setMean(mean);
