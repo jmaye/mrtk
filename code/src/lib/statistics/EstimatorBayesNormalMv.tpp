@@ -250,9 +250,11 @@ const StudentDistribution<M>&
 template <size_t M>
 void EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::
     addPoint(const Point& point) {
-  auto mean = (mMeanDist.getPrecision() + mPrecision).inverse() *
+  const Eigen::Matrix<double, M, 1> mean =
+    (mMeanDist.getPrecision() + mPrecision).inverse() *
     (mMeanDist.getPrecision() * mMeanDist.getMean() + mPrecision * point);
-  auto covariance = (mMeanDist.getPrecision() + mPrecision).inverse();
+  const Eigen::Matrix<double, M, M> covariance =
+    (mMeanDist.getPrecision() + mPrecision).inverse();
   mMeanDist.setMean(mean);
   mMeanDist.setCovariance(covariance);
   mPredDist.setMean(mean);
@@ -263,7 +265,7 @@ template <size_t M>
 void EstimatorBayes<NormalDistribution<M>, InvWishartDistribution<M> >::
     addPoint(const Point& point) {
   const double degrees = mCovarianceDist.getDegrees() + 1;
-  auto scale = mCovarianceDist.getScale() +
+  const Eigen::Matrix<double, M, M> scale = mCovarianceDist.getScale() +
     outerProduct<double, M>(point - mMean);
   mCovarianceDist.setDegrees(degrees);
   mCovarianceDist.setScale(scale);

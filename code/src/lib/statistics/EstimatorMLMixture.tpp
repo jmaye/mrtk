@@ -105,6 +105,12 @@ const MixtureDistribution<C, M>&
 }
 
 template <typename C, size_t M>
+const Eigen::Matrix<double, Eigen::Dynamic, M>&
+    EstimatorML<MixtureDistribution<C, M> >::getResponsibilities() const {
+  return mResponsibilities;
+}
+
+template <typename C, size_t M>
 size_t EstimatorML<MixtureDistribution<C, M> >::getNumPoints() const {
   return mNumPoints;
 }
@@ -163,9 +169,7 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     double logLikelihood = 0;
     Eigen::Matrix<double, M, 1> numPoints =
       Eigen::Matrix<double, M, 1>::Zero(K);
-    for (size_t j = 0; j < K; ++j)
-      numPoints(j) = mResponsibilities.col(j).sum();
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+    for (auto it = itStart; it != itEnd; ++it) {
       double probability = 0.0;
       const size_t row = it - itStart;
       for (size_t j = 0; j < K; ++j) {
@@ -181,7 +185,7 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
     mLogLikelihood = logLikelihood;
-    Eigen::Matrix<double, M, 1> weights = numPoints / mNumPoints;
+    const Eigen::Matrix<double, M, 1> weights = numPoints / mNumPoints;
     try {
       mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
       for (size_t j = 0; j < K; ++j) {
@@ -240,7 +244,8 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
     mLogLikelihood = logLikelihood;
-    auto weights = numPoints.template cast<double>() / mNumPoints;
+    const Eigen::Matrix<double, M, 1> weights =
+      numPoints.template cast<double>() / mNumPoints;
     try {
       mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
       for (size_t j = 0; j < K; ++j)
@@ -292,7 +297,8 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
     mLogLikelihood = logLikelihood;
-    auto weights = numPoints.template cast<double>() / mNumPoints;
+    const Eigen::Matrix<double, M, 1> weights =
+      numPoints.template cast<double>() / mNumPoints;
     try {
       mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
       for (size_t j = 0; j < K; ++j)

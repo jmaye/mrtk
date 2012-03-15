@@ -108,13 +108,10 @@ void EstimatorML<CategoricalDistribution<M> >::addPoint(const Point& point) {
     mValid = true;
     if (mNumPoints == 1)
       mDistribution.setProbabilities(point.template cast<double>());
-    else {
-      auto probabilities =
-        mDistribution.getProbabilities();
-      probabilities += (point.template cast<double>() - probabilities) /
-        mNumPoints;
-      mDistribution.setProbabilities(probabilities);
-    }
+    else
+      mDistribution.setProbabilities(mDistribution.getProbabilities() +
+        (point.template cast<double>() - mDistribution.getProbabilities()) /
+        mNumPoints);
   }
   catch (...) {
     mValid = false;

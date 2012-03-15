@@ -202,7 +202,7 @@ template <typename Z, typename IsReal<Z>::Result::Numeric>
 Eigen::Matrix<double, M, M> UniformDistribution<X, M>::Traits::getCovariance(
     const Eigen::Matrix<Z, M, 1>& minSupport,
     const Eigen::Matrix<Z, M, 1>& maxSupport) {
-  auto covariance =
+  const Eigen::Matrix<double, M, M> covariance =
     Eigen::Matrix<double, M, M>::Identity(minSupport.size(), minSupport.size());
   const double supportArea =
     Traits::template getSupportArea<Z, true>(minSupport, maxSupport);
@@ -214,7 +214,7 @@ template <typename Z, typename IsInteger<Z>::Result::Numeric>
 Eigen::Matrix<double, M, M> UniformDistribution<X, M>::Traits::getCovariance(
     const Eigen::Matrix<Z, M, 1>& minSupport,
     const Eigen::Matrix<Z, M, 1>& maxSupport) {
-  auto covariance =
+  const Eigen::Matrix<double, M, M> covariance =
     Eigen::Matrix<double, M, M>::Identity(minSupport.size(), minSupport.size());
   const double supportArea =
     Traits::template getSupportArea<Z, true>(minSupport, maxSupport);
