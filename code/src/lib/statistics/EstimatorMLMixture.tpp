@@ -19,6 +19,7 @@
 #include <limits>
 
 #include "statistics/Randomizer.h"
+#include "functions/LogSumExpFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -164,30 +165,31 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     return numIter;
   mResponsibilities.resize(mNumPoints, K);
   mLogLikelihood = -std::numeric_limits<double>::infinity();
+  const LogSumExpFunction<double, M> lse;
+  Eigen::Matrix<double, M, 1> logProbabilities(K);
   while (numIter != mMaxNumIter) {
     mValid = true;
     double logLikelihood = 0;
     Eigen::Matrix<double, M, 1> numPoints =
       Eigen::Matrix<double, M, 1>::Zero(K);
     for (auto it = itStart; it != itEnd; ++it) {
-      double probability = 0.0;
       const size_t row = it - itStart;
-      for (size_t j = 0; j < K; ++j) {
-        mResponsibilities(row, j) =
-          mMixtureDist.getAssignDistribution().getProbability(j) *
-          mMixtureDist.getCompDistribution(j)(*it);
-        probability += mResponsibilities(row, j);
-      }
-      logLikelihood += log(probability);
-      mResponsibilities.row(row) /= mResponsibilities.row(row).sum();
+      for (size_t j = 0; j < K; ++j)
+        logProbabilities(j) =
+          log(mMixtureDist.getAssignDistribution().getProbability(j)) +
+           mMixtureDist.getCompDistribution(j).logpdf(*it);
+      const double lseProb = lse(logProbabilities);
+      logLikelihood += lseProb;
+      mResponsibilities.row(row) = (logProbabilities.cwise() - lseProb).cwise().
+        exp();
       numPoints += mResponsibilities.row(row).transpose();
     }
     if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
     mLogLikelihood = logLikelihood;
-    const Eigen::Matrix<double, M, 1> weights = numPoints / mNumPoints;
     try {
-      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
+      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(
+        numPoints / mNumPoints));
       for (size_t j = 0; j < K; ++j) {
         EstimatorML<C> estComp;
         estComp.addPoints(itStart, itEnd, mResponsibilities.col(j),
@@ -215,6 +217,8 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     return numIter;
   mResponsibilities.resize(mNumPoints, K);
   mLogLikelihood = -std::numeric_limits<double>::infinity();
+  const LogSumExpFunction<double, M> lse;
+  Eigen::Matrix<double, M, 1> logProbabilities(K);
   while (numIter != mMaxNumIter) {
     mValid = true;
     double logLikelihood = 0;
@@ -222,32 +226,31 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     Eigen::Matrix<size_t, M, 1> numPoints =
       Eigen::Matrix<size_t, M, 1>::Zero(K);
     for (auto it = itStart; it != itEnd; ++it) {
-      double probability = 0.0;
       const size_t row = it - itStart;
       double max = -std::numeric_limits<double>::infinity();
       size_t argmax = 0;
       for (size_t j = 0; j < K; ++j) {
-        mResponsibilities(row, j) =
-          mMixtureDist.getAssignDistribution().getProbability(j) *
-          mMixtureDist.getCompDistribution(j)(*it);
-        probability += mResponsibilities(row, j);
-        if (mResponsibilities(row, j) > max) {
-          max = mResponsibilities(row, j);
+        logProbabilities(j) =
+          log(mMixtureDist.getAssignDistribution().getProbability(j)) +
+          mMixtureDist.getCompDistribution(j).logpdf(*it);
+        if (logProbabilities(j) > max) {
+          max = logProbabilities(j);
           argmax = j;
         }
       }
-      logLikelihood += log(probability);
-      mResponsibilities.row(row) /= mResponsibilities.row(row).sum();
+      const double lseProb = lse(logProbabilities);
+      logLikelihood += lseProb;
+      mResponsibilities.row(row) = (logProbabilities.cwise() - lseProb).cwise().
+        exp();
       estComp[argmax].addPoint(*it);
       numPoints(argmax)++;
     }
     if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
     mLogLikelihood = logLikelihood;
-    const Eigen::Matrix<double, M, 1> weights =
-      numPoints.template cast<double>() / mNumPoints;
     try {
-      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
+      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(
+        numPoints.template cast<double>() / mNumPoints));
       for (size_t j = 0; j < K; ++j)
         mMixtureDist.setCompDistribution(estComp[j].getDistribution(), j);
     }
@@ -272,6 +275,8 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
   mResponsibilities.resize(mNumPoints, K);
   mLogLikelihood = -std::numeric_limits<double>::infinity();
   const static Randomizer<double, M> randomizer;
+  const LogSumExpFunction<double, M> lse;
+  Eigen::Matrix<double, M, 1> logProbabilities(K);
   while (numIter != mMaxNumIter) {
     mValid = true;
     double logLikelihood = 0;
@@ -279,16 +284,15 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     Eigen::Matrix<size_t, M, 1> numPoints =
       Eigen::Matrix<size_t, M, 1>::Zero(K);
     for (auto it = itStart; it != itEnd; ++it) {
-      double probability = 0.0;
       const size_t row = it - itStart;
-      for (size_t j = 0; j < K; ++j) {
-        mResponsibilities(row, j) =
-          mMixtureDist.getAssignDistribution().getProbability(j) *
-          mMixtureDist.getCompDistribution(j)(*it);
-        probability += mResponsibilities(row, j);
-      }
-      logLikelihood += log(probability);
-      mResponsibilities.row(row) /= mResponsibilities.row(row).sum();
+      for (size_t j = 0; j < K; ++j)
+        logProbabilities(j) =
+          log(mMixtureDist.getAssignDistribution().getProbability(j)) +
+          mMixtureDist.getCompDistribution(j).logpdf(*it);
+      const double lseProb = lse(logProbabilities);
+      logLikelihood += lseProb;
+      mResponsibilities.row(row) = (logProbabilities.cwise() - lseProb).cwise().
+        exp();
       const size_t assignment =
         randomizer.sampleCategorical(mResponsibilities.row(row));
       estComp[assignment].addPoint(*it);
@@ -297,10 +301,9 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
     if (fabs(mLogLikelihood - logLikelihood) < mTol)
       break;
     mLogLikelihood = logLikelihood;
-    const Eigen::Matrix<double, M, 1> weights =
-      numPoints.template cast<double>() / mNumPoints;
     try {
-      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(weights));
+      mMixtureDist.setAssignDistribution(CategoricalDistribution<M>(
+        numPoints.template cast<double>() / mNumPoints));
       for (size_t j = 0; j < K; ++j)
         mMixtureDist.setCompDistribution(estComp[j].getDistribution(), j);
     }
