@@ -139,7 +139,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
 
 template <typename C, size_t M>
 void EstimatorBayes<MixtureDistribution<C, M>,
-    typename ConjugatePrior<C>::Result>::addPoints1(const
+    typename ConjugatePrior<C>::Result>::addPoints(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   const size_t numPoints = itEnd - itStart;
   const size_t K = mDirPrior.getAlpha().size();
@@ -198,66 +198,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
 
 template <typename C, size_t M>
 void EstimatorBayes<MixtureDistribution<C, M>,
-    typename ConjugatePrior<C>::Result>::addPoints2(const
-    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
-  const size_t numPoints = itEnd - itStart;
-  const size_t K = mDirPrior.getAlpha().size();
-  mAssignments.resize(numPoints);
-  Eigen::Matrix<double, M, 1> numPointsComp =
-    Eigen::Matrix<double, M, 1>::Zero(K);
-  typename DirichletDistribution<M>::RandomVariable p = mDirPrior.getSample();
-  const static Randomizer<double, M> randomizer;
-  for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-    const size_t row = it - itStart;
-    mAssignments(row) = randomizer.sampleCategorical(p);
-    numPointsComp(mAssignments(row))++;
-  }
-  std::vector<EstimatorBayes<C> > estComp;
-  estComp.reserve(K);
-  for (size_t i = 0; i < K; ++i)
-    estComp.push_back(EstimatorBayes<C>(mCompPrior));
-  std::vector<typename ConjugatePrior<C>::Result::RandomVariable> components;
-  components.reserve(K);
-  for (size_t i = 0; i < K; ++i)
-    components.push_back(estComp[i].getDist().getSample());
-  std::vector<C> compDist;
-  compDist.reserve(K);
-  for (size_t i = 0; i < K; ++i)
-    compDist.push_back(C(components[i]));
-  size_t numIter = 0;
-  const LogSumExpFunction<double, M> lse;
-  Eigen::Matrix<double, M, 1> logProbabilities(K);
-  while (numIter != mMaxNumIter) {
-    for (size_t i = 0; i < K; ++i)
-      estComp[i] = EstimatorBayes<C>(mCompPrior);
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-      const size_t row = it - itStart;
-      estComp[mAssignments(row)].addPoint(*it);
-    }
-    for (size_t i = 0; i < K; ++i) {
-      components[i] = estComp[i].getDist().getSample();
-      compDist[i] = C(components[i]);
-    }
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-      const size_t row = it - itStart;
-      numPointsComp(mAssignments(row))--;
-      for (size_t i = 0; i < K; ++i)
-        logProbabilities(i) = log(p(i)) + compDist[i].logpdf(*it);
-      const double lseProb = lse(logProbabilities);
-      const size_t assignment = randomizer.sampleCategorical(
-        (logProbabilities.cwise() - lseProb).cwise().exp());
-      numPointsComp(assignment)++;
-      mAssignments(row) = assignment;
-    }
-    p = DirichletDistribution<M>(mDirPrior.getAlpha() + numPointsComp).
-      getSample();
-    numIter++;
-  }
-}
-
-template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M>,
-    typename ConjugatePrior<C>::Result>::addPoints3(const
+    typename ConjugatePrior<C>::Result>::addPointsDP(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
 //  const size_t numPoints = itEnd - itStart;
 //  mAssignments = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(numPoints);

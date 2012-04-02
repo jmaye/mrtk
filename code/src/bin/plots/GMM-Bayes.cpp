@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     Eigen::Matrix<double, 2, 1>(0.0, 0.0), 1, 2);
   EstimatorBayes<MixtureDistribution<NormalDistribution<2>, 5> > estMixtNorm2(
     dirPrior, compPrior, 150);
-  estMixtNorm2.addPoints1(samplesMixtNorm2.begin(), samplesMixtNorm2.end());
+  estMixtNorm2.addPoints(samplesMixtNorm2.begin(), samplesMixtNorm2.end());
   std::cout << "Estimation: " << std::endl << estMixtNorm2 << std::endl;
   auto assignments = estMixtNorm2.getAssignments();
   std::vector<std::tuple<Eigen::Matrix<double, 2, 1>, size_t> > data;

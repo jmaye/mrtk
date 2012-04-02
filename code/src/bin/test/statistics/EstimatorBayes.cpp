@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
   EstimatorBayes<MixtureDistribution<NormalDistribution<1>, 5> >
     estMixtNorm1(dirPrior, compPrior, 500);
   double before = Timestamp::now();
-  estMixtNorm1.addPoints1(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
+  estMixtNorm1.addPoints(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
   double after = Timestamp::now();
   std::cout << "Estimation11: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Time: " << after - before << " [s]" << std::endl;
@@ -117,11 +117,6 @@ int main(int argc, char** argv) {
   after = Timestamp::now();
   std::cout << "Estimation12: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Time: " << after - before << " [s]" << std::endl;
-//  before = Timestamp::now();
-//  estMixtNorm1.addPoints2(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
-//  after = Timestamp::now();
-//  std::cout << "Estimation12: " << std::endl << estMixtNorm1 << std::endl;
-//  std::cout << "Time: " << after - before << " [s]" << std::endl;
 //  before = Timestamp::now();
 //  estMixtNorm1.addPoints3(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
 //  after = Timestamp::now();
