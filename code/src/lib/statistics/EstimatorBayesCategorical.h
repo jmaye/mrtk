@@ -68,7 +68,7 @@ public:
   /// Returns the probabilities distribution
   const DirichletDistribution<M>& getDist() const;
   /// Returns the predictive distribution
-  const DCMDistribution<M>& getPredDist() const;
+  DCMDistribution<M> getPredDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -102,8 +102,6 @@ protected:
   * Hyperparameter alpha (alpha_i - 1 pseudo-counts for i, alpha.sum = conf.)
   */
   DirichletDistribution<M> mProbDist;
-  /// Predictive distribution
-  DCMDistribution<M> mPredDist;
   /** @}
     */
 

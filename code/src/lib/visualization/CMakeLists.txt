@@ -1,8 +1,3 @@
-remake_find_package(freetype2 CONFIG)
-remake_find_package(ftgl CONFIG)
-
-remake_include(${FREETYPE2_INCLUDE_DIRS})
-
 remake_qt4_ui(visualization)
 remake_qt4_moc(visualization)
 

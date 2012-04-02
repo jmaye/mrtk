@@ -70,7 +70,7 @@ public:
   /// Returns the mean distribution
   const NormalDistribution<M>& getDist() const;
   /// Returns the predictive distribution
-  const NormalDistribution<M>& getPredDist() const;
+  NormalDistribution<M> getPredDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -101,8 +101,6 @@ protected:
     */
   /// Mean distribution
   NormalDistribution<M> mMeanDist;
-  /// Predictive distribution
-  NormalDistribution<M> mPredDist;
   /// Covariance
   Eigen::Matrix<double, M, M> mCovariance;
   /// Precision
@@ -233,7 +231,7 @@ public:
   /// Returns the mean and covariance distribution
   const NormalInvWishartDistribution<M>& getDist() const;
   /// Returns the predictive distribution
-  const StudentDistribution<M>& getPredDist() const;
+  StudentDistribution<M> getPredDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -264,8 +262,6 @@ protected:
     */
   /// Mean and covariance distribution
   NormalInvWishartDistribution<M> mMeanCovarianceDist;
-  /// Predictive distribution
-  StudentDistribution<M> mPredDist;
   /** @}
     */
 

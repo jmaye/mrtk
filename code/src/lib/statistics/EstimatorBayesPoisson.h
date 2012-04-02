@@ -68,7 +68,7 @@ public:
   /// Returns the mean distribution
   const GammaDistribution<double>& getDist() const;
   /// Returns the predictive distribution
-  const NegativeBinomialDistribution& getPredDist() const;
+  NegativeBinomialDistribution getPredDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -103,8 +103,6 @@ protected:
   * hyperparameter beta (beta prior observations)
   */
   GammaDistribution<double> mMeanDist;
-  /// Predictive distribution
-  NegativeBinomialDistribution mPredDist;
   /** @}
     */
 

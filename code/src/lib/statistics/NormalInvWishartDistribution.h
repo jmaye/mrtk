@@ -81,9 +81,9 @@ public:
     @{
     */
   /// Returns the covariance distribution
-  const InvWishartDistribution<M>& getCovarianceDist() const;
+  InvWishartDistribution<M> getCovarianceDist() const;
   /// Returns the marginal mean distribution
-  const StudentDistribution<M>& getMargMeanDist() const;
+  StudentDistribution<M> getMargMeanDist() const;
   /// Returns mu parameter
   const Eigen::Matrix<double, M, 1>& getMu() const;
   /// Sets mu parameter
@@ -127,10 +127,6 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Covariance distribution
-  InvWishartDistribution<M> mCovarianceDist;
-  /// Marginal mean distribution
-  StudentDistribution<M> mMargMeanDist;
   /// Mu parameter: prior mean
   Eigen::Matrix<double, M, 1> mMu;
   /// Kappa parameter: prior sample size

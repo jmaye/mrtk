@@ -22,8 +22,6 @@
 
 NormalScaledInvChiSquareDistribution::NormalScaledInvChiSquareDistribution(
     double mu, double kappa, double nu, double sigma) :
-    mVarianceDist(nu, sigma),
-    mMargMeanDist(nu, mu, sigma / kappa),
     mMu(mu),
     mKappa(kappa),
     mNu(nu),
@@ -32,8 +30,6 @@ NormalScaledInvChiSquareDistribution::NormalScaledInvChiSquareDistribution(
 
 NormalScaledInvChiSquareDistribution::NormalScaledInvChiSquareDistribution(
     const NormalScaledInvChiSquareDistribution& other) :
-    mVarianceDist(other.mVarianceDist),
-    mMargMeanDist(other.mMargMeanDist),
     mMu(other.mMu),
     mKappa(other.mKappa),
     mNu(other.mNu),
@@ -43,8 +39,6 @@ NormalScaledInvChiSquareDistribution::NormalScaledInvChiSquareDistribution(
 NormalScaledInvChiSquareDistribution& NormalScaledInvChiSquareDistribution::
     operator = (const NormalScaledInvChiSquareDistribution& other) {
   if (this != &other) {
-    mVarianceDist = other.mVarianceDist;
-    mMargMeanDist = other.mMargMeanDist;
     mMu = other.mMu;
     mKappa = other.mKappa;
     mNu = other.mNu;
@@ -64,8 +58,8 @@ void NormalScaledInvChiSquareDistribution::read(std::istream& stream) {
 }
 
 void NormalScaledInvChiSquareDistribution::write(std::ostream& stream) const {
-  stream << "Variance distribution:" << std::endl << mVarianceDist <<
-    std::endl << "Marginal mean distribution: " << std::endl << mMargMeanDist;
+  stream << "mu: " << mMu << std::endl << "kappa: " << mKappa << std::endl
+    << "nu: " << mNu << std::endl << "sigma: " << mSigma;
 }
 
 void NormalScaledInvChiSquareDistribution::read(std::ifstream& stream) {
@@ -78,14 +72,14 @@ void NormalScaledInvChiSquareDistribution::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-const ScaledInvChiSquareDistribution& NormalScaledInvChiSquareDistribution::
+ScaledInvChiSquareDistribution NormalScaledInvChiSquareDistribution::
     getVarianceDist() const {
-  return mVarianceDist;
+  return ScaledInvChiSquareDistribution(mNu, mSigma);
 }
 
-const StudentDistribution<1>& NormalScaledInvChiSquareDistribution::
+StudentDistribution<1> NormalScaledInvChiSquareDistribution::
     getMargMeanDist() const {
-  return mMargMeanDist;
+  return StudentDistribution<1>(mNu, mMu, mSigma / mKappa);
 }
 
 double NormalScaledInvChiSquareDistribution::getMu() const {
@@ -94,7 +88,6 @@ double NormalScaledInvChiSquareDistribution::getMu() const {
 
 void NormalScaledInvChiSquareDistribution::setMu(double mu) {
   mMu = mu;
-  mMargMeanDist.setLocation(mu);
 }
 
 double NormalScaledInvChiSquareDistribution::getKappa() const {
@@ -103,7 +96,6 @@ double NormalScaledInvChiSquareDistribution::getKappa() const {
 
 void NormalScaledInvChiSquareDistribution::setKappa(double kappa) {
   mKappa = kappa;
-  mMargMeanDist.setScale(mSigma / kappa);
 }
 
 double NormalScaledInvChiSquareDistribution::getNu() const {
@@ -112,8 +104,6 @@ double NormalScaledInvChiSquareDistribution::getNu() const {
 
 void NormalScaledInvChiSquareDistribution::setNu(double nu) {
   mNu = nu;
-  mVarianceDist.setDegrees(nu);
-  mMargMeanDist.setDegrees(nu);
 }
 
 double NormalScaledInvChiSquareDistribution::getSigma() const {
@@ -122,27 +112,25 @@ double NormalScaledInvChiSquareDistribution::getSigma() const {
 
 void NormalScaledInvChiSquareDistribution::setSigma(double sigma) {
   mSigma = sigma;
-  mVarianceDist.setScale(sigma);
-  mMargMeanDist.setScale(sigma / mKappa);
 }
 
 double NormalScaledInvChiSquareDistribution::
     pdf(const RandomVariable& value) const {
-  return mVarianceDist.pdf(std::get<1>(value)) *
+  return getVarianceDist().pdf(std::get<1>(value)) *
     NormalDistribution<1>(mMu, std::get<1>(value) / mKappa).pdf(
     std::get<0>(value));
 }
 
 NormalScaledInvChiSquareDistribution::Mode
     NormalScaledInvChiSquareDistribution::getMode() const {
-  const double variance = mVarianceDist.getMode();
+  const double variance = getVarianceDist().getMode();
   return Mode(NormalDistribution<1>(mMu, variance / mKappa).getMode(),
     variance);
 }
 
 NormalScaledInvChiSquareDistribution::RandomVariable
     NormalScaledInvChiSquareDistribution::getSample() const {
-  const double variance = mVarianceDist.getSample();
+  const double variance = getVarianceDist().getSample();
   return RandomVariable(
     NormalDistribution<1>(mMu, variance / mKappa).getSample(), variance);
 }

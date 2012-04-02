@@ -28,7 +28,6 @@
 
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
-#include "statistics/WishartDistribution.h"
 #include "base/Serializable.h"
 #include "exceptions/BadArgumentException.h"
 #include "exceptions/InvalidOperationException.h"
@@ -137,14 +136,14 @@ protected:
   double mDegrees;
   /// Scale
   Scale mScale;
+  /// Inverse scale
+  Scale mInverseScale;
   /// Scale determinant
   double mDeterminant;
   /// Normalizer
   double mNormalizer;
   /// Cholesky decomposition of the scale matrix
   Eigen::LLT<Scale> mTransformation;
-  /// Wishart distribution for fast sampling
-  WishartDistribution<M> mWishartDist;
   /** @}
     */
 

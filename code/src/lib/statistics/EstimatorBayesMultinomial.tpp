@@ -24,14 +24,14 @@ template <size_t M>
 EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> >::
     EstimatorBayes(const DirichletDistribution<M>& prior) :
     mProbDist(prior),
-    mPredDist(1, mProbDist.getAlpha()) {
+    mNumTrials(1) {
 }
 
 template <size_t M>
 EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> >::
     EstimatorBayes(const EstimatorBayes& other) :
     mProbDist(other.mProbDist),
-    mPredDist(other.mPredDist) {
+    mNumTrials(other.mNumTrials) {
 }
 
 template <size_t M>
@@ -40,7 +40,7 @@ EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> >&
     operator = (const EstimatorBayes& other) {
   if (this != &other) {
     mProbDist = other.mProbDist;
-    mPredDist = other.mPredDist;
+    mNumTrials = other.mNumTrials;
   }
   return *this;
 }
@@ -65,8 +65,8 @@ void EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> >::
   stream << "Probabilities distribution: " << std::endl << mProbDist
     << std::endl <<
     "Probabilities mode: " << std::endl << mProbDist.getMode() << std::endl <<
-    "Predictive distribution: " << std::endl << mPredDist << std::endl <<
-    "Predictive mean: " << std::endl << mPredDist.getMean();
+    "Predictive distribution: " << std::endl << getPredDist() << std::endl <<
+    "Predictive mean: " << std::endl << getPredDist().getMean();
 }
 
 template <size_t M>
@@ -91,18 +91,17 @@ const DirichletDistribution<M>&
 }
 
 template <size_t M>
-const DCMDistribution<M>&
+DCMDistribution<M>
     EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> >::
     getPredDist() const {
-  return mPredDist;
+  return DCMDistribution<M>(mNumTrials, mProbDist.getAlpha());
 }
 
 template <size_t M>
 void EstimatorBayes<MultinomialDistribution<M>, DirichletDistribution<M> >::
     addPoint(const Point& point) {
+  mNumTrials = point.sum();
   mProbDist.setAlpha(mProbDist.getAlpha() + point.template cast<double>());
-  mPredDist.setAlpha(mProbDist.getAlpha());
-  mPredDist.setNumTrials(point.sum());
 }
 
 template <size_t M>

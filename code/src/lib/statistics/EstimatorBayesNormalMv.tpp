@@ -27,7 +27,6 @@ EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::
     EstimatorBayes(const Eigen::Matrix<double, M, M>& covariance, const
     NormalDistribution<M>& prior) :
     mMeanDist(prior),
-    mPredDist(prior.getMean(), prior.getCovariance() + covariance),
     mCovariance(covariance),
     mPrecision(covariance.inverse()) {
 }
@@ -43,17 +42,13 @@ EstimatorBayes<NormalDistribution<M>, InvWishartDistribution<M> >::
 template <size_t M>
 EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >::
     EstimatorBayes(const NormalInvWishartDistribution<M>& prior) :
-    mMeanCovarianceDist(prior),
-    mPredDist(prior.getNu() - prior.getMu().size() + 1, prior.getMu(),
-      (prior.getKappa() + 1.0) / prior.getKappa() /
-      (prior.getNu() - prior.getMu().size() + 1) * prior.getSigma()) {
+    mMeanCovarianceDist(prior) {
 }
 
 template <size_t M>
 EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::EstimatorBayes(
     const EstimatorBayes& other) :
     mMeanDist(other.mMeanDist),
-    mPredDist(other.mPredDist),
     mCovariance(other.mCovariance),
     mPrecision(other.mPrecision) {
 }
@@ -68,8 +63,7 @@ EstimatorBayes<NormalDistribution<M>, InvWishartDistribution<M> >::
 template <size_t M>
 EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >::
     EstimatorBayes(const EstimatorBayes& other) :
-    mMeanCovarianceDist(other.mMeanCovarianceDist),
-    mPredDist(other.mPredDist) {
+    mMeanCovarianceDist(other.mMeanCovarianceDist) {
 }
 
 template <size_t M>
@@ -78,7 +72,6 @@ EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >&
     (const EstimatorBayes& other) {
   if (this != &other) {
     mMeanDist = other.mMeanDist;
-    mPredDist = other.mPredDist;
     mCovariance = other.mCovariance;
     mPrecision = other.mPrecision;
   }
@@ -102,7 +95,6 @@ EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >&
     ::operator = (const EstimatorBayes& other) {
   if (this != &other) {
     mMeanCovarianceDist = other.mMeanCovarianceDist;
-    mPredDist = other.mPredDist;
   }
   return *this;
 }
@@ -148,9 +140,9 @@ void EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::
     << "Mean mode: " << std::endl << mMeanDist.getMode() << std::endl
     << "Mean covariance: " << std::endl << mMeanDist.getCovariance()
     << std::endl
-    << "Predictive distribution: " << std::endl << mPredDist << std::endl
-    << "Predictive mean: " << std::endl << mPredDist.getMean() << std::endl
-    << "Predictive covariance: " << std::endl << mPredDist.getCovariance();
+    << "Predictive distribution: " << std::endl << getPredDist() << std::endl
+    << "Predictive mean: " << std::endl << getPredDist().getMean() << std::endl
+    << "Predictive covariance: " << std::endl << getPredDist().getCovariance();
 }
 
 template <size_t M>
@@ -172,10 +164,10 @@ void EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >::
     << "Mean and covariance mode: " << std::endl
     << std::get<0>(mMeanCovarianceDist.getMode()) << std::endl
     << std::get<1>(mMeanCovarianceDist.getMode())
-    << std::endl << "Predictive distribution: " << std::endl << mPredDist
+    << std::endl << "Predictive distribution: " << std::endl << getPredDist()
     << std::endl
-    << "Predictive mean: " << std::endl << mPredDist.getMean() << std::endl
-    << "Predictive covariance: " << std::endl << mPredDist.getCovariance();
+    << "Predictive mean: " << std::endl << getPredDist().getMean() << std::endl
+    << "Predictive covariance: " << std::endl << getPredDist().getCovariance();
 }
 
 template <size_t M>
@@ -234,17 +226,23 @@ const NormalInvWishartDistribution<M>&
 }
 
 template <size_t M>
-const NormalDistribution<M>&
+NormalDistribution<M>
     EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::
     getPredDist() const {
-  return mPredDist;
+  return NormalDistribution<M>(mMeanDist.getMean(), mMeanDist.getCovariance() +
+    mCovariance);
 }
 
 template <size_t M>
-const StudentDistribution<M>&
+StudentDistribution<M>
     EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >::
     getPredDist() const {
-  return mPredDist;
+  const size_t dim = mMeanCovarianceDist.getMu().size();
+  return StudentDistribution<M>(mMeanCovarianceDist.getNu() - dim + 1,
+    mMeanCovarianceDist.getMu(), (mMeanCovarianceDist.getKappa() + 1) /
+    mMeanCovarianceDist.getKappa() /
+    (mMeanCovarianceDist.getNu() - dim + 1) *
+    mMeanCovarianceDist.getSigma());
 }
 
 template <size_t M>
@@ -257,8 +255,6 @@ void EstimatorBayes<NormalDistribution<M>, NormalDistribution<M> >::
     (mMeanDist.getPrecision() + mPrecision).inverse();
   mMeanDist.setMean(mean);
   mMeanDist.setCovariance(covariance);
-  mPredDist.setMean(mean);
-  mPredDist.setCovariance(mCovariance + covariance);
 }
 
 template <size_t M>
@@ -283,12 +279,6 @@ void EstimatorBayes<NormalDistribution<M>, NormalInvWishartDistribution<M> >::
   mMeanCovarianceDist.setNu(nu + 1);
   mMeanCovarianceDist.setSigma(sigma + kappa / (kappa + 1) *
     outerProduct<double, M>(point - mu));
-  mPredDist.setDegrees(mMeanCovarianceDist.getNu() - mu.size() + 1);
-  mPredDist.setLocation(mMeanCovarianceDist.getMu());
-  mPredDist.setScale((mMeanCovarianceDist.getKappa() + 1) /
-    mMeanCovarianceDist.getKappa() /
-    (mMeanCovarianceDist.getNu() - mu.size() + 1) *
-    mMeanCovarianceDist.getSigma());
 }
 
 template <size_t M>

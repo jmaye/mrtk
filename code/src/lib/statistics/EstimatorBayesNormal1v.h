@@ -69,7 +69,7 @@ public:
   /// Returns the mean distribution
   const NormalDistribution<1>& getDist() const;
   /// Returns the predictive distribution
-  const NormalDistribution<1>& getPredDist() const;
+  NormalDistribution<1> getPredDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -100,8 +100,6 @@ protected:
     */
   /// Mean distribution
   NormalDistribution<1> mMeanDist;
-  /// Predictive distribution
-  NormalDistribution<1> mPredDist;
   /// Variance
   double mVariance;
   /// Precision
@@ -231,7 +229,7 @@ public:
   /// Returns the mean and variance distribution
   const NormalScaledInvChiSquareDistribution& getDist() const;
   /// Returns the predictive distribution
-  const StudentDistribution<1>& getPredDist() const;
+  StudentDistribution<1> getPredDist() const;
   /// Add a point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
@@ -262,8 +260,6 @@ protected:
     */
   /// Mean and variance distribution
   NormalScaledInvChiSquareDistribution mMeanVarianceDist;
-  /// Predictive distribution
-  StudentDistribution<1> mPredDist;
   /** @}
     */
 

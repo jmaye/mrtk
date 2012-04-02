@@ -20,6 +20,7 @@
 
 #include "functions/LogGammaFunction.h"
 #include "statistics/NormalDistribution.h"
+#include "statistics/WishartDistribution.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -37,10 +38,10 @@ InvWishartDistribution<M>::InvWishartDistribution(const
     InvWishartDistribution& other) :
     mDegrees(other.mDegrees),
     mScale(other.mScale),
+    mInverseScale(other.mInverseScale),
     mDeterminant(other.mDeterminant),
     mNormalizer(other.mNormalizer),
-    mTransformation(other.mTransformation),
-    mWishartDist(other.mWishartDist) {
+    mTransformation(other.mTransformation) {
 }
 
 template <size_t M>
@@ -49,10 +50,10 @@ InvWishartDistribution<M>& InvWishartDistribution<M>::operator = (const
   if (this != &other) {
     mDegrees = other.mDegrees;
     mScale = other.mScale;
+    mInverseScale = other.mInverseScale;
     mDeterminant = other.mDeterminant;
     mNormalizer = other.mNormalizer;
     mTransformation = other.mTransformation;
-    mWishartDist = other.mWishartDist;
   }
   return *this;
 }
@@ -96,7 +97,6 @@ void InvWishartDistribution<M>::setDegrees(double degrees)
       "bigger than the dimension",
       __FILE__, __LINE__);
   mDegrees = degrees;
-  mWishartDist.setDegrees(degrees);
   computeNormalizer();
 }
 
@@ -115,7 +115,7 @@ void InvWishartDistribution<M>::setScale(const Scale& scale)
       __FILE__, __LINE__);
   mDeterminant = scale.determinant();
   mScale = scale;
-  mWishartDist.setScale(scale.inverse());
+  mInverseScale = scale.inverse();
   computeNormalizer();
 }
 
@@ -204,5 +204,6 @@ double InvWishartDistribution<M>::logpdf(const RandomVariable& value) const
 template <size_t M>
 typename InvWishartDistribution<M>::RandomVariable
     InvWishartDistribution<M>::getSample() const {
-  return mWishartDist.getSample().inverse();
+  return WishartDistribution<M>(mDegrees, mInverseScale).getSample().
+    inverse();
 }

@@ -21,11 +21,12 @@
            distributions.
   */
 
-#include <vector>
-
 #include "statistics/MixtureDistribution.h"
 #include "statistics/DirichletDistribution.h"
+#include "statistics/SymmetricDirichletDistribution.h"
 #include "statistics/ConjugatePrior.h"
+#include "utils/IsNumeric.h"
+#include "utils/Not.h"
 
 /** The class EstimatorBayes is implemented for mixture distributions.
     \brief Mixture distributions Bayes estimator
@@ -35,6 +36,32 @@ class EstimatorBayes<MixtureDistribution<C, M>,
     typename ConjugatePrior<C>::Result> :
   public virtual Serializable {
 public:
+  /** \name Traits
+    @{
+    */
+  /// Specialization for scalar or vector input
+  struct Traits {
+  public:
+    /// Get dimension of input data
+    template <typename Z, typename IsNumeric<Z>::Result::Numeric>
+      static size_t getDim(const typename C::RandomVariable& point);
+    /// Get data at a given index
+    template <typename Z, typename IsNumeric<Z>::Result::Numeric>
+      static typename C::DomainType getData(const typename C::RandomVariable&
+        point, size_t idx);
+    /// Get dimension of input data
+    template <typename Z, typename
+        Not<typename IsNumeric<Z>::Result>::Result::Numeric>
+      static size_t getDim(const typename C::RandomVariable& point);
+    /// Get data at a given index
+    template <typename Z, typename
+        Not<typename IsNumeric<Z>::Result>::Result::Numeric>
+      static typename C::DomainType getData(const typename C::RandomVariable&
+        point, size_t idx);
+  };
+  /** @}
+    */
+
   /** \name Types definitions
     @{
     */
@@ -50,9 +77,10 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs estimator with prior
-  EstimatorBayes(const DirichletDistribution<M>& dirPrior, const
-    std::vector<typename ConjugatePrior<C>::Result>& compPrior, size_t
+  /// Constructs estimator with dirichlet prior
+  EstimatorBayes(const DirichletDistribution<M>& dirPrior =
+    DirichletDistribution<M>(), const typename
+    ConjugatePrior<C>::Result& compPrior = ConjugatePrior<C>::Result(), size_t
     maxNumIter = 100);
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes& other);
@@ -81,6 +109,9 @@ public:
   /// Add points to the estimator
   void addPoints3(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
+  /// Add points to the estimator using R
+  void addPointsR(const ConstPointIterator& itStart, const ConstPointIterator&
+    itEnd);
   /// Add points to the estimator
   void addPoints(const Container& points);
   /** @}
@@ -107,7 +138,7 @@ protected:
   /// Dirichlet prior
   DirichletDistribution<M> mDirPrior;
   /// Components prior
-  std::vector<typename ConjugatePrior<C>::Result> mCompPrior;
+  typename ConjugatePrior<C>::Result mCompPrior;
   /// Maximum number of iterations for Gibbs sampling
   size_t mMaxNumIter;
   /// Assignments

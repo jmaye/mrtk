@@ -22,14 +22,12 @@
 
 EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
     EstimatorBayes(const GammaDistribution<double>& prior) :
-    mMeanDist(prior),
-    mPredDist(mMeanDist.getShape(), 1.0 / (mMeanDist.getInvScale() + 1)) {
+    mMeanDist(prior) {
 }
 
 EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
     EstimatorBayes(const EstimatorBayes& other) :
-    mMeanDist(other.mMeanDist),
-    mPredDist(other.mPredDist) {
+    mMeanDist(other.mMeanDist) {
 }
 
 EstimatorBayes<PoissonDistribution, GammaDistribution<double> >&
@@ -37,7 +35,6 @@ EstimatorBayes<PoissonDistribution, GammaDistribution<double> >&
     operator = (const EstimatorBayes& other) {
   if (this != &other) {
     mMeanDist = other.mMeanDist;
-    mPredDist = other.mPredDist;
   }
   return *this;
 }
@@ -59,9 +56,9 @@ void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
   stream << "Mean distribution: " << std::endl << mMeanDist << std::endl <<
     "Mean mode: " << mMeanDist.getMode() << std::endl <<
     "Mean variance: " << mMeanDist.getVariance() << std::endl <<
-    "Predictive distribution: " << std::endl << mPredDist << std::endl <<
-    "Predictive mean: " << mPredDist.getMean() << std::endl <<
-    "Predictive variance: " << mPredDist.getVariance();
+    "Predictive distribution: " << std::endl << getPredDist() << std::endl <<
+    "Predictive mean: " << getPredDist().getMean() << std::endl <<
+    "Predictive variance: " << getPredDist().getVariance();
 }
 
 void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
@@ -82,18 +79,17 @@ const GammaDistribution<double>&
   return mMeanDist;
 }
 
-const NegativeBinomialDistribution&
+NegativeBinomialDistribution
     EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
     getPredDist() const {
-  return mPredDist;
+  return NegativeBinomialDistribution(mMeanDist.getShape(),
+    1.0 / (mMeanDist.getInvScale() + 1));
 }
 
 void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::
     addPoint(const Point& point) {
   mMeanDist.setShape(mMeanDist.getShape() + point);
   mMeanDist.setInvScale(mMeanDist.getInvScale() + 1);
-  mPredDist.setProbability(1.0 / (mMeanDist.getInvScale() + 1));
-  mPredDist.setNumTrials(mMeanDist.getShape());
 }
 
 void EstimatorBayes<PoissonDistribution, GammaDistribution<double> >::

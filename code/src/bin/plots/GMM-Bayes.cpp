@@ -48,26 +48,17 @@ int main(int argc, char** argv) {
     distributionsNorm2, CategoricalDistribution<5>(
     (Eigen::Matrix<double, 5, 1>() << 0.1, 0.2, 0.2, 0.4, 0.1).finished()));
   std::vector<Eigen::Matrix<double, 2, 1> > samplesMixtNorm2;
-  distMixtNorm2.getSamples(samplesMixtNorm2, 10000);
+  distMixtNorm2.getSamples(samplesMixtNorm2, 5000);
   DirichletDistribution<5> dirPrior;
-  std::vector<NormalInvWishartDistribution<2> > compPrior;
-  compPrior.push_back(NormalInvWishartDistribution<2>(
-    Eigen::Matrix<double, 2, 1>(1.0, -1.0), 1, 2));
-  compPrior.push_back(NormalInvWishartDistribution<2>(
-    Eigen::Matrix<double, 2, 1>(2.0, 2.0), 1, 2));
-  compPrior.push_back(NormalInvWishartDistribution<2>(
-    Eigen::Matrix<double, 2, 1>(11.0, 9.0), 1, 2));
-  compPrior.push_back(NormalInvWishartDistribution<2>(
-    Eigen::Matrix<double, 2, 1>(-6.0, -4.0), 1, 2));
-  compPrior.push_back(NormalInvWishartDistribution<2>(
-    Eigen::Matrix<double, 2, 1>(-11.0, -9.0), 1, 2));
+  NormalInvWishartDistribution<2> compPrior(
+    Eigen::Matrix<double, 2, 1>(0.0, 0.0), 1, 2);
   EstimatorBayes<MixtureDistribution<NormalDistribution<2>, 5> > estMixtNorm2(
-    dirPrior, compPrior, 10);
+    dirPrior, compPrior, 150);
   estMixtNorm2.addPoints1(samplesMixtNorm2.begin(), samplesMixtNorm2.end());
   std::cout << "Estimation: " << std::endl << estMixtNorm2 << std::endl;
   auto assignments = estMixtNorm2.getAssignments();
   std::vector<std::tuple<Eigen::Matrix<double, 2, 1>, size_t> > data;
-  data.reserve(10000);
+  data.reserve(200);
   for (auto it = samplesMixtNorm2.cbegin(); it != samplesMixtNorm2.cend();
       ++it) {
     const size_t row = it - samplesMixtNorm2.cbegin();

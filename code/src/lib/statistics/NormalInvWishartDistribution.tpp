@@ -24,8 +24,6 @@ template <size_t M>
 NormalInvWishartDistribution<M>::NormalInvWishartDistribution(const
     Eigen::Matrix<double, M, 1>& mu, double kappa, double nu, const
     Eigen::Matrix<double, M, M>& sigma) :
-    mCovarianceDist(nu, sigma),
-    mMargMeanDist(nu - mu.size() + 1, mu, sigma / kappa / (nu - mu.size() + 1)),
     mMu(mu),
     mKappa(kappa),
     mNu(nu),
@@ -35,8 +33,6 @@ NormalInvWishartDistribution<M>::NormalInvWishartDistribution(const
 template <size_t M>
 NormalInvWishartDistribution<M>::NormalInvWishartDistribution(
     const NormalInvWishartDistribution& other) :
-    mCovarianceDist(other.mCovarianceDist),
-    mMargMeanDist(other.mMargMeanDist),
     mMu(other.mMu),
     mKappa(other.mKappa),
     mNu(other.mNu),
@@ -47,8 +43,6 @@ template <size_t M>
 NormalInvWishartDistribution<M>& NormalInvWishartDistribution<M>::
     operator = (const NormalInvWishartDistribution& other) {
   if (this != &other) {
-    mCovarianceDist = other.mCovarianceDist;
-    mMargMeanDist = other.mMargMeanDist;
     mMu = other.mMu;
     mKappa = other.mKappa;
     mNu = other.mNu;
@@ -71,8 +65,9 @@ void NormalInvWishartDistribution<M>::read(std::istream& stream) {
 
 template <size_t M>
 void NormalInvWishartDistribution<M>::write(std::ostream& stream) const {
-  stream << "Covariance distribution:" << std::endl << mCovarianceDist <<
-    std::endl << "Marginal mean distribution: " << std::endl << mMargMeanDist;
+  stream << "mu: " << std::endl << mMu << std::endl << "kappa: " << mKappa
+    << std::endl << "nu: " << mNu << std::endl << "sigma: " << std::endl
+    << mSigma;
 }
 
 template <size_t M>
@@ -88,15 +83,16 @@ void NormalInvWishartDistribution<M>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 template <size_t M>
-const InvWishartDistribution<M>& NormalInvWishartDistribution<M>::
+InvWishartDistribution<M> NormalInvWishartDistribution<M>::
     getCovarianceDist() const {
-  return mCovarianceDist;
+  return InvWishartDistribution<M>(mNu, mSigma);
 }
 
 template <size_t M>
-const StudentDistribution<M>& NormalInvWishartDistribution<M>::getMargMeanDist()
+StudentDistribution<M> NormalInvWishartDistribution<M>::getMargMeanDist()
     const {
-  return mMargMeanDist;
+  return StudentDistribution<M>(mNu - mMu.size() + 1, mMu,
+    mSigma / mKappa / (mNu - mMu.size() + 1));
 }
 
 template <size_t M>
@@ -109,7 +105,6 @@ template <size_t M>
 void NormalInvWishartDistribution<M>::setMu(const Eigen::Matrix<double, M, 1>&
     mu) {
   mMu = mu;
-  mMargMeanDist.setLocation(mu);
 }
 
 template <size_t M>
@@ -120,7 +115,6 @@ double NormalInvWishartDistribution<M>::getKappa() const {
 template <size_t M>
 void NormalInvWishartDistribution<M>::setKappa(double kappa) {
   mKappa = kappa;
-  mMargMeanDist.setScale(mSigma / kappa / (mNu - mMu.size() + 1));
 }
 
 template <size_t M>
@@ -131,8 +125,6 @@ double NormalInvWishartDistribution<M>::getNu() const {
 template <size_t M>
 void NormalInvWishartDistribution<M>::setNu(double nu) {
   mNu = nu;
-  mCovarianceDist.setDegrees(nu);
-  mMargMeanDist.setDegrees(nu - mMu.size() + 1);
 }
 
 template <size_t M>
@@ -145,13 +137,11 @@ template <size_t M>
 void NormalInvWishartDistribution<M>::setSigma(const
     Eigen::Matrix<double, M, M>& sigma) {
   mSigma = sigma;
-  mCovarianceDist.setScale(sigma);
-  mMargMeanDist.setScale(sigma / mKappa / (mNu - mMu.size() + 1));
 }
 
 template <size_t M>
 double NormalInvWishartDistribution<M>::pdf(const RandomVariable& value) const {
-  return mCovarianceDist.pdf(std::get<1>(value)) *
+  return getCovarianceDist().pdf(std::get<1>(value)) *
     NormalDistribution<M>(mMu, std::get<1>(value) / mKappa).pdf(
     std::get<0>(value));
 }
@@ -159,7 +149,7 @@ double NormalInvWishartDistribution<M>::pdf(const RandomVariable& value) const {
 template <size_t M>
 typename NormalInvWishartDistribution<M>::Mode
     NormalInvWishartDistribution<M>::getMode() const {
-  auto covariance = mCovarianceDist.getMode();
+  auto covariance = getCovarianceDist().getMode();
   return Mode(NormalDistribution<M>(mMu, covariance / mKappa).getMode(),
     covariance);
 }
@@ -167,7 +157,7 @@ typename NormalInvWishartDistribution<M>::Mode
 template <size_t M>
 typename NormalInvWishartDistribution<M>::RandomVariable
     NormalInvWishartDistribution<M>::getSample() const {
-  auto covariance = mCovarianceDist.getSample();
+  auto covariance = getCovarianceDist().getSample();
   return RandomVariable(
     NormalDistribution<M>(mMu, covariance / mKappa).getSample(), covariance);
 }

@@ -67,9 +67,9 @@ public:
     @{
     */
   /// Returns the variance distribution
-  const ScaledInvChiSquareDistribution& getVarianceDist() const;
+  ScaledInvChiSquareDistribution getVarianceDist() const;
   /// Returns the marginal mean distribution
-  const StudentDistribution<1>& getMargMeanDist() const;
+  StudentDistribution<1> getMargMeanDist() const;
   /// Returns mu parameter
   double getMu() const;
   /// Sets mu parameter
@@ -113,10 +113,6 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Variance distribution
-  ScaledInvChiSquareDistribution mVarianceDist;
-  /// Marginal mean distribution
-  StudentDistribution<1> mMargMeanDist;
   /// Mu parameter: prior mean
   double mMu;
   /// Kappa parameter: prior sample size
