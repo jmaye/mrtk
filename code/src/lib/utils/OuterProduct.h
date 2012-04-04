@@ -41,8 +41,8 @@ template <typename X, size_t M>
 static Eigen::Matrix<X, M, M> outerProduct(const Eigen::Matrix<X, M, 1>& v) {
   Eigen::Matrix<X, M, M> result = Eigen::Matrix<X, M, M>::Zero(v.size(),
     v.size());
-  for (size_t i = 0; i < v.size(); ++i)
-    for (size_t j = i; j < v.size(); ++j) {
+  for (size_t i = 0; i < (size_t)v.size(); ++i)
+    for (size_t j = i; j < (size_t)v.size(); ++j) {
       result(i, j) = v(i) * v(j);
       result(j, i) = result(i, j);
     }

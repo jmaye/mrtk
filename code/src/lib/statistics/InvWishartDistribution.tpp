@@ -173,8 +173,8 @@ typename InvWishartDistribution<M>::Covariance
     (mDegrees - mScale.rows() - 3);
   if (denominator) {
     Covariance covariance = Covariance::Zero(mScale.rows(), mScale.cols());
-    for (size_t i = 0; i < mScale.rows(); ++i)
-      for (size_t j = 0; j < mScale.cols(); ++j)
+    for (size_t i = 0; i < (size_t)mScale.rows(); ++i)
+      for (size_t j = 0; j < (size_t)mScale.cols(); ++j)
         covariance(i, j) = (mDegrees - mScale.rows() + 1) * mScale(i, j) *
           mScale(i, j) + (mDegrees - mScale.rows() - 1) * mScale(i, i) *
           mScale(j, j);

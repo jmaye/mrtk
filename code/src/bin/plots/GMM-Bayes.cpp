@@ -53,12 +53,12 @@ int main(int argc, char** argv) {
   NormalInvWishartDistribution<2> compPrior(
     Eigen::Matrix<double, 2, 1>(0.0, 0.0), 1, 2);
   EstimatorBayes<MixtureDistribution<NormalDistribution<2>, 5> > estMixtNorm2(
-    dirPrior, compPrior, 150);
-  estMixtNorm2.addPoints(samplesMixtNorm2.begin(), samplesMixtNorm2.end());
+    dirPrior, compPrior, 500);
+  estMixtNorm2.addPointsDP(samplesMixtNorm2.begin(), samplesMixtNorm2.end());
   std::cout << "Estimation: " << std::endl << estMixtNorm2 << std::endl;
   auto assignments = estMixtNorm2.getAssignments();
   std::vector<std::tuple<Eigen::Matrix<double, 2, 1>, size_t> > data;
-  data.reserve(200);
+  data.reserve(500);
   for (auto it = samplesMixtNorm2.cbegin(); it != samplesMixtNorm2.cend();
       ++it) {
     const size_t row = it - samplesMixtNorm2.cbegin();

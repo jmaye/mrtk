@@ -20,6 +20,8 @@
 
 #include "statistics/Randomizer.h"
 #include "functions/LogSumExpFunction.h"
+#include "statistics/BetaDistribution.h"
+#include "statistics/BernoulliDistribution.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -148,7 +150,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
     Eigen::Matrix<double, M, 1>::Zero(K);
   typename DirichletDistribution<M>::RandomVariable p = mDirPrior.getSample();
   const static Randomizer<double, M> randomizer;
-  for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+  for (auto it = itStart; it != itEnd; ++it) {
     const size_t row = it - itStart;
     mAssignments(row) = randomizer.sampleCategorical(p);
     numPointsComp(mAssignments(row))++;
@@ -171,7 +173,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   while (numIter != mMaxNumIter) {
     for (size_t i = 0; i < K; ++i)
       estComp[i] = EstimatorBayes<C>(mCompPrior);
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+    for (auto it = itStart; it != itEnd; ++it) {
       const size_t row = it - itStart;
       estComp[mAssignments(row)].addPoint(*it);
     }
@@ -179,7 +181,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
       components[i] = estComp[i].getDist().getSample();
       compDist[i] = C(components[i]);
     }
-    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
+    for (auto it = itStart; it != itEnd; ++it) {
       const size_t row = it - itStart;
       numPointsComp(mAssignments(row))--;
       for (size_t i = 0; i < K; ++i)
@@ -198,72 +200,113 @@ void EstimatorBayes<MixtureDistribution<C, M>,
 
 template <typename C, size_t M>
 void EstimatorBayes<MixtureDistribution<C, M>,
+    typename ConjugatePrior<C>::Result>::addPointsDPR(const
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+  // TODO: PASS THE PRIOR PARAMETERS DOWN TO GNU-R
+  // TODO: OUTPUT COMPONENTS PARAMETERS
+  const size_t numPoints = itEnd - itStart;
+  const size_t K = mDirPrior.getAlpha().size();
+  const size_t dim = Traits::template getDim<Point, true>(*itStart);
+  RInside R;
+  Rcpp::NumericMatrix data(numPoints, dim);
+  for (auto it = itStart; it != itEnd; ++it)
+    for (size_t i = 0; i < dim; ++i)
+      data(it - itStart, i) = Traits::template getData<Point, true>(*it, i);
+  R["x"] = data;
+  R["iter"] = mMaxNumIter;
+  R["K"] = K;
+  std::string expression = "library('bayesm');\
+    Data=list(y=x);\
+    Prioralpha=list(Istarmin=1,Istarmax=10,power=.8);\
+    Prior=list(Prioralpha=Prioralpha);\
+    Mcmc=list(R=iter,keep=1,maxuniq=200);\
+    out=rDPGibbs(Data=Data,Prior=Prior,Mcmc=Mcmc);\
+    out$nmix$zdraw[iter,]";
+  SEXP ans = R.parseEval(expression);
+  Rcpp::NumericVector out(ans);
+  mAssignments.resize(numPoints);
+  for (auto it = itStart; it != itEnd; ++it)
+    mAssignments(it - itStart) = out(it - itStart);
+}
+
+template <typename C, size_t M>
+void EstimatorBayes<MixtureDistribution<C, M>,
     typename ConjugatePrior<C>::Result>::addPointsDP(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
-//  const size_t numPoints = itEnd - itStart;
-//  mAssignments = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(numPoints);
-//  double alpha = 30.0;
-//  const double a = 1.0;
-//  const double b = 1.0;
-//  size_t numIter = 0;
-//  const static Randomizer<double, Eigen::Dynamic> randomizer;
-//  size_t K = 0;
-//  std::vector<EstimatorBayes<C> > estComp;
-//  estComp.push_back(EstimatorBayes<C>(mCompPrior[0]));
-//  std::vector<size_t> numPointsComp(1, numPoints);
-//  while (numIter != mMaxNumIter) {
-//    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-//      const size_t row = it - itStart;
-//      numPointsComp[mAssignments(row)]--;
-//      if (numPointsComp[mAssignments(row)] == 0) {
-//        numPointsComp.erase(numPointsComp.begin() + mAssignments(row));
-//        estComp.erase(estComp.begin() + mAssignments(row));
-//        for (size_t i = 0; i < numPoints; ++i)
-//          if (mAssignments(i) > mAssignments(row))
-//            mAssignments(i)--;
-//        K--;
-//      }
-//      Eigen::Matrix<double, Eigen::Dynamic, 1>
-//        probabilities(estComp.size() + 1);
-//      for (size_t i = 0; i < estComp.size(); ++i)
-//        probabilities(i) = numPointsComp[i] * estComp[i].getPredDist()(*it);
-//      EstimatorBayes<C> estCompNew(mCompPrior[0]);
-//      //estCompNew.addPoint(*it);
-//      probabilities(estComp.size()) = alpha * estCompNew.getPredDist()(*it);
-//      probabilities /= probabilities.sum();
-//      const size_t assignment = randomizer.sampleCategorical(probabilities);
-//      if (assignment == K + 1) {
-//        estComp.push_back(estCompNew);
-//        numPointsComp.push_back(1);
-//        K++;
-//      }
-//      else
-//        numPointsComp[assignment]++;
-//      mAssignments(row) = assignment;
-//    }
-//    for (size_t i = 0; i < estComp.size(); ++i)
-//      estComp[i] = EstimatorBayes<C>(mCompPrior[0]);
-//    for (ConstPointIterator it = itStart; it != itEnd; ++it) {
-//      const size_t row = it - itStart;
-//      estComp[mAssignments(row)].addPoint(*it);
-//    }
-////    const double eta = BetaDistribution(alpha + 1, numPoints).getSample()(0);
-//////    const double pi = (a + K - 1) / (a + K - 1 + numPoints * (b - log(eta)));
-////    const double pi = (a + K - 1) / (numPoints * (a + K - 1 + (b - log(eta))));
-////    const size_t assignment =
-////      randomizer.sampleCategorical(Eigen::Matrix<double, 2, 1>(pi, 1 - pi));
-////    if (assignment)
-////      alpha = randomizer.sampleGamma(a + K, b - log(eta));
-////    else
-////      alpha = randomizer.sampleGamma(a + K - 1, b - log(eta));
-////    std::cout << "Iteration: " << numIter << " K = " << K << " alpha = "
-////      << alpha << std::endl;
-////    for (size_t i = 0; i < K; ++i)
-////      std::cout << "mean: " << std::get<0>(estComp[i].getDist().getMode())
-////        << " variance: " << std::get<1>(estComp[i].getDist().getMode())
-////        << " points: " << numPointsComp[i] << std::endl;
-//    numIter++;
-//  }
+  const size_t numPoints = itEnd - itStart;
+  mAssignments = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(numPoints);
+  std::vector<size_t> numPointsComp(1, numPoints);
+  std::vector<EstimatorBayes<C> > estComp;
+  estComp.push_back(EstimatorBayes<C>(mCompPrior));
+  std::vector<typename ConjugatePrior<C>::Result::RandomVariable> components;
+  components.push_back(mCompPrior.getSample());
+  std::vector<C> compDist;
+  compDist.push_back(C(components[0]));
+  const static Randomizer<double, Eigen::Dynamic> randomizer;
+  const LogSumExpFunction<double, Eigen::Dynamic> lse;
+  size_t K = 1;
+  double alpha = 1.0;
+  size_t numIter = 0;
+  while (numIter != mMaxNumIter) {
+    std::cout << "numIter: " << numIter << std::endl;
+    std::cout << "K: " << K << std::endl;
+    std::cout << "alpha: " << alpha << std::endl;
+    for (auto it = itStart; it != itEnd; ++it) {
+      const size_t row = it - itStart;
+      numPointsComp[mAssignments(row)]--;
+      if (numPointsComp[mAssignments(row)] == 0) {
+        numPointsComp.erase(numPointsComp.begin() + mAssignments(row));
+        estComp.erase(estComp.begin() + mAssignments(row));
+        components.erase(components.begin() + mAssignments(row));
+        compDist.erase(compDist.begin() + mAssignments(row));
+        for (size_t i = 0; i < numPoints; ++i)
+          if (mAssignments(i) > mAssignments(row))
+            mAssignments(i)--;
+        K--;
+      }
+      Eigen::Matrix<double, Eigen::Dynamic, 1> logProbabilities(K + 1);
+      for (size_t i = 0; i < K; ++i)
+        logProbabilities(i) = log(numPointsComp[i]) + compDist[i].logpdf(*it);
+      EstimatorBayes<C> estCompNew(mCompPrior);
+      typename ConjugatePrior<C>::Result::RandomVariable compNew =
+        mCompPrior.getSample();
+      C compNewDist = C(compNew);
+      logProbabilities(K) = log(alpha) + compNewDist.logpdf(*it);
+      const double lseProb = lse(logProbabilities);
+      const size_t assignment = randomizer.sampleCategorical(
+        (logProbabilities.cwise() - lseProb).cwise().exp());
+      if (assignment == K) {
+        estComp.push_back(estCompNew);
+        components.push_back(compNew);
+        compDist.push_back(compNewDist);
+        numPointsComp.push_back(1);
+        K++;
+      }
+      else
+        numPointsComp[assignment]++;
+      mAssignments(row) = assignment;
+    }
+    for (size_t i = 0; i < K; ++i)
+      estComp[i] = EstimatorBayes<C>(mCompPrior);
+    for (auto it = itStart; it != itEnd; ++it) {
+      const size_t row = it - itStart;
+      estComp[mAssignments(row)].addPoint(*it);
+    }
+    for (size_t i = 0; i < K; ++i) {
+      components[i] = estComp[i].getDist().getSample();
+      compDist[i] = C(components[i]);
+    }
+//    const double nu = BetaDistribution(alpha + 1, numPoints).getSample()(0);
+//    const double a = 1;
+//    const double b = 2;
+//    const double pi = (a + K - 1) / (a + K - 1 + numPoints * (b - log(nu)));
+//    const size_t comp = BernoulliDistribution(pi).getSample()(0);
+//    if (comp)
+//      alpha = randomizer.sampleGamma(a + K, b - log(nu));
+//    else
+//      alpha = randomizer.sampleGamma(a + K - 1, b - log(nu));
+    numIter++;
+  }
 }
 
 template <typename C, size_t M>
