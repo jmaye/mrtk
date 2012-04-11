@@ -19,24 +19,12 @@
 #include "statistics/Randomizer.h"
 
 /******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
-
-template <typename Y, typename X>
-RejectionSampler<Y, X>::RejectionSampler() {
-}
-
-template <typename Y, typename X>
-RejectionSampler<Y, X>::~RejectionSampler() {
-}
-
-/******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
 template <typename Y, typename X>
-X RejectionSampler<Y, X>::getSample(const Function<Y, X>& target, const
-    SampleDistribution<X>& proposal, double k) const {
+X RejectionSampler::getSample(const Function<Y, X>& target, const
+    SampleDistribution<X>& proposal, double k) {
   const static Randomizer<double> randomizer;
   while (1) {
     const double z0 = proposal.getSample();
@@ -47,9 +35,9 @@ X RejectionSampler<Y, X>::getSample(const Function<Y, X>& target, const
 }
 
 template <typename Y, typename X>
-void RejectionSampler<Y, X>::getSamples(const Function<Y, X>& target, const
+void RejectionSampler::getSamples(const Function<Y, X>& target, const
     SampleDistribution<X>& proposal, double k, std::vector<X>& samples, size_t
-    numSamples) const {
+    numSamples) {
   samples.clear();
   samples.reserve(numSamples);
   for (size_t i = 0; i < numSamples; ++i)

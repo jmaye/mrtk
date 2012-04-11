@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Randomizer.cpp
+/** \file RejectionSampler.cpp
     \brief This file is a testing binary for the RejectionSampler class
   */
 
@@ -27,11 +27,10 @@
 #include "statistics/CauchyDistribution.h"
 
 int main(int argc, char** argv) {
-  RejectionSampler<double, double> rejectionSampler;
   GammaDistribution<> gammaDist(2.0, 2.0);
   CauchyDistribution cauchyDist(1.0, 2.0);
   for (size_t i = 0; i < 10; ++i)
-    std::cout << rejectionSampler.getSample(gammaDist, cauchyDist, 10)
-      << std::endl;
+    std::cout << RejectionSampler::getSample<double, double>(gammaDist,
+      cauchyDist, 10) << std::endl;
   return 0;
 }

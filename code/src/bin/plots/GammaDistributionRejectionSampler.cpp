@@ -34,8 +34,8 @@ int main(int argc, char** argv) {
   GammaDistribution<> dist(2.0, 2.0);
   CauchyDistribution cauchyDist(1.0, 2.0);
   std::vector<double> data;
-  RejectionSampler<double, double> rejectionSampler;
-  rejectionSampler.getSamples(dist, cauchyDist, 5, data, 100000);
+  RejectionSampler::getSamples<double, double>(dist, cauchyDist, 5, data,
+    100000);
   hist.addSamples(data);
   std::cout << "Sample mean: " << hist.getMean() << std::endl;
   std::cout << "Sample mode: " << hist.getMode() << std::endl;

@@ -25,7 +25,7 @@
 
 #include <cstdlib>
 
-/** The Color class contains utilities for managing colors.
+/** The Colors namespace contains utilities for managing colors.
     \brief Color utilities
   */
 namespace Colors {
@@ -44,6 +44,9 @@ namespace Colors {
   /** @}
     */
 
+  /** \name Methods
+    @{
+    */
   /** The revertBits function reverts the bits of the input
   */
   template <typename T>
@@ -57,6 +60,9 @@ namespace Colors {
   /** The genColor function generates a color from an index.
   */
   static Color genColor(size_t idx);
+  /** @}
+    */
+
 };
 
 #include "utils/Colors.tpp"

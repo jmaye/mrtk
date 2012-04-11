@@ -16,40 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file RejectionSampler.h
-    \brief This file defines the RejectionSampler namespace, which implements
-           rejection sampling
-  */
+#include "statistics/Randomizer.h"
 
-#ifndef REJECTIONSAMPLER_H
-#define REJECTIONSAMPLER_H
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
 
-#include <vector>
+template <typename Y, typename X>
+X AdaptiveRejectionSampler::getSample(const Function<Y, X>& logpdf, const
+    Function<Y, X>& logpdfprime, const std::vector<X>& initPoints) {
+  for (auto it = initPoints.begin(); it != initPoints.end(); ++it) {
+    logpdf(*it);
+    logpdfprime(*it);
+  }
+}
 
-#include "functions/Function.h"
-#include "statistics/SampleDistribution.h"
-
-/** The RejectionSampler namespace implements rejection sampling.
-    \brief Rejection sampler
-  */
-namespace RejectionSampler {
-  /** \name Methods
-    @{
-    */
-  /// Access a sample drawn from the distribution
-  template <typename Y, typename X>
-  static X getSample(const Function<Y, X>& target, const SampleDistribution<X>&
-    proposal, double k);
-  /// Access samples drawn from the distribution
-  template <typename Y, typename X>
-  static void getSamples(const Function<Y, X>& target, const
-    SampleDistribution<X>& proposal, double k, std::vector<X>& samples, size_t
-    numSamples);
-  /** @}
-    */
-
-};
-
-#include "statistics/RejectionSampler.tpp"
-
-#endif // REJECTIONSAMPLER_H
+template <typename Y, typename X>
+void AdaptiveRejectionSampler::getSamples(const Function<Y, X>& logpdf, const
+    Function<Y, X>& logpdfprime, const std::vector<X>& initPoints,
+    std::vector<X>& samples, size_t numSamples) {
+  samples.clear();
+  samples.reserve(numSamples);
+  for (size_t i = 0; i < numSamples; ++i)
+    samples.push_back(getSample(logpdf, logpdfprime, initPoints));
+}

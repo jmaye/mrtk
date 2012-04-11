@@ -20,6 +20,10 @@
 #include <vector>
 #include <limits>
 
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
+
 template <typename T>
 T Colors::revertBits(T value) {
   T reverse = value;
