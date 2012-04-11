@@ -217,7 +217,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   R["K"] = K;
   std::string expression = "library('bayesm');\
     Data=list(y=x);\
-    Prioralpha=list(Istarmin=1,Istarmax=10,power=.8);\
+    Prioralpha=list(Istarmin=4,Istarmax=5,power=.8);\
     Prior=list(Prioralpha=Prioralpha);\
     Mcmc=list(R=iter,keep=1,maxuniq=200);\
     out=rDPGibbs(Data=Data,Prior=Prior,Mcmc=Mcmc);\
@@ -245,7 +245,7 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   const static Randomizer<double, Eigen::Dynamic> randomizer;
   const LogSumExpFunction<double, Eigen::Dynamic> lse;
   size_t K = 1;
-  double alpha = 1.0;
+  double alpha = 1.0 / randomizer.sampleGamma(1.0, 1.0);
   size_t numIter = 0;
   while (numIter != mMaxNumIter) {
     std::cout << "numIter: " << numIter << std::endl;
