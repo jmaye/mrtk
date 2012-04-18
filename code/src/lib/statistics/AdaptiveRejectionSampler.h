@@ -25,6 +25,8 @@
 #define ADAPTIVEREJECTIONSAMPLER_H
 
 #include <vector>
+#include <tuple>
+#include <limits>
 
 #include "functions/Function.h"
 #include "statistics/SampleDistribution.h"
@@ -34,18 +36,36 @@
     \brief Adaptive rejection sampler
   */
 namespace AdaptiveRejectionSampler {
+  /** \name Types definitions
+    @{
+    */
+  /// Tuple comparison function
+  struct TupleCompare {
+    template <typename Y, typename X>
+    bool operator() (const std::tuple<X, Y, Y>& lhs, const std::tuple<X, Y, Y>&
+        rhs) const {
+      return std::get<0>(lhs) < std::get<0>(rhs);
+    }
+  };
+  /** @}
+    */
+
   /** \name Methods
     @{
     */
   /// Access a sample drawn from the distribution
   template <typename Y, typename X>
   static X getSample(const Function<Y, X>& logpdf, const Function<Y, X>&
-    logpdfprime, const std::vector<X>& initPoints);
+    logpdfprime, const std::vector<X>& initPoints, const X& minSupport =
+    -std::numeric_limits<X>::infinity, const X& maxSupport =
+    std::numeric_limits<X>::infinity);
   /// Access samples drawn from the distribution
   template <typename Y, typename X>
   static void getSamples(const Function<Y, X>& logpdf, const Function<Y, X>&
     logpdfprime, const std::vector<X>& initPoints, std::vector<X>& samples,
-    size_t numSamples);
+    size_t numSamples, const X& minSupport =
+    -std::numeric_limits<X>::infinity(), const X& maxSupport =
+    std::numeric_limits<X>::infinity());
   /** @}
     */
 

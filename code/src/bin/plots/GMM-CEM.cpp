@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
     const size_t row = it - samplesMixtNorm2.cbegin();
     double max = -std::numeric_limits<double>::infinity();
     size_t argmax = 0;
-    for (size_t i = 0; i < responsibilities.cols(); ++i)
+    for (size_t i = 0; i < (size_t)responsibilities.cols(); ++i)
       if (responsibilities(row, i) > max) {
         max = responsibilities(row, i);
         argmax = i;

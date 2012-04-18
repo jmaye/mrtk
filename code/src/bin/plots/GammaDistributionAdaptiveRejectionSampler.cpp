@@ -9,19 +9,21 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file AdaptiveRejectionSampler.cpp
-    \brief This file is a testing binary for the AdaptiveRejectionSampler class
+/** \file GammaDistributionAdaptiveRejectionSampler.cpp
+    \brief This file is a testing binary for plotting random samples of the
+           GammaDistribution class with adaptive rejection sampling
   */
 
-#include <iostream>
+#include <QtGui/QApplication>
 
+#include "visualization/HistogramPlot.h"
 #include "statistics/AdaptiveRejectionSampler.h"
 #include "statistics/GammaDistribution.h"
 
@@ -45,11 +47,24 @@ public:
 };
 
 int main(int argc, char** argv) {
-  std::vector<double> samples;
+  QApplication app(argc, argv);
+  Histogram<double, 1> hist(0, 100, 0.05);
   std::vector<double> initPoints;
   initPoints.push_back(2.0);
   initPoints.push_back(8.0);
-  AdaptiveRejectionSampler::getSamples(LogPdf(), LogPdfPrime(), initPoints,
-    samples, 10, 0.0, std::numeric_limits<double>::infinity());
-  return 0;
+  std::vector<double> data;
+  AdaptiveRejectionSampler::getSamples<double, double>(LogPdf(), LogPdfPrime(),
+    initPoints, data, 100000, 0.0, std::numeric_limits<double>::infinity());
+  hist.addSamples(data);
+  GammaDistribution<> dist(9.0, 2.0);
+  std::cout << "Sample mean: " << hist.getMean() << std::endl;
+  std::cout << "Sample mode: " << hist.getMode() << std::endl;
+  std::cout << "Sample variance: " << hist.getVariance() << std::endl;
+  std::cout << "Dist. mean: " << dist.getMean() << std::endl;
+  std::cout << "Dist. mode: " << dist.getMode() << std::endl;
+  std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
+  HistogramPlot<double, 1> plot("GammaDistributionAdaptiveRejectionSampler",
+    hist.getNormalized());
+  plot.show();
+  return app.exec();
 }
