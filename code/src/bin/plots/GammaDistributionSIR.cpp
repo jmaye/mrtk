@@ -16,54 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file GammaDistributionAdaptiveRejectionSampler.cpp
+/** \file GammaDistributionSIR.cpp
     \brief This file is a testing binary for plotting random samples of the
-           GammaDistribution class with adaptive rejection sampling
+           GammaDistribution class with sampling-importance-resampling.
   */
 
 #include <QtGui/QApplication>
 
 #include "visualization/HistogramPlot.h"
-#include "statistics/AdaptiveRejectionSampler.h"
+#include "statistics/SamplingImportanceResampler.h"
 #include "statistics/GammaDistribution.h"
-
-class LogPdf :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const
-      throw (BadArgumentException<double>) {
-    static const GammaDistribution<> gammaDist(9.0, 2.0);
-    return gammaDist.logpdf(argument);
-  }
-};
-
-class LogPdfPrime :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const
-    throw (BadArgumentException<double>) {
-    return 8.0 / argument - 2.0;
-  }
-};
+#include "statistics/CauchyDistribution.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   Histogram<double, 1> hist(0, 100, 0.05);
-  std::vector<double> initPoints;
-  initPoints.push_back(2.0);
-  initPoints.push_back(8.0);
-  std::vector<double> data;
-  AdaptiveRejectionSampler::getSamples<double, double>(LogPdf(), LogPdfPrime(),
-    initPoints, data, 100000);
-  hist.addSamples(data);
-  GammaDistribution<> dist(9.0, 2.0);
+  GammaDistribution<> dist(2.0, 2.0);
+  CauchyDistribution cauchyDist(1.0, 2.0);
+  std::vector<double> propSamples;
+  std::vector<double> targetSamples;
+  std::vector<double> weights;
+  const size_t numSamples = 10000;
+  SamplingImportanceResampler::getSamples(dist, cauchyDist, weights,
+    propSamples, targetSamples, numSamples);
+  hist.addSamples(targetSamples);
   std::cout << "Sample mean: " << hist.getMean() << std::endl;
   std::cout << "Sample mode: " << hist.getMode() << std::endl;
   std::cout << "Sample variance: " << hist.getVariance() << std::endl;
   std::cout << "Dist. mean: " << dist.getMean() << std::endl;
   std::cout << "Dist. mode: " << dist.getMode() << std::endl;
   std::cout << "Dist. variance: " << dist.getVariance() << std::endl;
-  HistogramPlot<double, 1> plot("GammaDistributionAdaptiveRejectionSampler",
+  HistogramPlot<double, 1> plot("GammaDistributionSIR",
     hist.getNormalized());
   plot.show();
   return app.exec();

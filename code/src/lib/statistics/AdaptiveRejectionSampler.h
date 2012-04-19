@@ -30,6 +30,7 @@
 
 #include "functions/Function.h"
 #include "statistics/SampleDistribution.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The AdaptiveRejectionSampler namespace implements adaptive rejection
     sampling.
@@ -65,7 +66,7 @@ namespace AdaptiveRejectionSampler {
     logpdfprime, const std::vector<X>& initPoints, std::vector<X>& samples,
     size_t numSamples, const X& minSupport =
     -std::numeric_limits<X>::infinity(), const X& maxSupport =
-    std::numeric_limits<X>::infinity());
+    std::numeric_limits<X>::infinity()) throw (InvalidOperationException);
   /** @}
     */
 

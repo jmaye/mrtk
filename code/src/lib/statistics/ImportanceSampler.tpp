@@ -9,47 +9,33 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file AdaptiveRejectionSampler.cpp
-    \brief This file is a testing binary for the AdaptiveRejectionSampler class
-  */
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
 
-#include <iostream>
-
-#include "statistics/AdaptiveRejectionSampler.h"
-#include "statistics/GammaDistribution.h"
-
-class LogPdf :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const
-      throw (BadArgumentException<double>) {
-    static const GammaDistribution<> gammaDist(9.0, 2.0);
-    return gammaDist.logpdf(argument);
+template <typename Y, typename X>
+void ImportanceSampler::getSamples(const Function<Y, X>& target, const
+    SampleDistribution<X>& proposal, std::vector<X>& weights,
+    std::vector<X>& samples, size_t numSamples) {
+  samples.clear();
+  samples.reserve(numSamples);
+  weights.clear();
+  weights.reserve(numSamples);
+  double normalizer = 0;
+  for (size_t i = 0; i < numSamples; ++i) {
+    const X sample = proposal.getSample();
+    samples.push_back(sample);
+    const double weight = target(sample) / proposal(sample);
+    weights.push_back(weight);
+    normalizer += weight;
   }
-};
-
-class LogPdfPrime :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const
-    throw (BadArgumentException<double>) {
-    return 8.0 / argument - 2.0;
-  }
-};
-
-int main(int argc, char** argv) {
-  std::vector<double> samples;
-  std::vector<double> initPoints;
-  initPoints.push_back(2.0);
-  initPoints.push_back(8.0);
-  AdaptiveRejectionSampler::getSamples(LogPdf(), LogPdfPrime(), initPoints,
-    samples, 10);
-  return 0;
+  for (size_t i = 0; i < numSamples; ++i)
+    weights[i] /= normalizer;
 }

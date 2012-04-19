@@ -9,47 +9,45 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file AdaptiveRejectionSampler.cpp
-    \brief This file is a testing binary for the AdaptiveRejectionSampler class
+/** \file SamplingImportanceResampler.h
+    \brief This file defines the SamplingImportanceResampler namespace, which
+           implements sampling-importance-resampling
   */
 
-#include <iostream>
+#ifndef SAMPLINGIMPORTANCERESAMPLER_H
+#define SAMPLINGIMPORTANCERESAMPLER_H
 
-#include "statistics/AdaptiveRejectionSampler.h"
-#include "statistics/GammaDistribution.h"
+#include <vector>
 
-class LogPdf :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const
-      throw (BadArgumentException<double>) {
-    static const GammaDistribution<> gammaDist(9.0, 2.0);
-    return gammaDist.logpdf(argument);
-  }
+#include "functions/Function.h"
+#include "statistics/SampleDistribution.h"
+
+/** The SamplingImportanceResampler namespace implements
+    sampling-importance-resampling.
+    \brief Sampling-importance-resampler
+  */
+namespace SamplingImportanceResampler {
+  /** \name Methods
+    @{
+    */
+  /// Access samples drawn from the prop. distribution and their weights,
+  template <typename Y, typename X>
+  static void getSamples(const Function<Y, X>& target, const
+    SampleDistribution<X>& proposal, std::vector<X>& weights,
+    std::vector<X>& propSamples, std::vector<X>& targetSamples, size_t
+    numSamples);
+  /** @}
+    */
+
 };
 
-class LogPdfPrime :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const
-    throw (BadArgumentException<double>) {
-    return 8.0 / argument - 2.0;
-  }
-};
+#include "statistics/SamplingImportanceResampler.tpp"
 
-int main(int argc, char** argv) {
-  std::vector<double> samples;
-  std::vector<double> initPoints;
-  initPoints.push_back(2.0);
-  initPoints.push_back(8.0);
-  AdaptiveRejectionSampler::getSamples(LogPdf(), LogPdfPrime(), initPoints,
-    samples, 10);
-  return 0;
-}
+#endif // SAMPLINGIMPORTANCERESAMPLER_H

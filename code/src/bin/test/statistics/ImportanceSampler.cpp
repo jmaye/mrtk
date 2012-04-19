@@ -16,40 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file AdaptiveRejectionSampler.cpp
-    \brief This file is a testing binary for the AdaptiveRejectionSampler class
+/** \file ImportanceSampler.cpp
+    \brief This file is a testing binary for the ImportanceSampler class
   */
 
 #include <iostream>
 
-#include "statistics/AdaptiveRejectionSampler.h"
+#include "statistics/ImportanceSampler.h"
 #include "statistics/GammaDistribution.h"
-
-class LogPdf :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const
-      throw (BadArgumentException<double>) {
-    static const GammaDistribution<> gammaDist(9.0, 2.0);
-    return gammaDist.logpdf(argument);
-  }
-};
-
-class LogPdfPrime :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const
-    throw (BadArgumentException<double>) {
-    return 8.0 / argument - 2.0;
-  }
-};
+#include "statistics/CauchyDistribution.h"
 
 int main(int argc, char** argv) {
+  GammaDistribution<> gammaDist(2.0, 2.0);
+  CauchyDistribution cauchyDist(1.0, 2.0);
   std::vector<double> samples;
-  std::vector<double> initPoints;
-  initPoints.push_back(2.0);
-  initPoints.push_back(8.0);
-  AdaptiveRejectionSampler::getSamples(LogPdf(), LogPdfPrime(), initPoints,
-    samples, 10);
+  std::vector<double> weights;
+  const size_t numSamples = 1000;
+  ImportanceSampler::getSamples(gammaDist, cauchyDist, weights, samples,
+    numSamples);
+  double mean = 0;
+  for (size_t i = 0; i < numSamples; ++i)
+    mean += weights[i] * samples[i];
+  std::cout << "Importance sampler mean: " << mean << std::endl;
+  std::cout << "Distribution mean: " << gammaDist.getMean() << std::endl;
   return 0;
 }

@@ -28,18 +28,30 @@ template <typename Y, typename X>
 X AdaptiveRejectionSampler::getSample(const Function<Y, X>& logpdf, const
     Function<Y, X>& logpdfprime, const std::vector<X>& initPoints, const X&
     minSupport, const X& maxSupport) {
+  std::vector<X> samples;
+  getSamples(logpdf, logpdfprime, initPoints, samples, 1, minSupport,
+    maxSupport);
+  return samples.back();
 }
 
 template <typename Y, typename X>
 void AdaptiveRejectionSampler::getSamples(const Function<Y, X>& logpdf, const
     Function<Y, X>& logpdfprime, const std::vector<X>& initPoints,
     std::vector<X>& samples, size_t numSamples, const X&
-    minSupport, const X& maxSupport) {
+    minSupport, const X& maxSupport) throw (InvalidOperationException) {
   std::vector<std::tuple<X, Y, Y> > points;
   points.reserve(initPoints.size());
   for (auto it = initPoints.begin(); it != initPoints.end(); ++it)
     points.push_back(std::tuple<X, Y, Y>(*it, logpdf(*it), logpdfprime(*it)));
-  // TODO: CHECK VALIDITY CONDITIONS
+  std::sort(points.begin(), points.end(), TupleCompare());
+  if (minSupport > std::get<0>(points.front()) ||
+      maxSupport < std::get<0>(points.front()) ||
+      (minSupport == -std::numeric_limits<X>::infinity() &&
+      std::get<2>(points.front()) <= 0) ||
+      (maxSupport == std::numeric_limits<X>::infinity() &&
+      std::get<2>(points.back()) >= 0))
+    throw InvalidOperationException("AdaptiveRejectionSampler::getSamples(): "
+      "invalid starting points");
   samples.clear();
   samples.reserve(numSamples);
   const static Randomizer<double> randomizer;
@@ -50,19 +62,20 @@ void AdaptiveRejectionSampler::getSamples(const Function<Y, X>& logpdf, const
     std::vector<X> hu;
     hu.reserve(points.size() + 1);
     z.push_back(minSupport);
-    hu.push_back(std::get<2>(points[0]) * (z[0] - std::get<0>(points[0]))
-      + std::get<1>(points[0]));
+    hu.push_back(std::get<2>(points.front()) * (z.back() -
+      std::get<0>(points.front())) + std::get<1>(points.front()));
     for (size_t i = 0; i < points.size(); ++i) {
       const std::tuple<X, Y, Y>& point1 = points[i];
       if (i != points.size() - 1) {
         const std::tuple<X, Y, Y>& point2 = points[i + 1];
-        z.push_back(std::get<0>(point1) + (std::get<1>(point1) -
-          std::get<1>(point2) + std::get<2>(point2) * (std::get<0>(point2) -
-          std::get<0>(point1))) / (std::get<2>(point2) - std::get<2>(point1)));
+        z.push_back(1.0 / (std::get<2>(point1) - std::get<2>(point2)) *
+          (std::get<1>(point2) - std::get<1>(point1) -
+          std::get<0>(point2) * std::get<2>(point2) +
+          std::get<0>(point1) * std::get<2>(point1)));
       }
       else
         z.push_back(maxSupport);
-      hu.push_back(std::get<2>(point1) * (z[i + 1] - std::get<0>(point1)) +
+      hu.push_back(std::get<2>(point1) * (z.back() - std::get<0>(point1)) +
         std::get<1>(point1));
     }
     std::vector<X> scum;
@@ -82,9 +95,10 @@ void AdaptiveRejectionSampler::getSamples(const Function<Y, X>& logpdf, const
         break;
       segment = i;
     }
-    const double x = z[segment] + 1.0 / std::get<2>(points[segment]) * log(1.0 +
-      std::get<2>(points[segment]) * cu * (u - scum[segment]) /
-      exp(hu[segment]));
+    const double x = std::get<0>(points[segment]) +
+      (log(std::get<2>(points[segment]) * cu * (u - scum[segment]) +
+      exp(hu[segment])) - std::get<1>(points[segment])) /
+      std::get<2>(points[segment]);
     u = randomizer.sampleUniform(0, 1);
     const double hux = std::get<2>(points[segment]) * (x -
       std::get<0>(points[segment])) + std::get<1>(points[segment]);
