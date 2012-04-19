@@ -16,30 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
+/** \file MetropolisHastingsSampler.h
+    \brief This file defines the MetropolisHastingsSampler namespace, which
+           implements Metropolis-Hastings sampling
+  */
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+#ifndef METROPOLISHASTINGSSAMPLER_H
+#define METROPOLISHASTINGSSAMPLER_H
 
-template <typename Y, typename X>
-X RejectionSampler::getSample(const Function<Y, X>& target, const
-    SampleDistribution<X>& proposal, double k) {
-  const static Randomizer<double> randomizer;
-  while (1) {
-    const X z0 = proposal.getSample();
-    const double u0 = randomizer.sampleUniform(0, k * proposal(z0));
-    if (u0 <= target(z0))
-      return z0;
-  }
-}
+#include <vector>
 
-template <typename Y, typename X>
-void RejectionSampler::getSamples(const Function<Y, X>& target, const
-    SampleDistribution<X>& proposal, double k, std::vector<X>& samples, size_t
-    numSamples) {
-  samples.clear();
-  samples.reserve(numSamples);
-  for (size_t i = 0; i < numSamples; ++i)
-    samples.push_back(getSample(target, proposal, k));
-}
+#include "functions/ContinuousFunction.h"
+#include "statistics/NormalDistribution.h"
+
+/** The MetropolisHastingsSampler namespace implements Metropolis-Hastings
+    sampling.
+    \brief Metropolis-Hastings sampler
+  */
+namespace MetropolisHastingsSampler {
+  /** \name Methods
+    @{
+    */
+  /// Access samples
+  template <typename Y, typename X, size_t M>
+  static void getSamples(const ContinuousFunction<Y, X, M>& target,
+    NormalDistribution<M>& proposal,
+    std::vector<typename NormalDistribution<M>::RandomVariable>& samples, size_t
+    numSamples);
+  /** @}
+    */
+
+};
+
+#include "statistics/MetropolisHastingsSampler.tpp"
+
+#endif // METROPOLISHASTINGSSAMPLER_H

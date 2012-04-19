@@ -22,24 +22,29 @@
 /* Methods                                                                    */
 /******************************************************************************/
 
-template <typename Y, typename X>
-X RejectionSampler::getSample(const Function<Y, X>& target, const
-    SampleDistribution<X>& proposal, double k) {
-  const static Randomizer<double> randomizer;
-  while (1) {
-    const X z0 = proposal.getSample();
-    const double u0 = randomizer.sampleUniform(0, k * proposal(z0));
-    if (u0 <= target(z0))
-      return z0;
-  }
-}
-
-template <typename Y, typename X>
-void RejectionSampler::getSamples(const Function<Y, X>& target, const
-    SampleDistribution<X>& proposal, double k, std::vector<X>& samples, size_t
+template <typename Y, typename X, size_t M>
+void MetropolisHastingsSampler::getSamples(const ContinuousFunction<Y, X, M>&
+    target, NormalDistribution<M>& proposal,
+    std::vector<typename NormalDistribution<M>::RandomVariable>& samples, size_t
     numSamples) {
   samples.clear();
   samples.reserve(numSamples);
-  for (size_t i = 0; i < numSamples; ++i)
-    samples.push_back(getSample(target, proposal, k));
+  samples.push_back(proposal.getSample());
+  static const Randomizer<double> randomizer;
+  while (samples.size() != numSamples) {
+    proposal.setMean(samples.back());
+    const typename NormalDistribution<M>::RandomVariable sample =
+      proposal.getSample();
+    NormalDistribution<M> proposalInv = proposal;
+    proposal.setMean(sample);
+    double r = target(sample) * proposalInv(samples.back()) /
+      (target(samples.back()) * proposal(sample));
+    if (r > 1)
+      r = 1;
+    const double u = randomizer.sampleUniform();
+    if (u < r)
+      samples.push_back(sample);
+    else
+      samples.push_back(samples.back());
+  }
 }

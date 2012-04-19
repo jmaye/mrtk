@@ -16,30 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "statistics/Randomizer.h"
+/** \file NormalDistribution2vMH.cpp
+    \brief This file is a testing binary for plotting random samples of the 
+           NormalDistribution2v class using Metropolis-Hastings
+  */
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+#include <QtGui/QApplication>
 
-template <typename Y, typename X>
-X RejectionSampler::getSample(const Function<Y, X>& target, const
-    SampleDistribution<X>& proposal, double k) {
-  const static Randomizer<double> randomizer;
-  while (1) {
-    const X z0 = proposal.getSample();
-    const double u0 = randomizer.sampleUniform(0, k * proposal(z0));
-    if (u0 <= target(z0))
-      return z0;
-  }
-}
+#include "visualization/ScatterPlot.h"
+#include "statistics/NormalDistribution.h"
+#include "statistics/MetropolisHastingsSampler.h"
 
-template <typename Y, typename X>
-void RejectionSampler::getSamples(const Function<Y, X>& target, const
-    SampleDistribution<X>& proposal, double k, std::vector<X>& samples, size_t
-    numSamples) {
-  samples.clear();
-  samples.reserve(numSamples);
-  for (size_t i = 0; i < numSamples; ++i)
-    samples.push_back(getSample(target, proposal, k));
+int main(int argc, char** argv) {
+  QApplication app(argc, argv);
+  std::vector<Eigen::Matrix<double, 2, 1> > data;
+  NormalDistribution<2> dist(Eigen::Matrix<double, 2, 1>(1.0, 1.0),
+    (Eigen::Matrix<double, 2, 2>() << 2, 0, 0, 2).finished());
+  NormalDistribution<2> proposal(Eigen::Matrix<double, 2, 1>(10.0, 10.0),
+    Eigen::Matrix<double, 2, 2>::Identity() * 0.5);
+  MetropolisHastingsSampler::getSamples<double, double, 2>(dist, proposal, data,
+    10000);
+  ScatterPlot<2> plot("NormalDistribution2vMH", data);
+  plot.show();
+  return app.exec();
 }
