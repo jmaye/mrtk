@@ -66,7 +66,7 @@ void AdaptiveRejectionSampler::getSamples(const Function<Y, X>& logpdf, const
         std::get<1>(point1));
     }
     std::vector<X> scum;
-    scum.reserve(z.size() + 1);
+    scum.reserve(z.size());
     scum.push_back(0);
     double cu = 0;
     for (size_t i = 0; i < z.size() - 1; ++i) {
@@ -90,7 +90,7 @@ void AdaptiveRejectionSampler::getSamples(const Function<Y, X>& logpdf, const
       std::get<0>(points[segment])) + std::get<1>(points[segment]);
     if (u < exp(logpdf(x) - hux))
       samples.push_back(x);
-    else
+    else if (!std::isnan(x))
       points.push_back(std::tuple<X, Y, Y>(x, logpdf(x), logpdfprime(x)));
   }
 }
