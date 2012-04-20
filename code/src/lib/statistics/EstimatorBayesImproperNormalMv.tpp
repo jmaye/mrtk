@@ -31,9 +31,7 @@ EstimatorBayesImproper<NormalDistribution<M> >::EstimatorBayesImproper() :
 template <size_t M>
 EstimatorBayesImproper<NormalDistribution<M> >::EstimatorBayesImproper(const
     EstimatorBayesImproper& other) :
-    mPostMeanDist(other.mPostMeanDist),
-    mPostCovarianceDist(other.mPostCovarianceDist),
-    mPostPredDist(other.mPostPredDist),
+    mMeanCovarianceDist(other.mMeanCovarianceDist),
     mNumPoints(other.mNumPoints),
     mValid(other.mValid),
     mValuesSum(other.mValuesSum),
@@ -45,9 +43,7 @@ EstimatorBayesImproper<NormalDistribution<M> >&
     EstimatorBayesImproper<NormalDistribution<M> >::operator =
     (const EstimatorBayesImproper& other) {
   if (this != &other) {
-    mPostMeanDist = other.mPostMeanDist;
-    mPostCovarianceDist = other.mPostCovarianceDist;
-    mPostPredDist = other.mPostPredDist;
+    mMeanCovarianceDist = other.mMeanCovarianceDist;
     mNumPoints = other.mNumPoints;
     mValid = other.mValid;
     mValuesSum = other.mValuesSum;
@@ -72,25 +68,16 @@ void EstimatorBayesImproper<NormalDistribution<M> >::read(std::istream&
 template <size_t M>
 void EstimatorBayesImproper<NormalDistribution<M> >::write(std::ostream&
     stream) const {
-  stream << "posterior mean distribution: " << std::endl << mPostMeanDist
+  stream << "Mean and covariance distribution: " << std::endl
+    << mMeanCovarianceDist << std::endl
+    << "Mean and covariance mode: " << std::endl
+    << std::get<0>(mMeanCovarianceDist.getMode()) << std::endl
+    << std::get<1>(mMeanCovarianceDist.getMode())
+    << std::endl << "Predictive distribution: " << std::endl << getPredDist()
     << std::endl
-    << "posterior mean mode: " << std::endl << mPostMeanDist.getMode()
+    << "Predictive mean: " << std::endl << getPredDist().getMean() << std::endl
+    << "Predictive covariance: " << std::endl << getPredDist().getCovariance()
     << std::endl
-    << "posterior mean covariance: " << std::endl
-    << mPostMeanDist.getCovariance() << std::endl
-    << "posterior covariance distribution: " << std::endl
-    << mPostCovarianceDist
-    << std::endl
-    << "posterior covariance mode: " << std::endl
-    << mPostCovarianceDist.getMode() << std::endl
-    << "posterior covariance covariance: " << std::endl
-    << mPostCovarianceDist.getCovariance() << std::endl
-    << "posterior predictive distribution: " << std::endl
-    << mPostPredDist << std::endl
-    << "posterior predictive mean: " << std::endl << mPostPredDist.getMean()
-    << std::endl
-    << "posterior predictive covariance: " << std::endl
-    << mPostPredDist.getCovariance() << std::endl
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }
@@ -110,22 +97,20 @@ void EstimatorBayesImproper<NormalDistribution<M> >::write(std::ofstream&
 /******************************************************************************/
 
 template <size_t M>
-const StudentDistribution<M>&
-    EstimatorBayesImproper<NormalDistribution<M> >::getPostMeanDist() const {
-  return mPostMeanDist;
+const NormalInvWishartDistribution<M>&
+    EstimatorBayesImproper<NormalDistribution<M> >::getDist() const {
+  return mMeanCovarianceDist;
 }
 
 template <size_t M>
-const InvWishartDistribution<M>&
-    EstimatorBayesImproper<NormalDistribution<M> >::getPostCovarianceDist()
-    const {
-  return mPostCovarianceDist;
-}
-
-template <size_t M>
-const StudentDistribution<M>&
-    EstimatorBayesImproper<NormalDistribution<M> >::getPostPredDist() const {
-  return mPostPredDist;
+StudentDistribution<M>
+    EstimatorBayesImproper<NormalDistribution<M> >::getPredDist() const {
+  const size_t dim = mMeanCovarianceDist.getMu().size();
+  return StudentDistribution<M>(mMeanCovarianceDist.getNu() - dim + 1,
+    mMeanCovarianceDist.getMu(), (mMeanCovarianceDist.getKappa() + 1) /
+    mMeanCovarianceDist.getKappa() /
+    (mMeanCovarianceDist.getNu() - dim + 1) *
+    mMeanCovarianceDist.getSigma());
 }
 
 template <size_t M>
@@ -164,14 +149,10 @@ void EstimatorBayesImproper<NormalDistribution<M> >::addPoint(const Point&
       ((mNumPoints - point.size()) * mNumPoints) +
       outerProduct<double, M>(mean) * ((double)mNumPoints /
       (mNumPoints - point.size()));
-    mPostMeanDist.setDegrees(mNumPoints - point.size());
-    mPostMeanDist.setLocation(mean);
-    mPostMeanDist.setScale(covariance / mNumPoints);
-    mPostCovarianceDist.setDegrees(mNumPoints - 1);
-    mPostCovarianceDist.setScale(covariance * (mNumPoints - point.size()));
-    mPostPredDist.setDegrees(mNumPoints - point.size());
-    mPostPredDist.setLocation(mean);
-    mPostPredDist.setScale(covariance * (1 + 1.0 / mNumPoints));
+    mMeanCovarianceDist.setMu(mean);
+    mMeanCovarianceDist.setKappa(mNumPoints);
+    mMeanCovarianceDist.setNu(mNumPoints - 1);
+    mMeanCovarianceDist.setSigma((mNumPoints - 1) * covariance);
   }
   catch (...) {
     mValid = false;

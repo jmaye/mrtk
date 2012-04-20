@@ -25,7 +25,7 @@
 
 #include "statistics/NormalDistribution.h"
 #include "statistics/StudentDistribution.h"
-#include "statistics/InvWishartDistribution.h"
+#include "statistics/NormalInvWishartDistribution.h"
 
 /** The class EstimatorBayesImproper is implemented for multivariate normal
     distributions.
@@ -64,12 +64,10 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the posterior marginal mean distribution
-  const StudentDistribution<M>& getPostMeanDist() const;
-  /// Returns the posterior marginal covariance distribution
-  const InvWishartDistribution<M>& getPostCovarianceDist() const;
-  /// Returns the posterior predictive distribution
-  const StudentDistribution<M>& getPostPredDist() const;
+  /// Returns the mean and covariance distribution
+  const NormalInvWishartDistribution<M>& getDist() const;
+  /// Returns the predictive distribution
+  StudentDistribution<M> getPredDist() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
@@ -104,12 +102,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Posterior marginal mean distribution
-  StudentDistribution<M> mPostMeanDist;
-  /// Posterior marginal covariance distribution
-  InvWishartDistribution<M> mPostCovarianceDist;
-  /// Posterior predictive distribution
-  StudentDistribution<M> mPostPredDist;
+  /// Mean and covariance distribution
+  NormalInvWishartDistribution<M> mMeanCovarianceDist;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

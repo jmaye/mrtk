@@ -25,7 +25,7 @@
 
 #include "statistics/NormalDistribution.h"
 #include "statistics/StudentDistribution.h"
-#include "statistics/ScaledInvChiSquareDistribution.h"
+#include "statistics/NormalScaledInvChiSquareDistribution.h"
 
 /** The class EstimatorBayesImproper is implemented for univariate normal
     distributions.
@@ -63,12 +63,10 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the posterior marginal mean distribution
-  const StudentDistribution<1>& getPostMeanDist() const;
-  /// Returns the posterior marginal variance distribution
-  const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
-  /// Returns the posterior predictive distribution
-  const StudentDistribution<1>& getPostPredDist() const;
+  /// Returns the mean and variance distribution
+  const NormalScaledInvChiSquareDistribution& getDist() const;
+  /// Returns the predictive distribution
+  StudentDistribution<1> getPredDist() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
@@ -103,12 +101,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Posterior marginal mean distribution
-  StudentDistribution<1> mPostMeanDist;
-  /// Posterior marginal variance distribution
-  ScaledInvChiSquareDistribution mPostVarianceDist;
-  /// Posterior predictive distribution
-  StudentDistribution<1> mPostPredDist;
+  /// Mean and variance distribution
+  NormalScaledInvChiSquareDistribution mMeanVarianceDist;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

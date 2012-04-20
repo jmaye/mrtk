@@ -29,9 +29,7 @@ EstimatorBayesImproper<NormalDistribution<1> >::EstimatorBayesImproper() :
 
 EstimatorBayesImproper<NormalDistribution<1> >::EstimatorBayesImproper(const
     EstimatorBayesImproper& other) :
-    mPostMeanDist(other.mPostMeanDist),
-    mPostVarianceDist(other.mPostVarianceDist),
-    mPostPredDist(other.mPostPredDist),
+    mMeanVarianceDist(other.mMeanVarianceDist),
     mNumPoints(other.mNumPoints),
     mValid(other.mValid),
     mValuesSum(other.mValuesSum),
@@ -42,9 +40,7 @@ EstimatorBayesImproper<NormalDistribution<1> >&
     EstimatorBayesImproper<NormalDistribution<1> >::operator =
     (const EstimatorBayesImproper& other) {
   if (this != &other) {
-    mPostMeanDist = other.mPostMeanDist;
-    mPostVarianceDist = other.mPostVarianceDist;
-    mPostPredDist = other.mPostPredDist;
+    mMeanVarianceDist = other.mMeanVarianceDist;
     mNumPoints = other.mNumPoints;
     mValid = other.mValid;
     mValuesSum = other.mValuesSum;
@@ -66,21 +62,13 @@ void EstimatorBayesImproper<NormalDistribution<1> >::read(std::istream&
 
 void EstimatorBayesImproper<NormalDistribution<1> >::write(std::ostream& stream)
     const {
-  stream << "posterior mean distribution: " << std::endl << mPostMeanDist
-    << std::endl
-    << "posterior mean mode: " << mPostMeanDist.getMode() << std::endl
-    << "posterior mean variance: " << mPostMeanDist.getVariance() << std::endl
-    << "posterior variance distribution: " << std::endl
-    << mPostVarianceDist
-    << std::endl
-    << "posterior variance mode: " << mPostVarianceDist.getMode() << std::endl
-    << "posterior variance variance: " << mPostVarianceDist.getVariance()
-    << std::endl
-    << "posterior predictive distribution: " << std::endl
-    << mPostPredDist << std::endl
-    << "posterior predictive mean: " << mPostPredDist.getMean() << std::endl
-    << "posterior predictive variance: " << mPostPredDist.getVariance()
-    << std::endl
+  stream << "Mean and variance distribution: " << std::endl << mMeanVarianceDist
+    << std::endl << "Mean and variance mode: " << std::endl <<
+      std::get<0>(mMeanVarianceDist.getMode()) << std::endl
+    << std::get<1>(mMeanVarianceDist.getMode())
+    << std::endl << "Predictive distribution: " << std::endl << getPredDist() <<
+    std::endl << "Predictive mean: " << getPredDist().getMean() << std::endl
+    << "Predictive variance: " << getPredDist().getVariance() << std::endl
     << "number of points: " << mNumPoints << std::endl
     << "valid: " << mValid;
 }
@@ -97,20 +85,16 @@ void EstimatorBayesImproper<NormalDistribution<1> >::write(std::ofstream&
 /* Accessors                                                                  */
 /******************************************************************************/
 
-const StudentDistribution<1>&
-    EstimatorBayesImproper<NormalDistribution<1> >::getPostMeanDist() const {
-  return mPostMeanDist;
+const NormalScaledInvChiSquareDistribution&
+    EstimatorBayesImproper<NormalDistribution<1> >::getDist() const {
+  return mMeanVarianceDist;
 }
 
-const ScaledInvChiSquareDistribution&
-    EstimatorBayesImproper<NormalDistribution<1> >::getPostVarianceDist()
-    const {
-  return mPostVarianceDist;
-}
-
-const StudentDistribution<1>&
-    EstimatorBayesImproper<NormalDistribution<1> >::getPostPredDist() const {
-  return mPostPredDist;
+StudentDistribution<1>
+    EstimatorBayesImproper<NormalDistribution<1> >::getPredDist() const {
+  return StudentDistribution<1>(mMeanVarianceDist.getNu(),
+    mMeanVarianceDist.getMu(), mMeanVarianceDist.getSigma() *
+    (mMeanVarianceDist.getKappa() + 1) / mMeanVarianceDist.getKappa());
 }
 
 size_t EstimatorBayesImproper<NormalDistribution<1> >::getNumPoints() const {
@@ -139,14 +123,10 @@ void EstimatorBayesImproper<NormalDistribution<1> >::addPoint(const Point&
     const double variance = mSquaredValuesSum / (mNumPoints - 1) -
       mValuesSum * mValuesSum * 2 / ((mNumPoints - 1) * mNumPoints) +
       mean * mean * ((double)mNumPoints / (mNumPoints - 1));
-    mPostMeanDist.setDegrees(mNumPoints - 1);
-    mPostMeanDist.setLocation(mean);
-    mPostMeanDist.setScale(variance / mNumPoints);
-    mPostVarianceDist.setDegrees(mNumPoints - 1);
-    mPostVarianceDist.setScale(variance);
-    mPostPredDist.setDegrees(mNumPoints - 1);
-    mPostPredDist.setLocation(mean);
-    mPostPredDist.setScale(variance * (1 + 1.0 / mNumPoints));
+    mMeanVarianceDist.setNu(mNumPoints - 1);
+    mMeanVarianceDist.setKappa(mNumPoints);
+    mMeanVarianceDist.setMu(mean);
+    mMeanVarianceDist.setSigma(variance);
   }
   catch (...) {
     mValid = false;
