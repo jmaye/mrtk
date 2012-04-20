@@ -27,6 +27,7 @@
 #include "utils/IsNumeric.h"
 #include "utils/Not.h"
 #include "functions/LogGammaFunction.h"
+#include "functions/DigammaFunction.h"
 
 /** The class EstimatorBayes is implemented for mixture distributions.
     \brief Mixture distributions Bayes estimator
@@ -80,11 +81,55 @@ public:
         n(n),
         k(k) {
     }
+    /// Copy constructor
+    AlphaLogPdf(const AlphaLogPdf& other) :
+      n(other.n),
+      k(other.k) {
+    }
+    /// Assignment operator
+    AlphaLogPdf& operator = (const AlphaLogPdf& other) {
+      if (this != &other) {
+        n = other.n;
+        k = other.k;
+      }
+    }
     /// Returns logpdf of alpha posterior
     virtual double getValue(const double& argument) const {
-      static const LogGammaFunction<double> logGammaFunction;
+      const LogGammaFunction<double> logGammaFunction;
       return (k - 1.5) * log(argument) - 1.0 / (2.0 * argument) +
         logGammaFunction(argument) - logGammaFunction(n + argument);
+    }
+    /// Number of points
+    size_t n;
+    /// Number of clusters
+    size_t k;
+  };
+  /// Alpha log-posterior
+  class AlphaLogPdfPrime :
+    public Function<double, double> {
+  public:
+    /// Constructor with parameters
+    AlphaLogPdfPrime(size_t n, size_t k) :
+        n(n),
+        k(k) {
+    }
+    /// Copy constructor
+    AlphaLogPdfPrime(const AlphaLogPdfPrime& other) :
+      n(other.n),
+      k(other.k) {
+    }
+    /// Assignment operator
+    AlphaLogPdfPrime& operator = (const AlphaLogPdfPrime& other) {
+      if (this != &other) {
+        n = other.n;
+        k = other.k;
+      }
+    }
+    /// Returns logpdfprime of alpha posterior
+    virtual double getValue(const double& argument) const {
+      const DigammaFunction<double> digammaFunction;
+      return (k - 1.5) / argument + 1.0 / (2.0 * argument * argument) +
+        digammaFunction(argument) - digammaFunction(n + argument);
     }
     /// Number of points
     size_t n;

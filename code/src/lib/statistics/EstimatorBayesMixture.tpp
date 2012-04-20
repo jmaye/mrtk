@@ -19,6 +19,7 @@
 #include <RInside.h>
 
 #include "statistics/Randomizer.h"
+#include "statistics/AdaptiveRejectionSampler.h"
 #include "functions/LogSumExpFunction.h"
 
 /******************************************************************************/
@@ -245,6 +246,9 @@ void EstimatorBayes<MixtureDistribution<C, M>,
   size_t K = 1;
   double alpha = 1.0 / randomizer.sampleGamma(1.0, 1.0);
   size_t numIter = 0;
+  std::vector<double> alphaInitPoints;
+  alphaInitPoints.push_back(0.05);
+  alphaInitPoints.push_back(5.0);
   while (numIter != mMaxNumIter) {
     std::cout << "numIter: " << numIter << std::endl;
     std::cout << "K: " << K << std::endl;
@@ -294,6 +298,9 @@ void EstimatorBayes<MixtureDistribution<C, M>,
       components[i] = estComp[i].getDist().getSample();
       compDist[i] = C(components[i]);
     }
+    alpha = AdaptiveRejectionSampler::getSample(AlphaLogPdf(numPoints, K),
+      AlphaLogPdfPrime(numPoints, K), alphaInitPoints, 0.0,
+      std::numeric_limits<double>::infinity());
     numIter++;
   }
 }

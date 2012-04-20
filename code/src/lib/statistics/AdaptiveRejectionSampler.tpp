@@ -41,8 +41,14 @@ void AdaptiveRejectionSampler::getSamples(const Function<Y, X>& logpdf, const
     minSupport, const X& maxSupport) throw (InvalidOperationException) {
   std::vector<std::tuple<X, Y, Y> > points;
   points.reserve(initPoints.size());
-  for (auto it = initPoints.begin(); it != initPoints.end(); ++it)
+  double max = -std::numeric_limits<double>::infinity();
+  for (auto it = initPoints.begin(); it != initPoints.end(); ++it) {
     points.push_back(std::tuple<X, Y, Y>(*it, logpdf(*it), logpdfprime(*it)));
+    if (std::get<1>(points.back()) > max)
+      max = std::get<1>(points.back());
+  }
+  for (auto it = points.begin(); it != points.end(); ++it)
+    std::get<1>(*it) -= max;
   std::sort(points.begin(), points.end(), TupleCompare());
   if (minSupport > std::get<0>(points.front()) ||
       maxSupport < std::get<0>(points.front()) ||
@@ -102,9 +108,9 @@ void AdaptiveRejectionSampler::getSamples(const Function<Y, X>& logpdf, const
     u = randomizer.sampleUniform(0, 1);
     const double hux = std::get<2>(points[segment]) * (x -
       std::get<0>(points[segment])) + std::get<1>(points[segment]);
-    if (u < exp(logpdf(x) - hux))
+    if (u < exp(logpdf(x) - max - hux))
       samples.push_back(x);
     else if (!std::isnan(x))
-      points.push_back(std::tuple<X, Y, Y>(x, logpdf(x), logpdfprime(x)));
+      points.push_back(std::tuple<X, Y, Y>(x, logpdf(x) - max, logpdfprime(x)));
   }
 }
