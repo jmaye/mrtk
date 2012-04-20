@@ -26,6 +26,7 @@
 #include "statistics/ConjugatePrior.h"
 #include "utils/IsNumeric.h"
 #include "utils/Not.h"
+#include "functions/LogGammaFunction.h"
 
 /** The class EstimatorBayes is implemented for mixture distributions.
     \brief Mixture distributions Bayes estimator
@@ -70,6 +71,26 @@ public:
   typedef std::vector<Point> Container;
   /// Constant point iterator
   typedef typename Container::const_iterator ConstPointIterator;
+  /// Alpha log-posterior
+  class AlphaLogPdf :
+    public Function<double, double> {
+  public:
+    /// Constructor with parameters
+    AlphaLogPdf(size_t n, size_t k) :
+        n(n),
+        k(k) {
+    }
+    /// Returns logpdf of alpha posterior
+    virtual double getValue(const double& argument) const {
+      static const LogGammaFunction<double> logGammaFunction;
+      return (k - 1.5) * log(argument) - 1.0 / (2.0 * argument) +
+        logGammaFunction(argument) - logGammaFunction(n + argument);
+    }
+    /// Number of points
+    size_t n;
+    /// Number of clusters
+    size_t k;
+  };
   /** @}
     */
 

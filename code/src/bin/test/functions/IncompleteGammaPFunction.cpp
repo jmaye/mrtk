@@ -16,38 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file AdaptiveRejectionSampler.cpp
-    \brief This file is a testing binary for the AdaptiveRejectionSampler class
+/** \file IncompleteGammaPFunction.cpp
+    \brief This file is a testing binary for the IncompleteGammaPFunction class
   */
 
 #include <iostream>
 
-#include "statistics/AdaptiveRejectionSampler.h"
-#include "statistics/GammaDistribution.h"
-
-class LogPdf :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const {
-    static const GammaDistribution<> gammaDist(9.0, 2.0);
-    return gammaDist.logpdf(argument);
-  }
-};
-
-class LogPdfPrime :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const {
-    return 8.0 / argument - 2.0;
-  }
-};
+#include "functions/IncompleteGammaPFunction.h"
 
 int main(int argc, char** argv) {
-  std::vector<double> samples;
-  std::vector<double> initPoints;
-  initPoints.push_back(2.0);
-  initPoints.push_back(8.0);
-  AdaptiveRejectionSampler::getSamples(LogPdf(), LogPdfPrime(), initPoints,
-    samples, 10);
+  IncompleteGammaPFunction f(1.0);
+  std::cout << "Function parameters: " << std::endl << f << std::endl;
+  std::cout << "f.getAlpha(): " << f.getAlpha() << std::endl;
+  std::cout << "f(1): " << f(1) << std::endl;
+  std::cout << "f(0.5): " << f(0.5) << std::endl;
+
   return 0;
 }

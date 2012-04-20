@@ -16,87 +16,61 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <functions/IncompleteBetaFunction.h>
+#include <gsl/gsl_sf_gamma.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BetaDistribution::BetaDistribution(double alpha, double beta) :
-    DirichletDistribution<2>(Eigen::Matrix<double, 2, 1>(alpha, beta)) {
+IncompleteGammaPFunction::IncompleteGammaPFunction(double alpha) :
+    mAlpha(alpha) {
 }
 
-BetaDistribution::BetaDistribution(const BetaDistribution& other) :
-    DirichletDistribution<2>(other) {
+IncompleteGammaPFunction::IncompleteGammaPFunction(const
+    IncompleteGammaPFunction& other) :
+    mAlpha(other.mAlpha) {
 }
 
-BetaDistribution& BetaDistribution::operator = (const BetaDistribution& other) {
+IncompleteGammaPFunction& IncompleteGammaPFunction::operator = (const
+    IncompleteGammaPFunction& other) {
   if (this != &other) {
-    DirichletDistribution<2>::operator=(other);
+    mAlpha = other.mAlpha;
   }
   return *this;
 }
 
-BetaDistribution::~BetaDistribution() {
+IncompleteGammaPFunction::~IncompleteGammaPFunction() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void BetaDistribution::read(std::istream& stream) {
+void IncompleteGammaPFunction::read(std::istream& stream) {
 }
 
-void BetaDistribution::write(std::ostream& stream) const {
-  stream << "alpha: " << mAlpha(0) << std::endl << "beta: " << mAlpha(1);
+void IncompleteGammaPFunction::write(std::ostream& stream) const {
+  stream << "alpha: " << mAlpha;
 }
 
-void BetaDistribution::read(std::ifstream& stream) {
+void IncompleteGammaPFunction::read(std::ifstream& stream) {
 }
 
-void BetaDistribution::write(std::ofstream& stream) const {
+void IncompleteGammaPFunction::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BetaDistribution::setAlpha(double alpha) {
-  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(alpha,
-    getBeta()));
+double IncompleteGammaPFunction::getValue(const VariableType& argument) const {
+  return gsl_sf_gamma_inc_P(mAlpha, argument);
 }
 
-double BetaDistribution::getAlpha() const {
-  return mAlpha(0);
+double IncompleteGammaPFunction::getAlpha() const {
+  return mAlpha;
 }
 
-void BetaDistribution::setBeta(double beta) {
-  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(getAlpha(),
-    beta));
-}
-
-double BetaDistribution::getBeta() const {
-  return mAlpha(1);
-}
-
-double BetaDistribution::getMean() const {
-  return DirichletDistribution<2>::getMean()(0);
-}
-
-double BetaDistribution::getMode() const {
-  return DirichletDistribution<2>::getMode()(0);
-}
-
-double BetaDistribution::getVariance() const {
-  return DirichletDistribution<2>::getCovariance()(0, 0);
-}
-
-double BetaDistribution::cdf(const double& value) const {
-  const IncompleteBetaFunction<double> incBetaFunction(mAlpha(0), mAlpha(1));
-  if (value < 0)
-    return 0;
-  else if (value > 1)
-    return 1;
-  else 
-    return incBetaFunction(value);
+void IncompleteGammaPFunction::setAlpha(double alpha) {
+  mAlpha = alpha;
 }

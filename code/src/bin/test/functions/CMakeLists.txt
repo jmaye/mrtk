@@ -1,1 +1,1 @@
-remake_add_executables(TESTING LINK base)
+remake_add_executables(TESTING LINK base functions)

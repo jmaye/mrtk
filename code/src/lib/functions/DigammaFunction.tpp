@@ -9,45 +9,42 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file AdaptiveRejectionSampler.cpp
-    \brief This file is a testing binary for the AdaptiveRejectionSampler class
-  */
+#include <gsl/gsl_sf_psi.h>
 
-#include <iostream>
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include "statistics/AdaptiveRejectionSampler.h"
-#include "statistics/GammaDistribution.h"
+template <typename X>
+DigammaFunction<X>::DigammaFunction() {
+}
 
-class LogPdf :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const {
-    static const GammaDistribution<> gammaDist(9.0, 2.0);
-    return gammaDist.logpdf(argument);
-  }
-};
+DigammaFunction<size_t>::DigammaFunction() {
+}
 
-class LogPdfPrime :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const {
-    return 8.0 / argument - 2.0;
-  }
-};
+template <typename X>
+DigammaFunction<X>::~DigammaFunction() {
+}
 
-int main(int argc, char** argv) {
-  std::vector<double> samples;
-  std::vector<double> initPoints;
-  initPoints.push_back(2.0);
-  initPoints.push_back(8.0);
-  AdaptiveRejectionSampler::getSamples(LogPdf(), LogPdfPrime(), initPoints,
-    samples, 10);
-  return 0;
+DigammaFunction<size_t>::~DigammaFunction() {
+}
+
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+template <typename X>
+double DigammaFunction<X>::getValue(const VariableType& argument) const {
+  return gsl_sf_psi(argument);
+}
+
+double DigammaFunction<size_t>::getValue(const VariableType& argument) const {
+  return gsl_sf_psi_int(argument);
 }

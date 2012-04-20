@@ -16,38 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file AdaptiveRejectionSampler.cpp
-    \brief This file is a testing binary for the AdaptiveRejectionSampler class
+/** \file DigammaFunction.cpp
+    \brief This file is a testing binary for the DigammaFunction class
   */
 
 #include <iostream>
 
-#include "statistics/AdaptiveRejectionSampler.h"
-#include "statistics/GammaDistribution.h"
-
-class LogPdf :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const {
-    static const GammaDistribution<> gammaDist(9.0, 2.0);
-    return gammaDist.logpdf(argument);
-  }
-};
-
-class LogPdfPrime :
-  public Function<double, double> {
-public:
-  virtual double getValue(const double& argument) const {
-    return 8.0 / argument - 2.0;
-  }
-};
+#include "functions/DigammaFunction.h"
 
 int main(int argc, char** argv) {
-  std::vector<double> samples;
-  std::vector<double> initPoints;
-  initPoints.push_back(2.0);
-  initPoints.push_back(8.0);
-  AdaptiveRejectionSampler::getSamples(LogPdf(), LogPdfPrime(), initPoints,
-    samples, 10);
+  DigammaFunction<size_t> G_1;
+  std::cout << "G_1(1): " << G_1(1) << std::endl;
+  std::cout << "G_1(2): " << G_1(2) << std::endl;
+
+  DigammaFunction<double> G_2;
+  std::cout << "G_2(0.5): " << G_2(0.5) << std::endl;
+  std::cout << "G_2(1.0): " << G_2(1.0) << std::endl;
+
   return 0;
 }

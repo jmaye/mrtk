@@ -16,11 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <gsl/gsl_sf_gamma.h>
-#include <gsl/gsl_sf_psi.h>
-
 #include "statistics/Randomizer.h"
 #include "functions/LogGammaFunction.h"
+#include "functions/DigammaFunction.h"
+#include "functions/IncompleteGammaPFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -141,10 +140,11 @@ double GammaDistribution<T>::logpdf(const RandomVariable& value) const {
 
 template <typename T>
 double GammaDistribution<T>::cdf(const RandomVariable& value) const {
+  const IncompleteGammaPFunction incGammaPFunction(mShape);
   if (value <= 0)
     return 0.0;
   else
-    return gsl_sf_gamma_inc_P(mShape, value * mInvScale);
+    return incGammaPFunction(value * mInvScale);
 }
 
 template <typename T>
@@ -179,8 +179,10 @@ template <typename T>
 double GammaDistribution<T>::KLDivergence(const GammaDistribution<T>& other)
     const {
   LogGammaFunction<T> logGammaFunction;
-  return (mShape - 1) * gsl_sf_psi(mShape) -
-    (other.mShape - 1) * gsl_sf_psi(other.mShape) - logGammaFunction(mShape) +
+  const DigammaFunction<T> digammaFunction;
+  return (mShape - 1) * digammaFunction(mShape) -
+    (other.mShape - 1) * digammaFunction(other.mShape) -
+    logGammaFunction(mShape) +
     logGammaFunction(other.mShape) + other.mShape *
     (log(mInvScale) - log(other.mInvScale)) +
     mShape * (1.0 / mInvScale - 1.0 / other.mInvScale) * other.mInvScale;

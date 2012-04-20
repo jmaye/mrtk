@@ -20,8 +20,6 @@
 
 #include "statistics/Randomizer.h"
 #include "functions/LogSumExpFunction.h"
-#include "statistics/BetaDistribution.h"
-#include "statistics/BernoulliDistribution.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -296,15 +294,6 @@ void EstimatorBayes<MixtureDistribution<C, M>,
       components[i] = estComp[i].getDist().getSample();
       compDist[i] = C(components[i]);
     }
-//    const double nu = BetaDistribution(alpha + 1, numPoints).getSample()(0);
-//    const double a = 1;
-//    const double b = 2;
-//    const double pi = (a + K - 1) / (a + K - 1 + numPoints * (b - log(nu)));
-//    const size_t comp = BernoulliDistribution(pi).getSample()(0);
-//    if (comp)
-//      alpha = randomizer.sampleGamma(a + K, b - log(nu));
-//    else
-//      alpha = randomizer.sampleGamma(a + K - 1, b - log(nu));
     numIter++;
   }
 }

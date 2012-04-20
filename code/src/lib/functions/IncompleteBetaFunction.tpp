@@ -16,87 +16,85 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <functions/IncompleteBetaFunction.h>
+#include <gsl/gsl_sf_gamma.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-BetaDistribution::BetaDistribution(double alpha, double beta) :
-    DirichletDistribution<2>(Eigen::Matrix<double, 2, 1>(alpha, beta)) {
+template <typename X>
+IncompleteBetaFunction<X>::IncompleteBetaFunction(double alpha, double beta) :
+    mAlpha(alpha),
+    mBeta(beta) {
 }
 
-BetaDistribution::BetaDistribution(const BetaDistribution& other) :
-    DirichletDistribution<2>(other) {
+template <typename X>
+IncompleteBetaFunction<X>::IncompleteBetaFunction(const IncompleteBetaFunction&
+    other) :
+    mAlpha(other.mAlpha),
+    mBeta(other.mBeta) {
 }
 
-BetaDistribution& BetaDistribution::operator = (const BetaDistribution& other) {
+template <typename X>
+IncompleteBetaFunction<X>& IncompleteBetaFunction<X>::operator = (const
+    IncompleteBetaFunction& other) {
   if (this != &other) {
-    DirichletDistribution<2>::operator=(other);
+    mAlpha = other.mAlpha;
+    mBeta = other.mBeta;
   }
   return *this;
 }
 
-BetaDistribution::~BetaDistribution() {
+template <typename X>
+IncompleteBetaFunction<X>::~IncompleteBetaFunction() {
 }
 
 /******************************************************************************/
 /* Stream operations                                                          */
 /******************************************************************************/
 
-void BetaDistribution::read(std::istream& stream) {
+template <typename X>
+void IncompleteBetaFunction<X>::read(std::istream& stream) {
 }
 
-void BetaDistribution::write(std::ostream& stream) const {
-  stream << "alpha: " << mAlpha(0) << std::endl << "beta: " << mAlpha(1);
+template <typename X>
+void IncompleteBetaFunction<X>::write(std::ostream& stream) const {
+  stream << "alpha: " << mAlpha << std::endl << "beta: " << mBeta;
 }
 
-void BetaDistribution::read(std::ifstream& stream) {
+template <typename X>
+void IncompleteBetaFunction<X>::read(std::ifstream& stream) {
 }
 
-void BetaDistribution::write(std::ofstream& stream) const {
+template <typename X>
+void IncompleteBetaFunction<X>::write(std::ofstream& stream) const {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-void BetaDistribution::setAlpha(double alpha) {
-  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(alpha,
-    getBeta()));
+template <typename X>
+double IncompleteBetaFunction<X>::getValue(const VariableType& argument) const {
+  return gsl_sf_beta_inc(mAlpha, mBeta, argument);
 }
 
-double BetaDistribution::getAlpha() const {
-  return mAlpha(0);
+template <typename X>
+double IncompleteBetaFunction<X>::getAlpha() const {
+  return mAlpha;
 }
 
-void BetaDistribution::setBeta(double beta) {
-  DirichletDistribution<2>::setAlpha(Eigen::Matrix<double, 2, 1>(getAlpha(),
-    beta));
+template <typename X>
+void IncompleteBetaFunction<X>::setAlpha(double alpha) {
+  mAlpha = alpha;
 }
 
-double BetaDistribution::getBeta() const {
-  return mAlpha(1);
+template <typename X>
+double IncompleteBetaFunction<X>::getBeta() const {
+  return mBeta;
 }
 
-double BetaDistribution::getMean() const {
-  return DirichletDistribution<2>::getMean()(0);
-}
-
-double BetaDistribution::getMode() const {
-  return DirichletDistribution<2>::getMode()(0);
-}
-
-double BetaDistribution::getVariance() const {
-  return DirichletDistribution<2>::getCovariance()(0, 0);
-}
-
-double BetaDistribution::cdf(const double& value) const {
-  const IncompleteBetaFunction<double> incBetaFunction(mAlpha(0), mAlpha(1));
-  if (value < 0)
-    return 0;
-  else if (value > 1)
-    return 1;
-  else 
-    return incBetaFunction(value);
+template <typename X>
+void IncompleteBetaFunction<X>::setBeta(double beta) {
+  mBeta = beta;
 }

@@ -16,10 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <gsl/gsl_sf_gamma.h>
-
 #include "statistics/GammaDistribution.h"
 #include "statistics/PoissonDistribution.h"
+#include "functions/IncompleteBetaFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -106,9 +105,9 @@ Eigen::Matrix<int, 2, 1> NegativeBinomialDistribution::getSample() const {
 }
 
 double NegativeBinomialDistribution::cmf(const int& value) const {
+  const IncompleteBetaFunction<double> incBetaFunction(value + 1, mNumTrials);
   if (value < 0)
     return 0;
   else 
-    return 1.0 -
-      gsl_sf_beta_inc(value + 1, mNumTrials, mProbabilities(0));
+    return 1.0 - incBetaFunction(mProbabilities(0));
 }

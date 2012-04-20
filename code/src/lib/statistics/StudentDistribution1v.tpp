@@ -16,12 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <gsl/gsl_sf_gamma.h>
-
 #include "statistics/ChiSquareDistribution.h"
 #include "statistics/NormalDistribution.h"
 #include "functions/LogGammaFunction.h"
 #include "functions/GammaFunction.h"
+#include "functions/IncompleteBetaFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -142,8 +141,8 @@ double StudentDistribution<1>::logpdf(const RandomVariable& value) const {
 
 double StudentDistribution<1>::cdf(const RandomVariable& value) const {
   // TODO: SEEMS TO BE INCORRECT
-  return 1.0 - 0.5 * gsl_sf_beta_inc(0.5 * mDegrees, 0.5, mDegrees /
-    (value * value + mDegrees));
+  const IncompleteBetaFunction<double> incBetaFunction(0.5 * mDegrees, 0.5);
+  return 1.0 - 0.5 * incBetaFunction(mDegrees / (value * value + mDegrees));
 }
 
 StudentDistribution<1>::RandomVariable StudentDistribution<1>::getSample()

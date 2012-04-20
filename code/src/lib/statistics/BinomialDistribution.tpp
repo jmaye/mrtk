@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <gsl/gsl_sf_gamma.h>
+#include "functions/IncompleteBetaFunction.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -92,11 +92,12 @@ double BinomialDistribution::getVariance() const {
 }
 
 double BinomialDistribution::cmf(const int& value) const {
+  const IncompleteBetaFunction<double> incBetaFunction(mNumTrials - value,
+    value + 1);
   if (value < 0)
     return 0;
   else if (value >= (int)mNumTrials)
     return 1;
   else
-    return gsl_sf_beta_inc(mNumTrials - value, value + 1,
-      1 - mProbabilities(0));
+    return incBetaFunction(1 - mProbabilities(0));
 }
