@@ -98,8 +98,8 @@ const Eigen::Matrix<double, 3, 3>&
 
 template <typename T>
 void Transformation<T, 2>::setTransformation(T x, T y, T yaw) {
-  double cosYaw = cos(yaw);
-  double sinYaw = sin(yaw);
+  const double cosYaw = cos(yaw);
+  const double sinYaw = sin(yaw);
   mRotationMatrix(0, 0) = cosYaw;
   mRotationMatrix(0, 1) = -sinYaw;
   mRotationMatrix(0, 2) = 0;

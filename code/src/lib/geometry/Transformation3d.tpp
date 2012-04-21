@@ -97,12 +97,12 @@ const Eigen::Matrix<double, 4, 4>&
 template <typename T>
 void Transformation<T, 3>::setTransformation(T x, T y, T z, T roll, T pitch,
     T yaw) {
-  double sinRoll = sin(roll);
-  double cosRoll = cos(roll);
-  double sinPitch = sin(pitch);
-  double cosPitch = cos(pitch);
-  double sinYaw = sin(yaw);
-  double cosYaw = cos(yaw);
+  const double sinRoll = sin(roll);
+  const double cosRoll = cos(roll);
+  const double sinPitch = sin(pitch);
+  const double cosPitch = cos(pitch);
+  const double sinYaw = sin(yaw);
+  const double cosYaw = cos(yaw);
   mRotationMatrix(0, 0) = cosYaw * cosPitch;
   mRotationMatrix(0, 1) = cosYaw * sinPitch * sinRoll - sinYaw * cosRoll;
   mRotationMatrix(0, 2) = cosYaw * sinPitch * cosRoll + sinYaw * sinRoll;
