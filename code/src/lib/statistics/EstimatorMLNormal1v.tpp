@@ -123,16 +123,24 @@ void EstimatorML<NormalDistribution<1> >::addPoints(const Container& points) {
 
 void EstimatorML<NormalDistribution<1> >::addPoints(const ConstPointIterator&
     itStart, const ConstPointIterator& itEnd, const
-    Eigen::Matrix<double, Eigen::Dynamic, 1>& responsibilities, double
-    numPoints) {
+    Eigen::Matrix<double, Eigen::Dynamic, 1>& responsibilities) {
+  if (responsibilities.size() != itEnd - itStart)
+    return;
   double mean = 0;
   for (auto it = itStart; it != itEnd; ++it)
     mean += responsibilities(it - itStart) * (*it);
+  double numPoints = responsibilities.sum();
   mean /= numPoints;
   double variance = 0;
   for (auto it = itStart; it != itEnd; ++it)
     variance += responsibilities(it - itStart) * (*it - mean) * (*it - mean);
   variance /= numPoints;
-  mDistribution.setMean(mean);
-  mDistribution.setVariance(variance);
+  try {
+    mValid = true;
+    mDistribution.setMean(mean);
+    mDistribution.setVariance(variance);
+  }
+  catch (...) {
+    mValid = false;
+  }
 }

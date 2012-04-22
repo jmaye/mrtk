@@ -32,8 +32,8 @@ int main(int argc, char** argv) {
   LinearRegression<3> dist;
   for (double x = -10; x < 10; x += 0.1)
     for (double y = -10; y < 10; y += 0.1) {
-      dist.setBasis(Eigen::Matrix<double, 3, 1>(1.0, x, y));
-      data.push_back(Eigen::Matrix<double, 3, 1>(x, y, dist.getSample()));
+      dist.setBasis(Eigen::Matrix<double, 2, 1>(x, y));
+      data.push_back(dist.getSample());
      }
   ScatterPlot<3> plot("LinearRegressionRndScatterPlot2v", data);
   plot.show();

@@ -22,25 +22,31 @@
 
 #include <iostream>
 
+#include <Eigen/Array>
+
 #include "statistics/LinearRegression.h"
 
 int main(int argc, char** argv) {
   LinearRegression<2> linearRegression;
   std::cout << "Default parameters: " << std::endl << linearRegression
     << std::endl;
-  std::cout << "l.getCoefficients(): " << std::endl <<
-    linearRegression.getCoefficients() << std::endl;
-  std::cout << "l.setVariance(2)" << std::endl;
-  linearRegression.setVariance(2);
-  std::cout << "l.setCoefficients(2, 2)" << std::endl;
-  linearRegression.setCoefficients(Eigen::Matrix<double, 2, 1>(2, 2));
-  std::cout << "l.setBasis(1, 2)" << std::endl;
-  linearRegression.setBasis(Eigen::Matrix<double, 2, 1>(1, 2));
-  std::cout << "New parameters: " << std::endl << linearRegression
-    << std::endl;
-  std::cout << "l.getValue(2):" << linearRegression(2) << std::endl;
-  std::cout << "l.getMean(): " << linearRegression.getMean() << std::endl;
+  std::cout << "l.getLinearBasisFunction(): " << std::endl <<
+    linearRegression.getLinearBasisFunction() << std::endl;
   std::cout << "l.getVariance(): " << linearRegression.getVariance()
     << std::endl;
+  std::cout <<  "l.setLinearBasisFunction(2.0, 2.0)" << std::endl;
+  std::cout << "l.setVariance(2.0)" << std::endl;
+  linearRegression.setLinearBasisFunction(LinearBasisFunction<double, 2>(
+    Eigen::Matrix<double, 2, 1>(2.0, 2.0)));
+  linearRegression.setVariance(2.0);
+  if (linearRegression.getLinearBasisFunction().getCoefficients() !=
+    Eigen::Matrix<double, 2, 1>(2.0, 2.0))
+    return 1;
+  if (linearRegression.getVariance() != 2.0)
+    return 1;
+  std::cout << "New parameters: " << std::endl << linearRegression
+    << std::endl;
+  std::cout << "l.getValue(2): " << linearRegression(
+    Eigen::Matrix<double, 2, 1>(2, 6)) << std::endl;
   return 0;
 }

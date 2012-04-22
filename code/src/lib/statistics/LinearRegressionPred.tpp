@@ -49,7 +49,7 @@ template <size_t M>
 LinearRegressionPred<M>& LinearRegressionPred<M>::operator = (const
     LinearRegressionPred<M>& other) {
   if (this != &other) {
-    this->StudentDistribution<1>::operator=(other);
+    StudentDistribution<1>::operator=(other);
     mCoefficients = other.mCoefficients;
     mCoeffCovariance = other.mCoeffCovariance;
     mRegressionVariance = other.mRegressionVariance;

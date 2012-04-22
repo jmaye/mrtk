@@ -35,10 +35,7 @@ template <typename D> class EstimatorML;
 #include "statistics/EstimatorMLExponential.h"
 #include "statistics/EstimatorMLGeometric.h"
 #include "statistics/EstimatorMLPoisson.h"
+#include "statistics/EstimatorMLLinearRegression.h"
 #include "statistics/EstimatorMLMixture.h"
-//#include "statistics/EstimatorMLLinearRegression.h"
-//#include "statistics/EstimatorMLMixtureLinearRegression.h"
-//#include "statistics/EstimatorMLMixtureNormal1v.h"
-//#include "statistics/EstimatorMLMixtureNormalMv.h"
 
 #endif // ESTIMATORML_H

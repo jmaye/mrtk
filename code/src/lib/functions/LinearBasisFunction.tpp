@@ -21,8 +21,8 @@
 /******************************************************************************/
 
 template <typename X, size_t M>
-LinearBasisFunction<X, M>::LinearBasisFunction(const VariableType&
-    coefficients) :
+LinearBasisFunction<X, M>::LinearBasisFunction(
+    const Eigen::Matrix<double, M, 1>& coefficients) :
     mCoefficients(coefficients) {
 }
 
@@ -55,7 +55,7 @@ void LinearBasisFunction<X, M>::read(std::istream& stream) {
 
 template <typename X, size_t M>
 void LinearBasisFunction<X, M>::write(std::ostream& stream) const {
-  stream << "coefficients: " << mCoefficients;
+  stream << "coefficients: " << std::endl << mCoefficients;
 }
 
 template <typename X, size_t M>
@@ -72,17 +72,18 @@ void LinearBasisFunction<X, M>::write(std::ofstream& stream) const {
 
 template <typename X, size_t M>
 double LinearBasisFunction<X, M>::getValue(const VariableType& argument) const {
-  return (mCoefficients.transpose() * argument)(0);
+  return mCoefficients.dot((Eigen::Matrix<X, M, 1>() << X(1), argument).
+    finished());
 }
 
 template <typename X, size_t M>
-const typename LinearBasisFunction<X, M>::VariableType&
+const Eigen::Matrix<double, M, 1>&
     LinearBasisFunction<X, M>::getCoefficients() const {
   return mCoefficients;
 }
 
 template <typename X, size_t M>
-void LinearBasisFunction<X, M>::setCoefficients(const VariableType&
-    coefficients) {
+void LinearBasisFunction<X, M>::setCoefficients(
+    const Eigen::Matrix<double, M, 1>& coefficients) {
   mCoefficients = coefficients;
 }

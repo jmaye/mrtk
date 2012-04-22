@@ -74,8 +74,7 @@ public:
     itEnd);
   /// Add points to the estimator with responsibilities
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
-    itEnd, const Eigen::Matrix<double, Eigen::Dynamic, 1>& responsibilities,
-    double numPoints);
+    itEnd, const Eigen::Matrix<double, Eigen::Dynamic, 1>& responsibilities);
   /// Add points to the estimator
   void addPoints(const Container& points);
   /// Reset the estimator

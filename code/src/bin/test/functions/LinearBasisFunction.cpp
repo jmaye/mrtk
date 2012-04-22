@@ -26,13 +26,11 @@
 
 int main(int argc, char** argv) {
   LinearBasisFunction<double, 2> lbf(Eigen::Matrix<double, 2, 1>(2.0, 1.0));
-  std::cout << "lbf(2.0) = " << lbf(Eigen::Matrix<double, 2, 1>(1.0, 2.0))
-    << std::endl;
-  if (lbf(Eigen::Matrix<double, 2, 1>(1.0, 2.0)) != 4)
+  std::cout << "lbf(2.0) = " << lbf(2.0) << std::endl;
+  if (lbf(2.0) != 4)
     return 1;
-  std::cout << "lbf(3.0) = " << lbf(Eigen::Matrix<double, 2, 1>(1.0, 3.0))
-    << std::endl;
-  if (lbf(Eigen::Matrix<double, 2, 1>(1.0, 3.0)) != 5)
+  std::cout << "lbf(3.0) = " << lbf(3.0) << std::endl;
+  if (lbf(3.0) != 5)
     return 1;
   std::cout << "lbf.getCoefficients(): " << std::endl << lbf.getCoefficients()
     << std::endl;
@@ -41,13 +39,21 @@ int main(int argc, char** argv) {
   lbf.setCoefficients(Eigen::Matrix<double, 2, 1>(1.0, 2.0));
   std::cout << "lbf.getCoefficients(): " << std::endl << lbf.getCoefficients()
     << std::endl;
-  std::cout << "lbf(2.0) = " << lbf(Eigen::Matrix<double, 2, 1>(1.0, 2.0))
-    << std::endl;
-  if (lbf(Eigen::Matrix<double, 2, 1>(1.0, 2.0)) != 5)
+  std::cout << "lbf(2.0) = " << lbf(2.0) << std::endl;
+  if (lbf(2.0) != 5)
     return 1;
-  std::cout << "lbf(3.0) = " << lbf(Eigen::Matrix<double, 2, 1>(1.0, 3.0))
-    << std::endl;
-  if (lbf(Eigen::Matrix<double, 2, 1>(1.0, 3.0)) != 7)
+  std::cout << "lbf(3.0) = " << lbf(3.0) << std::endl;
+  if (lbf(3.0) != 7)
+    return 1;
+  LinearBasisFunction<double, 3>
+    lbf3(Eigen::Matrix<double, 3, 1>(2.0, 1.0, 6.0));
+  std::cout << "lbf3(2.0, 2.0) = " <<
+    lbf3(Eigen::Matrix<double, 2, 1>(2.0, 2.0)) << std::endl;
+  if (lbf3(Eigen::Matrix<double, 2, 1>(2.0, 2.0)) != 16)
+    return 1;
+  std::cout << "lbf3(3.0, 1.0) = " <<
+    lbf3(Eigen::Matrix<double, 2, 1>(3.0, 1.0)) << std::endl;
+  if (lbf3(Eigen::Matrix<double, 2, 1>(3.0, 1.0)) != 11)
     return 1;
   return 0;
 }

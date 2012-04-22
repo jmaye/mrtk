@@ -40,9 +40,9 @@ int main(int argc, char** argv) {
   std::cout << "Estimation2: " << std::endl << estNorm2 << std::endl;
   LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);
   std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
-  for (double x = -10; x < 10; x += 0.01) {
-    distLine.setBasis(Eigen::Matrix<double, 2, 1>(1.0, x));
-    samplesLine.push_back(Eigen::Matrix<double, 2, 1>(x, distLine.getSample()));
+  for (double x = -10; x < 10; x += 0.1) {
+    distLine.setBasis((Eigen::Matrix<double, 1, 1>() << x).finished());
+    samplesLine.push_back(Eigen::Matrix<double, 2, 1>(distLine.getSample()));
   }
   EstimatorBayesImproper<LinearRegression<2> > estLine;
   estLine.addPoints(samplesLine.begin(), samplesLine.end());

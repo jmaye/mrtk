@@ -16,25 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file LinearRegressionRndScatterPlot1v.cpp
-    \brief This file is a testing binary for plotting random samples of a
-           univariate linear regression
+/** \file LinearBasisFunctionPlot.cpp
+    \brief This file is a testing binary for plotting a linear basis function.
   */
 
 #include <QtGui/QApplication>
 
-#include "visualization/ScatterPlot.h"
-#include "statistics/LinearRegression.h"
+#include "visualization/FunctionPlot.h"
+#include "functions/LinearBasisFunction.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  std::vector<Eigen::Matrix<double, 2, 1> > data;
-  LinearRegression<2> dist;
-  for (double x = -10; x < 10; x += 0.01) {
-    dist.setBasis((Eigen::Matrix<double, 1, 1>() << x).finished());
-    data.push_back(dist.getSample());
-  }
-  ScatterPlot<2> plot("LinearRegressionRndScatterPlot1v", data);
+  FunctionPlot<LinearBasisFunction<double, 2> > plot("LinearBasisFunctionPlot",
+    LinearBasisFunction<double, 2>(), -5, 5, 0.1);
   plot.show();
   return app.exec();
 }

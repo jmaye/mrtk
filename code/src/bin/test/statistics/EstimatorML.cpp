@@ -71,6 +71,16 @@ int main(int argc, char** argv) {
   EstimatorML<PoissonDistribution> estPois;
   estPois.addPoints(samplesPois.begin(), samplesPois.end());
   std::cout << "Estimation7: " << std::endl << estPois << std::endl;
+  LinearRegression<2> distLine(LinearBasisFunction<double, 2>(
+    Eigen::Matrix<double, 2, 1>(2.0, 2.0)), 2.0);
+  std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
+  for (double x = -10; x < 10; x += 0.01) {
+    distLine.setBasis((Eigen::Matrix<double, 1, 1>() << x).finished());
+    samplesLine.push_back(distLine.getSample());
+  }
+  EstimatorML<LinearRegression<2> > estLine;
+  estLine.addPoints(samplesLine.begin(), samplesLine.end());
+  std::cout << "Estimation8: " << std::endl << estLine << std::endl;
   std::vector<NormalDistribution<1> > distributionsNorm1;
   distributionsNorm1.push_back(NormalDistribution<1>(0, 1.5));
   distributionsNorm1.push_back(NormalDistribution<1>(5, 1.7));
@@ -94,19 +104,19 @@ int main(int argc, char** argv) {
     estMixtNorm1(distMixtNorm1Init);
   size_t numIter = estMixtNorm1.addPointsEM(samplesMixtNorm1.begin(),
     samplesMixtNorm1.end());
-  std::cout << "Estimation10: " << std::endl << estMixtNorm1 << std::endl;
+  std::cout << "Estimation9: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   estMixtNorm1 = EstimatorML<MixtureDistribution<NormalDistribution<1>, 5> >
     (distMixtNorm1Init);
   numIter = estMixtNorm1.addPointsCEM(samplesMixtNorm1.begin(),
     samplesMixtNorm1.end());
-  std::cout << "Estimation11: " << std::endl << estMixtNorm1 << std::endl;
+  std::cout << "Estimation10: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   estMixtNorm1 = EstimatorML<MixtureDistribution<NormalDistribution<1>, 5> >
     (distMixtNorm1Init);
   numIter = estMixtNorm1.addPointsSEM(samplesMixtNorm1.begin(),
     samplesMixtNorm1.end());
-  std::cout << "Estimation12: " << std::endl << estMixtNorm1 << std::endl;
+  std::cout << "Estimation11: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   std::vector<NormalDistribution<3> > distributionsNorm3;
   distributionsNorm3.push_back(NormalDistribution<3>(
@@ -145,7 +155,32 @@ int main(int argc, char** argv) {
     distMixtNorm3Init);
   numIter = estMixtNorm3.addPointsEM(samplesMixtNorm3.begin(),
     samplesMixtNorm3.end());
-  std::cout << "Estimation13: " << std::endl << estMixtNorm3 << std::endl;
+  std::cout << "Estimation12: " << std::endl << estMixtNorm3 << std::endl;
+  std::cout << "Converged in: " << numIter << " iterations" << std::endl;
+  std::vector<LinearRegression<2> > distLines;
+  distLines.push_back(LinearRegression<2>(LinearBasisFunction<double, 2>(
+    Eigen::Matrix<double, 2, 1>(1.0, 1.0)), 1.5));
+  distLines.push_back(LinearRegression<2>(LinearBasisFunction<double, 2>(
+    Eigen::Matrix<double, 2, 1>(2.0, 2.0)), 1.2));
+  distLines.push_back(LinearRegression<2>(LinearBasisFunction<double, 2>(
+    Eigen::Matrix<double, 2, 1>(-1.0, -1.0)), 2.1));
+  distLines.push_back(LinearRegression<2>(LinearBasisFunction<double, 2>(
+    Eigen::Matrix<double, 2, 1>(-2.0, -2.0)), 2.5));
+  MixtureSampleDistribution<LinearRegression<2>, 4> distMixtLines(distLines,
+    CategoricalDistribution<4>());
+  std::vector<Eigen::Matrix<double, 2, 1> > samplesMixtLines;
+  for (size_t i = 0; i < 100; ++i)
+    for (double x = -10; x < 10; x += 0.1) {
+      for (size_t j = 0; j < distLines.size(); ++j)
+        distLines[j].setBasis((Eigen::Matrix<double, 1, 1>() << x).finished());
+      distMixtLines.setCompDistributions(distLines);
+      samplesMixtLines.push_back(distMixtLines.getSample());
+    }
+  EstimatorML<MixtureDistribution<LinearRegression<2>, 4> > estMixtLines(
+    distMixtLines);
+  numIter = estMixtLines.addPointsEM(samplesMixtLines.begin(),
+    samplesMixtLines.end());
+  std::cout << "Estimation13: " << std::endl << estMixtLines << std::endl;
   std::cout << "Converged in: " << numIter << " iterations" << std::endl;
   return 0;
 }

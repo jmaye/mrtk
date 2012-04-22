@@ -143,12 +143,14 @@ void EstimatorML<NormalDistribution<M> >::addPoints(const Container& points) {
 template <size_t M>
 void EstimatorML<NormalDistribution<M> >::addPoints(const ConstPointIterator&
     itStart, const ConstPointIterator& itEnd, const
-    Eigen::Matrix<double, Eigen::Dynamic, 1>& responsibilities, double
-    numPoints) {
+    Eigen::Matrix<double, Eigen::Dynamic, 1>& responsibilities) {
+  if (responsibilities.size() != itEnd - itStart)
+    return;
   Eigen::Matrix<double, M, 1> mean =
     Eigen::Matrix<double, M, 1>::Zero(itStart->size());
   for (auto it = itStart; it != itEnd; ++it)
     mean += responsibilities(it - itStart) * (*it);
+  double numPoints = responsibilities.sum();
   mean /= numPoints;
   Eigen::Matrix<double, M, M> covariance =
     Eigen::Matrix<double, M, M>::Zero(itStart->size(), itStart->size());
@@ -156,6 +158,12 @@ void EstimatorML<NormalDistribution<M> >::addPoints(const ConstPointIterator&
     covariance += responsibilities(it - itStart) *
       outerProduct<double, M>(*it - mean);
   covariance /= numPoints;
-  mDistribution.setMean(mean);
-  mDistribution.setCovariance(covariance);
+  try {
+    mValid = true;
+    mDistribution.setMean(mean);
+    mDistribution.setCovariance(covariance);
+  }
+  catch (...) {
+    mValid = false;
+  }
 }

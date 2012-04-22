@@ -31,14 +31,14 @@
     \brief Linear basis function model
   */
 template <typename X, size_t M> class LinearBasisFunction :
-  public ContinuousFunction<double, X, M>,
+  public ContinuousFunction<double, X, M - 1>,
   public virtual Serializable {
 public:
   /** \name Types
     @{
     */
   /// Variable type
-  typedef typename ContinuousFunction<double, X, M>::Domain VariableType;
+  typedef typename ContinuousFunction<double, X, M - 1>::Domain VariableType;
   /** @}
     */
 
@@ -46,7 +46,8 @@ public:
     @{
     */
   /// Constructors with the linear coefficients
-  LinearBasisFunction(const VariableType& coefficients);
+  LinearBasisFunction(const Eigen::Matrix<double, M, 1>& coefficients =
+    Eigen::Matrix<double, M, 1>::Ones());
   /// Copy constructor
   LinearBasisFunction(const LinearBasisFunction& other);
   /// Assignment operator
@@ -60,9 +61,9 @@ public:
     @{
     */
   /// Returns the linear coefficients
-  const VariableType& getCoefficients() const;
+  const Eigen::Matrix<double, M, 1>& getCoefficients() const;
   /// Sets the linear coefficients
-  void setCoefficients(const VariableType& coefficients);
+  void setCoefficients(const Eigen::Matrix<double, M, 1>& coefficients);
   /// Access the function value for the given argument
   virtual double getValue(const VariableType& argument) const;
   /** @}
@@ -87,7 +88,7 @@ protected:
     @{
     */
   /// Linear coefficients
-  VariableType mCoefficients;
+  Eigen::Matrix<double, M, 1> mCoefficients;
   /** @}
     */
 

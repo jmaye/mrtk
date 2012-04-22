@@ -30,23 +30,23 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   std::vector<LinearRegression<3> > distributions;
-  distributions.push_back(LinearRegression<3>(
-    Eigen::Matrix<double, 3, 1>(1, 1, 1)));
-  distributions.push_back(LinearRegression<3>(
-    Eigen::Matrix<double, 3, 1>(2, 2, 2)));
-  distributions.push_back(LinearRegression<3>(
-    Eigen::Matrix<double, 3, 1>(-1, -1, -1)));
-  distributions.push_back(LinearRegression<3>(
-    Eigen::Matrix<double, 3, 1>(-2, -2, -2)));
+  distributions.push_back(LinearRegression<3>(LinearBasisFunction<double, 3>(
+    Eigen::Matrix<double, 3, 1>(1.0, 1.0, 1.0))));
+  distributions.push_back(LinearRegression<3>(LinearBasisFunction<double, 3>(
+    Eigen::Matrix<double, 3, 1>(2.0, 2.0, 2.0))));
+  distributions.push_back(LinearRegression<3>(LinearBasisFunction<double, 3>(
+    Eigen::Matrix<double, 3, 1>(-1.0, -1.0, -1.0))));
+  distributions.push_back(LinearRegression<3>(LinearBasisFunction<double, 3>(
+    Eigen::Matrix<double, 3, 1>(-2.0, -2.0, -2.0))));
   MixtureSampleDistribution<LinearRegression<3>, 4> dist(distributions,
     CategoricalDistribution<4>());
   std::vector<Eigen::Matrix<double, 3, 1> > data;
   for (double x = -10; x < 10; x += 0.1)
     for (double y = -10; y < 10; y += 0.1) {
       for (size_t j = 0; j < distributions.size(); ++j)
-        distributions[j].setBasis(Eigen::Matrix<double, 3, 1>(1.0, x, y));
+        distributions[j].setBasis(Eigen::Matrix<double, 2, 1>(x, y));
       dist.setCompDistributions(distributions);
-      data.push_back(Eigen::Matrix<double, 3, 1>(x, y, dist.getSample()));
+      data.push_back(dist.getSample());
      }
   ScatterPlot<3> plot("MixtureLinearRegressionRndScatterPlot2v", data);
   plot.show();

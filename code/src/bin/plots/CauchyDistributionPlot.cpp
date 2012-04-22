@@ -28,7 +28,7 @@
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
-  FunctionPlot<CauchyDistribution> plot("CauchyDistribution",
+  FunctionPlot<CauchyDistribution> plot("CauchyDistributionPlot",
     CauchyDistribution(1, 2), -5, 5, 0.1);
   plot.show();
   return app.exec();
