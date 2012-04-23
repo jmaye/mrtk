@@ -36,7 +36,8 @@ public:
   /// Constructs grid with parameters
   TransGrid(const typename Grid<T, C, 2>::Coordinate& minimum,
     const typename Grid<T, C, 2>::Coordinate& maximum,
-    const typename Grid<T, C, 2>::Coordinate& resolution, T x, T y, T yaw);
+    const typename Grid<T, C, 2>::Coordinate& resolution, T x = T(0),
+      T y = T(0), T yaw = T(0));
   TransGrid(const typename Grid<T, C, 2>::Coordinate& minimum,
     const typename Grid<T, C, 2>::Coordinate& maximum,
     const typename Grid<T, C, 2>::Coordinate& resolution,
