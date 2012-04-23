@@ -193,7 +193,8 @@ size_t EstimatorML<MixtureDistribution<C, M> >::
       for (size_t j = 0; j < K; ++j) {
         EstimatorML<C> estComp;
         estComp.addPoints(itStart, itEnd, mResponsibilities.col(j));
-        mMixtureDist.setCompDistribution(estComp.getDistribution(), j);
+        if (estComp.getValid())
+          mMixtureDist.setCompDistribution(estComp.getDistribution(), j);
       }
     }
     catch (...) {

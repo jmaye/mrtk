@@ -131,17 +131,20 @@ void EstimatorML<LinearRegression<M> >::addPoints(const ConstPointIterator&
     designMatrix.row(row).segment(1, dim - 1) = (*it).segment(0, dim - 1);
   }
   try {
-    mValid = true;
     const Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =
       (responsibilities.asDiagonal() * designMatrix).qr();
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coeff;
-    qrDecomp.solve(responsibilities.asDiagonal() * targets, &coeff);
-    mLinearRegression.setLinearBasisFunction(
-      LinearBasisFunction<double, M>(coeff));
-    mLinearRegression.setVariance(
-      ((targets - designMatrix * coeff).transpose() *
-      responsibilities.asDiagonal() * (targets - designMatrix * coeff))(0) /
-      responsibilities.sum());
+    if ((size_t)qrDecomp.rank() == dim) {
+      Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coeff;
+      if (qrDecomp.solve(responsibilities.asDiagonal() * targets, &coeff)) {
+        mValid = true;
+        mLinearRegression.setLinearBasisFunction(
+          LinearBasisFunction<double, M>(coeff));
+        mLinearRegression.setVariance(
+          ((targets - designMatrix * coeff).transpose() *
+          responsibilities.asDiagonal() * (targets - designMatrix * coeff))(0) /
+          responsibilities.sum());
+      }
+    }
   }
   catch (...) {
     mValid = false;
