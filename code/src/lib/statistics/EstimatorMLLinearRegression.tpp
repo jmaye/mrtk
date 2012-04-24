@@ -116,7 +116,7 @@ void EstimatorML<LinearRegression<M> >::addPoints(const ConstPointIterator&
     dim = itStart->size();
   else
     return;
-  if (mNumPoints < dim)
+  if (mNumPoints < dim || responsibilities.sum() < dim)
     return;
   if ((size_t)responsibilities.size() != mNumPoints)
     return;
