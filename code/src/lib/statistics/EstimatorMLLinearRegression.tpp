@@ -129,11 +129,14 @@ void EstimatorML<LinearRegression<M> >::addPoints(const ConstPointIterator&
     designMatrix.row(row).segment(1, dim - 1) = (*it).segment(0, dim - 1);
   }
   try {
-    mValid = true;
     Eigen::Matrix<double, M, 1> coeffs =
       (designMatrix.transpose() * responsibilities.asDiagonal() * designMatrix).
       inverse() * designMatrix.transpose() * responsibilities.asDiagonal() *
       targets;
+    for (size_t i = 0; i < dim; ++i)
+      if (std::isnan(coeffs(i)))
+        return;
+    mValid = true;
     mLinearRegression.setLinearBasisFunction(
       LinearBasisFunction<double, M>(coeffs));
     mLinearRegression.setVariance(
