@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <Eigen/QR>
-
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -131,20 +129,17 @@ void EstimatorML<LinearRegression<M> >::addPoints(const ConstPointIterator&
     designMatrix.row(row).segment(1, dim - 1) = (*it).segment(0, dim - 1);
   }
   try {
-    const Eigen::QR<Eigen::Matrix<double, Eigen::Dynamic, M> > qrDecomp =
-      (responsibilities.asDiagonal() * designMatrix).qr();
-    if ((size_t)qrDecomp.rank() == dim) {
-      Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coeff;
-      if (qrDecomp.solve(responsibilities.asDiagonal() * targets, &coeff)) {
-        mValid = true;
-        mLinearRegression.setLinearBasisFunction(
-          LinearBasisFunction<double, M>(coeff));
-        mLinearRegression.setVariance(
-          ((targets - designMatrix * coeff).transpose() *
-          responsibilities.asDiagonal() * (targets - designMatrix * coeff))(0) /
-          responsibilities.sum());
-      }
-    }
+    mValid = true;
+    Eigen::Matrix<double, M, 1> coeffs =
+      (designMatrix.transpose() * responsibilities.asDiagonal() * designMatrix).
+      inverse() * designMatrix.transpose() * responsibilities.asDiagonal() *
+      targets;
+    mLinearRegression.setLinearBasisFunction(
+      LinearBasisFunction<double, M>(coeffs));
+    mLinearRegression.setVariance(
+      ((targets - designMatrix * coeffs).transpose() *
+      responsibilities.asDiagonal() * (targets - designMatrix * coeffs))(0) /
+      responsibilities.sum());
   }
   catch (...) {
     mValid = false;
