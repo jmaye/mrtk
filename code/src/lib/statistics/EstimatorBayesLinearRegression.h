@@ -24,9 +24,7 @@
 #include <vector>
 
 #include "statistics/LinearRegression.h"
-#include "statistics/LinearRegressionPred.h"
-#include "statistics/StudentDistribution.h"
-#include "statistics/ScaledInvChiSquareDistribution.h"
+#include "statistics/NormalMvScaledInvChiSquareDistribution.h"
 
 /** The class EstimatorBayes is implemented for ordinary linear regression
     models.

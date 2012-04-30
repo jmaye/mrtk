@@ -16,43 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "statistics/StudentDistribution.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
 template <size_t M>
 LinearRegressionPred<M>::LinearRegressionPred(double degrees, const
-    Eigen::Matrix<double, M, 1>& coefficients,
-    const Eigen::Matrix<double, M, M>&
-    coeffCovariance, double regressionVariance,
-    const Eigen::Matrix<double, M, 1>& basis) :
-    StudentDistribution<1>(degrees, coefficients.dot(basis),
-      regressionVariance * (1 + (basis.transpose() * coeffCovariance *
-      basis)(0))),
-    mCoefficients(coefficients),
-    mCoeffCovariance(coeffCovariance),
-    mRegressionVariance(regressionVariance),
+    LinearBasisFunction<double, M>& linearBasisFunction, const
+    Eigen::Matrix<double, M, M> coeffsCovariance,
+    double variance, const Eigen::Matrix<double, M - 1, 1>& basis) :
+    mDegrees(degrees),
+    mLinearBasisFunction(linearBasisFunction),
+    mCoeffsCovariance(coeffsCovariance),
+    mVariance(variance),
     mBasis(basis) {
 }
 
 template <size_t M>
-LinearRegressionPred<M>::LinearRegressionPred(const LinearRegressionPred<M>&
+LinearRegressionPred<M>::LinearRegressionPred(const LinearRegressionPred&
     other) :
-    StudentDistribution<1>(other),
-    mCoefficients(other.mCoefficients),
-    mCoeffCovariance(other.mCoeffCovariance),
-    mRegressionVariance(other.mRegressionVariance),
+    mDegrees(other.mDegrees),
+    mLinearBasisFunction(other.mLinearBasisFunction),
+    mCoeffsCovariance(other.mCoeffsCovariance),
+    mVariance(other.mVariance),
     mBasis(other.mBasis) {
 }
 
 template <size_t M>
 LinearRegressionPred<M>& LinearRegressionPred<M>::operator = (const
-    LinearRegressionPred<M>& other) {
+    LinearRegressionPred& other) {
   if (this != &other) {
-    StudentDistribution<1>::operator=(other);
-    mCoefficients = other.mCoefficients;
-    mCoeffCovariance = other.mCoeffCovariance;
-    mRegressionVariance = other.mRegressionVariance;
+    mDegrees = other.mDegrees;
+    mLinearBasisFunction = other.mLinearBasisFunction;
+    mCoeffsCovariance = other.mCoeffsCovariance;
+    mVariance = other.mVariance;
     mBasis = other.mBasis;
   }
   return *this;
@@ -72,10 +71,13 @@ void LinearRegressionPred<M>::read(std::istream& stream) {
 
 template <size_t M>
 void LinearRegressionPred<M>::write(std::ostream& stream) const {
-  stream << "coefficients: " << std::endl << mCoefficients << std::endl
-    << "coefficients covariance: " << std::endl << mCoeffCovariance << std::endl
-    << "basis: " << std::endl << mBasis << std::endl
-    << "regression variance: " << mRegressionVariance;
+  stream << "degrees: " << mDegrees << std::endl
+    << "linear basis function: " << std::endl << mLinearBasisFunction
+    << std::endl
+    << "coefficients covariance: " << std::endl << mCoeffsCovariance
+    << std::endl
+    << "variance: " << mVariance  << std::endl
+    << "basis: " << std::endl << mBasis;
 }
 
 template <size_t M>
@@ -91,54 +93,160 @@ void LinearRegressionPred<M>::write(std::ofstream& stream) const {
 /******************************************************************************/
 
 template <size_t M>
-void LinearRegressionPred<M>::setCoefficients(const Eigen::Matrix<double, M, 1>&
-    coefficients) {
-  setLocation(coefficients.dot(mBasis));
-  mCoefficients = coefficients;
+const LinearBasisFunction<double, M>&
+    LinearRegressionPred<M>::getLinearBasisFunction() const {
+  return mLinearBasisFunction;
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& LinearRegressionPred<M>::getCoefficients()
+void LinearRegressionPred<M>::setLinearBasisFunction(const
+    LinearBasisFunction<double, M>& linearBasisFunction) {
+  mLinearBasisFunction = linearBasisFunction;
+}
+
+template <size_t M>
+double LinearRegressionPred<M>::getVariance() const {
+  return mVariance;
+}
+
+template <size_t M>
+void LinearRegressionPred<M>::setVariance(double variance) {
+  mVariance = variance;
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M - 1, 1>& LinearRegressionPred<M>::getBasis()
     const {
-  return mCoefficients;
+  return mBasis;
 }
 
 template <size_t M>
-void LinearRegressionPred<M>::setCoeffCovariance(const
-    Eigen::Matrix<double, M, M>& coeffCovariance) {
-  setScale(mRegressionVariance * (1 + (mBasis.transpose() *
-    coeffCovariance * mBasis)(0)));
-  mCoeffCovariance = coeffCovariance;
-}
-
-template <size_t M>
-const Eigen::Matrix<double, M, M>& LinearRegressionPred<M>::getCoeffCovariance()
-    const {
-  return mCoeffCovariance;
-}
-
-template <size_t M>
-void LinearRegressionPred<M>::setRegressionVariance(double variance) {
-  setScale(variance * (1 + (mBasis.transpose() * mCoeffCovariance *
-    mBasis)(0)));
-  mRegressionVariance = variance;
-}
-
-template <size_t M>
-double LinearRegressionPred<M>::getRegressionVariance() const {
-  return mRegressionVariance;
-}
-
-template <size_t M>
-void LinearRegressionPred<M>::setBasis(const Eigen::Matrix<double, M, 1>&
+void LinearRegressionPred<M>::setBasis(const Eigen::Matrix<double, M - 1, 1>&
     basis) {
-  setLocation(mCoefficients.dot(basis));
-  setScale(mRegressionVariance * (1 + (basis.transpose() *
-    mCoeffCovariance * basis)(0)));
   mBasis = basis;
 }
 
 template <size_t M>
-const Eigen::Matrix<double, M, 1>& LinearRegressionPred<M>::getBasis() const {
-  return mBasis;
+double LinearRegressionPred<M>::getDegrees() const {
+  return mDegrees;
+}
+
+template <size_t M>
+void LinearRegressionPred<M>::setDegrees(double degrees) {
+  mDegrees = degrees;
+}
+
+template <size_t M>
+const Eigen::Matrix<double, M, M>&
+    LinearRegressionPred<M>::getCoeffsCovariance() const {
+  return mCoeffsCovariance;
+}
+
+template <size_t M>
+void LinearRegressionPred<M>::
+    setCoeffsCovariance(const Eigen::Matrix<double, M, M>& coeffsCovariance) {
+  mCoeffsCovariance = coeffsCovariance;
+}
+
+template <size_t M>
+template <size_t N, size_t D>
+double LinearRegressionPred<M>::Traits<N, D>::pdf(const
+    LinearRegressionPred<N>& linearRegression, const
+    Eigen::Matrix<double, N, 1>& value) {
+  const Eigen::Matrix<double, N, 1> x =
+    (Eigen::Matrix<double, N, 1>() <<
+    1.0, value.start(value.size() - 1)).finished();
+  return StudentDistribution<1>(linearRegression.mDegrees,
+    linearRegression.mLinearBasisFunction(
+    value.start(value.size() - 1)),
+    linearRegression.mVariance + x * linearRegression.mCoeffsCovariance *
+    x.transpose()).pdf(value.template end<1>()(0));
+}
+
+template <size_t M>
+template <size_t D>
+double LinearRegressionPred<M>::Traits<2, D>::pdf(const
+    LinearRegressionPred<2>& linearRegression, const
+    Eigen::Matrix<double, 2, 1>& value) {
+  const Eigen::Matrix<double, 2, 1> x =
+    (Eigen::Matrix<double, 2, 1>() <<
+    1.0, value(0)).finished();
+  return StudentDistribution<1>(linearRegression.mDegrees,
+    linearRegression.mLinearBasisFunction(value(0)),
+    linearRegression.mVariance + (x * linearRegression.mCoeffsCovariance *
+    x.transpose())(0)).pdf(value(1));
+}
+
+template <size_t M>
+template <size_t N, size_t D>
+double LinearRegressionPred<M>::Traits<N, D>::logpdf(const
+    LinearRegressionPred<N>& linearRegression, const
+    Eigen::Matrix<double, N, 1>& value) {
+  const Eigen::Matrix<double, N, 1> x =
+    (Eigen::Matrix<double, N, 1>() <<
+    1.0, value.start(value.size() - 1)).finished();
+  return StudentDistribution<1>(linearRegression.mDegrees,
+    linearRegression.mLinearBasisFunction(
+    value.start(value.size() - 1)),
+    linearRegression.mVariance + (x * linearRegression.mCoeffsCovariance *
+    x.transpose())(0)).logpdf(value.template end<1>()(0));
+}
+
+template <size_t M>
+template <size_t D>
+double LinearRegressionPred<M>::Traits<2, D>::logpdf(const
+    LinearRegressionPred<2>& linearRegression, const
+    Eigen::Matrix<double, 2, 1>& value) {
+  const Eigen::Matrix<double, 2, 1> x =
+    (Eigen::Matrix<double, 2, 1>() <<
+    1.0, value(0)).finished();
+  return StudentDistribution<1>(linearRegression.mDegrees,
+    linearRegression.mLinearBasisFunction(value(0)),
+    linearRegression.mVariance + (x * linearRegression.mCoeffsCovariance *
+    x.transpose())(0)).logpdf(value(1));
+}
+
+template <size_t M>
+template <size_t N, size_t D>
+Eigen::Matrix<double, N, 1> LinearRegressionPred<M>::Traits<N, D>::getSample(
+    const LinearRegressionPred<N>& linearRegression) {
+  const Eigen::Matrix<double, N, 1> x =
+    (Eigen::Matrix<double, N, 1>() <<
+    1.0, linearRegression.mBasis).finished();
+  return (Eigen::Matrix<double, N, 1>() << linearRegression.mBasis,
+    StudentDistribution<1>(linearRegression.mDegrees,
+    linearRegression.mLinearBasisFunction(
+    linearRegression.mBasis), linearRegression.mVariance + (x *
+    linearRegression.mCoeffsCovariance * x.transpose())(0)).getSample()).
+    finished();
+}
+
+template <size_t M>
+template <size_t D>
+Eigen::Matrix<double, 2, 1> LinearRegressionPred<M>::Traits<2, D>::getSample(
+    const LinearRegressionPred<2>& linearRegression) {
+  const Eigen::Matrix<double, 2, 1> x =
+    (Eigen::Matrix<double, 2, 1>() <<
+    1.0, linearRegression.mBasis).finished();
+  return Eigen::Matrix<double, 2, 1>(linearRegression.mBasis(0),
+    StudentDistribution<1>(linearRegression.mDegrees,
+    linearRegression.mLinearBasisFunction(
+    linearRegression.mBasis(0)), linearRegression.mVariance + (x *
+    linearRegression.mCoeffsCovariance * x.transpose())(0)).getSample());
+}
+
+template <size_t M>
+double LinearRegressionPred<M>::pdf(const RandomVariable& value) const {
+  return Traits<M>::pdf(*this, value);
+}
+
+template <size_t M>
+double LinearRegressionPred<M>::logpdf(const RandomVariable& value) const {
+  return Traits<M>::logpdf(*this, value);
+}
+
+template <size_t M>
+typename  LinearRegressionPred<M>::RandomVariable
+    LinearRegressionPred<M>::getSample() const {
+  return Traits<M>::getSample(*this);
 }

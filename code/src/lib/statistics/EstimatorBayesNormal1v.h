@@ -193,7 +193,7 @@ protected:
   */
 template <>
 class EstimatorBayes<NormalDistribution<1>,
-  NormalScaledInvChiSquareDistribution> :
+  NormalScaledInvChiSquareDistribution<> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
@@ -212,8 +212,8 @@ public:
     @{
     */
   /// Constructs estimator with prior
-  EstimatorBayes(const NormalScaledInvChiSquareDistribution& prior =
-    NormalScaledInvChiSquareDistribution());
+  EstimatorBayes(const NormalScaledInvChiSquareDistribution<>& prior =
+    NormalScaledInvChiSquareDistribution<>());
   /// Copy constructor
   EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator
@@ -227,7 +227,7 @@ public:
     @{
     */
   /// Returns the mean and variance distribution
-  const NormalScaledInvChiSquareDistribution& getDist() const;
+  const NormalScaledInvChiSquareDistribution<>& getDist() const;
   /// Returns the predictive distribution
   StudentDistribution<1> getPredDist() const;
   /// Add a point to the estimator
@@ -259,7 +259,7 @@ protected:
     @{
     */
   /// Mean and variance distribution
-  NormalScaledInvChiSquareDistribution mMeanVarianceDist;
+  NormalScaledInvChiSquareDistribution<> mMeanVarianceDist;
   /** @}
     */
 

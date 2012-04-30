@@ -29,16 +29,16 @@
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   std::vector<Eigen::Matrix<double, 2, 1> > data;
-  std::vector<NormalScaledInvChiSquareDistribution::RandomVariable> dataTuple;
-  NormalScaledInvChiSquareDistribution dist(5, 1000, 1000, 2.0);
+  std::vector<NormalScaledInvChiSquareDistribution<>::RandomVariable> dataTuple;
+  NormalScaledInvChiSquareDistribution<> dist(5, 1000, 1000, 2.0);
   data.reserve(10000);
   for (size_t i = 0; i < 10000; ++i) {
-    NormalScaledInvChiSquareDistribution::RandomVariable sample =
+    NormalScaledInvChiSquareDistribution<>::RandomVariable sample =
       dist.getSample();
     data.push_back(Eigen::Matrix<double, 2, 1>(std::get<0>(sample),
       std::get<1>(sample)));
   }
-  ScatterPlot<2> plot("NormalScaledInvChiSquareDistributionRndScatterPlot",
+  ScatterPlot<2> plot("Normal1vScaledInvChiSquareDistributionRndScatterPlot",
     data);
   plot.show();
   return app.exec();

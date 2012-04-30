@@ -17,35 +17,79 @@
  ******************************************************************************/
 
 /** \file LinearRegressionPred.h
-    \brief This file defines the LinearRegressionPred class, which represents
-           a predictive multivariate linear regression
+    \brief This file defines the LinearRegressionPred class, which represents a
+           multivariate predictive linear regression
   */
 
 #ifndef LINEARREGRESSIONPRED_H
 #define LINEARREGRESSIONPRED_H
 
-#include "statistics/StudentDistribution.h"
+#include "statistics/ContinuousDistribution.h"
+#include "functions/LinearBasisFunction.h"
+#include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
-#include "exceptions/BadArgumentException.h"
 
 /** The LinearRegressionPred class represents a multivariate predictive linear
     regression.
     \brief Multivariate predictive linear regression
   */
 template <size_t M> class LinearRegressionPred :
-  public StudentDistribution<1>,
+  public ContinuousDistribution<double, M>,
+  public SampleDistribution<Eigen::Matrix<double, M, 1> >,
   public virtual Serializable {
 public:
+  /** \name Types
+    @{
+    */
+  /// Distribution type
+  typedef ContinuousDistribution<double, M> DistributionType;
+  /// Random variable type
+  typedef typename DistributionType::RandomVariable RandomVariable;
+  /** @}
+    */
+
+  /** \name Traits
+    @{
+    */
+  /// Normal case
+  template <size_t N, size_t D = 0> struct Traits {
+  public:
+    /// Returns the pdf
+    static double pdf(const LinearRegressionPred<N>& linearRegression,
+      const Eigen::Matrix<double, N, 1>& value);
+    /// Returns the log-pdf
+    static double logpdf(const LinearRegressionPred<N>& linearRegression,
+      const Eigen::Matrix<double, N, 1>& value);
+    /// Returns a sample
+    static Eigen::Matrix<double, N, 1> getSample(const LinearRegressionPred<N>&
+      linearRegression);
+  };
+  /// Support for N = 2
+  template <size_t D> struct Traits<2, D> {
+  public:
+    /// Returns the pdf
+    static double pdf(const LinearRegressionPred<2>& linearRegression,
+      const Eigen::Matrix<double, 2, 1>& value);
+    /// Returns the log-pdf
+    static double logpdf(const LinearRegressionPred<2>& linearRegression,
+      const Eigen::Matrix<double, 2, 1>& value);
+    /// Returns a sample
+    static Eigen::Matrix<double, 2, 1> getSample(const LinearRegressionPred<2>&
+      linearRegression);
+  };
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
   /// Constructs linear regression from parameters
-  LinearRegressionPred(double degrees = 1.0, const Eigen::Matrix<double, M, 1>&
-    coefficients = Eigen::Matrix<double, M, 1>::Ones(), const
-    Eigen::Matrix<double, M, M>& coeffCovariance =
-    Eigen::Matrix<double, M, M>::Identity(), double regressionVariance = 1.0,
-    const Eigen::Matrix<double, M, 1>& basis =
-    Eigen::Matrix<double, M, 1>::Zero());
+  LinearRegressionPred(double degrees = 1, const LinearBasisFunction<double, M>&
+    linearBasisFunction = LinearBasisFunction<double, M>(), const
+    Eigen::Matrix<double, M, M> coeffsCovariance =
+    Eigen::Matrix<double, M, M>::Identity(),
+    double variance = 1.0, const Eigen::Matrix<double, M - 1, 1>& basis =
+    Eigen::Matrix<double, M - 1, 1>::Ones());
   /// Copy constructor
   LinearRegressionPred(const LinearRegressionPred& other);
   /// Assignment operator
@@ -58,22 +102,33 @@ public:
   /** \name Accessors
     @{
     */
-  /// Sets the coefficients
-  void setCoefficients(const Eigen::Matrix<double, M, 1>& coefficients);
-  /// Returns the coefficients
-  const Eigen::Matrix<double, M, 1>& getCoefficients() const;
-  /// Sets the coefficients covariance
-  void setCoeffCovariance(const Eigen::Matrix<double, M, M>& coeffCovariance);
+  /// Returns the degrees of freedom
+  double getDegrees() const;
+  /// Sets the degrees of freedom
+  void setDegrees(double degrees);
+  /// Returns the linear basis function
+  const LinearBasisFunction<double, M>& getLinearBasisFunction() const;
+  /// Sets the linear basis function
+  void setLinearBasisFunction(const LinearBasisFunction<double, M>&
+    linearBasisFunction);
   /// Returns the coefficients covariance
-  const Eigen::Matrix<double, M, M>& getCoeffCovariance() const;
-  /// Sets the regression variance
-  void setRegressionVariance(double variance);
-  /// Returns the regression variance
-  double getRegressionVariance() const;
-  /// Sets the basis
-  void setBasis(const Eigen::Matrix<double, M, 1>& basis);
+  const Eigen::Matrix<double, M, M>& getCoeffsCovariance() const;
+  /// Sets the coefficients covariance
+  void setCoeffsCovariance(const Eigen::Matrix<double, M, M>& coeffsCovariance);
+  /// Returns the variance
+  double getVariance() const;
+  /// Sets the variance
+  void setVariance(double variance);
   /// Returns the basis
-  const Eigen::Matrix<double, M, 1>& getBasis() const;
+  const Eigen::Matrix<double, M - 1, 1>& getBasis() const;
+  /// Sets the basis
+  void setBasis(const Eigen::Matrix<double, M - 1, 1>& basis);
+  /// Access the probability density function at the given value
+  virtual double pdf(const RandomVariable& value) const;
+  /// Access the log-probability density function at the given value
+  double logpdf(const RandomVariable& value) const;
+  /// Access a sample drawn from the distribution
+  virtual RandomVariable getSample() const;
   /** @}
     */
 
@@ -95,14 +150,16 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Regression weights
-  Eigen::Matrix<double, M, 1> mCoefficients;
-  /// Regression weights covariance
-  Eigen::Matrix<double, M, M> mCoeffCovariance;
-  /// Regression variance
-  double mRegressionVariance;
-  /// Basis
-  Eigen::Matrix<double, M, 1> mBasis;
+  /// Degrees of freedom
+  double mDegrees;
+  /// Linear basis function
+  LinearBasisFunction<double, M> mLinearBasisFunction;
+  /// Covariance on the coefficients
+  Eigen::Matrix<double, M, M> mCoeffsCovariance;
+  /// Variance
+  double mVariance;
+  /// Current basis
+  Eigen::Matrix<double, M - 1, 1> mBasis;
   /** @}
     */
 

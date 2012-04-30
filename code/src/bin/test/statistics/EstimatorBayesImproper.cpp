@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
   std::cout << "Estimation2: " << std::endl << estNorm2 << std::endl;
   LinearRegression<2> distLine(Eigen::Matrix<double, 2, 1>(2.0, 2.0), 2.0);
   std::vector<Eigen::Matrix<double, 2, 1> > samplesLine;
-  for (double x = -10; x < 10; x += 0.1) {
+  for (double x = -10; x < 10; x += 0.01) {
     distLine.setBasis((Eigen::Matrix<double, 1, 1>() << x).finished());
     samplesLine.push_back(Eigen::Matrix<double, 2, 1>(distLine.getSample()));
   }

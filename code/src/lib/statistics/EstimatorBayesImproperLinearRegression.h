@@ -25,11 +25,11 @@
 
 #include "statistics/LinearRegression.h"
 #include "statistics/LinearRegressionPred.h"
-#include "statistics/ScaledInvChiSquareDistribution.h"
+#include "statistics/NormalScaledInvChiSquareDistribution.h"
 
 /** The class EstimatorBayesImproper is implemented for ordinary linear
     regression models.
-    \brief Ordinary linear regresssion Bayesian estimator with improper prior
+    \brief Ordinary linear regression Bayesian estimator with improper prior
   */
 template <size_t M> class EstimatorBayesImproper<LinearRegression<M> > :
   public virtual Serializable {
@@ -63,18 +63,10 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the posterior marginal coefficients distribution
-  const StudentDistribution<M>& getPostCoeffDist() const;
-  /// Returns the posterior marginal variance distribution
-  const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
-  /// Returns the posterior predictive distribution
-  const LinearRegressionPred<M>& getPostPredDist() const;
-  /// Returns the sample coefficients
-  const Eigen::Matrix<double, M, 1>& getSampleCoeff() const;
-  /// Returns the sample coefficients covariance
-  const Eigen::Matrix<double, M, M>& getSampleCoeffCovariance() const;
-  /// Returns the sample regression variance
-  double getSampleRegressionVariance() const;
+  /// Returns the coefficients and variance distribution
+  const NormalScaledInvChiSquareDistribution<M>& getDist() const;
+  /// Returns the predictive distribution
+  LinearRegressionPred<M> getPredDist() const;
   /// Returns the number of points
   size_t getNumPoints() const;
   /// Returns the validity state of the estimator
@@ -82,9 +74,6 @@ public:
   /// Add points to the estimator
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
-  /// Add points to the estimator with weights
-  void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
-    itEnd, const Eigen::Matrix<double, Eigen::Dynamic, 1>& weights);
   /// Add points to the estimator
   void addPoints(const Container& points);
   /// Reset the estimator
@@ -110,18 +99,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Posterior marginal coefficients distribution
-  StudentDistribution<M> mPostCoeffDist;
-  /// Posterior marginal variance distribution
-  ScaledInvChiSquareDistribution mPostVarianceDist;
-  /// Posterior predictive distribution
-  LinearRegressionPred<M> mPostPredDist;
-  /// Sample coefficients
-  Eigen::Matrix<double, M, 1> mSampleCoeff;
-  /// Sample coefficients covariance
-  Eigen::Matrix<double, M, M> mSampleCoeffCovariance;
-  /// Sample regression variance
-  double mSampleRegressionVariance;
+  /// Coefficients and variance distribution
+  NormalScaledInvChiSquareDistribution<M> mCoeffVarianceDist;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag

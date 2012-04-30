@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
   std::vector<double> samplesMixtNorm1;
   distMixtNorm1.getSamples(samplesMixtNorm1, 1000);
   DirichletDistribution<5> dirPrior;
-  NormalScaledInvChiSquareDistribution compPrior(0.0, 1, 1, 1.5);
+  NormalScaledInvChiSquareDistribution<> compPrior(0.0, 1, 1, 1.5);
   EstimatorBayes<MixtureDistribution<NormalDistribution<1>, 5> >
     estMixtNorm1(dirPrior, compPrior, 500);
   double before = Timestamp::now();

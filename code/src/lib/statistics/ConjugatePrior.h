@@ -47,7 +47,7 @@ template <typename D> struct ConjugatePrior;
 template <> struct ConjugatePrior<NormalDistribution<1> > {
 public:
   /// Conjugate prior for univariate normal distribution
-  typedef NormalScaledInvChiSquareDistribution Result;
+  typedef NormalScaledInvChiSquareDistribution<1> Result;
 };
 
 /** The ConjugatePrior prior is defined for multivariate normal distribution.

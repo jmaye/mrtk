@@ -64,7 +64,7 @@ public:
     @{
     */
   /// Returns the mean and variance distribution
-  const NormalScaledInvChiSquareDistribution& getDist() const;
+  const NormalScaledInvChiSquareDistribution<>& getDist() const;
   /// Returns the predictive distribution
   StudentDistribution<1> getPredDist() const;
   /// Returns the number of points
@@ -102,7 +102,7 @@ protected:
     @{
     */
   /// Mean and variance distribution
-  NormalScaledInvChiSquareDistribution mMeanVarianceDist;
+  NormalScaledInvChiSquareDistribution<> mMeanVarianceDist;
   /// Number of points in the estimator
   size_t mNumPoints;
   /// Valid flag
