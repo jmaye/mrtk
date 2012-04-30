@@ -78,6 +78,6 @@ protected:
 
 };
 
-#include "Singleton.tpp"
+#include "base/Singleton.tpp"
 
 #endif
