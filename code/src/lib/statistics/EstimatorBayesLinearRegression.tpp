@@ -117,7 +117,8 @@ void EstimatorBayes<LinearRegression<M>,
   mCoeffVarianceDist.setMu(mCoeffVarianceDist.getKappa() *
     (kappa.inverse() * mu + x * y));
   mCoeffVarianceDist.setNu(nu + 1);
-  mCoeffVarianceDist.setSigma(nu / (nu + 1) * sigma + ((y * y.transpose())(0) +
+  mCoeffVarianceDist.setSigma(nu / (nu + 1) * sigma +
+    (outerProduct<double, 1>(y)(0) +
     (mu.transpose() * kappa.inverse() * mu)(0) -
     (mCoeffVarianceDist.getMu().transpose() *
     mCoeffVarianceDist.getKappa().inverse() * mCoeffVarianceDist.getMu())(0)) /
