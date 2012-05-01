@@ -159,8 +159,8 @@ double LinearRegressionPred<M>::Traits<N, D>::pdf(const
   return StudentDistribution<1>(linearRegression.mDegrees,
     linearRegression.mLinearBasisFunction(
     value.start(value.size() - 1)),
-    linearRegression.mVariance + (x.transpose() *
-    linearRegression.mCoeffsCovariance * x)(0)).pdf(
+    linearRegression.mVariance * (1.0 + (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0))).pdf(
     value.template end<1>()(0));
 }
 
@@ -174,8 +174,8 @@ double LinearRegressionPred<M>::Traits<2, D>::pdf(const
     1.0, value(0)).finished();
   return StudentDistribution<1>(linearRegression.mDegrees,
     linearRegression.mLinearBasisFunction(value(0)),
-    linearRegression.mVariance + (x.transpose() *
-    linearRegression.mCoeffsCovariance * x)(0)).pdf(value(1));
+    linearRegression.mVariance * (1.0 + (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0))).pdf(value(1));
 }
 
 template <size_t M>
@@ -189,8 +189,8 @@ double LinearRegressionPred<M>::Traits<N, D>::logpdf(const
   return StudentDistribution<1>(linearRegression.mDegrees,
     linearRegression.mLinearBasisFunction(
     value.start(value.size() - 1)),
-    linearRegression.mVariance + (x.transpose() *
-    linearRegression.mCoeffsCovariance * x)(0)).logpdf(
+    linearRegression.mVariance * (1.0 + (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0))).logpdf(
     value.template end<1>()(0));
 }
 
@@ -204,8 +204,8 @@ double LinearRegressionPred<M>::Traits<2, D>::logpdf(const
     1.0, value(0)).finished();
   return StudentDistribution<1>(linearRegression.mDegrees,
     linearRegression.mLinearBasisFunction(value(0)),
-    linearRegression.mVariance + (x.transpose() *
-    linearRegression.mCoeffsCovariance * x)(0)).logpdf(value(1));
+    linearRegression.mVariance * (1.0 + (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0))).logpdf(value(1));
 }
 
 template <size_t M>
@@ -218,8 +218,9 @@ Eigen::Matrix<double, N, 1> LinearRegressionPred<M>::Traits<N, D>::getSample(
   return (Eigen::Matrix<double, N, 1>() << linearRegression.mBasis,
     StudentDistribution<1>(linearRegression.mDegrees,
     linearRegression.mLinearBasisFunction(
-    linearRegression.mBasis), linearRegression.mVariance + (x.transpose() *
-    linearRegression.mCoeffsCovariance * x)(0)).getSample()).finished();
+    linearRegression.mBasis), linearRegression.mVariance * (1.0 +
+    (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0))).getSample()).finished();
 }
 
 template <size_t M>
@@ -232,8 +233,9 @@ Eigen::Matrix<double, 2, 1> LinearRegressionPred<M>::Traits<2, D>::getSample(
   return Eigen::Matrix<double, 2, 1>(linearRegression.mBasis(0),
     StudentDistribution<1>(linearRegression.mDegrees,
     linearRegression.mLinearBasisFunction(
-    linearRegression.mBasis(0)), linearRegression.mVariance + (x.transpose() *
-    linearRegression.mCoeffsCovariance * x)(0)).getSample());
+    linearRegression.mBasis(0)), linearRegression.mVariance * (1.0 +
+    (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0))).getSample());
 }
 
 template <size_t M>
@@ -257,8 +259,8 @@ double LinearRegressionPred<M>::Traits<N, D>::getPredVariance(const
   const Eigen::Matrix<double, N, 1> x =
     (Eigen::Matrix<double, N, 1>() <<
     1.0, linearRegression.mBasis).finished();
-  return linearRegression.mVariance + (x.transpose() *
-    linearRegression.mCoeffsCovariance * x)(0);
+  return linearRegression.mVariance * (1.0 + (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0));
 }
 
 template <size_t M>
@@ -268,8 +270,8 @@ double LinearRegressionPred<M>::Traits<2, D>::getPredVariance(const
   const Eigen::Matrix<double, 2, 1> x =
     (Eigen::Matrix<double, 2, 1>() <<
     1.0, linearRegression.mBasis).finished();
-  return linearRegression.mVariance + (x.transpose() *
-    linearRegression.mCoeffsCovariance * x)(0);
+  return linearRegression.mVariance * (1.0 + (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0));
 }
 
 template <size_t M>

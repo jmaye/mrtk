@@ -97,7 +97,8 @@ template <size_t M>
 LinearRegressionPred<M>
     EstimatorBayes<LinearRegression<M>,
     NormalScaledInvChiSquareDistribution<M> >::getPredDist() const {
-  return LinearRegressionPred<M>(mCoeffVarianceDist.getNu() - mCoeffVarianceDist.getMu().size(),
+  return LinearRegressionPred<M>(mCoeffVarianceDist.getNu() -
+    mCoeffVarianceDist.getMu().size(),
     mCoeffVarianceDist.getMu(), mCoeffVarianceDist.getKappa(),
     mCoeffVarianceDist.getSigma());
 }
