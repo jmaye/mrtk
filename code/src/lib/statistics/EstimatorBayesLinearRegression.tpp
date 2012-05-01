@@ -16,45 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "utils/OuterProduct.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
 template <size_t M>
-EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes(const
-    Eigen::Matrix<double, M, 1>& mu , const Eigen::Matrix<double, M, M>& V,
-    double nu, double sigma) :
-    mPostCoeffDist(nu, mu, sigma * V),
-    mPostVarianceDist(nu, sigma / nu),
-    mPostPredDist(nu, mu, V, sigma / nu),
-    mMu(mu),
-    mV(V),
-    mNu(nu),
-    mSigma(sigma) {
+EstimatorBayes<LinearRegression<M>, NormalScaledInvChiSquareDistribution<M> >::
+    EstimatorBayes(const NormalScaledInvChiSquareDistribution<M>& prior) :
+    mCoeffVarianceDist(prior) {
 }
 
 template <size_t M>
-EstimatorBayes<LinearRegression<M>, M>::EstimatorBayes(const
-    EstimatorBayes<LinearRegression<M>, M>& other) :
-    mPostCoeffDist(other.mPostCoeffDist),
-    mPostVarianceDist(other.mPostVarianceDist),
-    mPostPredDist(other.mPostPredDist) {
+EstimatorBayes<LinearRegression<M>, NormalScaledInvChiSquareDistribution<M> >::
+    EstimatorBayes(const EstimatorBayes& other) :
+    mCoeffVarianceDist(other.mCoeffVarianceDist) {
 }
 
 template <size_t M>
-EstimatorBayes<LinearRegression<M>, M>&
-    EstimatorBayes<LinearRegression<M>, M>::operator =
-    (const EstimatorBayes<LinearRegression<M>, M>& other) {
+EstimatorBayes<LinearRegression<M>, NormalScaledInvChiSquareDistribution<M> >&
+    EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::operator = (const EstimatorBayes&
+    other) {
   if (this != &other) {
-    mPostCoeffDist = other.mPostCoeffDist;
-    mPostVarianceDist = other.mPostVarianceDist;
-    mPostPredDist = other.mPostPredDist;
+    mCoeffVarianceDist = other.mCoeffVarianceDist;
   }
   return *this;
 }
 
 template <size_t M>
-EstimatorBayes<LinearRegression<M>, M>::~EstimatorBayes() {
+EstimatorBayes<LinearRegression<M>, NormalScaledInvChiSquareDistribution<M> >::
+    ~EstimatorBayes() {
 }
 
 /******************************************************************************/
@@ -62,24 +55,30 @@ EstimatorBayes<LinearRegression<M>, M>::~EstimatorBayes() {
 /******************************************************************************/
 
 template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::read(std::istream& stream) {
+void EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::read(std::istream& stream) {
 }
 
 template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::write(std::ostream& stream) const {
-  stream << "posterior coefficients distribution: " << std::endl
-    << mPostCoeffDist
-    << std::endl << "posterior variance distribution: " << std::endl
-    << mPostVarianceDist << std::endl
-    << "posterior predictive distribution: " << std::endl << mPostPredDist;
+void EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::write(std::ostream& stream)
+    const {
+  stream << "Coefficients and variance distribution: " << std::endl
+    << mCoeffVarianceDist << std::endl
+    << "Coefficients mode: " << std::endl
+    << std::get<0>(mCoeffVarianceDist.getMode()) << std::endl
+    << "Variance mode: "
+    << std::get<1>(mCoeffVarianceDist.getMode());
 }
 
 template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::read(std::ifstream& stream) {
+void EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::read(std::ifstream& stream) {
 }
 
 template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::write(std::ofstream& stream)
+void EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::write(std::ofstream& stream)
     const {
 }
 
@@ -88,66 +87,54 @@ void EstimatorBayes<LinearRegression<M>, M>::write(std::ofstream& stream)
 /******************************************************************************/
 
 template <size_t M>
-const StudentDistribution<M>& EstimatorBayes<LinearRegression<M>, M>::
-    getPostCoeffDist() const {
-  return mPostCoeffDist;
+const NormalScaledInvChiSquareDistribution<M>&
+    EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::getDist() const {
+  return mCoeffVarianceDist;
 }
 
 template <size_t M>
-const ScaledInvChiSquareDistribution&
-EstimatorBayes<LinearRegression<M>, M>::getPostVarianceDist() const {
-  return mPostVarianceDist;
+LinearRegressionPred<M>
+    EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::getPredDist() const {
+  return LinearRegressionPred<M>(mCoeffVarianceDist.getNu() - mCoeffVarianceDist.getMu().size(),
+    mCoeffVarianceDist.getMu(), mCoeffVarianceDist.getKappa(),
+    mCoeffVarianceDist.getSigma());
 }
 
 template <size_t M>
-const LinearRegressionPred<M>& EstimatorBayes<LinearRegression<M>, M>::
-    getPostPredDist() const {
-  return mPostPredDist;
+void EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::addPoint(const Point& point) {
+  auto mu = mCoeffVarianceDist.getMu();
+  auto kappa = mCoeffVarianceDist.getKappa();
+  auto nu = mCoeffVarianceDist.getNu();
+  auto sigma = mCoeffVarianceDist.getSigma();
+  auto x = (Eigen::Matrix<double, M, 1>() << 1.0,
+    point.segment(0, mu.size() - 1)).finished();
+  auto y = point.template end<1>();
+  mCoeffVarianceDist.setKappa((outerProduct<double, M>(x) + kappa.inverse()).
+    inverse());
+  mCoeffVarianceDist.setMu(mCoeffVarianceDist.getKappa() *
+    (kappa.inverse() * mu + x * y));
+  mCoeffVarianceDist.setNu(nu + 1);
+  mCoeffVarianceDist.setSigma(nu / (nu + 1) * sigma + ((y * y.transpose())(0) +
+    (mu.transpose() * kappa.inverse() * mu)(0) -
+    (mCoeffVarianceDist.getMu().transpose() *
+    mCoeffVarianceDist.getKappa().inverse() * mCoeffVarianceDist.getMu())(0)) /
+    (nu + 1));
 }
 
 template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::addPoint(const Point& point) {
-  Eigen::Matrix<double, M, 1> inputPoint(mMu.size());
-  inputPoint(0) = 1.0;
-  inputPoint.segment(1, mMu.size() - 1) = point.segment(0, mMu.size() - 1);
-  const Eigen::Matrix<double, M, M> newV = (mV.inverse() + inputPoint *
-    inputPoint.transpose()).inverse();
-  const Eigen::Matrix<double, M, 1> newMu = newV * (mV.inverse() * mMu +
-    inputPoint * point(mMu.size() - 1));
-  const double newNu = mNu + 1;
-  const double newSigma = mSigma + (point(mMu.size() - 1) *
-    point(mMu.size() - 1) + (mMu.transpose() * mV.inverse() * mMu)(0) -
-    (newMu.transpose() * newV.inverse() * newMu)(0));
-  mMu = newMu;
-  mV = newV;
-  mNu = newNu;
-  mSigma = newSigma;
-  mPostVarianceDist.setDegrees(mNu);
-  mPostVarianceDist.setScale(mSigma / mNu);
-  mPostCoeffDist.setDegrees(mNu);
-  mPostCoeffDist.setLocation(mMu);
-  mPostCoeffDist.setScale(mSigma * mV / mNu);
-  mPostPredDist.setDegrees(mNu);
-  mPostPredDist.setCoefficients(mMu);
-  mPostPredDist.setCoeffCovariance(mV);
-  mPostPredDist.setRegressionVariance(mSigma / mNu);
-}
-
-template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::addPoints(const ConstPointIterator&
-    itStart, const ConstPointIterator& itEnd) {
-  for (ConstPointIterator it = itStart; it != itEnd; ++it)
+void EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::addPoints(const
+    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
+  for (auto it = itStart; it != itEnd; ++it)
     addPoint(*it);
 }
 
 template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::addPoints(const ConstPointIterator&
-    itStart, const ConstPointIterator& itEnd, const
-    Eigen::Matrix<double, Eigen::Dynamic, 1>& weights) {
-}
-
-template <size_t M>
-void EstimatorBayes<LinearRegression<M>, M>::addPoints(const Container&
+void EstimatorBayes<LinearRegression<M>,
+    NormalScaledInvChiSquareDistribution<M> >::addPoints(const Container&
     points) {
   addPoints(points.begin(), points.end());
 }

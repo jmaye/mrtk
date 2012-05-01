@@ -34,6 +34,7 @@
 #include "statistics/GeometricDistribution.h"
 #include "statistics/ExponentialDistribution.h"
 #include "statistics/PoissonDistribution.h"
+#include "statistics/LinearRegression.h"
 #include "statistics/MixtureDistribution.h"
 
 /** The ConjugatePrior structure defines the ConjugatePrior template.
@@ -42,7 +43,7 @@
 template <typename D> struct ConjugatePrior;
 
 /** The ConjugatePrior prior is defined for univariate normal distribution.
-    \brief ConjugatePrior prior for univariate normal distribution
+    \brief Conjugate prior for univariate normal distribution
   */
 template <> struct ConjugatePrior<NormalDistribution<1> > {
 public:
@@ -51,7 +52,7 @@ public:
 };
 
 /** The ConjugatePrior prior is defined for multivariate normal distribution.
-    \brief ConjugatePrior prior for multivariate normal distribution
+    \brief Conjugate prior for multivariate normal distribution
   */
 template <size_t M> struct ConjugatePrior<NormalDistribution<M> > {
 public:
@@ -60,7 +61,7 @@ public:
 };
 
 /** The ConjugatePrior prior is defined for categorical distribution.
-    \brief ConjugatePrior prior for categorical distribution
+    \brief Conjugate prior for categorical distribution
   */
 template <size_t M> struct ConjugatePrior<CategoricalDistribution<M> > {
 public:
@@ -69,7 +70,7 @@ public:
 };
 
 /** The ConjugatePrior prior is defined for multinomial distribution.
-    \brief ConjugatePrior prior for multinomial distribution
+    \brief Conjugate prior for multinomial distribution
   */
 template <size_t M> struct ConjugatePrior<MultinomialDistribution<M> > {
 public:
@@ -78,7 +79,7 @@ public:
 };
 
 /** The ConjugatePrior prior is defined for exponential distribution.
-    \brief ConjugatePrior prior for exponential distribution
+    \brief Conjugate prior for exponential distribution
   */
 template <> struct ConjugatePrior<ExponentialDistribution> {
 public:
@@ -87,7 +88,7 @@ public:
 };
 
 /** The ConjugatePrior prior is defined for geometric distribution.
-    \brief ConjugatePrior prior for geometric distribution
+    \brief Conjugate prior for geometric distribution
   */
 template <> struct ConjugatePrior<GeometricDistribution> {
 public:
@@ -96,7 +97,7 @@ public:
 };
 
 /** The ConjugatePrior prior is defined for Poisson distribution.
-    \brief ConjugatePrior prior for Poisson distribution
+    \brief Conjugate prior for Poisson distribution
   */
 template <> struct ConjugatePrior<PoissonDistribution> {
 public:
@@ -104,8 +105,17 @@ public:
   typedef GammaDistribution<double> Result;
 };
 
+/** The ConjugatePrior prior is defined for linear regression models.
+    \brief Conjugate prior for linear regression models
+  */
+template <size_t M> struct ConjugatePrior<LinearRegression<M> > {
+public:
+  /// Conjugate prior for linear regression model
+  typedef NormalScaledInvChiSquareDistribution<M> Result;
+};
+
 /** The ConjugatePrior prior is defined for mixture distribution.
-    \brief ConjugatePrior prior for mixture distribution
+    \brief Conjugate prior for mixture distribution
   */
 template <typename D, size_t M>
 struct ConjugatePrior<MixtureDistribution<D, M> > {

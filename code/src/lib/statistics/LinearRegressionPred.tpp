@@ -257,7 +257,8 @@ double LinearRegressionPred<M>::Traits<N, D>::getPredVariance(const
   const Eigen::Matrix<double, N, 1> x =
     (Eigen::Matrix<double, N, 1>() <<
     1.0, linearRegression.mBasis).finished();
-  return (x.transpose() * linearRegression.mCoeffsCovariance * x)(0);
+  return linearRegression.mVariance + (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0);
 }
 
 template <size_t M>
@@ -267,7 +268,8 @@ double LinearRegressionPred<M>::Traits<2, D>::getPredVariance(const
   const Eigen::Matrix<double, 2, 1> x =
     (Eigen::Matrix<double, 2, 1>() <<
     1.0, linearRegression.mBasis).finished();
-  return (x.transpose() * linearRegression.mCoeffsCovariance * x)(0);
+  return linearRegression.mVariance + (x.transpose() *
+    linearRegression.mCoeffsCovariance * x)(0);
 }
 
 template <size_t M>

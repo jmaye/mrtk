@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (C) 2011 by Jerome Maye                                          *
+b * Copyright (C) 2011 by Jerome Maye                                          *
  * jerome.maye@gmail.com                                                      *
  *                                                                            *
  * This program is free software; you can redistribute it and/or modify       *
@@ -24,6 +24,7 @@
 
 #include "statistics/LinearRegression.h"
 #include "statistics/EstimatorBayesImproper.h"
+#include "statistics/EstimatorBayes.h"
 #include "base/Timestamp.h"
 
 int main(int argc, char** argv) {
@@ -34,11 +35,25 @@ int main(int argc, char** argv) {
     samplesLine.push_back(Eigen::Matrix<double, 2, 1>(distLine.getSample()));
   }
   double before = Timestamp::now();
-  EstimatorBayesImproper<LinearRegression<2> > estLine;
-  estLine.addPoints(samplesLine.begin(), samplesLine.end());
+  EstimatorBayesImproper<LinearRegression<2> > estBayesImproperLine;
+  estBayesImproperLine.addPoints(samplesLine.begin(), samplesLine.end());
   double after = Timestamp::now();
-  std::cout << "Estimation1: " << std::endl << estLine << std::endl;
+  std::cout << "Estimation1: " << std::endl << estBayesImproperLine
+    << std::endl;
+  std::cout << "Predictive mean: " <<
+    estBayesImproperLine.getPredDist().getPredMean() << std::endl;
+  std::cout << "Predictive variance: " <<
+    estBayesImproperLine.getPredDist().getPredVariance() << std::endl;
   std::cout << "Time: " << after - before << " [s]" << std::endl;
-
+  before = Timestamp::now();
+  EstimatorBayes<LinearRegression<2> > estBayesLine;
+  estBayesLine.addPoints(samplesLine);
+  after = Timestamp::now();
+  std::cout << "Estimation2: " << std::endl << estBayesLine << std::endl;
+  std::cout << "Predictive mean: " <<
+    estBayesLine.getPredDist().getPredMean() << std::endl;
+  std::cout << "Predictive variance: " <<
+    estBayesLine.getPredDist().getPredVariance() << std::endl;
+  std::cout << "Time: " << after - before << " [s]" << std::endl;
   return 0;
 }

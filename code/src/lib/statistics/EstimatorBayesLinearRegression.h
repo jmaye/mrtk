@@ -24,13 +24,15 @@
 #include <vector>
 
 #include "statistics/LinearRegression.h"
-#include "statistics/NormalMvScaledInvChiSquareDistribution.h"
+#include "statistics/LinearRegressionPred.h"
+#include "statistics/NormalScaledInvChiSquareDistribution.h"
 
 /** The class EstimatorBayes is implemented for ordinary linear regression
     models.
     \brief Ordinary linear regresssion Bayesian estimator with conjugate prior
   */
-template <size_t M> class EstimatorBayes<LinearRegression<M>, M> :
+template <size_t M> class EstimatorBayes<LinearRegression<M>,
+  NormalScaledInvChiSquareDistribution<M> > :
   public virtual Serializable {
 public:
   /** \name Types definitions
@@ -49,15 +51,12 @@ public:
     @{
     */
   /// Default constructor
-  EstimatorBayes(const Eigen::Matrix<double, M, 1>& mu =
-    Eigen::Matrix<double, M, 1>::Ones(), const Eigen::Matrix<double, M, M>& V =
-    Eigen::Matrix<double, M, M>::Identity(), double nu = 1.0, double sigma =
-    1.0);
+  EstimatorBayes(const NormalScaledInvChiSquareDistribution<M>& prior =
+    NormalScaledInvChiSquareDistribution<M>());
   /// Copy constructor
-  EstimatorBayes(const EstimatorBayes<LinearRegression<M>, M>& other);
+  EstimatorBayes(const EstimatorBayes& other);
   /// Assignment operator
-  EstimatorBayes<LinearRegression<M>, M>& operator =
-    (const EstimatorBayes<LinearRegression<M>, M>& other);
+  EstimatorBayes& operator = (const EstimatorBayes& other);
   /// Destructor
   virtual ~EstimatorBayes();
   /** @}
@@ -66,20 +65,15 @@ public:
   /** \name Accessors
     @{
     */
-  /// Returns the posterior marginal coefficients distribution
-  const StudentDistribution<M>& getPostCoeffDist() const;
-  /// Returns the posterior marginal variance distribution
-  const ScaledInvChiSquareDistribution& getPostVarianceDist() const;
-  /// Returns the posterior predictive distribution
-  const LinearRegressionPred<M>& getPostPredDist() const;
+  /// Returns the coefficients and variance distribution
+  const NormalScaledInvChiSquareDistribution<M>& getDist() const;
+  /// Returns the predictive distribution
+  LinearRegressionPred<M> getPredDist() const;
   /// Add point to the estimator
   void addPoint(const Point& point);
   /// Add points to the estimator
   void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
-  /// Add points to the estimator with weights
-  void addPoints(const ConstPointIterator& itStart, const ConstPointIterator&
-    itEnd, const Eigen::Matrix<double, Eigen::Dynamic, 1>& weights);
   /// Add points to the estimator
   void addPoints(const Container& points);
   /** @}
@@ -103,20 +97,8 @@ protected:
   /** \name Protected members
     @{
     */
-  /// Posterior marginal coefficients distribution
-  StudentDistribution<M> mPostCoeffDist;
-  /// Posterior marginal variance distribution
-  ScaledInvChiSquareDistribution mPostVarianceDist;
-  /// Posterior predictive distribution
-  LinearRegressionPred<M> mPostPredDist;
-  /// Hyperparameter mu: prior coefficients mean
-  Eigen::Matrix<double, M, 1> mMu;
-  /// Hyperparameter V: prior coefficients covariance
-  Eigen::Matrix<double, M, M> mV;
-  /// Hyperparameter nu: prior degrees of freedom
-  double mNu;
-  /// Hyperparameter sigma: prior regression variance
-  double mSigma;
+  /// Coefficients and variance distribution
+  NormalScaledInvChiSquareDistribution<M> mCoeffVarianceDist;
   /** @}
     */
 
