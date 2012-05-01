@@ -62,6 +62,8 @@ public:
     /// Returns a sample
     static Eigen::Matrix<double, N, 1> getSample(const LinearRegression<N>&
       linearRegression);
+    /// Returns the mean
+    static double getMean(const LinearRegression<N>& linearRegression);
   };
   /// Support for N = 2
   template <size_t D> struct Traits<2, D> {
@@ -75,6 +77,8 @@ public:
     /// Returns a sample
     static Eigen::Matrix<double, 2, 1> getSample(const LinearRegression<2>&
       linearRegression);
+    /// Returns the mean
+    static double getMean(const LinearRegression<2>& linearRegression);
   };
   /** @}
     */
@@ -112,6 +116,8 @@ public:
   const Eigen::Matrix<double, M - 1, 1>& getBasis() const;
   /// Sets the basis
   void setBasis(const Eigen::Matrix<double, M - 1, 1>& basis);
+  /// Return the mean at the basis
+  double getMean() const;
   /// Access the probability density function at the given value
   virtual double pdf(const RandomVariable& value) const;
   /// Access the log-probability density function at the given value

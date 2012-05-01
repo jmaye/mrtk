@@ -63,6 +63,11 @@ public:
     /// Returns a sample
     static Eigen::Matrix<double, N, 1> getSample(const LinearRegressionPred<N>&
       linearRegression);
+    /// Returns the predictive mean
+    static double getPredMean(const LinearRegressionPred<N>& linearRegression);
+    /// Returns the predictive variance
+    static double getPredVariance(const LinearRegressionPred<N>&
+      linearRegression);
   };
   /// Support for N = 2
   template <size_t D> struct Traits<2, D> {
@@ -75,6 +80,11 @@ public:
       const Eigen::Matrix<double, 2, 1>& value);
     /// Returns a sample
     static Eigen::Matrix<double, 2, 1> getSample(const LinearRegressionPred<2>&
+      linearRegression);
+    /// Returns the predictive mean
+    static double getPredMean(const LinearRegressionPred<2>& linearRegression);
+    /// Returns the predictive variance
+    static double getPredVariance(const LinearRegressionPred<2>&
       linearRegression);
   };
   /** @}
@@ -123,6 +133,10 @@ public:
   const Eigen::Matrix<double, M - 1, 1>& getBasis() const;
   /// Sets the basis
   void setBasis(const Eigen::Matrix<double, M - 1, 1>& basis);
+  /// Returns the predictive mean
+  double getPredMean() const;
+  /// Returns the predictive variance
+  double getPredVariance() const;
   /// Access the probability density function at the given value
   virtual double pdf(const RandomVariable& value) const;
   /// Access the log-probability density function at the given value
