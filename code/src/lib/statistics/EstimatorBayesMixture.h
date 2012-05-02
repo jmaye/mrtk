@@ -171,12 +171,6 @@ public:
   /// Add points to the estimator using DP
   void addPointsDP(const ConstPointIterator& itStart, const ConstPointIterator&
     itEnd);
-  /// Add points to the estimator using R
-  void addPointsR(const ConstPointIterator& itStart, const ConstPointIterator&
-    itEnd);
-  /// Add points to the estimator using DP in R
-  void addPointsDPR(const ConstPointIterator& itStart, const ConstPointIterator&
-    itEnd);
   /// Add points to the estimator
   void addPoints(const Container& points);
   /** @}

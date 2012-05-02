@@ -16,8 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include <RInside.h>
-
 #include "statistics/Randomizer.h"
 #include "statistics/AdaptiveRejectionSampler.h"
 #include "functions/LogSumExpFunction.h"
@@ -110,36 +108,6 @@ const Eigen::Matrix<int, Eigen::Dynamic, 1>&
 
 template <typename C, size_t M>
 void EstimatorBayes<MixtureDistribution<C, M>,
-    typename ConjugatePrior<C>::Result>::addPointsR(const
-    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
-  // TODO: PASS THE PRIOR PARAMETERS DOWN TO GNU-R
-  // TODO: OUTPUT COMPONENTS PARAMETERS
-  const size_t numPoints = itEnd - itStart;
-  const size_t K = mDirPrior.getAlpha().size();
-  const size_t dim = Traits::template getDim<Point, true>(*itStart);
-  RInside R;
-  Rcpp::NumericMatrix data(numPoints, dim);
-  for (auto it = itStart; it != itEnd; ++it)
-    for (size_t i = 0; i < dim; ++i)
-      data(it - itStart, i) = Traits::template getData<Point, true>(*it, i);
-  R["x"] = data;
-  R["iter"] = mMaxNumIter;
-  R["K"] = K;
-  std::string expression = "library('bayesm');\
-    Data=list(y=x);\
-    Prior=list(ncomp=K);\
-    Mcmc=list(R=iter,keep=1);\
-    out=rnmixGibbs(Data=Data,Prior=Prior,Mcmc=Mcmc);\
-    out$nmix$zdraw[iter,]";
-  SEXP ans = R.parseEval(expression);
-  Rcpp::NumericVector out(ans);
-  mAssignments.resize(numPoints);
-  for (auto it = itStart; it != itEnd; ++it)
-    mAssignments(it - itStart) = out(it - itStart);
-}
-
-template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M>,
     typename ConjugatePrior<C>::Result>::addPoints(const
     ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
   const size_t numPoints = itEnd - itStart;
@@ -195,37 +163,6 @@ void EstimatorBayes<MixtureDistribution<C, M>,
       getSample();
     numIter++;
   }
-}
-
-template <typename C, size_t M>
-void EstimatorBayes<MixtureDistribution<C, M>,
-    typename ConjugatePrior<C>::Result>::addPointsDPR(const
-    ConstPointIterator& itStart, const ConstPointIterator& itEnd) {
-  // TODO: PASS THE PRIOR PARAMETERS DOWN TO GNU-R
-  // TODO: OUTPUT COMPONENTS PARAMETERS
-  const size_t numPoints = itEnd - itStart;
-  const size_t K = mDirPrior.getAlpha().size();
-  const size_t dim = Traits::template getDim<Point, true>(*itStart);
-  RInside R;
-  Rcpp::NumericMatrix data(numPoints, dim);
-  for (auto it = itStart; it != itEnd; ++it)
-    for (size_t i = 0; i < dim; ++i)
-      data(it - itStart, i) = Traits::template getData<Point, true>(*it, i);
-  R["x"] = data;
-  R["iter"] = mMaxNumIter;
-  R["K"] = K;
-  std::string expression = "library('bayesm');\
-    Data=list(y=x);\
-    Prioralpha=list(Istarmin=4,Istarmax=5,power=.8);\
-    Prior=list(Prioralpha=Prioralpha);\
-    Mcmc=list(R=iter,keep=1,maxuniq=200);\
-    out=rDPGibbs(Data=Data,Prior=Prior,Mcmc=Mcmc);\
-    out$nmix$zdraw[iter,]";
-  SEXP ans = R.parseEval(expression);
-  Rcpp::NumericVector out(ans);
-  mAssignments.resize(numPoints);
-  for (auto it = itStart; it != itEnd; ++it)
-    mAssignments(it - itStart) = out(it - itStart);
 }
 
 template <typename C, size_t M>
