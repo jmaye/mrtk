@@ -31,7 +31,7 @@
 /******************************************************************************/
 
 View3dControl::View3dControl(bool showFog, bool showGround, bool showAxes) :
-  mUi(new Ui_View3dControl()) {
+    mUi(new Ui_View3dControl()) {
   mUi->setupUi(this);
   mUi->colorChooser->setPalette(&mPalette);
   connect(&mPalette, SIGNAL(colorChanged(const QString&, const QColor&)),
@@ -144,7 +144,6 @@ void View3dControl::setDumpAll(bool dumpAll) {
   mUi->dumpAllCheckBox->setChecked(dumpAll);
 }
 
-
 void View3dControl::setRotateFrames(bool rotateFrames) {
   mUi->rotateFramesCheckBox->setChecked(rotateFrames);
 }
@@ -201,7 +200,7 @@ void View3dControl::renderFog(double start, double end, double density) {
 }
 
 void View3dControl::renderGround(double radius, double elevation, double
-  angleStep, double rangeStep) {
+    angleStep, double rangeStep) {
   glPushAttrib(GL_CURRENT_BIT);
   glBegin(GL_LINES);
   View3d::getInstance().setColor(mPalette, "Ground");
@@ -253,7 +252,7 @@ void View3dControl::renderAxes(double length) {
 }
 
 void View3dControl::dumpFrame(const QString& format, int frame, size_t width,
-  size_t height) {
+    size_t height) {
   QDir dir(mUi->dumpDirEdit->text());
   if (dir.isReadable()) {
     QString filename;
@@ -377,7 +376,7 @@ void View3dControl::cameraViewpointChanged(const std::vector<double>&
 }
 
 void View3dControl::sceneTranslationChanged(const std::vector<double>&
-  translation) {
+    translation) {
   mUi->sceneXSpinBox->blockSignals(true);
   mUi->sceneYSpinBox->blockSignals(true);
   mUi->sceneZSpinBox->blockSignals(true);

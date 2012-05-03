@@ -16,22 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file GUI3d.cpp
-    \brief This file is a testing binary for a 3d GUI
-  */
+#include "visualization/Scene2d.h"
 
-#include <QtGui/QApplication>
+/******************************************************************************/
+/* Constructors and Destructor                                                */
+/******************************************************************************/
 
-#include "visualization/MainWindow.h"
-#include "visualization/View3d.h"
-#include "visualization/View3dControl.h"
-
-int main(int argc, char** argv) {
-  QApplication app(argc, argv);
-  MainWindow mainWindow;
-  mainWindow.setWindowTitle("A simple 3d GUI");
-  mainWindow.addView(QString("3d"), View3d::getInstance());
-  mainWindow.addControl(QString("View3d"), View3dControl::getInstance());
-  mainWindow.show();
-  return app.exec();
+Scene2d::Scene2d(QObject* parent) :
+    QGraphicsScene(parent) {
 }
+
+Scene2d::~Scene2d() {
+}
+
+/******************************************************************************/
+/* Accessors                                                                  */
+/******************************************************************************/
+
+/******************************************************************************/
+/*  Methods                                                                   */
+/******************************************************************************/

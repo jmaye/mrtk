@@ -112,7 +112,7 @@ protected:
   void renderGround(double radius, double elevation, double angleStep, double
     rangeStep);
   /// Render the axes
-  void renderAxes(double f64Length);
+  void renderAxes(double length);
   /// Dump the frame
   void dumpFrame(const QString& format, int frame, size_t width, size_t height);
   /** @}

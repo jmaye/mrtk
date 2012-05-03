@@ -16,24 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Scene3d.h
-    \brief This file contains a 3d scene implementation
+/** \file View2d.h
+    \brief This file contains a 2d view implementation
   */
 
-#ifndef SCENE3D_H
-#define SCENE3D_H
+#ifndef VIEW2D_H
+#define VIEW2D_H
 
 #include <vector>
 
-#include <QtCore/QObject>
+#include <QtGui/QGraphicsView>
 
-class View3d;
+#include "base/Singleton.h"
+#include "visualization/Scene2d.h"
 
-/** The Scene3d class represents a 3d scene.
-    \brief 3d scene
+/** The View2d class represents a 2d view.
+    \brief 2d view
   */
-class Scene3d :
-  public QObject {
+class View2d :
+  public QGraphicsView,
+  public Singleton<View2d> {
 
 Q_OBJECT
 
@@ -41,9 +43,9 @@ Q_OBJECT
     @{
     */
   /// Copy constructor
-  Scene3d(const Scene3d& other);
+  View2d(const View2d& other);
   /// Assignment operator
-  Scene3d& operator = (const Scene3d& other);
+  View2d& operator = (const View2d& other);
   /** @}
     */
 
@@ -51,27 +53,31 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Default constructor
-  Scene3d();
+  /// Constructs the view
+  View2d(QWidget* parent = 0);
   /// Destructor
-  ~Scene3d();
+  ~View2d();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the scene translation
-  void setTranslation(double x, double y, double z);
-  /// Returns the scene translation
+  /// Returns the scene
+  Scene2d& getScene();
+  /// Returns the scene
+  const Scene2d& getScene() const;
+  /// Sets the view translation
+  void setTranslation(double x, double y);
+  /// Returns the view translation
   const std::vector<double>& getTranslation() const;
-  /// Sets the scene rotation
-  void setRotation(double yaw, double pitch, double roll);
-  /// Returns the scene rotation
-  const std::vector<double>& getRotation() const;
-  /// Sets the scene scale
+  /// Sets the view rotation
+  void setRotation(double yaw);
+  /// Returns the view rotation
+  double getRotation() const;
+  /// Sets the view scale
   void setScale(double scale);
-  /// Returns the scene scale
+  /// Returns the view scale
   double getScale() const;
   /** @}
     */
@@ -79,10 +85,6 @@ public:
   /** \name Methods
     @{
     */
-  /// Setup view
-  void setup(View3d& view);
-  /// Render the scene
-  void render(View3d& view);
   /** @}
     */
 
@@ -90,20 +92,49 @@ protected:
   /** \name Protected methods
     @{
     */
-  /// Correct angles
-  double correctAngle(double angle) const;
+  /// Mouse press event
+  virtual void mousePressEvent(QMouseEvent* event);
+  /// Mouse release event
+  virtual void mouseReleaseEvent(QMouseEvent* event);
+  /// Mouse move event
+  virtual void mouseMoveEvent(QMouseEvent* event);
+  /// Mouse wheel event
+  virtual void wheelEvent(QWheelEvent* event);
+  /// Paint event
+  virtual void paintEvent(QPaintEvent* event);
+  /// Resize event
+  virtual void resizeEvent(QResizeEvent* event);
+  /// Sets the current centerpoint
+  void setCenter(const QPointF& centerPoint);
+  /// Returns the current center point
+  const QPointF& getCenter();
+  /// Update the transformation
+  void updateTransform();
   /** @}
     */
 
   /** \name Protected members
     @{
     */
-  /// Scene translation
+  /// Scene
+  Scene2d mScene;
+  /// Holds the current centerpoint of the view, used for panning and zooming
+  QPointF mCurrentCenterPoint;
+  /// From panning the view
+  QPoint mLastPanPoint;
+  /// Translation
   std::vector<double> mTranslation;
-  /// Scene rotation
-  std::vector<double> mRotation;
-  /// Scene scale
+  /// Rotation
+  double mRotation;
+  /// Scale
   double mScale;
+  /** @}
+    */
+
+protected slots:
+  /** \name Qt slots
+    @{
+    */
   /** @}
     */
 
@@ -111,17 +142,19 @@ signals:
   /** \name Qt signals
     @{
     */
+  /// Updated signal
+  void updated();
+  /// Resized signal
+  void resized();
   /// Translation has changed
   void translationChanged(const std::vector<double>& translation);
   /// Rotation has changed
-  void rotationChanged(const std::vector<double>& rotation);
+  void rotationChanged(double rotation);
   /// Scale has changed
   void scaleChanged(double scale);
-  /// Render the scene
-  void render(View3d& view, Scene3d& scene);
   /** @}
     */
 
 };
 
-#endif // SCENE3D_H
+#endif // VIEW2D_H

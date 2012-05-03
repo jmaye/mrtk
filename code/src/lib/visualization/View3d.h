@@ -60,7 +60,7 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs the viewer
+  /// Constructs the view
   View3d(QWidget* parent = 0);
   /// Destructor
   ~View3d();

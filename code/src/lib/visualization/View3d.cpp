@@ -21,8 +21,8 @@
 #include <cmath>
 
 #include <QtCore/QFileInfo>
-#include <QtGui/QWheelEvent>
 #include <QtGui/QMouseEvent>
+#include <QtGui/QWheelEvent>
 
 #include <FTGL/ftgl.h>
 
@@ -76,7 +76,6 @@ Scene3d& View3d::getScene() {
 const Scene3d& View3d::getScene() const {
   return mScene;
 }
-
 
 void View3d::setColor(const QColor& color) {
   glColor4f(color.redF(), color.greenF(), color.blueF(), color.alphaF());

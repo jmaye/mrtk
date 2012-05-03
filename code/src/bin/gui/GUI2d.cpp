@@ -23,11 +23,15 @@
 #include <QtGui/QApplication>
 
 #include "visualization/MainWindow.h"
+#include "visualization/View2d.h"
+#include "visualization/View2dControl.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   MainWindow mainWindow;
   mainWindow.setWindowTitle("A simple 2d GUI");
+  mainWindow.addView(QString("2d"), View2d::getInstance());
+  mainWindow.addControl(QString("View2d"), View2dControl::getInstance());
   mainWindow.show();
   return app.exec();
 }

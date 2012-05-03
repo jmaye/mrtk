@@ -190,6 +190,9 @@
        <property name="minimum">
         <double>0.000100000000000</double>
        </property>
+       <property name="maximum">
+        <double>1000000.000000000000000</double>
+       </property>
        <property name="singleStep">
         <double>0.010000000000000</double>
        </property>
@@ -296,29 +299,6 @@
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line_5">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
     <widget class="Line" name="line_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -326,7 +306,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="fontLayout">
      <item>
       <widget class="QLabel" name="fontTextLabel">
        <property name="text">
