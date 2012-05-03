@@ -52,7 +52,7 @@ View2dControl::View2dControl() :
   setBackgroundColor(Qt::white);
   setDumpDirectory(QDir::current().path());
   setDumpAll(false);
-  drawAxes(1000);
+  drawAxes(100);
 }
 
 View2dControl::~View2dControl() {

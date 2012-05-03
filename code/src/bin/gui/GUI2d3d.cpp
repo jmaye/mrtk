@@ -23,11 +23,19 @@
 #include <QtGui/QApplication>
 
 #include "visualization/MainWindow.h"
+#include "visualization/View2d.h"
+#include "visualization/View2dControl.h"
+#include "visualization/View3d.h"
+#include "visualization/View3dControl.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
   MainWindow mainWindow;
   mainWindow.setWindowTitle("A simple 2d/3d GUI");
+  mainWindow.addView(QString("3d"), View3d::getInstance());
+  mainWindow.addControl(QString("View3d"), View3dControl::getInstance());
+  mainWindow.addView(QString("2d"), View2d::getInstance());
+  mainWindow.addControl(QString("View2d"), View2dControl::getInstance());
   mainWindow.show();
   return app.exec();
 }

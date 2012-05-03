@@ -22,6 +22,8 @@
 #include <QtGui/QWheelEvent>
 #include <QtGui/QResizeEvent>
 
+#include <iostream>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
