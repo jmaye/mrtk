@@ -16,51 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "visualization/Palette.h"
+#include "visualization/MainWindow.h"
+
+#include "ui_MainWindow.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Palette::Palette() {
+MainWindow::MainWindow() :
+    mUi(new Ui_MainWindow()) {
+  mUi->setupUi(this);
+  while (mUi->toolBox->count())
+    mUi->toolBox->removeItem(0);
+  while (mUi->viewTab->count())
+    mUi->viewTab->removeTab(0);
 }
 
-Palette::~Palette() {
+MainWindow::~MainWindow() {
+  delete mUi;
 }
 
 /******************************************************************************/
-/* Accessors                                                                  */
+/* Methods                                                                    */
 /******************************************************************************/
 
-Palette::Iterator Palette::getColorBegin() const {
-  return mColors.begin();
+void MainWindow::addControl(const QString& title, Control& control) {
+  mUi->toolBox->addItem(&control, title);
+  if (!control.getMenu().isEmpty())
+    mUi->menuBar->addMenu(&control.getMenu())->setText(title);
 }
 
-Palette::Iterator Palette::getColorEnd() const {
-  return mColors.end();
-}
-
-const QString& Palette::getRole(const Iterator& it) const {
-  return it->first;
-}
-
-void Palette::setColor(const QString& role, const QColor& color) {
-  if (mColors[role] != color) {
-    mColors[role] = color;
-    emit colorChanged(role, color);
-  }
-}
-
-const QColor& Palette::getColor(const Iterator& it) const {
-  return it->second;
-}
-
-const QColor& Palette::getColor(const QString& role) const
-    throw (OutOfBoundException<std::string>) {
-  auto it = mColors.find(role);
-  if (it != mColors.end())
-    return it->second;
-  else
-    throw OutOfBoundException<std::string>(role.toStdString(),
-      "Palette::getColor(): color role undefined", __FILE__, __LINE__);
+void MainWindow::addView(const QString& title, QWidget& view) {
+  if (QString(view.metaObject()->className()) == QString("View3d") ||
+      QString(view.metaObject()->className()) == QString("View2d"))
+    mUi->viewTab->addTab(&view, title);
 }

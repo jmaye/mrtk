@@ -112,11 +112,6 @@ int main(int argc, char** argv) {
   double after = Timestamp::now();
   std::cout << "Estimation11: " << std::endl << estMixtNorm1 << std::endl;
   std::cout << "Time: " << after - before << " [s]" << std::endl;
-  before = Timestamp::now();
-  estMixtNorm1.addPointsR(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
-  after = Timestamp::now();
-  std::cout << "Estimation12: " << std::endl << estMixtNorm1 << std::endl;
-  std::cout << "Time: " << after - before << " [s]" << std::endl;
 //  before = Timestamp::now();
 //  estMixtNorm1.addPoints3(samplesMixtNorm1.begin(), samplesMixtNorm1.end());
 //  after = Timestamp::now();

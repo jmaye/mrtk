@@ -16,51 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "visualization/Palette.h"
+#include "visualization/Control.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Palette::Palette() {
+Control::Control() :
+    mMenu(this) {
 }
 
-Palette::~Palette() {
+Control::~Control() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-Palette::Iterator Palette::getColorBegin() const {
-  return mColors.begin();
+QMenu& Control::getMenu() {
+  return mMenu;
 }
 
-Palette::Iterator Palette::getColorEnd() const {
-  return mColors.end();
-}
-
-const QString& Palette::getRole(const Iterator& it) const {
-  return it->first;
-}
-
-void Palette::setColor(const QString& role, const QColor& color) {
-  if (mColors[role] != color) {
-    mColors[role] = color;
-    emit colorChanged(role, color);
-  }
-}
-
-const QColor& Palette::getColor(const Iterator& it) const {
-  return it->second;
-}
-
-const QColor& Palette::getColor(const QString& role) const
-    throw (OutOfBoundException<std::string>) {
-  auto it = mColors.find(role);
-  if (it != mColors.end())
-    return it->second;
-  else
-    throw OutOfBoundException<std::string>(role.toStdString(),
-      "Palette::getColor(): color role undefined", __FILE__, __LINE__);
+const QMenu& Control::getMenu() const {
+  return mMenu;
 }
