@@ -73,7 +73,7 @@ void PointCloud<X, M>::read(std::ifstream& stream) throw (IOException) {
 }
 
 template <typename X, size_t M>
-void PointCloud<X, M>::write(std::ofstream& stream) const {
+void PointCloud<X, M>::write(std::ofstream& stream) const throw (IOException) {
   if (!stream.is_open())
     throw IOException("PointCloud<X, M>::write(): could not open file");
   for (auto it = getPointBegin(); it != getPointEnd(); ++it)

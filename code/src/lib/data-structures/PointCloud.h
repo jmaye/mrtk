@@ -120,7 +120,7 @@ protected:
   /// Reads from a file
   virtual void read(std::ifstream& stream) throw (IOException);
   /// Writes to a file
-  virtual void write(std::ofstream& stream) const;
+  virtual void write(std::ofstream& stream) const throw (IOException);
   /** @}
     */
 
