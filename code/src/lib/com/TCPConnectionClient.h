@@ -24,8 +24,6 @@
 #ifndef TCPCONNECTIONCLIENT_H
 #define TCPCONNECTIONCLIENT_H
 
-#include <stdint.h>
-
 #include <string>
 
 #include "exceptions/IOException.h"
@@ -52,7 +50,7 @@ public:
     @{
     */
   /// Constructs UDP connection from parameters
-  TCPConnectionClient(const std::string& serverIP, uint16_t port,
+  TCPConnectionClient(const std::string& serverIP, short port,
     double timeout = 2.5);
   /// Destructor
   virtual ~TCPConnectionClient();
@@ -67,7 +65,7 @@ public:
   /// Returns the timeout of the connection
   double getTimeout() const;
   /// Returns the port
-  uint16_t getPort() const;
+  short getPort() const;
   /// Returns the server IP
   const std::string& getServerIP() const;
  /** @}
@@ -110,7 +108,7 @@ protected:
   /// Server IP
   std::string mServerIP;
   /// UDP port
-  uint16_t mPort;
+  short mPort;
   /// Timeout of the port
   double mTimeout;
   /// Socket for the port

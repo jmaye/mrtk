@@ -255,14 +255,14 @@ bool SerialConnection::isOpen() const {
   return (mHandle != 0);
 }
 
-void SerialConnection::readBuffer(char* au8Buffer, ssize_t nbBytes)
+void SerialConnection::readBuffer(char* buffer, ssize_t numBytes)
     throw (IOException) {
   if (isOpen() == false)
     open();
   double intPart;
   double fractPart = modf(mTimeout , &intPart);
   ssize_t bytesRead = 0;
-  while (bytesRead < nbBytes) {
+  while (bytesRead < numBytes) {
     struct timeval waitd;
     waitd.tv_sec = intPart;
     waitd.tv_usec = fractPart * 1e6;
@@ -275,7 +275,7 @@ void SerialConnection::readBuffer(char* au8Buffer, ssize_t nbBytes)
       throw IOException("SerialConnection::readBuffer(): read select failed");
     if (FD_ISSET(mHandle, &readFlags)) {
       FD_CLR(mHandle, &readFlags);
-      res = ::read(mHandle, &au8Buffer[bytesRead], nbBytes - bytesRead);
+      res = ::read(mHandle, &buffer[bytesRead], numBytes - bytesRead);
       if (res < 0)
         throw IOException("SerialConnection::readBuffer(): read failed");
       bytesRead += res;
@@ -285,14 +285,14 @@ void SerialConnection::readBuffer(char* au8Buffer, ssize_t nbBytes)
   }
 }
 
-void SerialConnection::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
-  throw (IOException) {
+void SerialConnection::writeBuffer(const char* buffer, ssize_t numBytes)
+    throw (IOException) {
   if (isOpen() == false)
     open();
   double intPart;
   double fractPart = modf(mTimeout , &intPart);
   ssize_t bytesWritten = 0;
-  while (bytesWritten < nbBytes) {
+  while (bytesWritten < numBytes) {
     struct timeval waitd;
     waitd.tv_sec = intPart;
     waitd.tv_usec = fractPart * 1e6;
@@ -305,7 +305,7 @@ void SerialConnection::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
       throw IOException("SerialConnection::writeBuffer(): write select failed");
     if (FD_ISSET(mHandle, &writeFlags)) {
       FD_CLR(mHandle, &writeFlags);
-      res = ::write(mHandle, &au8Buffer[bytesWritten], nbBytes - bytesWritten);
+      res = ::write(mHandle, &buffer[bytesWritten], numBytes - bytesWritten);
       if (res < 0)
         throw IOException("SerialConnection::writeBuffer(): write failed");
       bytesWritten += res;

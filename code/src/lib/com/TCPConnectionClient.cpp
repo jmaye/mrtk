@@ -26,7 +26,7 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-TCPConnectionClient::TCPConnectionClient(const std::string& serverIP, uint16_t
+TCPConnectionClient::TCPConnectionClient(const std::string& serverIP, short
     port, double timeout) :
     mServerIP(serverIP),
     mPort(port),
@@ -61,7 +61,7 @@ void TCPConnectionClient::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-uint16_t TCPConnectionClient::getPort() const {
+short TCPConnectionClient::getPort() const {
   return mPort;
 }
 
@@ -108,12 +108,12 @@ bool TCPConnectionClient::isOpen() const {
   return (mSocket != 0);
 }
 
-void TCPConnectionClient::readBuffer(char* au8Buffer, ssize_t nbBytes)
-  throw (IOException) {
+void TCPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
+    throw (IOException) {
   if (isOpen() == false)
     open();
   ssize_t bytesRead = 0;
-  while (bytesRead != nbBytes) {
+  while (bytesRead != numBytes) {
     double intPart;
     double fracPart = modf(mTimeout, &intPart);
     struct timeval waitd;
@@ -129,7 +129,7 @@ void TCPConnectionClient::readBuffer(char* au8Buffer, ssize_t nbBytes)
         "failed");
     if (FD_ISSET(mSocket, &readFlags)) {
       FD_CLR(mSocket, &readFlags);
-      res = ::read(mSocket, &au8Buffer[bytesRead], nbBytes - bytesRead);
+      res = ::read(mSocket, &buffer[bytesRead], numBytes - bytesRead);
       if (res < 0)
         throw IOException("TCPConnectionClient::readBuffer(): read failed");
       bytesRead += res;
@@ -139,12 +139,12 @@ void TCPConnectionClient::readBuffer(char* au8Buffer, ssize_t nbBytes)
   }
 }
 
-void TCPConnectionClient::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
-  throw (IOException) {
+void TCPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes)
+    throw (IOException) {
   if (isOpen() == false)
     open();
   ssize_t bytesWritten = 0;
-  while (bytesWritten != nbBytes) {
+  while (bytesWritten != numBytes) {
     double intPart;
     double fracPart = modf(mTimeout, &intPart);
     struct timeval waitd;
@@ -160,7 +160,7 @@ void TCPConnectionClient::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
         "failed");
     if (FD_ISSET(mSocket, &writeFlags)) {
       FD_CLR(mSocket, &writeFlags);
-      res = ::write(mSocket, &au8Buffer[bytesWritten], nbBytes - bytesWritten);
+      res = ::write(mSocket, &buffer[bytesWritten], numBytes - bytesWritten);
       if (res < 0)
         throw IOException("TCPConnectionClient::writeBuffer(): write failed");
       bytesWritten += res;

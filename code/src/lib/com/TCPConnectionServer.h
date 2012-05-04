@@ -24,8 +24,6 @@
 #ifndef TCPCONNECTIONSERVER_H
 #define TCPCONNECTIONSERVER_H
 
-#include <stdint.h>
-
 #include <string>
 
 #include "exceptions/IOException.h"
@@ -52,7 +50,7 @@ public:
     @{
     */
   /// Constructs UDP connection from parameters
-  TCPConnectionServer(uint16_t port, double timeout = 2.5);
+  TCPConnectionServer(short port, double timeout = 2.5);
   /// Destructor
   virtual ~TCPConnectionServer();
  /** @}
@@ -66,7 +64,7 @@ public:
   /// Returns the timeout of the connection
   double getTimeout() const;
   /// Returns the binded port
-  uint16_t getPort() const;
+  short getPort() const;
  /** @}
     */
 
@@ -105,7 +103,7 @@ protected:
     @{
     */
   /// UDP port
-  uint16_t mPort;
+  short mPort;
   /// Timeout of the port
   double mTimeout;
   /// Socket for the port

@@ -25,7 +25,6 @@
 #define UDPCONNECTIONCLIENT_H
 
 #include <arpa/inet.h>
-#include <stdint.h>
 
 #include <string>
 
@@ -53,7 +52,7 @@ public:
     @{
     */
   /// Constructs UDP connection from parameters
-  UDPConnectionClient(const std::string& serverIP, uint16_t port,
+  UDPConnectionClient(const std::string& serverIP, short port,
     double timeout = 2.5);
   /// Destructor
   virtual ~UDPConnectionClient();
@@ -68,7 +67,7 @@ public:
   /// Returns the timeout of the connection
   double getTimeout() const;
   /// Returns the port
-  uint16_t getPort() const;
+  short getPort() const;
   /// Returns the server IP
   const std::string& getServerIP() const;
  /** @}
@@ -113,7 +112,7 @@ protected:
   /// Server network structure
   struct sockaddr_in mServer;
   /// UDP port
-  uint16_t mPort;
+  short mPort;
   /// Timeout of the port
   double mTimeout;
   /// Socket for the port

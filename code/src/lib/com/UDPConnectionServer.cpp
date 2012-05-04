@@ -26,7 +26,7 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-UDPConnectionServer::UDPConnectionServer(uint16_t port, double timeout) :
+UDPConnectionServer::UDPConnectionServer(short port, double timeout) :
     mPort(port),
     mTimeout(timeout),
     mSocket(0) {
@@ -58,7 +58,7 @@ void UDPConnectionServer::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-uint16_t UDPConnectionServer::getPort() const {
+short UDPConnectionServer::getPort() const {
   return mPort;
 }
 
@@ -101,8 +101,8 @@ bool UDPConnectionServer::isOpen() const {
   return (mSocket != 0);
 }
 
-ssize_t UDPConnectionServer::readBuffer(char* au8Buffer, ssize_t nbBytes)
-  throw (IOException) {
+ssize_t UDPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
+    throw (IOException) {
   if (isOpen() == false)
     open();
   double intPart;
@@ -120,7 +120,7 @@ ssize_t UDPConnectionServer::readBuffer(char* au8Buffer, ssize_t nbBytes)
     FD_CLR(mSocket, &readFlags);
     struct sockaddr_in client;
     socklen_t size;
-    res = recvfrom(mSocket, au8Buffer, nbBytes, 0, (struct sockaddr*)&client,
+    res = recvfrom(mSocket, buffer, numBytes, 0, (struct sockaddr*)&client,
       &size);
     if (res < 0)
         throw IOException("UDPConnectionServer::readBuffer(): read failed");
@@ -131,12 +131,12 @@ ssize_t UDPConnectionServer::readBuffer(char* au8Buffer, ssize_t nbBytes)
   return 0;
 }
 
-void UDPConnectionServer::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
-  throw (IOException) {
+void UDPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes)
+    throw (IOException) {
   if (isOpen() == false)
     open();
   ssize_t bytesWritten = 0;
-  while (bytesWritten != nbBytes) {
+  while (bytesWritten != numBytes) {
     double intPart;
     double fracPart = modf(mTimeout, &intPart);
     struct timeval waitd;
@@ -154,7 +154,7 @@ void UDPConnectionServer::writeBuffer(const char* au8Buffer, ssize_t nbBytes)
       FD_CLR(mSocket, &writeFlags);
       //TODO: MODIFY THIS PART
       struct sockaddr_in client;
-      res = sendto(mSocket, &au8Buffer[bytesWritten], nbBytes - bytesWritten, 0,
+      res = sendto(mSocket, &buffer[bytesWritten], numBytes - bytesWritten, 0,
         (const struct sockaddr*)&client, sizeof(struct sockaddr_in));
       if (res < 0)
         throw IOException("UDPConnectionServer::writeBuffer(): write failed");
