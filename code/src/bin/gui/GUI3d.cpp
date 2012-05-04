@@ -25,6 +25,7 @@
 #include "visualization/MainWindow.h"
 #include "visualization/View3d.h"
 #include "visualization/View3dControl.h"
+#include "visualization/PointCloudControl.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
@@ -32,6 +33,8 @@ int main(int argc, char** argv) {
   mainWindow.setWindowTitle("A simple 3d GUI");
   mainWindow.addView(QString("3d"), View3d::getInstance());
   mainWindow.addControl(QString("View3d"), View3dControl::getInstance());
+  mainWindow.addControl(QString("Pointcloud"),
+    PointCloudControl::getInstance());
   mainWindow.show();
   return app.exec();
 }

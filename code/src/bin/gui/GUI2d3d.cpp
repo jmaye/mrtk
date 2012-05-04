@@ -27,6 +27,7 @@
 #include "visualization/View2dControl.h"
 #include "visualization/View3d.h"
 #include "visualization/View3dControl.h"
+#include "visualization/PointCloudControl.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
@@ -36,6 +37,8 @@ int main(int argc, char** argv) {
   mainWindow.addControl(QString("View3d"), View3dControl::getInstance());
   mainWindow.addView(QString("2d"), View2d::getInstance());
   mainWindow.addControl(QString("View2d"), View2dControl::getInstance());
+  mainWindow.addControl(QString("Pointcloud"),
+    PointCloudControl::getInstance());
   mainWindow.show();
   return app.exec();
 }
