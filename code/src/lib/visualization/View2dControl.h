@@ -60,7 +60,7 @@ public:
     @{
     */
   /// Constructs control from parameters
-  View2dControl();
+  View2dControl( bool showAxes = true);
   /// Destructor
   ~View2dControl();
   /** @}

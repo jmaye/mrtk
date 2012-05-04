@@ -78,7 +78,6 @@ void PointCloudControl::setLogFilename(const QString& filename) {
     pointCloudFile >> mPointCloud;
     mUi->showPointsCheckBox->setEnabled(true);
     View3d::getInstance().update();
-    emit pointCloudRead(mPointCloud);
   }
 }
 
@@ -98,8 +97,8 @@ void PointCloudControl::renderPoints(double size, bool smooth) {
     glDisable(GL_POINT_SMOOTH);
   glBegin(GL_POINTS);
   View3d::getInstance().setColor(mPalette, "Point");
-  for (PointCloud<double, 3>::ConstPointIterator it =
-    mPointCloud.getPointBegin(); it != mPointCloud.getPointEnd(); ++it)
+  for (auto it = mPointCloud.getPointBegin(); it != mPointCloud.getPointEnd();
+      ++it)
     glVertex3f((*it)(0), (*it)(1), (*it)(2));
   glEnd();
   glPointSize(1.0);

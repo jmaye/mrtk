@@ -25,6 +25,7 @@
 #include "visualization/MainWindow.h"
 #include "visualization/View2d.h"
 #include "visualization/View2dControl.h"
+#include "visualization/ImageControl.h"
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
@@ -32,6 +33,7 @@ int main(int argc, char** argv) {
   mainWindow.setWindowTitle("A simple 2d GUI");
   mainWindow.addView(QString("2d"), View2d::getInstance());
   mainWindow.addControl(QString("View2d"), View2dControl::getInstance());
+  mainWindow.addControl(QString("Image"), ImageControl::getInstance());
   mainWindow.show();
   return app.exec();
 }

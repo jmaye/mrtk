@@ -385,7 +385,7 @@
         <string/>
        </property>
        <property name="text">
-        <string>dump%06d.png</string>
+        <string>dump3d%06d.png</string>
        </property>
       </widget>
      </item>

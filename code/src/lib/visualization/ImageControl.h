@@ -16,30 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file PointCloudControl.h
-    \brief This file defines a Qt control for point clouds
+/** \file ImageControl.h
+    \brief This file defines a Qt control for images.
   */
 
-#ifndef POINTCLOUDCONTROL_H
-#define POINTCLOUDCONTROL_H
+#ifndef IMAGECONTROL_H
+#define IMAGECONTROL_H
+
+#include <string>
+#include <map>
 
 #include <QtCore/QString>
-#include <QtGui/QColor>
+#include <QtGui/QGraphicsItem>
 
 #include "visualization/Control.h"
 #include "base/Singleton.h"
-#include "visualization/View3d.h"
-#include "visualization/Scene3d.h"
-#include "data-structures/PointCloud.h"
 
-class Ui_PointCloudControl;
+class Ui_ImageControl;
 
-/** The PointCloudControl class represents a Qt control for point clouds.
-    \brief Qt control for point clouds
+/** The ImageControl class represents a Qt control for images.
+    \brief Qt control for images
   */
-class PointCloudControl :
+class ImageControl :
   public Control,
-  public Singleton<PointCloudControl> {
+  public Singleton<ImageControl> {
 
 Q_OBJECT
 
@@ -47,9 +47,9 @@ Q_OBJECT
     @{
     */
   /// Copy constructor
-  PointCloudControl(const PointCloudControl& other);
+  ImageControl(const ImageControl& other);
   /// Assignment operator
-  PointCloudControl& operator = (const PointCloudControl& other);
+  ImageControl& operator = (const ImageControl& other);
   /** @}
     */
 
@@ -58,46 +58,30 @@ public:
     @{
     */
   /// Constructs the control with parameters
-  PointCloudControl(bool showPoints = true);
+  ImageControl(bool showImage = true);
   /// Destructor
-  ~PointCloudControl();
+  ~ImageControl();
   /** @}
     */
 
   /** \name Accessors
     @{
     */
-  /// Sets the points color
-  void setPointColor(const QColor& color);
-  /// Sets the points size
-  void setPointSize(double size);
-  /// Shows the points
-  void setShowPoints(bool showPoints);
-  /// Smoothes the points
-  void setSmoothPoints(bool smoothPoints);
-  /// Sets the log file to read the point cloud from
-  void setLogFilename(const QString& filename);
+  /// Shows the image
+  void setShowImage(bool showImage);
+  /// Sets the file to read the image from
+  void setImageFilename(const QString& filename);
   /** @}
     */
 
 protected:
-  /** \name Protected methods
-    @{
-    */
-  /// Render the points
-  void renderPoints(double size, bool smooth);
-  /** @}
-    */
-
   /** \name Protected members
     @{
     */
   /// Qt user interface
-  Ui_PointCloudControl* mUi;
-  /// Palette
-  Palette mPalette;
-  /// Point cloud
-  PointCloud<double, 3> mPointCloud;
+  Ui_ImageControl* mUi;
+  /// Graphic items associated with this control
+  std::map<std::string, QGraphicsItem*> mGraphicsItems;
   /** @}
     */
 
@@ -105,18 +89,10 @@ protected slots:
   /** \name Qt slots
     @{
     */
-  /// Log file browse clicked
-  void logBrowseClicked();
-  /// Color changed
-  void colorChanged(const QString& role, const QColor& color);
-  /// Point size changed
-  void pointSizeChanged(double pointSize);
-  /// Show points toggled
-  void showPointsToggled(bool checked);
-  /// Smooth points toggled
-  void smoothPointsToggled(bool checked);
-  /// Render the scene
-  void render(View3d& view, Scene3d& scene);
+  /// Show image toggled
+  void showImageToggled(bool checked);
+  /// Image file browse clicked
+  void imgBrowseClicked();
   /** @}
     */
 
@@ -129,4 +105,4 @@ signals:
 
 };
 
-#endif // POINTCLOUDCONTROL_H
+#endif // IMAGECONTROL_H

@@ -31,7 +31,7 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-View2dControl::View2dControl() :
+View2dControl::View2dControl(bool showAxes) :
     mUi(new Ui_View2dControl()) {
   mUi->setupUi(this);
   mUi->colorChooser->setPalette(&mPalette);
@@ -53,6 +53,7 @@ View2dControl::View2dControl() :
   setDumpDirectory(QDir::current().path());
   setDumpAll(false);
   drawAxes(100);
+  setShowAxes(showAxes);
 }
 
 View2dControl::~View2dControl() {
@@ -65,7 +66,8 @@ View2dControl::~View2dControl() {
 
 void View2dControl::setShowAxes(bool showAxes) {
   mUi->showAxesCheckBox->setChecked(showAxes);
-  mGraphicsItems["axes"]->setVisible(showAxes);
+  if (mGraphicsItems.find("axes") != mGraphicsItems.end())
+    mGraphicsItems["axes"]->setVisible(showAxes);
 }
 
 void View2dControl::setBackgroundColor(const QColor& color) {
@@ -138,6 +140,7 @@ void View2dControl::drawAxes(double length) {
   axesYLabel->setBrush(Qt::green);
   axesYLabel->setPos(0, length);
   mGraphicsItems["axes"] = axes;
+  axes->setVisible(mUi->showAxesCheckBox->isChecked());
 }
 
 void View2dControl::showAxesToggled(bool checked) {
