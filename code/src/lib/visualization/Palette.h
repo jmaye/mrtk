@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 /** \file Palette.h
-    \brief This file contains a palette implementation for OpenGL
+    \brief This file contains a color palette implementation
   */
 
 #ifndef PALETTE_H
@@ -31,8 +31,8 @@
 
 #include "exceptions/OutOfBoundException.h"
 
-/** The Palette class represents a palette in OpenGL.
-    \brief Palette for OpenGL
+/** The Palette class represents a color palette.
+    \brief Color palette
   */
 class Palette :
   public QObject {
