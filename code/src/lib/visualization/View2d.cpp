@@ -35,6 +35,10 @@ View2d::View2d(QWidget* parent) :
     mScale(1.0) {
   setScene(&mScene);
   setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+  setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+  setResizeAnchor(QGraphicsView::AnchorUnderMouse);
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 View2d::~View2d() {
@@ -94,21 +98,21 @@ double View2d::getScale() const {
 /******************************************************************************/
 
 void View2d::mousePressEvent(QMouseEvent* event) {
-//  mLastPanPoint = event->pos();
-//  setCursor(Qt::ClosedHandCursor);
+  mLastPanPoint = event->pos();
+  setCursor(Qt::ClosedHandCursor);
 }
 
 void View2d::mouseReleaseEvent(QMouseEvent* event) {
-//  setCursor(Qt::OpenHandCursor);
-//  mLastPanPoint = QPoint();
+  setCursor(Qt::OpenHandCursor);
+  mLastPanPoint = QPoint();
 }
 
 void View2d::mouseMoveEvent(QMouseEvent* event) {
-//  if (!mLastPanPoint.isNull()) {
-//    QPointF delta = mapToScene(mLastPanPoint) - mapToScene(event->pos());
-//    mLastPanPoint = event->pos();
-//    setCenter(getCenter() + delta);
-//  }
+  if (!mLastPanPoint.isNull()) {
+    QPointF delta = mapToScene(mLastPanPoint) - mapToScene(event->pos());
+    mLastPanPoint = event->pos();
+    setCenter(getCenter() + delta);
+  }
 }
 
 void View2d::wheelEvent(QWheelEvent* event) {
@@ -117,7 +121,7 @@ void View2d::wheelEvent(QWheelEvent* event) {
 }
 
 void View2d::resizeEvent(QResizeEvent* event) {
-  //centerOn(QPointF(0, 0));
+  QGraphicsView::resizeEvent(event);
   emit resized();
 }
 
