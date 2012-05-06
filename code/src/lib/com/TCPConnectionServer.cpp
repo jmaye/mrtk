@@ -74,27 +74,30 @@ double TCPConnectionServer::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void TCPConnectionServer::open() throw (IOException) {
+void TCPConnectionServer::open() throw (SystemException) {
   mSocket = socket(AF_INET, SOCK_DGRAM, 0);
   if (mSocket == -1)
-    throw IOException("TCPConnectionServer::open(): socket creation failed");
-
+    throw SystemException(errno,
+      "TCPConnectionServer::open()::socket()");
   struct sockaddr_in server;
   server.sin_family = AF_INET;
   server.sin_addr.s_addr = INADDR_ANY;
   server.sin_port = htons(mPort);
   if (bind(mSocket, (struct sockaddr*)&server, sizeof(struct sockaddr_in)) ==
     -1)
-    throw IOException("TCPConnectionServer::open(): binding failed");
+    throw SystemException(errno,
+      "TCPConnectionServer::open()::bind()");
   if (listen(mSocket, 5) == -1)
-    throw IOException("TCPConnectionServer::open(): listen failed");
+    throw SystemException(errno,
+      "TCPConnectionServer::open()::listen()");
 }
 
-void TCPConnectionServer::close() throw (IOException) {
+void TCPConnectionServer::close() throw (SystemException) {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
-      throw IOException("TCPConnectionServer::close(): socket closing failed");
+      throw SystemException(errno,
+        "TCPConnectionServer::close()::close()");
   }
   mSocket = 0;
 }
@@ -104,7 +107,7 @@ bool TCPConnectionServer::isOpen() const {
 }
 
 void TCPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
-    throw (IOException) {
+    throw (SystemException, IOException) {
 //newsockfd = accept(sockfd,
 //                 (struct sockaddr *) &cli_addr,
 //                 &clilen);
@@ -134,7 +137,7 @@ void TCPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
 }
 
 void TCPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (IOException) {
+    throw (SystemException, IOException) {
 //  if (isOpen() == false)
 //    open();
 //  double intPart;

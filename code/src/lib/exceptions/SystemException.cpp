@@ -16,54 +16,52 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "exceptions/SystemException.h"
+
+#include <cstring>
+
 #include <sstream>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-template <typename X>
-OutOfBoundException<X>::OutOfBoundException(const X& argument, const
+SystemException::SystemException(int errNo, const
     std::string& msg, const std::string& filename, size_t line) :
     mMsg(msg),
-    mArg(argument),
+    mErrno(errno),
     mFilename(filename),
     mLine(line) {
 }
 
-template <typename X>
-OutOfBoundException<X>::OutOfBoundException(const OutOfBoundException& other)
-    throw() :
+SystemException::SystemException(const SystemException& other) throw() :
     mMsg(other.mMsg),
-    mArg(other.mArg),
+    mErrno(other.mErrno),
     mFilename(other.mFilename),
     mLine(other.mLine) {
 }
 
-template <typename X>
-OutOfBoundException<X>& OutOfBoundException<X>::operator =
-    (const OutOfBoundException& other) throw() {
+SystemException& SystemException::operator =
+    (const SystemException& other) throw() {
   if (this != &other) {
     mMsg = other.mMsg;
-    mArg = other.mArg;
+    mErrno = other.mErrno;
     mFilename = other.mFilename;
     mLine = other.mLine;
   }
   return *this;
 }
 
-template <typename X>
-OutOfBoundException<X>::~OutOfBoundException() throw() {
+SystemException::~SystemException() throw() {
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
-template <typename X>
-const char* OutOfBoundException<X>::what() const throw() {
+const char* SystemException::what() const throw() {
   std::stringstream stream;
-  stream << mMsg << " [argument = " << mArg << "]";
+  stream << mMsg << ": " << strerror(mErrno);
   if (mFilename != " ")
     stream << " [file = " << mFilename << "]" << "[line = " << mLine << "]";
   return stream.str().c_str();

@@ -16,22 +16,61 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "base/Thread.h"
+/** \file SystemException.h
+    \brief This file defines the SystemException class, which represents
+           low-level system exceptions.
+  */
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+#ifndef SYSTEMEXCEPTION_H
+#define SYSTEMEXCEPTION_H
 
-Thread::Thread() {
-}
+#include <stdexcept>
+#include <string>
 
-Thread::~Thread() {
-}
+/** The class SystemException represents system exceptions.
+    \brief System exceptions
+  */
+class SystemException :
+  public std::exception {
+public:
+  /** \name Constructors/Destructor
+    @{
+    */
+  /// Constructs exception
+  SystemException(int errNo, const std::string& msg = "", const
+    std::string& filename = " ", size_t line = 0);
+  /// Copy constructor
+  SystemException(const SystemException& other) throw ();
+  /// Assignment operator
+  SystemException& operator = (const SystemException& other) throw();
+  /// Destructor
+  virtual ~SystemException() throw ();
+  /** @}
+    */
 
-/******************************************************************************/
-/* Accessors                                                                  */
-/******************************************************************************/
+  /** \name Accessors
+    @{
+    */
+  /// Access the exception string
+  virtual const char* what() const throw();
+  /** @}
+    */
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+protected:
+  /** \name Protected members
+    @{
+    */
+  /// Message in the exception
+  std::string mMsg;
+  /// Errno related to the system error
+  int mErrno;
+  /// Filename where the exception occurs
+  std::string mFilename;
+  /// Line number where the exception occurs
+  size_t mLine;
+  /** @}
+    */
+
+};
+
+#endif // SYSTEMEXCEPTION_H

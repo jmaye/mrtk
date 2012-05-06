@@ -81,25 +81,26 @@ double TCPConnectionClient::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void TCPConnectionClient::open() throw (IOException) {
+void TCPConnectionClient::open() throw (SystemException) {
   mSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (mSocket < 0)
-    throw IOException("TCPConnectionClient::open(): socket creation failed");
-
+    throw SystemException(errno,
+      "TCPConnectionClient::open()::socket()");
   struct sockaddr_in server;
   memset(&server, 0, sizeof(struct sockaddr_in));
   server.sin_family = AF_INET;
   server.sin_addr.s_addr = inet_addr(mServerIP.c_str());
   server.sin_port = htons(mPort);
   if (connect(mSocket, (const struct sockaddr*)&server, sizeof(server)) == -1)
-    throw IOException("TCPConnectionClient::open(): socket connection failed");
+    throw SystemException(errno,
+      "TCPConnectionClient::open()::connect()");
 }
 
-void TCPConnectionClient::close() throw (IOException) {
+void TCPConnectionClient::close() throw (SystemException) {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
-      throw IOException("TCPConnectionClient::close(): socket closing failed");
+      throw SystemException(errno, "TCPConnectionClient::close()::close()");
   }
   mSocket = 0;
 }
@@ -109,7 +110,7 @@ bool TCPConnectionClient::isOpen() const {
 }
 
 void TCPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
-    throw (IOException) {
+    throw (SystemException, IOException) {
   if (isOpen() == false)
     open();
   ssize_t bytesRead = 0;
@@ -125,22 +126,23 @@ void TCPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
     ssize_t res = select(mSocket + 1, &readFlags, (fd_set*)0, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("TCPConnectionClient::readBuffer(): read select "
-        "failed");
+      throw SystemException(errno,
+        "TCPConnectionClient::readBuffer()::select()");
     if (FD_ISSET(mSocket, &readFlags)) {
       FD_CLR(mSocket, &readFlags);
       res = ::read(mSocket, &buffer[bytesRead], numBytes - bytesRead);
       if (res < 0)
-        throw IOException("TCPConnectionClient::readBuffer(): read failed");
+        throw SystemException(errno,
+          "TCPConnectionClient::readBuffer()::read()");
       bytesRead += res;
     }
     else
-      throw IOException("TCPConnectionClient::readBuffer(): read timeout");
+      throw IOException("TCPConnectionClient::readBuffer(): timeout occured");
   }
 }
 
 void TCPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (IOException) {
+    throw (SystemException, IOException) {
   if (isOpen() == false)
     open();
   ssize_t bytesWritten = 0;
@@ -156,16 +158,17 @@ void TCPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes)
     ssize_t res = select(mSocket + 1, (fd_set*)0, &writeFlags, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("TCPConnectionClient::writeBuffer(): write select "
-        "failed");
+      throw SystemException(errno,
+        "TCPConnectionClient::writeBuffer()::select()");
     if (FD_ISSET(mSocket, &writeFlags)) {
       FD_CLR(mSocket, &writeFlags);
       res = ::write(mSocket, &buffer[bytesWritten], numBytes - bytesWritten);
       if (res < 0)
-        throw IOException("TCPConnectionClient::writeBuffer(): write failed");
+        throw SystemException(errno,
+          "TCPConnectionClient::writeBuffer()::write()");
       bytesWritten += res;
     }
     else
-      throw IOException("TCPConnectionClient::writeBuffer(): write timeout");
+      throw IOException("TCPConnectionClient::writeBuffer(): timeout occured");
   }
 }

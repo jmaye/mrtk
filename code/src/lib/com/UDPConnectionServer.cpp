@@ -74,25 +74,24 @@ double UDPConnectionServer::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void UDPConnectionServer::open() throw (IOException) {
+void UDPConnectionServer::open() throw (SystemException) {
   mSocket = socket(AF_INET, SOCK_DGRAM, 0);
   if (mSocket < 0)
-    throw IOException("UDPConnectionServer::open(): socket creation failed");
-
+    throw SystemException(errno, "UDPConnectionServer::open()::socket()");
   struct sockaddr_in server;
   server.sin_family = AF_INET;
   server.sin_addr.s_addr = INADDR_ANY;
   server.sin_port = htons(mPort);
   if (bind(mSocket, (struct sockaddr*)&server, sizeof(struct sockaddr_in)) ==
     -1)
-    throw IOException("UDPConnectionServer::open(): binding failed");
+    throw SystemException(errno, "UDPConnectionServer::open()::bind()");
 }
 
-void UDPConnectionServer::close() throw (IOException) {
+void UDPConnectionServer::close() throw (SystemException) {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
-      throw IOException("UDPConnectionServer::close(): socket closing failed");
+      throw SystemException(errno, "UDPConnectionServer::close()::close()");
   }
   mSocket = 0;
 }
@@ -102,7 +101,7 @@ bool UDPConnectionServer::isOpen() const {
 }
 
 ssize_t UDPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
-    throw (IOException) {
+    throw (SystemException, IOException) {
   if (isOpen() == false)
     open();
   double intPart;
@@ -115,7 +114,7 @@ ssize_t UDPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
   FD_SET(mSocket, &readFlags);
   ssize_t res = select(mSocket + 1, &readFlags, (fd_set*)0, (fd_set*)0, &waitd);
   if(res < 0)
-    throw IOException("UDPConnectionServer::readBuffer(): read select failed");
+    throw SystemException(errno, "UDPConnectionServer::readBuffer()::select()");
   if (FD_ISSET(mSocket, &readFlags)) {
     FD_CLR(mSocket, &readFlags);
     struct sockaddr_in client;
@@ -123,16 +122,17 @@ ssize_t UDPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
     res = recvfrom(mSocket, buffer, numBytes, 0, (struct sockaddr*)&client,
       &size);
     if (res < 0)
-        throw IOException("UDPConnectionServer::readBuffer(): read failed");
+        throw SystemException(errno,
+          "UDPConnectionServer::readBuffer()::read()");
     return res;
   }
   else
-    throw IOException("UDPConnectionServer::readBuffer(): read timeout");
+    throw IOException("UDPConnectionServer::readBuffer(): timeout occured");
   return 0;
 }
 
 void UDPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (IOException) {
+    throw (SystemException, IOException) {
   if (isOpen() == false)
     open();
   ssize_t bytesWritten = 0;
@@ -148,8 +148,8 @@ void UDPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes)
     ssize_t res = select(mSocket + 1, (fd_set*)0, &writeFlags, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("UDPConnectionServer::writeBuffer(): write select "
-        "failed");
+      throw SystemException(errno,
+        "UDPConnectionServer::writeBuffer()::select()");
     if (FD_ISSET(mSocket, &writeFlags)) {
       FD_CLR(mSocket, &writeFlags);
       //TODO: MODIFY THIS PART
@@ -157,10 +157,11 @@ void UDPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes)
       res = sendto(mSocket, &buffer[bytesWritten], numBytes - bytesWritten, 0,
         (const struct sockaddr*)&client, sizeof(struct sockaddr_in));
       if (res < 0)
-        throw IOException("UDPConnectionServer::writeBuffer(): write failed");
+        throw SystemException(errno,
+          "UDPConnectionServer::writeBuffer()::write()");
       bytesWritten += res;
     }
     else
-      throw IOException("UDPConnectionServer::writeBuffer(): write timeout");
+      throw IOException("UDPConnectionServer::writeBuffer(): timeout occured");
   }
 }

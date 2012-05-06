@@ -23,9 +23,9 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include <pthread.h>
-
 #include "base/Serializable.h"
+#include "exceptions/SystemException.h"
+#include "base/Timestamp.h"
 
 /** The class Timer implements timer facilities.
     \brief Timer facilities
@@ -33,17 +33,11 @@
 class Timer :
   public virtual Serializable {
 public:
-  /** \name Types definitions
-    @{
-    */
-  /** @}
-    */
-
   /** \name Constructors/Destructor
     @{
     */
-  /// Default constructor
-  Timer();
+  /// Construct the time with parameter
+  Timer(bool start = false);
   /// Copy constructor
   Timer(const Timer& other);
   /// Assignment operator
@@ -56,12 +50,33 @@ public:
   /** \name Accessors
     @{
     */
+  /// Access the timer's measured period in seconds
+  double getPeriod() const;
+  /// Access the timer's measured frequency (equals 1.0 / period)
+  double getFrequency() const;
+  /// Access the timer's start time
+  const Timestamp& getStartTime() const;
+  /// Access the timer's time left for the specified period in seconds
+  double getLeft(double period) const;
+
   /** @}
     */
 
   /** \name Methods
     @{
     */
+  /// Start the timer
+  void start(bool reset = true);
+  /// Stop the time after the specified period has elapsed
+  void stop(double period = 0.0);
+  /// Reset the timer
+  void reset();
+  /// Wait for the specified period to elapse, but do not stop the timer
+  void wait(double period) const;
+  /// Sleep the specified period in seconds
+  static void sleep(double period) throw (SystemException);
+  /// Return a numeric value for an infinite period of time
+  static double eternal();
   /** @}
     */
 
@@ -83,6 +98,10 @@ protected:
   /** \name Protected members
     @{
     */
+  /// Starting time of the timer
+  Timestamp mStartTime;
+  /// Period of the timer
+  double mPeriod;
   /** @}
     */
 

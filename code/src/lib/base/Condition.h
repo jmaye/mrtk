@@ -26,17 +26,37 @@
 
 #include <pthread.h>
 
-#include "base/Serializable.h"
+#include "base/Timer.h"
+#include "base/Timestamp.h"
+#include "exceptions/SystemException.h"
+
+class Mutex;
 
 /** The class Condition implements condition facilities.
     \brief Condition facilities
   */
-class Condition :
-  public virtual Serializable {
+class Condition {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Condition(const Condition& other);
+  /// Assignment operator
+  Condition& operator = (const Condition& other);
+  /** @}
+    */
+
 public:
   /** \name Types definitions
     @{
     */
+  /// Signal type
+  enum SignalType {
+    /// Unicast signal
+    unicast,
+    /// Broadcast signal
+    broadcast
+  };
   /** @}
     */
 
@@ -45,45 +65,39 @@ public:
     */
   /// Default constructor
   Condition();
-  /// Copy constructor
-  Condition(const Condition& other);
-  /// Assignment operator
-  Condition& operator = (const Condition& other);
   /// Destructor
-  virtual ~Condition();
-  /** @}
-    */
-
-  /** \name Accessors
-    @{
-    */
+  virtual ~Condition() throw (SystemException);
   /** @}
     */
 
   /** \name Methods
     @{
     */
+  /// Signal the condition
+  void signal(SignalType signalType = unicast);
+  /// Wait for the condition to be signaled
+  bool wait(Mutex& mutex, double seconds = Timer::eternal()) const;
   /** @}
     */
 
 protected:
-  /** \name Stream methods
+  /** \name Protected methods
     @{
     */
-  /// Reads from standard input
-  virtual void read(std::istream& stream);
-  /// Writes to standard output
-  virtual void write(std::ostream& stream) const;
-  /// Reads from a file
-  virtual void read(std::ifstream& stream);
-  /// Writes to a file
-  virtual void write(std::ofstream& stream) const;
+  /// Safely wait for the condition to be signaled
+  bool safeWait(const Mutex& mutex, double seconds) const;
+  /// Safely wait eternally for the condition to be signaled
+  bool safeEternalWait(const Mutex& mutex) const;
+  /// Safely wait until the specified time for the condition to be signaled
+  bool safeWaitUntil(const Mutex& mutex, const Timestamp& time) const;
   /** @}
     */
 
   /** \name Protected members
     @{
     */
+  /// Condition identifier
+  mutable pthread_cond_t mIdentifier;
   /** @}
     */
 

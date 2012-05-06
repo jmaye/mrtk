@@ -9,29 +9,25 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "base/Thread.h"
+/** \file Timer.cpp
+    \brief This file is a testing binary for the Timer class
+  */
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+#include <iostream>
 
-Thread::Thread() {
+#include "base/Timer.h"
+
+int main(int argc, char** argv) {
+  Timer timer;
+  timer.start();
+  timer.stop(0.1);
+  std::cout << "Timer: " << std::endl << timer << std::endl;
+  return 0;
 }
-
-Thread::~Thread() {
-}
-
-/******************************************************************************/
-/* Accessors                                                                  */
-/******************************************************************************/
-
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/

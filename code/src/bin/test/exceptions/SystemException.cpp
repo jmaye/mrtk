@@ -16,22 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "base/Thread.h"
+/** \file SystemException.cpp
+    \brief This file is a testing binary for the SystemException class
+  */
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+#include <errno.h>
+#include <fcntl.h>
 
-Thread::Thread() {
+#include <iostream>
+
+#include "exceptions/SystemException.h"
+
+int main(int argc, char** argv) {
+  open("STUFF", O_RDONLY);
+  SystemException systemException(errno, "STUFF", __FILE__,
+    __LINE__);
+  std::cout << systemException.what() << std::endl;
+  return 0;
 }
-
-Thread::~Thread() {
-}
-
-/******************************************************************************/
-/* Accessors                                                                  */
-/******************************************************************************/
-
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/

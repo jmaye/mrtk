@@ -22,41 +22,159 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Mutex::Mutex() {
+Mutex::ScopedLock::ScopedLock(Mutex& mutex) :
+    mMutex(&mutex) {
+  mMutex->lock();
 }
 
-Mutex::Mutex(const Mutex& other) {
+Mutex::ScopedLock::~ScopedLock() {
+  mMutex->unlock();
 }
 
-Mutex& Mutex::operator = (const Mutex& other) {
-  if (this != &other) {
-  }
-  return *this;
+Mutex::Mutex(bool recursive) :
+    mRecursive(recursive),
+    mNumLocks(0),
+    mOwner(0) {
+  pthread_mutex_init(&mIdentifier, 0);
 }
 
-Mutex::~Mutex() {
-}
-
-/******************************************************************************/
-/* Stream operations                                                          */
-/******************************************************************************/
-
-void Mutex::read(std::istream& stream) {
-}
-
-void Mutex::write(std::ostream& stream) const {
-}
-
-void Mutex::read(std::ifstream& stream) {
-}
-
-void Mutex::write(std::ofstream& stream) const {
+Mutex::~Mutex() throw (SystemException) {
+  const int ret = pthread_mutex_destroy(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::~Mutex()::pthread_mutex_destroy()");
 }
 
 /******************************************************************************/
 /* Accessors                                                                  */
 /******************************************************************************/
 
+size_t Mutex::getNumLocks() const throw (SystemException) {
+  int ret = pthread_mutex_lock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::getNumLocks()::pthread_mutex_lock()");
+  size_t numLocks = mNumLocks;
+  ret = pthread_mutex_unlock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex:getNumLocks()::pthread_mutex_unlock()");
+  return numLocks;
+}
+
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
+
+bool Mutex::lock(double wait) throw (SystemException) {
+  bool result = false;
+  int ret = pthread_mutex_lock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::lock()::pthread_mutex_lock()");
+  try {
+    result = safeLock(wait);
+  }
+  catch (...) {
+    ret = pthread_mutex_unlock(&mIdentifier);
+    if (ret)
+      throw SystemException(ret, "Mutex::lock()::pthread_mutex_unlock()");
+    throw;
+  }
+  ret = pthread_mutex_unlock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::lock()::pthread_mutex_unlock()");
+  return result;
+}
+
+void Mutex::unlock() throw (SystemException) {
+  int ret = pthread_mutex_lock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::unlock()::pthread_mutex_lock()");
+  try {
+    safeUnlock();
+  }
+  catch (...) {
+    ret = pthread_mutex_unlock(&mIdentifier);
+    if (ret)
+      throw SystemException(ret, "Mutex::unlock()::pthread_mutex_unlock()");
+    throw;
+  }
+  ret = pthread_mutex_unlock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::unlock()::pthread_mutex_unlock()");
+}
+
+bool Mutex::waitUnlock(double seconds) const throw (SystemException) {
+  int ret = pthread_mutex_lock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::waitUnlock()::pthread_mutex_lock()");
+  bool result = safeWait(*this, seconds);
+  if (result)
+    ((Mutex*)this)->signal();
+  ret = pthread_mutex_unlock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::waitUnlock()::pthread_mutex_unlock()");
+  return result;
+}
+
+bool Mutex::tryLock() {
+  return lock(0.0);
+}
+
+bool Mutex::isRecursive() const {
+  return mRecursive;
+}
+
+bool Mutex::isLocked() const throw (SystemException) {
+  int ret = pthread_mutex_lock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::isLocked()::pthread_mutex_lock()");
+  bool result = mNumLocks;
+  ret = pthread_mutex_unlock(&mIdentifier);
+  if (ret)
+    throw SystemException(ret, "Mutex::isLocked()::pthread_mutex_unlock()");
+  return result;
+}
+
+bool Mutex::safeLock(double wait) {
+  bool result = true;
+  if (pthread_self() == mOwner) {
+    if (!mRecursive)
+      ;//throw Deadlock();
+    else
+      ++mNumLocks;
+  }
+  else {
+    if (mNumLocks)
+      result = safeWait(*this, wait);
+    if (result) {
+      ++mNumLocks;
+      mOwner = pthread_self();
+    }
+  }
+  return result;
+}
+
+void Mutex::safeUnlock() {
+  if (!mNumLocks)
+    ;//throw BadOperation();
+  if (pthread_self() != mOwner)
+    ;//throw BadPermissions();
+  --mNumLocks;
+  if (!mNumLocks) {
+    mOwner = 0;
+    signal();
+  }
+}
+
+bool Mutex::safeEternalWait(const Mutex& mutex) const {
+  bool result = true;
+  while (result && mNumLocks)
+    result = !pthread_cond_wait(&(Condition::mIdentifier), &mIdentifier);
+  return result;
+}
+
+bool Mutex::safeWaitUntil(const Mutex& mutex, const Timestamp& time) const {
+  bool result = true;
+  timespec abstime = time;
+  while (result && mNumLocks)
+    !pthread_cond_timedwait(&(Condition::mIdentifier), &mIdentifier, &abstime);
+  return result;
+}

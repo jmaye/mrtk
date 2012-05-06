@@ -26,32 +26,10 @@
 
 #include <string>
 
+#include "exceptions/BadArgumentException.h"
+#include "exceptions/SystemException.h"
 #include "exceptions/IOException.h"
 #include "base/Serializable.h"
-
-/** The enum SerialParity represents the different kinds of serial parity.
-    \brief Serial parity
-  */
-enum SerialParity {
-  /// No parity
-  none = 0,
-  /// Odd parity
-  odd = 1,
-  /// Even parity
-  even = 2
-};
-
-/** The enum FlowControl represents the different kinds of flow controls.
-    \brief Flow control
-  */
-enum FlowControl {
-  /// No flow control
-  no = 0,
-  /// Hardware flow control
-  hardware = 1,
-  /// Software flow control
-  software = 2
-};
 
 /** The class SerialConnection is an interface for serial communication.
     \brief Serial communication interface
@@ -69,6 +47,31 @@ class SerialConnection :
     */
 
 public:
+  /** \name Types definitions
+    @{
+    */
+  /// The enum SerialParity represents the different kinds of serial parity.
+  enum SerialParity {
+    /// No parity
+    none = 0,
+    /// Odd parity
+    odd = 1,
+    /// Even parity
+    even = 2
+  };
+
+  /// The enum FlowControl represents the different kinds of flow controls.
+  enum FlowControl {
+    /// No flow control
+    no = 0,
+    /// Hardware flow control
+    hardware = 1,
+    /// Software flow control
+    software = 2
+  };
+  /** @}
+    */
+
   /** \name Constructors/destructor
     @{
     */
@@ -118,15 +121,17 @@ public:
     @{
     */
   /// Opens the serial port
-  void open() throw (IOException);
+  void open() throw (BadArgumentException<size_t>, SystemException);
   /// Closes the serial port
-  void close() throw (IOException);
+  void close() throw (SystemException);
   /// Check if the port is open
   bool isOpen() const;
   /// Reads a buffer of bytes from the serial port
-  void readBuffer(char* buffer, ssize_t numBytes) throw (IOException);
+  void readBuffer(char* buffer, ssize_t numBytes) throw (SystemException,
+    IOException);
   /// Writes a buffer of bytes to the serial port
-  void writeBuffer(const char* buffer, ssize_t numBytes) throw (IOException);
+  void writeBuffer(const char* buffer, ssize_t numBytes)
+    throw (SystemException, IOException);
   /** @}
     */
 

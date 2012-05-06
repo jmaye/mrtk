@@ -25,64 +25,108 @@
 
 #include <pthread.h>
 
-#include "base/Serializable.h"
+#include "base/Condition.h"
+#include "base/Timer.h"
+#include "base/Timestamp.h"
+#include "exceptions/SystemException.h"
 
 /** The class Mutex implements mutex facilities.
     \brief Mutex facilities
   */
 class Mutex :
-  public virtual Serializable {
+  protected Condition {
+friend class Condition;
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Mutex(const Mutex& other);
+  /// Assignment operator
+  Mutex& operator = (const Mutex& other);
+  /** @}
+    */
+
 public:
   /** \name Types definitions
     @{
     */
+  /// Mutex for locking on scopes
+  struct ScopedLock {
+  public:
+    /// Constructor
+    ScopedLock(Mutex& mutex);
+    /// Destructor
+    ~ScopedLock();
+  protected:
+    /// Mutex
+    Mutex* mMutex;
+  };
   /** @}
     */
 
   /** \name Constructors/Destructor
     @{
     */
-  /// Default constructor
-  Mutex();
-  /// Copy constructor
-  Mutex(const Mutex& other);
-  /// Assignment operator
-  Mutex& operator = (const Mutex& other);
+  /// Constructs mutex with parameter
+  Mutex(bool recursive = false);
   /// Destructor
-  virtual ~Mutex();
+  virtual ~Mutex() throw (SystemException);
   /** @}
     */
 
   /** \name Accessors
     @{
     */
+  /// Access the number of locks of this mutex
+  size_t getNumLocks() const throw (SystemException);
   /** @}
     */
 
   /** \name Methods
     @{
     */
+ /// Lock the mutex
+  bool lock(double wait = Timer::eternal()) throw (SystemException);
+  /// Unlock the mutex
+  void unlock() throw (SystemException);
+  /// Try to lock the mutex without blocking the calling thread
+  bool tryLock();
+  /// Wait for the mutex to unlock
+  bool waitUnlock(double seconds = Timer::eternal()) const
+    throw (SystemException);
+  /// Check if mutex is recursive
+  bool isRecursive() const;
+  /// Check if mutex is locked
+  bool isLocked() const throw (SystemException);
   /** @}
     */
 
 protected:
-  /** \name Stream methods
+  /** \name Protected methods
     @{
     */
-  /// Reads from standard input
-  virtual void read(std::istream& stream);
-  /// Writes to standard output
-  virtual void write(std::ostream& stream) const;
-  /// Reads from a file
-  virtual void read(std::ifstream& stream);
-  /// Writes to a file
-  virtual void write(std::ofstream& stream) const;
+  /// Safely lock the mutex
+  virtual bool safeLock(double wait);
+  /// Safely unlock the mutex
+  virtual void safeUnlock();
+  /// Safely wait eternally
+  bool safeEternalWait(const Mutex& mutex) const;
+  /// Safely wait until a time has elapsed
+  bool safeWaitUntil(const Mutex& mutex, const Timestamp& time) const;
   /** @}
     */
 
   /** \name Protected members
     @{
     */
+  /// Recursive mutex
+  bool mRecursive;
+  /// Number of locks for this mutex
+  size_t mNumLocks;
+  /// Mutex identifier
+  mutable pthread_mutex_t mIdentifier;
+  /// Owner thread
+  pthread_t mOwner;
   /** @}
     */
 

@@ -18,18 +18,28 @@
 
 #include "base/Timer.h"
 
+#include <limits>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Timer::Timer() {
+Timer::Timer(bool start) :
+    mStartTime(0.0),
+    mPeriod(0.0) {
+  if (start)
+    this->start();
 }
 
-Timer::Timer(const Timer& other) {
+Timer::Timer(const Timer& other) :
+    mStartTime(other.mStartTime),
+    mPeriod(other.mPeriod) {
 }
 
 Timer& Timer::operator = (const Timer& other) {
   if (this != &other) {
+    mStartTime = other.mStartTime;
+    mPeriod = other.mPeriod;
   }
   return *this;
 }
@@ -45,6 +55,8 @@ void Timer::read(std::istream& stream) {
 }
 
 void Timer::write(std::ostream& stream) const {
+  stream << "starting time: " << mStartTime << std::endl
+    << "period: " << mPeriod;
 }
 
 void Timer::read(std::ifstream& stream) {
@@ -57,6 +69,54 @@ void Timer::write(std::ofstream& stream) const {
 /* Accessors                                                                  */
 /******************************************************************************/
 
+double Timer::getPeriod() const {
+  return mPeriod;
+}
+
+double Timer::getFrequency() const {
+  return 1.0 / mPeriod;
+}
+
+const Timestamp& Timer::getStartTime() const {
+  return mStartTime;
+}
+
+double Timer::getLeft(double period) const {
+  return mStartTime + period - Timestamp::now();
+}
+
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
+
+void Timer::start(bool reset) {
+  if (reset)
+    this->reset();
+  mStartTime = Timestamp::now();
+}
+
+void Timer::stop(double period) {
+  sleep(getLeft(period));
+  mPeriod += Timestamp::now() - mStartTime;
+}
+
+void Timer::reset() {
+  mStartTime = 0.0;
+  mPeriod = 0.0;
+}
+
+void Timer::wait(double period) const {
+  sleep(getLeft(period));
+}
+
+void Timer::sleep(double period) throw (SystemException) {
+  if (period > 0.0) {
+    timespec time = Timestamp(period);
+    if (nanosleep(&time, 0))
+      throw SystemException(errno, "Timer::sleep()::nanosleep()");
+  }
+}
+
+double Timer::eternal() {
+  return std::numeric_limits<double>::max();
+}

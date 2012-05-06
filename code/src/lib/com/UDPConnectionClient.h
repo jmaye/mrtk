@@ -29,6 +29,7 @@
 #include <string>
 
 #include "exceptions/IOException.h"
+#include "exceptions/SystemException.h"
 #include "base/Serializable.h"
 
 /** The class UDPConnectionClient is an interface for a client UDP
@@ -53,7 +54,7 @@ public:
     */
   /// Constructs UDP connection from parameters
   UDPConnectionClient(const std::string& serverIP, short port,
-    double timeout = 2.5);
+    double timeout = 2.5) throw (SystemException);
   /// Destructor
   virtual ~UDPConnectionClient();
  /** @}
@@ -77,15 +78,17 @@ public:
     @{
     */
   /// Open the connection
-  void open() throw (IOException);
+  void open() throw (SystemException);
   /// Close the connection
-  void close() throw (IOException);
+  void close() throw (SystemException);
   /// Test if the connection is open
   bool isOpen() const;
   /// Read buffer from UDP
-  void readBuffer(char* buffer, ssize_t numBytes) throw (IOException);
+  void readBuffer(char* buffer, ssize_t numBytes)
+    throw (SystemException, IOException);
   /// Write buffer to UDP
-  void writeBuffer(const char* buffer, ssize_t numBytes) throw (IOException);
+  void writeBuffer(const char* buffer, ssize_t numBytes)
+    throw (SystemException, IOException);
  /** @}
     */
 

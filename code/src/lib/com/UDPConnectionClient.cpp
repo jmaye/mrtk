@@ -26,7 +26,7 @@
 /******************************************************************************/
 
 UDPConnectionClient::UDPConnectionClient(const std::string& serverIP, short
-    port, double timeout) :
+    port, double timeout) throw (SystemException):
     mServerIP(serverIP),
     mPort(port),
     mTimeout(timeout),
@@ -35,8 +35,8 @@ UDPConnectionClient::UDPConnectionClient(const std::string& serverIP, short
   mServer.sin_family = AF_INET;
   mServer.sin_port = htons(mPort);
   if (inet_aton(mServerIP.c_str(), &mServer.sin_addr) == 0)
-    throw IOException("UDPConnectionClient::UDPConnectionClient(): "
-      "invalid IP address");
+    throw SystemException(errno,
+      "UDPConnectionClient::UDPConnectionClient()::inet_aton()");
 }
 
 UDPConnectionClient::~UDPConnectionClient() {
@@ -86,17 +86,19 @@ double UDPConnectionClient::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void UDPConnectionClient::open() throw (IOException) {
+void UDPConnectionClient::open() throw (SystemException) {
   mSocket = socket(AF_INET, SOCK_DGRAM, 0);
   if (mSocket < 0)
-    throw IOException("UDPConnectionClient::open(): socket creation failed");
+    throw SystemException(errno,
+      "UDPConnectionClient::open()::open()");
 }
 
-void UDPConnectionClient::close() throw (IOException) {
+void UDPConnectionClient::close() throw (SystemException) {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
-      throw IOException("UDPConnectionClient::close(): socket closing failed");
+      throw SystemException(errno,
+        "UDPConnectionClient::close()::close()");
   }
   mSocket = 0;
 }
@@ -106,7 +108,7 @@ bool UDPConnectionClient::isOpen() const {
 }
 
 void UDPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
-    throw (IOException) {
+    throw (SystemException, IOException) {
   if (isOpen() == false)
     open();
   ssize_t bytesRead = 0;
@@ -122,8 +124,8 @@ void UDPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
     ssize_t res = select(mSocket + 1, &readFlags, (fd_set*)0, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("UDPConnectionClient::readBuffer(): read select "
-        "failed");
+      throw SystemException(errno,
+        "UDPConnectionClient::readBuffer()::select()");
     if (FD_ISSET(mSocket, &readFlags)) {
       FD_CLR(mSocket, &readFlags);
       struct sockaddr_in server;
@@ -131,16 +133,17 @@ void UDPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
       res = recvfrom(mSocket, &buffer[bytesRead], numBytes - bytesRead, 0,
         (struct sockaddr*)&server, &size);
       if (res < 0)
-        throw IOException("UDPConnectionClient::readBuffer(): read failed");
+        throw SystemException(errno,
+          "UDPConnectionClient::readBuffer()::read()");
       bytesRead += res;
     }
     else
-      throw IOException("UDPConnectionClient::readBuffer(): read timeout");
+      throw IOException("UDPConnectionClient::readBuffer(): timeout occured");
   }
 }
 
 void UDPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (IOException) {
+    throw (SystemException, IOException) {
   if (isOpen() == false)
     open();
   ssize_t bytesWritten = 0;
@@ -156,17 +159,18 @@ void UDPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes)
     ssize_t res = select(mSocket + 1, (fd_set*)0, &writeFlags, (fd_set*)0,
       &waitd);
     if(res < 0)
-      throw IOException("UDPConnectionClient::writeBuffer(): write select "
-        "failed");
+      throw SystemException(errno,
+        "UDPConnectionClient::writeBuffer()::select()");
     if (FD_ISSET(mSocket, &writeFlags)) {
       FD_CLR(mSocket, &writeFlags);
       res = sendto(mSocket, &buffer[bytesWritten], numBytes - bytesWritten, 0,
         (const struct sockaddr*)&mServer, sizeof(struct sockaddr_in));
       if (res < 0)
-        throw IOException("UDPConnectionClient::writeBuffer(): write failed");
+        throw SystemException(errno,
+          "UDPConnectionClient::writeBuffer()::write()");
       bytesWritten += res;
     }
     else
-      throw IOException("UDPConnectionClient::writeBuffer(): write timeout");
+      throw IOException("UDPConnectionClient::writeBuffer(): timeout occured");
   }
 }

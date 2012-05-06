@@ -26,6 +26,7 @@
 
 #include <string>
 
+#include "exceptions/SystemException.h"
 #include "exceptions/IOException.h"
 #include "base/Serializable.h"
 
@@ -49,7 +50,7 @@ public:
   /** \name Constructors/destructor
     @{
     */
-  /// Constructs UDP connection from parameters
+  /// Constructs TCP connection from parameters
   TCPConnectionServer(short port, double timeout = 2.5);
   /// Destructor
   virtual ~TCPConnectionServer();
@@ -72,15 +73,17 @@ public:
     @{
     */
   /// Open the connection
-  void open() throw (IOException);
+  void open() throw (SystemException);
   /// Close the connection
-  void close() throw (IOException);
+  void close() throw (SystemException);
   /// Test if the connection is open
   bool isOpen() const;
-  /// Read buffer from UDP
-  void readBuffer(char* buffer, ssize_t numBytes) throw (IOException);
-  /// Write buffer to UDP
-  void writeBuffer(const char* buffer, ssize_t numBytes) throw (IOException);
+  /// Read buffer from TCP
+  void readBuffer(char* buffer, ssize_t numBytes)
+    throw (SystemException, IOException);
+  /// Write buffer to TCP
+  void writeBuffer(const char* buffer, ssize_t numBytes)
+    throw (SystemException, IOException);
  /** @}
     */
 

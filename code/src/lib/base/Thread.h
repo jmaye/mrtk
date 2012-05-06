@@ -26,19 +26,100 @@
 
 #include <pthread.h>
 
-#include "base/Serializable.h"
-
 /** The class Thread implements threading facilities.
     \brief Threading facilities
   */
-class Thread :
-  public virtual Serializable {
+class Thread {
+  /** \name Private constructors
+    @{
+    */
+  /// Copy constructor
+  Thread(const Thread& other);
+  /// Assignment operator
+  Thread& operator = (const Thread& other);
+  /** @}
+    */
+
 public:
   /** \name Types definitions
     @{
     */
+  /// Thread attribute
   typedef pthread_attr_t Attribute;
+  /// Scheduling parameters
   typedef sched_param SchedulingParameter;
+  /// Thread state
+  enum State {
+    initialized,
+    starting,
+    running,
+    sleeping,
+    waiting,
+    interrupting,
+    interrupted,
+    finished
+  };
+
+  enum Priority {
+    inherit,
+    idle,
+    lowest,
+    low,
+    normal,
+    high,
+    highest,
+    critical
+  };
+
+  struct Identifier :
+    public Structure,
+    public StructureType<Identifier> {
+  public:
+    pthread_t posix;
+    pid_t kernel;
+    pid_t process;
+
+    /** Constructors
+      */
+    Identifier(pthread_t posix = 0);
+    /** Destructor
+      */
+    virtual ~Identifier();
+
+    /** Thread identifier comparisons
+      */
+    bool operator==(const Identifier& identifier) const;
+    bool operator!=(const Identifier& identifier) const;
+    bool operator>(const Identifier& identifier) const;
+    bool operator<(const Identifier& identifier) const;
+
+    /** Thread identifier conversions
+      */
+    operator const void*() const;
+
+    /** Reset the identifier
+      */
+    void reset();
+
+    void read(InputStream& stream);
+    void write(OutputStream& stream) const;
+  };
+
+  class BadStackSize :
+    public ExceptionType<BadStackSize> {
+  public:
+    /** Constructors
+      */
+    BadStackSize();
+  };
+
+  class BadWait :
+    public ExceptionType<BadWait> {
+  public:
+    /** Constructors
+      */
+    BadWait();
+  };
   /** @}
     */
 
@@ -47,10 +128,6 @@ public:
     */
   /// Default constructor
   Thread();
-  /// Copy constructor
-  Thread(const Thread& other);
-  /// Assignment operator
-  Thread& operator = (const Thread& other);
   /// Destructor
   virtual ~Thread();
   /** @}
@@ -69,20 +146,6 @@ public:
     */
 
 protected:
-  /** \name Stream methods
-    @{
-    */
-  /// Reads from standard input
-  virtual void read(std::istream& stream);
-  /// Writes to standard output
-  virtual void write(std::ostream& stream) const;
-  /// Reads from a file
-  virtual void read(std::ifstream& stream);
-  /// Writes to a file
-  virtual void write(std::ofstream& stream) const;
-  /** @}
-    */
-
   /** \name Protected members
     @{
     */
