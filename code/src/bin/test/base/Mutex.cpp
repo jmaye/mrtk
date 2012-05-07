@@ -21,9 +21,53 @@
   */
 
 #include <iostream>
+#include <stdexcept>
 
 #include "base/Mutex.h"
 
+class M :
+  public Mutex {
+public:
+protected:
+  virtual bool safeLock(double wait) throw (InvalidOperationException) {
+    std::cout << "Locking mutex" << std::endl;
+    return Mutex::safeLock(wait);
+  };
+
+  virtual void safeUnlock() throw (InvalidOperationException) {
+    Mutex::safeUnlock();
+    std::cout << "Unlocked mutex" << std::endl;
+  };
+};
+
 int main(int argc, char** argv) {
+  M mutex;
+  mutex.lock();
+  mutex.unlock();
+  try {
+    mutex.unlock();
+  }
+  catch (std::exception& exception) {
+    std::cout << "mutex.unlock(): " << exception.what() << std::endl;
+  }
+  mutex.lock();
+  try {
+    mutex.lock();
+  }
+  catch (std::exception& exception) {
+    std::cout << "mutex.lock(): " << exception.what() << std::endl;
+  }
+  mutex.unlock();
+  {
+    Mutex::ScopedLock lock(mutex);
+  }
+  InvalidOperationException e("Test exception");
+  try {
+    Mutex::ScopedLock lock(mutex);
+    throw e;
+  }
+  catch (std::exception& exception) {
+    std::cout << "throw e: " << exception.what() << std::endl;
+  }
   return 0;
 }

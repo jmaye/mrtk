@@ -86,9 +86,10 @@ public:
     @{
     */
  /// Lock the mutex
-  bool lock(double wait = Timer::eternal()) throw (SystemException);
+  bool lock(double wait = Timer::eternal())
+    throw (SystemException, InvalidOperationException);
   /// Unlock the mutex
-  void unlock() throw (SystemException);
+  void unlock() throw (SystemException, InvalidOperationException);
   /// Try to lock the mutex without blocking the calling thread
   bool tryLock();
   /// Wait for the mutex to unlock

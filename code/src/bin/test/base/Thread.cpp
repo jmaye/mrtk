@@ -22,8 +22,45 @@
 
 #include <iostream>
 
-#include "base/Thread.h"
+#include "base/Threads.h"
+
+class T :
+  public Thread {
+public:
+  T(int id, double cycle, bool exit = false) :
+      Thread(cycle),
+      id(id),
+      exit(exit) {
+  };
+  virtual ~T() {
+  };
+protected:
+  int id;
+  bool exit;
+  virtual void process() {
+    printf("Thread %d CYCLE\n", id);
+    if (exit) Thread::exit();
+  };
+  State safeSetState(State state) {
+    State oldState = Thread::safeSetState(state);
+    printf("Thread %d %d\n", id, this->mState);
+    return oldState;
+  };
+};
 
 int main(int argc, char** argv) {
+  T t_1(1, 0.1);
+  T t_2(2, 0.02);
+  t_1.start();
+  t_2.start();
+  Timer::sleep(0.1);
+  t_1.interrupt();
+  Threads::getInstance().interrupt();
+  T t_3(3, 0.0);
+  t_3.start();
+  t_3.wait();
+  T t_4(4, 0.1, true);
+  t_4.start();
+  t_4.wait();
   return 0;
 }

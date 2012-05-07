@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 #include "base/Mutex.h"
-
+#include <string.h>
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -63,7 +63,8 @@ size_t Mutex::getNumLocks() const throw (SystemException) {
 /* Methods                                                                    */
 /******************************************************************************/
 
-bool Mutex::lock(double wait) throw (SystemException) {
+bool Mutex::lock(double wait)
+    throw (SystemException, InvalidOperationException) {
   bool result = false;
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
@@ -83,7 +84,7 @@ bool Mutex::lock(double wait) throw (SystemException) {
   return result;
 }
 
-void Mutex::unlock() throw (SystemException) {
+void Mutex::unlock() throw (SystemException, InvalidOperationException) {
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::unlock()::pthread_mutex_lock()");

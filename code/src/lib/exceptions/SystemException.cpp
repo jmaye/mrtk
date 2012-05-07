@@ -29,7 +29,7 @@
 SystemException::SystemException(int errNo, const
     std::string& msg, const std::string& filename, size_t line) :
     mMsg(msg),
-    mErrno(errno),
+    mErrno(errNo),
     mFilename(filename),
     mLine(line) {
 }
