@@ -29,21 +29,22 @@ class T :
 public:
   T(int id, double cycle, bool exit = false) :
       Thread(cycle),
-      id(id),
-      exit(exit) {
+      mId(id),
+      mExit(exit) {
   };
   virtual ~T() {
   };
 protected:
-  int id;
-  bool exit;
+  int mId;
+  bool mExit;
   virtual void process() {
-    printf("Thread %d CYCLE\n", id);
-    if (exit) Thread::exit();
+    printf("Thread %d CYCLE\n", mId);
+    if (mExit)
+      Thread::exit();
   };
   State safeSetState(State state) {
     State oldState = Thread::safeSetState(state);
-    printf("Thread %d %d\n", id, this->mState);
+    printf("Thread %d %d\n", mId, mState);
     return oldState;
   };
 };

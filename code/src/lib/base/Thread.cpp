@@ -108,7 +108,7 @@ Thread::Priority Thread::getPriority() const {
 
 void Thread::setPriority(Priority priority) {
   Mutex::ScopedLock lock(mMutex);
-  safeSetPriority(mPriority);
+  safeSetPriority(priority);
 }
 
 void Thread::safeSetPriority(Priority priority) throw (SystemException) {
@@ -358,9 +358,9 @@ void Thread::cleanup() {
     safeSetState(finished);
   mCancel = false;
   Threads::getInstance().unregisterThread(*this);
-  const int ret = pthread_detach(mIdentifier.mPosix);
-  if (ret)
-    throw SystemException(ret, "Thread::cleanup()::pthread_detach()");
+//  const int ret = pthread_detach(mIdentifier.mPosix);
+//  if (ret)
+//    throw SystemException(ret, "Thread::cleanup()::pthread_detach()");
   mIdentifier.reset();
   mCleaned.signal(Condition::broadcast);
 }

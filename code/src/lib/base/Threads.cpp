@@ -56,7 +56,7 @@ Thread& Threads::getSelf() const {
 
 Thread& Threads::get(const Thread::Identifier& identifier) const
     throw (SystemException, ThreadsManagerException<Thread::Identifier>) {
-  Thread* thread;
+  Thread* thread = 0;
   int ret = pthread_mutex_lock(&mMutex);
   if (ret)
     throw SystemException(ret, "Threads::get()::pthread_mutex_lock()");
