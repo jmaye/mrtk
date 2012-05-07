@@ -27,8 +27,8 @@
 
 #include "base/Condition.h"
 #include "base/Timer.h"
-#include "base/Timestamp.h"
 #include "exceptions/SystemException.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The class Mutex implements mutex facilities.
     \brief Mutex facilities
@@ -106,9 +106,9 @@ protected:
     @{
     */
   /// Safely lock the mutex
-  virtual bool safeLock(double wait);
+  virtual bool safeLock(double wait) throw (InvalidOperationException);
   /// Safely unlock the mutex
-  virtual void safeUnlock();
+  virtual void safeUnlock() throw (InvalidOperationException);
   /// Safely wait eternally
   bool safeEternalWait(const Mutex& mutex) const;
   /// Safely wait until a time has elapsed

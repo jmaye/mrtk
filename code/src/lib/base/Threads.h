@@ -16,90 +16,93 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Condition.h
-    \brief This file defines the Condition class, which provides condition
-           facilities
+/** \file Threads.h
+    \brief This file defines the Threads class, which provides threads
+           manager facilities
   */
 
-#ifndef CONDITION_H
-#define CONDITION_H
+#ifndef THREADS_H
+#define THREADS_H
 
-#include <pthread.h>
+#include <map>
 
-#include "base/Timer.h"
+#include "base/Singleton.h"
+#include "base/Thread.h"
 #include "exceptions/SystemException.h"
+#include "exceptions/ThreadsManagerException.h"
 
-class Mutex;
-
-/** The class Condition implements condition facilities.
-    \brief Condition facilities
+/** The class Threads implements threads manager facilities.
+    \brief Threads manager facilities
   */
-class Condition {
+class Threads :
+  public Singleton<Threads> {
+friend class Singleton<Threads>;
+friend class Thread;
   /** \name Private constructors
     @{
     */
   /// Copy constructor
-  Condition(const Condition& other);
+  Threads(const Threads& other);
   /// Assignment operator
-  Condition& operator = (const Condition& other);
+  Threads& operator = (const Threads& other);
   /** @}
     */
 
 public:
-  /** \name Types definitions
+  /** \name Accessors
     @{
     */
-  /// Signal type
-  enum SignalType {
-    /// Unicast signal
-    unicast,
-    /// Broadcast signal
-    broadcast
-  };
-  /** @}
-    */
-
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Default constructor
-  Condition();
-  /// Destructor
-  virtual ~Condition() throw (SystemException);
+  /// Access the number of thread objects
+  size_t getNumThreads() const throw (SystemException);
+  /// Access the thread object associated with the calling thread
+  Thread& getSelf() const;
+  /// Access the thread object associated with the specified identifier
+  Thread& get(const Thread::Identifier& identifier) const
+    throw (SystemException, ThreadsManagerException<Thread::Identifier>);
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Signal the condition
-  void signal(SignalType signalType = unicast);
-  /// Wait for the condition to be signaled
-  bool wait(Mutex& mutex, double seconds = Timer::eternal()) const;
+  /// Interrupt all registered thread objects
+  void interrupt() throw (SystemException);
   /** @}
     */
 
 protected:
+  /** \name Protected constructors/destructor
+    @{
+    */
+  /// Default constructor
+  Threads();
+  /// Destructor
+  virtual ~Threads() throw (SystemException);
+  /** @}
+    */
+
   /** \name Protected methods
     @{
     */
-  /// Safely wait for the condition to be signaled
-  bool safeWait(const Mutex& mutex, double seconds) const;
-  /// Safely wait eternally for the condition to be signaled
-  bool safeEternalWait(const Mutex& mutex) const;
-  /// Safely wait until the specified time for the condition to be signaled
-  bool safeWaitUntil(const Mutex& mutex, const Timestamp& time) const;
+  /// Register a thread
+  void registerThread(Thread& thread)
+    throw (SystemException, ThreadsManagerException<Thread::Identifier>);
+  /// Unregister a thread
+  void unregisterThread(Thread& thread)
+    throw (SystemException, ThreadsManagerException<Thread::Identifier>);
   /** @}
     */
 
   /** \name Protected members
     @{
     */
-  /// Condition identifier
-  mutable pthread_cond_t mIdentifier;
+  /// Map between thread identifier and thread pointers
+  std::map<Thread::Identifier, Thread*> mInstances;
+  /// Mutex protecting the object
+  mutable pthread_mutex_t mMutex;
   /** @}
     */
 
 };
 
-#endif // CONDITION_H
+#endif // THREADS_H

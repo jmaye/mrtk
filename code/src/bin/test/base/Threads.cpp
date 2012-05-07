@@ -16,25 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Timer.cpp
-    \brief This file is a testing binary for the Timer class
+/** \file Threads.cpp
+    \brief This file is a testing binary for the Threads class
   */
 
 #include <iostream>
 
-#include "base/Timer.h"
+#include "base/Threads.h"
 
 int main(int argc, char** argv) {
-  Timer timer;
-  std::cout << "timer: " << std::endl << timer << std::endl;
-  std::cout << "timer.start(): " << std::endl << timer << std::endl;
-  timer.start();
-  timer.stop(0.1);
-  std::cout << "timer.stop(0.1): " << std::endl << timer << std::endl;
-  std::cout << "timer.getPeriod(): " << timer.getPeriod() << " s" << std::endl;
-  std::cout << "timer.getFrequency(): " << timer.getFrequency() << " Hz"
-    << std::endl;
-  timer.reset();
-  std::cout << "timer.reset(): " << std::endl << timer << std::endl;
   return 0;
 }

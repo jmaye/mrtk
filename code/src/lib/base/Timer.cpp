@@ -20,6 +20,8 @@
 
 #include <limits>
 
+#include "base/Threads.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -112,8 +114,20 @@ void Timer::wait(double period) const {
 void Timer::sleep(double period) throw (SystemException) {
   if (period > 0.0) {
     timespec time = Timestamp(period);
+    Thread* self = 0;
+    try {
+      self = &Threads::getInstance().getSelf();
+    }
+    catch (...) {
+      self = 0;
+    }
+    Thread::State threadState;
+    if (self)
+      threadState = self->setState(Thread::sleeping);
     if (nanosleep(&time, 0))
       throw SystemException(errno, "Timer::sleep()::nanosleep()");
+    if (self)
+      self->setState(threadState);
   }
 }
 

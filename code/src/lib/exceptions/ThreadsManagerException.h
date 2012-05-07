@@ -16,90 +16,65 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file Condition.h
-    \brief This file defines the Condition class, which provides condition
-           facilities
+/** \file ThreadsManagerException.h
+    \brief This file defines the ThreadsManagerException class, which
+           is thrown whenever an exception occured in threads manager
   */
 
-#ifndef CONDITION_H
-#define CONDITION_H
+#ifndef THREADSMANAGEREXCEPTION_H
+#define THREADSMANAGEREXCEPTION_H
 
-#include <pthread.h>
+#include <exception>
+#include <string>
 
-#include "base/Timer.h"
-#include "exceptions/SystemException.h"
-
-class Mutex;
-
-/** The class Condition implements condition facilities.
-    \brief Condition facilities
+/** The class ThreadsManagerException represents any exceptions occuring with
+    threads management
+    \brief Threads manager exception
   */
-class Condition {
-  /** \name Private constructors
-    @{
-    */
-  /// Copy constructor
-  Condition(const Condition& other);
-  /// Assignment operator
-  Condition& operator = (const Condition& other);
-  /** @}
-    */
-
+template <typename X> class ThreadsManagerException :
+  public std::exception {
 public:
-  /** \name Types definitions
+  /** \name Constructors/destructor
     @{
     */
-  /// Signal type
-  enum SignalType {
-    /// Unicast signal
-    unicast,
-    /// Broadcast signal
-    broadcast
-  };
-  /** @}
-    */
-
-  /** \name Constructors/Destructor
-    @{
-    */
-  /// Default constructor
-  Condition();
+  /// Constructs exception from argument and string
+  ThreadsManagerException(const X& argument, const std::string& msg, const
+    std::string& filename = " ", size_t line = 0);
+  /// Copy constructor
+  ThreadsManagerException(const ThreadsManagerException& other) throw ();
+  /// Assignment operator
+  ThreadsManagerException& operator = (const ThreadsManagerException& other)
+    throw ();
   /// Destructor
-  virtual ~Condition() throw (SystemException);
+  virtual ~ThreadsManagerException() throw ();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Accessors
     @{
     */
-  /// Signal the condition
-  void signal(SignalType signalType = unicast);
-  /// Wait for the condition to be signaled
-  bool wait(Mutex& mutex, double seconds = Timer::eternal()) const;
+  /// Access the exception string
+  virtual const char* what() const throw ();
   /** @}
     */
 
 protected:
-  /** \name Protected methods
-    @{
-    */
-  /// Safely wait for the condition to be signaled
-  bool safeWait(const Mutex& mutex, double seconds) const;
-  /// Safely wait eternally for the condition to be signaled
-  bool safeEternalWait(const Mutex& mutex) const;
-  /// Safely wait until the specified time for the condition to be signaled
-  bool safeWaitUntil(const Mutex& mutex, const Timestamp& time) const;
-  /** @}
-    */
-
   /** \name Protected members
     @{
     */
-  /// Condition identifier
-  mutable pthread_cond_t mIdentifier;
+  /// Message in the exception
+  std::string mMsg;
+  /// Argument that causes the exception
+  X mArg;
+  /// Filename where the exception occurs
+  std::string mFilename;
+  /// Line number where the exception occurs
+  size_t mLine;
   /** @}
     */
 
 };
 
-#endif // CONDITION_H
+#include "exceptions/ThreadsManagerException.tpp"
+
+#endif // THREADSMANAGEREXCEPTION_H

@@ -52,7 +52,7 @@ size_t Mutex::getNumLocks() const throw (SystemException) {
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::getNumLocks()::pthread_mutex_lock()");
-  size_t numLocks = mNumLocks;
+  const size_t numLocks = mNumLocks;
   ret = pthread_mutex_unlock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex:getNumLocks()::pthread_mutex_unlock()");
@@ -105,7 +105,7 @@ bool Mutex::waitUnlock(double seconds) const throw (SystemException) {
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::waitUnlock()::pthread_mutex_lock()");
-  bool result = safeWait(*this, seconds);
+  const bool result = safeWait(*this, seconds);
   if (result)
     ((Mutex*)this)->signal();
   ret = pthread_mutex_unlock(&mIdentifier);
@@ -126,18 +126,18 @@ bool Mutex::isLocked() const throw (SystemException) {
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::isLocked()::pthread_mutex_lock()");
-  bool result = mNumLocks;
+  const bool result = mNumLocks;
   ret = pthread_mutex_unlock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::isLocked()::pthread_mutex_unlock()");
   return result;
 }
 
-bool Mutex::safeLock(double wait) {
+bool Mutex::safeLock(double wait) throw (InvalidOperationException) {
   bool result = true;
   if (pthread_self() == mOwner) {
     if (!mRecursive)
-      ;//throw Deadlock();
+      throw InvalidOperationException("Mutex::safeLock(): deadlock");
     else
       ++mNumLocks;
   }
@@ -152,11 +152,11 @@ bool Mutex::safeLock(double wait) {
   return result;
 }
 
-void Mutex::safeUnlock() {
+void Mutex::safeUnlock() throw (InvalidOperationException) {
   if (!mNumLocks)
-    ;//throw BadOperation();
+    throw InvalidOperationException("Mutex::safeUnlock(): bad operation");
   if (pthread_self() != mOwner)
-    ;//throw BadPermissions();
+    throw InvalidOperationException("Mutex::safeUnlock(): bad permissions");
   --mNumLocks;
   if (!mNumLocks) {
     mOwner = 0;
@@ -175,6 +175,7 @@ bool Mutex::safeWaitUntil(const Mutex& mutex, const Timestamp& time) const {
   bool result = true;
   timespec abstime = time;
   while (result && mNumLocks)
-    !pthread_cond_timedwait(&(Condition::mIdentifier), &mIdentifier, &abstime);
+    result = !pthread_cond_timedwait(&(Condition::mIdentifier),
+      &mIdentifier, &abstime);
   return result;
 }

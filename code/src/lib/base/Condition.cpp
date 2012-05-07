@@ -19,6 +19,7 @@
 #include "base/Condition.h"
 
 #include "base/Mutex.h"
+#include "base/Threads.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -53,7 +54,7 @@ bool Condition::wait(Mutex& mutex, double seconds) const {
     if (ret)
       throw SystemException(ret, "Condition::wait()::pthread_mutex_lock()");
     mutex.safeUnlock();
-    bool result = safeWait(mutex, seconds);
+    result = safeWait(mutex, seconds);
     mutex.safeLock(Timer::eternal());
     ret = pthread_mutex_unlock(&mutex.mIdentifier);
     if (ret)
@@ -63,36 +64,32 @@ bool Condition::wait(Mutex& mutex, double seconds) const {
 }
 
 bool Condition::safeWait(const Mutex& mutex, double seconds) const {
-//  bool result = true;
-//  Thread* self = 0;
-//  try {
-//    self = &Threads::getInstance().getSelf();
-//  }
-//  catch (Exception& exception) {
-//    self = 0;
-//  }
-
-//  Thread::State threadState;
-//  if (self) {
-//    if (&mutex == &self->mutex)
-//      threadState = self->safeSetState(Thread::waiting);
-//    else 
-//      threadState = self->setState(Thread::waiting);
-//  }
-
-//  if (seconds == Timer::eternal())
-//    result = safeEternalWait(mutex);
-//  else if (seconds > 0.0)
-//    result = safeWaitUntil(mutex, Timestamp(Timestamp::now()+seconds));
-
-//  if (self) {
-//    if (&mutex == &self->mutex)
-//      self->safeSetState(threadState);
-//    else 
-//      self->setState(threadState);
-//  }
-
-//  return result;
+  bool result = true;
+  Thread* self = 0;
+  try {
+    self = &Threads::getInstance().getSelf();
+  }
+  catch (...) {
+    self = 0;
+  }
+  Thread::State threadState;
+  if (self) {
+    if (&mutex == &self->mMutex)
+      threadState = self->safeSetState(Thread::waiting);
+    else 
+      threadState = self->setState(Thread::waiting);
+  }
+  if (seconds == Timer::eternal())
+    result = safeEternalWait(mutex);
+  else if (seconds > 0.0)
+    result = safeWaitUntil(mutex, Timestamp(Timestamp::now() + seconds));
+  if (self) {
+    if (&mutex == &self->mMutex)
+      self->safeSetState(threadState);
+    else 
+      self->setState(threadState);
+  }
+  return result;
 }
 
 bool Condition::safeEternalWait(const Mutex& mutex) const {
@@ -104,7 +101,7 @@ bool Condition::safeEternalWait(const Mutex& mutex) const {
 }
 
 bool Condition::safeWaitUntil(const Mutex& mutex, const Timestamp& time) 
-  const {
+    const {
   bool result = true;
   timespec abstime = time;
   result = !pthread_cond_timedwait(&mIdentifier, &mutex.mIdentifier, &abstime);

@@ -25,6 +25,8 @@
 #include "base/Timestamp.h"
 
 int main(int argc, char** argv) {
+  Timestamp time;
+  std::cout << "time: " << std::endl << time << std::endl;
   std::cout << "Timestamp::now(): " << std::fixed << Timestamp::now()
     << std::endl;
   std::cout << "Timestamp::getDate(): " << std::fixed << Timestamp::getDate()
