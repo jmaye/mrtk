@@ -24,13 +24,13 @@
 #ifndef POINTCLOUD_H
 #define POINTCLOUD_H
 
-#include "base/Serializable.h"
-#include "exceptions/OutOfBoundException.h"
-#include "exceptions/IOException.h"
+#include <vector>
 
 #include <Eigen/Core>
 
-#include <vector>
+#include "base/Serializable.h"
+#include "exceptions/OutOfBoundException.h"
+#include "exceptions/IOException.h"
 
 /** The class PointCloud represents a point cloud, i.e., a group of n-d points.
     \brief A point cloud
