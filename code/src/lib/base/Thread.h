@@ -29,8 +29,6 @@
 #include "base/Timer.h"
 #include "base/Mutex.h"
 #include "base/Serializable.h"
-#include "exceptions/SystemException.h"
-#include "exceptions/InvalidOperationException.h"
 
 /** The class Thread implements threading facilities.
     \brief Threading facilities
@@ -181,8 +179,7 @@ public:
     @{
     */
   /// Start the thread
-  bool start(Priority priority = inherit, double wait = Timer::eternal())
-    throw (SystemException);
+  bool start(Priority priority = inherit, double wait = Timer::eternal());
   /// Interrupt the thread
   bool interrupt(double wait = Timer::eternal());
   /// Exit the calling thread
@@ -205,7 +202,7 @@ protected:
   /// Safely access the thread's state
   virtual State safeSetState(State state);
   /// Safely access the thread's priority
-  virtual void safeSetPriority(Priority priority) throw (SystemException);
+  virtual void safeSetPriority(Priority priority);
   /// Run all thread operations
   virtual void* run();
   /// Do initialization
@@ -215,7 +212,7 @@ protected:
   /// Do cleanup
   virtual void cleanup();
   /// Safely wait until the thread has finished execution or time elapsed
-  virtual bool safeWait(double seconds) const throw (InvalidOperationException);
+  virtual bool safeWait(double seconds) const;
   /// Safe thread exists
   virtual bool safeExists() const;
   /// Safe thread is busy

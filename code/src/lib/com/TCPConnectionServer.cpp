@@ -22,6 +22,9 @@
 #include <cstring>
 #include <cmath>
 
+#include "exceptions/SystemException.h"
+#include "exceptions/IOException.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -74,7 +77,7 @@ double TCPConnectionServer::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void TCPConnectionServer::open() throw (SystemException) {
+void TCPConnectionServer::open() {
   mSocket = socket(AF_INET, SOCK_DGRAM, 0);
   if (mSocket == -1)
     throw SystemException(errno,
@@ -92,7 +95,7 @@ void TCPConnectionServer::open() throw (SystemException) {
       "TCPConnectionServer::open()::listen()");
 }
 
-void TCPConnectionServer::close() throw (SystemException) {
+void TCPConnectionServer::close() {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
@@ -106,8 +109,7 @@ bool TCPConnectionServer::isOpen() const {
   return (mSocket != 0);
 }
 
-void TCPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void TCPConnectionServer::readBuffer(char* buffer, ssize_t numBytes) {
 //newsockfd = accept(sockfd,
 //                 (struct sockaddr *) &cli_addr,
 //                 &clilen);
@@ -136,8 +138,7 @@ void TCPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
 //    throw IOException("TCPConnectionServer::readBuffer(): read timeout");
 }
 
-void TCPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void TCPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes) {
 //  if (isOpen() == false)
 //    open();
 //  double intPart;

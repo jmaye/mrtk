@@ -28,6 +28,10 @@
 #include <termios.h>
 #include <errno.h>
 
+#include "exceptions/BadArgumentException.h"
+#include "exceptions/SystemException.h"
+#include "exceptions/IOException.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -140,8 +144,7 @@ void SerialConnection::setFlowControl(FlowControl flowControl) {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void SerialConnection::open() throw (BadArgumentException<size_t>,
-    SystemException) {
+void SerialConnection::open() {
   mHandle = ::open(mDevicePathStr.c_str(), O_RDWR | O_NDELAY | O_NOCTTY);
   if (mHandle == -1)
     throw SystemException(errno, "SerialConnection::open()::open()");
@@ -246,7 +249,7 @@ void SerialConnection::open() throw (BadArgumentException<size_t>,
       "SerialConnection::open()::tcsetattr()");
 }
 
-void SerialConnection::close() throw (SystemException) {
+void SerialConnection::close() {
   if (mHandle != 0) {
     if (tcdrain(mHandle))
       throw SystemException(errno, "SerialConnection::close()::tcdrain()");
@@ -262,8 +265,7 @@ bool SerialConnection::isOpen() const {
   return (mHandle != 0);
 }
 
-void SerialConnection::readBuffer(char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void SerialConnection::readBuffer(char* buffer, ssize_t numBytes) {
   if (isOpen() == false)
     open();
   double intPart;
@@ -292,8 +294,7 @@ void SerialConnection::readBuffer(char* buffer, ssize_t numBytes)
   }
 }
 
-void SerialConnection::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void SerialConnection::writeBuffer(const char* buffer, ssize_t numBytes) {
   if (isOpen() == false)
     open();
   double intPart;

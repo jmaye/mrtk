@@ -22,6 +22,9 @@
 #include <cmath>
 #include <arpa/inet.h>
 
+#include "exceptions/SystemException.h"
+#include "exceptions/IOException.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -81,7 +84,7 @@ double TCPConnectionClient::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void TCPConnectionClient::open() throw (SystemException) {
+void TCPConnectionClient::open() {
   mSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (mSocket < 0)
     throw SystemException(errno,
@@ -96,7 +99,7 @@ void TCPConnectionClient::open() throw (SystemException) {
       "TCPConnectionClient::open()::connect()");
 }
 
-void TCPConnectionClient::close() throw (SystemException) {
+void TCPConnectionClient::close() {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
@@ -109,8 +112,7 @@ bool TCPConnectionClient::isOpen() const {
   return (mSocket != 0);
 }
 
-void TCPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void TCPConnectionClient::readBuffer(char* buffer, ssize_t numBytes) {
   if (isOpen() == false)
     open();
   ssize_t bytesRead = 0;
@@ -141,8 +143,7 @@ void TCPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
   }
 }
 
-void TCPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void TCPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes) {
   if (isOpen() == false)
     open();
   ssize_t bytesWritten = 0;

@@ -24,6 +24,7 @@
 #include <stdexcept>
 
 #include "base/Mutex.h"
+#include "exceptions/InvalidOperationException.h"
 
 class M :
   public Mutex {

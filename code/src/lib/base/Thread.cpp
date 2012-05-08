@@ -21,6 +21,8 @@
 #include <cmath>
 
 #include "base/Threads.h"
+#include "exceptions/SystemException.h"
+#include "exceptions/InvalidOperationException.h"
 
 #ifdef __NR_gettid
 static pid_t gettid (void) {
@@ -111,7 +113,7 @@ void Thread::setPriority(Priority priority) {
   safeSetPriority(priority);
 }
 
-void Thread::safeSetPriority(Priority priority) throw (SystemException) {
+void Thread::safeSetPriority(Priority priority) {
   mPriority = priority;
   if ((mIdentifier.mPosix != 0) && (priority != inherit)) {
     int policy;
@@ -213,7 +215,7 @@ void Thread::Identifier::reset() {
   mProcess = -1;
 }
 
-bool Thread::start(Priority priority, double wait) throw (SystemException) {
+bool Thread::start(Priority priority, double wait) {
   Mutex::ScopedLock lock(mMutex);
   bool result = false;
   if (safeWait(wait)) {
@@ -282,7 +284,7 @@ bool Thread::wait(double seconds) const {
   return safeWait(seconds);
 }
 
-bool Thread::safeWait(double seconds) const throw (InvalidOperationException) {
+bool Thread::safeWait(double seconds) const {
   bool result = true;
   if (seconds != 0.0) {
     Thread* self = 0;

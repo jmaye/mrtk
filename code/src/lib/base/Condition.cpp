@@ -20,6 +20,7 @@
 
 #include "base/Mutex.h"
 #include "base/Threads.h"
+#include "exceptions/SystemException.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -29,7 +30,7 @@ Condition::Condition() {
   pthread_cond_init(&mIdentifier, 0);
 }
 
-Condition::~Condition() throw (SystemException) {
+Condition::~Condition() {
   const int ret = pthread_cond_destroy(&mIdentifier);
   if (ret)
     throw SystemException(ret,

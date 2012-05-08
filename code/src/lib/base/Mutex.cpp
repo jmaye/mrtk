@@ -16,8 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
+#include "exceptions/SystemException.h"
+#include "exceptions/InvalidOperationException.h"
 #include "base/Mutex.h"
-#include <string.h>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -38,7 +40,7 @@ Mutex::Mutex(bool recursive) :
   pthread_mutex_init(&mIdentifier, 0);
 }
 
-Mutex::~Mutex() throw (SystemException) {
+Mutex::~Mutex() {
   const int ret = pthread_mutex_destroy(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::~Mutex()::pthread_mutex_destroy()");
@@ -48,7 +50,7 @@ Mutex::~Mutex() throw (SystemException) {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-size_t Mutex::getNumLocks() const throw (SystemException) {
+size_t Mutex::getNumLocks() const {
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::getNumLocks()::pthread_mutex_lock()");
@@ -63,8 +65,7 @@ size_t Mutex::getNumLocks() const throw (SystemException) {
 /* Methods                                                                    */
 /******************************************************************************/
 
-bool Mutex::lock(double wait)
-    throw (SystemException, InvalidOperationException) {
+bool Mutex::lock(double wait) {
   bool result = false;
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
@@ -84,7 +85,7 @@ bool Mutex::lock(double wait)
   return result;
 }
 
-void Mutex::unlock() throw (SystemException, InvalidOperationException) {
+void Mutex::unlock() {
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::unlock()::pthread_mutex_lock()");
@@ -102,7 +103,7 @@ void Mutex::unlock() throw (SystemException, InvalidOperationException) {
     throw SystemException(ret, "Mutex::unlock()::pthread_mutex_unlock()");
 }
 
-bool Mutex::waitUnlock(double seconds) const throw (SystemException) {
+bool Mutex::waitUnlock(double seconds) const {
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::waitUnlock()::pthread_mutex_lock()");
@@ -123,7 +124,7 @@ bool Mutex::isRecursive() const {
   return mRecursive;
 }
 
-bool Mutex::isLocked() const throw (SystemException) {
+bool Mutex::isLocked() const {
   int ret = pthread_mutex_lock(&mIdentifier);
   if (ret)
     throw SystemException(ret, "Mutex::isLocked()::pthread_mutex_lock()");
@@ -134,7 +135,7 @@ bool Mutex::isLocked() const throw (SystemException) {
   return result;
 }
 
-bool Mutex::safeLock(double wait) throw (InvalidOperationException) {
+bool Mutex::safeLock(double wait) {
   bool result = true;
   if (pthread_self() == mOwner) {
     if (!mRecursive)
@@ -153,7 +154,7 @@ bool Mutex::safeLock(double wait) throw (InvalidOperationException) {
   return result;
 }
 
-void Mutex::safeUnlock() throw (InvalidOperationException) {
+void Mutex::safeUnlock() {
   if (!mNumLocks)
     throw InvalidOperationException("Mutex::safeUnlock(): bad operation");
   if (pthread_self() != mOwner)

@@ -26,8 +26,6 @@
 
 #include <string>
 
-#include "exceptions/IOException.h"
-#include "exceptions/SystemException.h"
 #include "base/Serializable.h"
 
 /** The class UDPConnectionServer is an interface for a server UDP
@@ -73,17 +71,15 @@ public:
     @{
     */
   /// Open the connection
-  void open() throw (SystemException);
+  void open();
   /// Close the connection
-  void close() throw (SystemException);
+  void close();
   /// Test if the connection is open
   bool isOpen() const;
   /// Read buffer from UDP
-  ssize_t readBuffer(char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException);
+  ssize_t readBuffer(char* buffer, ssize_t numBytes);
   /// Write buffer to UDP
-  void writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException);
+  void writeBuffer(const char* buffer, ssize_t numBytes);
  /** @}
     */
 

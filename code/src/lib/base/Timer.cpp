@@ -21,6 +21,7 @@
 #include <limits>
 
 #include "base/Threads.h"
+#include "exceptions/SystemException.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -111,7 +112,7 @@ void Timer::wait(double period) const {
   sleep(getLeft(period));
 }
 
-void Timer::sleep(double period) throw (SystemException) {
+void Timer::sleep(double period) {
   if (period > 0.0) {
     timespec time = Timestamp(period);
     Thread* self = 0;

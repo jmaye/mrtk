@@ -29,8 +29,6 @@
 #include <Eigen/Core>
 
 #include "base/Serializable.h"
-#include "exceptions/OutOfBoundException.h"
-#include "exceptions/IOException.h"
 
 /** The class PointCloud represents a point cloud, i.e., a group of n-d points.
     \brief A point cloud
@@ -70,10 +68,9 @@ public:
       @{
     */
   /// Returns a point using [] operator
-  const Point& operator [] (size_t idx) const throw
-    (OutOfBoundException<size_t>);
+  const Point& operator [] (size_t idx) const;
   /// Returns a point using [] operator
-  Point& operator [] (size_t idx) throw (OutOfBoundException<size_t>);
+  Point& operator [] (size_t idx);
   /// Check if an index is valid
   bool isValidIndex(size_t idx) const;
   /// Returns the size of the point cloud
@@ -118,9 +115,9 @@ protected:
   /// Writes to standard output
   virtual void write(std::ostream& stream) const;
   /// Reads from a file
-  virtual void read(std::ifstream& stream) throw (IOException);
+  virtual void read(std::ifstream& stream);
   /// Writes to a file
-  virtual void write(std::ofstream& stream) const throw (IOException);
+  virtual void write(std::ofstream& stream) const;
   /** @}
     */
 

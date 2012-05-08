@@ -27,7 +27,6 @@
 #include <pthread.h>
 
 #include "base/Timer.h"
-#include "exceptions/SystemException.h"
 
 class Mutex;
 
@@ -65,7 +64,7 @@ public:
   /// Default constructor
   Condition();
   /// Destructor
-  virtual ~Condition() throw (SystemException);
+  virtual ~Condition();
   /** @}
     */
 

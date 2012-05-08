@@ -27,8 +27,6 @@
 
 #include "base/Condition.h"
 #include "base/Timer.h"
-#include "exceptions/SystemException.h"
-#include "exceptions/InvalidOperationException.h"
 
 /** The class Mutex implements mutex facilities.
     \brief Mutex facilities
@@ -70,7 +68,7 @@ public:
   /// Constructs mutex with parameter
   Mutex(bool recursive = false);
   /// Destructor
-  virtual ~Mutex() throw (SystemException);
+  virtual ~Mutex();
   /** @}
     */
 
@@ -78,7 +76,7 @@ public:
     @{
     */
   /// Access the number of locks of this mutex
-  size_t getNumLocks() const throw (SystemException);
+  size_t getNumLocks() const;
   /** @}
     */
 
@@ -86,19 +84,17 @@ public:
     @{
     */
  /// Lock the mutex
-  bool lock(double wait = Timer::eternal())
-    throw (SystemException, InvalidOperationException);
+  bool lock(double wait = Timer::eternal());
   /// Unlock the mutex
-  void unlock() throw (SystemException, InvalidOperationException);
+  void unlock();
   /// Try to lock the mutex without blocking the calling thread
   bool tryLock();
   /// Wait for the mutex to unlock
-  bool waitUnlock(double seconds = Timer::eternal()) const
-    throw (SystemException);
+  bool waitUnlock(double seconds = Timer::eternal()) const;
   /// Check if mutex is recursive
   bool isRecursive() const;
   /// Check if mutex is locked
-  bool isLocked() const throw (SystemException);
+  bool isLocked() const;
   /** @}
     */
 
@@ -107,9 +103,9 @@ protected:
     @{
     */
   /// Safely lock the mutex
-  virtual bool safeLock(double wait) throw (InvalidOperationException);
+  virtual bool safeLock(double wait);
   /// Safely unlock the mutex
-  virtual void safeUnlock() throw (InvalidOperationException);
+  virtual void safeUnlock();
   /// Safely wait eternally
   bool safeEternalWait(const Mutex& mutex) const;
   /// Safely wait until a time has elapsed

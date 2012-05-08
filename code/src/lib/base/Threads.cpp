@@ -17,6 +17,8 @@
  ******************************************************************************/
 
 #include "base/Threads.h"
+#include "exceptions/SystemException.h"
+#include "exceptions/ThreadsManagerException.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -26,7 +28,7 @@ Threads::Threads() {
   pthread_mutex_init(&mMutex, 0);
 }
 
-Threads::~Threads() throw (SystemException) {
+Threads::~Threads() {
   interrupt();
   const int ret = pthread_mutex_destroy(&mMutex);
   if (ret)
@@ -37,7 +39,7 @@ Threads::~Threads() throw (SystemException) {
 /* Accessors                                                                  */
 /******************************************************************************/
 
-size_t Threads::getNumThreads() const throw (SystemException) {
+size_t Threads::getNumThreads() const {
   int ret = pthread_mutex_lock(&mMutex);
   if (ret)
     throw SystemException(ret,
@@ -54,8 +56,7 @@ Thread& Threads::getSelf() const {
   return get(pthread_self());
 }
 
-Thread& Threads::get(const Thread::Identifier& identifier) const
-    throw (SystemException, ThreadsManagerException<Thread::Identifier>) {
+Thread& Threads::get(const Thread::Identifier& identifier) const {
   Thread* thread = 0;
   int ret = pthread_mutex_lock(&mMutex);
   if (ret)
@@ -77,7 +78,7 @@ Thread& Threads::get(const Thread::Identifier& identifier) const
 /* Methods                                                                    */
 /******************************************************************************/
 
-void Threads::interrupt() throw (SystemException) {
+void Threads::interrupt() {
   int ret = pthread_mutex_lock(&mMutex);
   if (ret)
     throw SystemException(ret, "Threads::interrupt()::pthread_mutex_lock()");
@@ -98,8 +99,7 @@ void Threads::interrupt() throw (SystemException) {
         "Threads::interrupt()::pthread_mutex_unlock()");
 }
 
-void Threads::registerThread(Thread& thread)
-    throw (SystemException, ThreadsManagerException<Thread::Identifier>) {
+void Threads::registerThread(Thread& thread) {
   int ret = pthread_mutex_lock(&mMutex);
   if (ret)
     throw SystemException(ret,
@@ -120,8 +120,7 @@ void Threads::registerThread(Thread& thread)
       "Threads::registerThread()::pthread_mutex_unlock()");
 }
 
-void Threads::unregisterThread(Thread& thread)
-    throw (SystemException, ThreadsManagerException<Thread::Identifier>){
+void Threads::unregisterThread(Thread& thread) {
   int ret = pthread_mutex_lock(&mMutex);
   if (ret)
     throw SystemException(ret,

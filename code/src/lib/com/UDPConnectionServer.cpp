@@ -22,6 +22,9 @@
 #include <cstring>
 #include <cmath>
 
+#include "exceptions/IOException.h"
+#include "exceptions/SystemException.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -74,7 +77,7 @@ double UDPConnectionServer::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void UDPConnectionServer::open() throw (SystemException) {
+void UDPConnectionServer::open() {
   mSocket = socket(AF_INET, SOCK_DGRAM, 0);
   if (mSocket < 0)
     throw SystemException(errno, "UDPConnectionServer::open()::socket()");
@@ -87,7 +90,7 @@ void UDPConnectionServer::open() throw (SystemException) {
     throw SystemException(errno, "UDPConnectionServer::open()::bind()");
 }
 
-void UDPConnectionServer::close() throw (SystemException) {
+void UDPConnectionServer::close() {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
@@ -100,8 +103,7 @@ bool UDPConnectionServer::isOpen() const {
   return (mSocket != 0);
 }
 
-ssize_t UDPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+ssize_t UDPConnectionServer::readBuffer(char* buffer, ssize_t numBytes) {
   if (isOpen() == false)
     open();
   double intPart;
@@ -131,8 +133,7 @@ ssize_t UDPConnectionServer::readBuffer(char* buffer, ssize_t numBytes)
   return 0;
 }
 
-void UDPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void UDPConnectionServer::writeBuffer(const char* buffer, ssize_t numBytes) {
   if (isOpen() == false)
     open();
   ssize_t bytesWritten = 0;

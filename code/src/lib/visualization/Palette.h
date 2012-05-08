@@ -29,8 +29,6 @@
 #include <QtCore/QString>
 #include <QtGui/QColor>
 
-#include "exceptions/OutOfBoundException.h"
-
 /** The Palette class represents a color palette.
     \brief Color palette
   */
@@ -82,8 +80,7 @@ public:
   /// Returns a color
   const QColor& getColor(const Iterator& it) const;
   /// Returns a color
-  const QColor& getColor(const QString& role) const
-    throw (OutOfBoundException<std::string>);
+  const QColor& getColor(const QString& role) const;
   /** @}
     */
 

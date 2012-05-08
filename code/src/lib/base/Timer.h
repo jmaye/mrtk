@@ -24,7 +24,6 @@
 #define TIMER_H
 
 #include "base/Serializable.h"
-#include "exceptions/SystemException.h"
 #include "base/Timestamp.h"
 
 /** The class Timer implements timer facilities.
@@ -74,7 +73,7 @@ public:
   /// Wait for the specified period to elapse, but do not stop the timer
   void wait(double period) const;
   /// Sleep the specified period in seconds
-  static void sleep(double period) throw (SystemException);
+  static void sleep(double period);
   /// Return a numeric value for an infinite period of time
   static double eternal();
   /** @}

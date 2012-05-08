@@ -26,8 +26,6 @@
 
 #include <string>
 
-#include "exceptions/SystemException.h"
-#include "exceptions/IOException.h"
 #include "base/Serializable.h"
 
 /** The class TCPConnectionClient is an interface for a client TCP
@@ -76,17 +74,15 @@ public:
     @{
     */
   /// Open the connection
-  void open() throw (SystemException);
+  void open();
   /// Close the connection
-  void close() throw (SystemException);
+  void close();
   /// Test if the connection is open
   bool isOpen() const;
   /// Read buffer from TCP
-  void readBuffer(char* buffer, ssize_t numBytes) throw (SystemException,
-    IOException);
+  void readBuffer(char* buffer, ssize_t numBytes);
   /// Write buffer to TCP
-  void writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException);
+  void writeBuffer(const char* buffer, ssize_t numBytes);
  /** @}
     */
 

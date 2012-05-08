@@ -28,8 +28,6 @@
 
 #include "base/Singleton.h"
 #include "base/Thread.h"
-#include "exceptions/SystemException.h"
-#include "exceptions/ThreadsManagerException.h"
 
 /** The class Threads implements threads manager facilities.
     \brief Threads manager facilities
@@ -53,12 +51,11 @@ public:
     @{
     */
   /// Access the number of thread objects
-  size_t getNumThreads() const throw (SystemException);
+  size_t getNumThreads() const;
   /// Access the thread object associated with the calling thread
   Thread& getSelf() const;
   /// Access the thread object associated with the specified identifier
-  Thread& get(const Thread::Identifier& identifier) const
-    throw (SystemException, ThreadsManagerException<Thread::Identifier>);
+  Thread& get(const Thread::Identifier& identifier) const;
   /** @}
     */
 
@@ -66,7 +63,7 @@ public:
     @{
     */
   /// Interrupt all registered thread objects
-  void interrupt() throw (SystemException);
+  void interrupt();
   /** @}
     */
 
@@ -77,7 +74,7 @@ protected:
   /// Default constructor
   Threads();
   /// Destructor
-  virtual ~Threads() throw (SystemException);
+  virtual ~Threads();
   /** @}
     */
 
@@ -85,11 +82,9 @@ protected:
     @{
     */
   /// Register a thread
-  void registerThread(Thread& thread)
-    throw (SystemException, ThreadsManagerException<Thread::Identifier>);
+  void registerThread(Thread& thread);
   /// Unregister a thread
-  void unregisterThread(Thread& thread)
-    throw (SystemException, ThreadsManagerException<Thread::Identifier>);
+  void unregisterThread(Thread& thread);
   /** @}
     */
 

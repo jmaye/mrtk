@@ -21,12 +21,15 @@
 #include <cstring>
 #include <cmath>
 
+#include "exceptions/IOException.h"
+#include "exceptions/SystemException.h"
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
 UDPConnectionClient::UDPConnectionClient(const std::string& serverIP, short
-    port, double timeout) throw (SystemException):
+    port, double timeout):
     mServerIP(serverIP),
     mPort(port),
     mTimeout(timeout),
@@ -86,14 +89,14 @@ double UDPConnectionClient::getTimeout() const {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void UDPConnectionClient::open() throw (SystemException) {
+void UDPConnectionClient::open() {
   mSocket = socket(AF_INET, SOCK_DGRAM, 0);
   if (mSocket < 0)
     throw SystemException(errno,
       "UDPConnectionClient::open()::open()");
 }
 
-void UDPConnectionClient::close() throw (SystemException) {
+void UDPConnectionClient::close() {
   if (mSocket != 0) {
     ssize_t res = ::close(mSocket);
     if (res < 0)
@@ -107,8 +110,7 @@ bool UDPConnectionClient::isOpen() const {
   return (mSocket != 0);
 }
 
-void UDPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void UDPConnectionClient::readBuffer(char* buffer, ssize_t numBytes) {
   if (isOpen() == false)
     open();
   ssize_t bytesRead = 0;
@@ -142,8 +144,7 @@ void UDPConnectionClient::readBuffer(char* buffer, ssize_t numBytes)
   }
 }
 
-void UDPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException) {
+void UDPConnectionClient::writeBuffer(const char* buffer, ssize_t numBytes) {
   if (isOpen() == false)
     open();
   ssize_t bytesWritten = 0;

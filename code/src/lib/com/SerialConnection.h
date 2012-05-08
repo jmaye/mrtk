@@ -26,9 +26,6 @@
 
 #include <string>
 
-#include "exceptions/BadArgumentException.h"
-#include "exceptions/SystemException.h"
-#include "exceptions/IOException.h"
 #include "base/Serializable.h"
 
 /** The class SerialConnection is an interface for serial communication.
@@ -121,17 +118,15 @@ public:
     @{
     */
   /// Opens the serial port
-  void open() throw (BadArgumentException<size_t>, SystemException);
+  void open();
   /// Closes the serial port
-  void close() throw (SystemException);
+  void close();
   /// Check if the port is open
   bool isOpen() const;
   /// Reads a buffer of bytes from the serial port
-  void readBuffer(char* buffer, ssize_t numBytes) throw (SystemException,
-    IOException);
+  void readBuffer(char* buffer, ssize_t numBytes);
   /// Writes a buffer of bytes to the serial port
-  void writeBuffer(const char* buffer, ssize_t numBytes)
-    throw (SystemException, IOException);
+  void writeBuffer(const char* buffer, ssize_t numBytes);
   /** @}
     */
 
