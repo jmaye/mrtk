@@ -282,7 +282,7 @@ bool Thread::wait(double seconds) const {
   return safeWait(seconds);
 }
 
-bool Thread::safeWait(double seconds) const {
+bool Thread::safeWait(double seconds) const throw (InvalidOperationException) {
   bool result = true;
   if (seconds != 0.0) {
     Thread* self = 0;
@@ -293,7 +293,7 @@ bool Thread::safeWait(double seconds) const {
       self = 0;
     }
     if (self == this)
-      ;//throw BadWait();
+      throw InvalidOperationException("Thread::safeWait(): bad wait");
     if (safeIsBusy())
       result = mCleaned.wait(mMutex, seconds);
   }

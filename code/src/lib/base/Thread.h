@@ -30,6 +30,7 @@
 #include "base/Mutex.h"
 #include "base/Serializable.h"
 #include "exceptions/SystemException.h"
+#include "exceptions/InvalidOperationException.h"
 
 /** The class Thread implements threading facilities.
     \brief Threading facilities
@@ -214,7 +215,7 @@ protected:
   /// Do cleanup
   virtual void cleanup();
   /// Safely wait until the thread has finished execution or time elapsed
-  virtual bool safeWait(double seconds) const;
+  virtual bool safeWait(double seconds) const throw (InvalidOperationException);
   /// Safe thread exists
   virtual bool safeExists() const;
   /// Safe thread is busy
