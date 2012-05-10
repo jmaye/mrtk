@@ -55,7 +55,7 @@ public:
   /// Default constructor
   MainWindow();
   /// Destructor
-  ~MainWindow();
+  virtual ~MainWindow();
   /** @}
     */
 

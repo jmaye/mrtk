@@ -60,7 +60,7 @@ public:
   /// Constructs the control with parameters
   ImageControl(bool showImage = true);
   /// Destructor
-  ~ImageControl();
+  virtual ~ImageControl();
   /** @}
     */
 

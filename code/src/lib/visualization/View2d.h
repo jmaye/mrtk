@@ -56,7 +56,7 @@ public:
   /// Constructs the view
   View2d(QWidget* parent = 0);
   /// Destructor
-  ~View2d();
+  virtual ~View2d();
   /** @}
     */
 

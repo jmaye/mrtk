@@ -50,7 +50,7 @@ public:
   /// Constructs the scene
   Scene2d(QObject* parent = 0);
   /// Destructor
-  ~Scene2d();
+  virtual ~Scene2d();
   /** @}
     */
 

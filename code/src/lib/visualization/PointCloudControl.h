@@ -60,7 +60,7 @@ public:
   /// Constructs the control with parameters
   PointCloudControl(bool showPoints = true);
   /// Destructor
-  ~PointCloudControl();
+  virtual ~PointCloudControl();
   /** @}
     */
 
