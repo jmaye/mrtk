@@ -25,7 +25,6 @@
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
-#include "exceptions/BadArgumentException.h"
 
 /** The NormalDistribution1v class represents a univariate normal distribution.
     \brief Univariate normal distribution
@@ -69,7 +68,7 @@ public:
   /// Returns the mean of the distribution
   Mean getMean() const;
   /// Sets the variance of the distribution
-  void setVariance(Variance variance) throw (BadArgumentException<Variance>);
+  void setVariance(Variance variance);
   /// Returns the variance of the distribution
   Variance getVariance() const;
   /// Returns the precision of the distribution

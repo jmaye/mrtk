@@ -25,7 +25,6 @@
 #define DIGAMMAFUNCTION_H
 
 #include "functions/ContinuousFunction.h"
-#include "exceptions/BadArgumentException.h"
 
 /** The DigammaFunction class represents the digamma function for real numbers.
     \brief Digamma function for real numbers

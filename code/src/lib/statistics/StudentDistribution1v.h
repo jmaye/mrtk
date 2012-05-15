@@ -23,8 +23,6 @@
 #include "statistics/ContinuousDistribution.h"
 #include "statistics/SampleDistribution.h"
 #include "base/Serializable.h"
-#include "exceptions/BadArgumentException.h"
-#include "exceptions/InvalidOperationException.h"
 
 /** The StudentDistribution1v class represents a univariate Student's
     t-distribution, i.e., a predictive distribution for a normal with unknown
@@ -59,11 +57,11 @@ public:
   /// Returns the location of the distribution
   double getLocation() const;
   /// Sets the scale of the distribution (already squared)
-  void setScale(double scale) throw (BadArgumentException<double>);
+  void setScale(double scale);
   /// Returns the scale of the distribution
   double getScale() const;
   /// Sets the degrees of freedom of the distribution
-  void setDegrees(double degrees) throw (BadArgumentException<double>);
+  void setDegrees(double degrees);
   /// Returns the degrees of freedom of the distribution
   double getDegrees() const;
   /// Returns the inverse scale of the distribution
@@ -71,13 +69,13 @@ public:
   /// Returns the normalizer of the distribution
   double getNormalizer() const;
   /// Returns the mean of the distribution
-  Mean getMean() const throw (InvalidOperationException);
+  Mean getMean() const;
   /// Returns the median of the distribution
   Median getMedian() const;
   /// Returns the mode of the distribution
   Mode getMode() const;
   /// Returns the variance of the distribution
-  Variance getVariance() const throw (InvalidOperationException);
+  Variance getVariance() const;
   /// Access the probability density function at the given value
   virtual double pdf(const RandomVariable& value) const;
   /// Access the log-probability density function at the given value
