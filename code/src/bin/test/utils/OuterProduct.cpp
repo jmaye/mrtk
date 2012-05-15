@@ -29,9 +29,9 @@ int main (int argc, char** argv) {
   Eigen::Matrix<double, 2, 1> v1(2.0, 4.0);
   Eigen::Matrix<double, 2, 1> v2(3.0, 5.0);
   std::cout << "v1 x v2 (Outer): " << std::endl
-    << outerProduct<double, 2, 2>(v1, v2) << std::endl;
-  std::cout << "v1 x v1 (Outer): " << std::endl << outerProduct<double, 2>(v1)
-    << std::endl;
+    << OuterProduct::compute<double, 2, 2>(v1, v2) << std::endl;
+  std::cout << "v1 x v1 (Outer): " << std::endl <<
+    OuterProduct::compute<double, 2>(v1) << std::endl;
   std::cout << "v1 x v2 (Eigen): " << std::endl << v1 * v2.transpose()
     << std::endl;
   std::cout << "v1 x v1 (Eigen): " << std::endl << v1 * v1.transpose()
@@ -52,13 +52,13 @@ int main (int argc, char** argv) {
     << std::endl;
   before = Timestamp::now();
   for (size_t i = 0; i < 1000; ++i)
-    res = outerProduct<double, 2, 2>(v1, v2);
+    res = OuterProduct::compute<double, 2, 2>(v1, v2);
   after = Timestamp::now();
   std::cout << "v1 x v2 (Outer): " << (after - before) / 1000 << " [s]"
     << std::endl;
   before = Timestamp::now();
   for (size_t i = 0; i < 1000; ++i)
-    res = outerProduct<double, 2>(v1);
+    res = OuterProduct::compute<double, 2>(v1);
   after = Timestamp::now();
   std::cout << "v1 x v1 (Outer): " << (after - before) / 1000 << " [s]"
     << std::endl;

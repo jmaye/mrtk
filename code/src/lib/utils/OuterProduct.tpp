@@ -9,47 +9,35 @@
  *                                                                            *
  * This program is distributed in the hope that it will be useful,            *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the               *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
  * Lesser GNU General Public License for more details.                        *
  *                                                                            *
  * You should have received a copy of the Lesser GNU General Public License   *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-/** \file PCA.cpp
-    \brief This file is a testing binary for the PCA class
-  */
+namespace OuterProduct {
 
-#include <iostream>
+/******************************************************************************/
+/* Methods                                                                    */
+/******************************************************************************/
 
-#include "ml/PCA.h"
-#include "statistics/NormalDistribution.h"
+template <typename X, size_t M, size_t N>
+Eigen::Matrix<X, M, N> compute(const Eigen::Matrix<X, M, 1>& v1,
+    const Eigen::Matrix<X, N, 1>& v2) {
+  return v1 * v2.transpose();
+};
 
-int main(int argc, char** argv) {
-  NormalDistribution<2> dist;
-  std::vector<Eigen::Matrix<double, 2, 1> > samples;
-  dist.getSamples(samples, 10000);
+template <typename X, size_t M>
+Eigen::Matrix<X, M, M> compute(const Eigen::Matrix<X, M, 1>& v) {
+  Eigen::Matrix<X, M, M> result = Eigen::Matrix<X, M, M>::Zero(v.size(),
+    v.size());
+  for (size_t i = 0; i < (size_t)v.size(); ++i)
+    for (size_t j = i; j < (size_t)v.size(); ++j) {
+      result(i, j) = v(i) * v(j);
+      result(j, i) = result(i, j);
+    }
+  return result;
+};
 
-  std::vector<Eigen::Matrix<double, 2, 1> > transformedSamples;
-  Eigen::Matrix<double, 2, 1> eigenValues;
-  Eigen::Matrix<double, 2, 2> eigenVectors;
-
-  PCA::analyze<double, 2, 2>(samples, transformedSamples, eigenValues,
-    eigenVectors);
-
-  std::cout << "Eigen values: " << std::endl << eigenValues << std::endl
-    << std::endl;
-  std::cout << "Eigen vectors: " << std::endl << eigenVectors << std::endl
-    << std::endl;
-
-  try {
-    samples.clear();
-    PCA::analyze<double, 2, 2>(samples, transformedSamples, eigenValues,
-      eigenVectors);
-  }
-  catch (BadArgumentException<size_t>& e) {
-    std::cout << e.what() << std::endl;
-  }
-
-  return 0;
 }

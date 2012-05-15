@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
   std::vector<Eigen::Matrix<double, 2, 1> > clusterCenters;
   std::vector<std::vector<size_t> > clusterToData;
   std::vector<size_t> dataToCluster;
-  MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
+  MeanShiftClustering::cluster<double, 2>(samples, clusterCenters,
     clusterToData, dataToCluster, 5, 1e-6, true);
 
   std::cout << "cluster centers: " << std::endl;
@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
     std::cout << clusterCenters[i] << std::endl << std::endl;
 
   try {
-    MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
+    MeanShiftClustering::cluster<double, 2>(samples, clusterCenters,
       clusterToData, dataToCluster, 0, 1e-6, true);
   }
   catch (BadArgumentException<double>& e) {
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 
   try {
     samples.clear();
-    MeanShiftClustering<double, 2>::cluster(samples, clusterCenters,
+    MeanShiftClustering::cluster<double, 2>(samples, clusterCenters,
       clusterToData, dataToCluster, 5, 1e-6, true);
   }
   catch (BadArgumentException<size_t>& e) {

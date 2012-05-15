@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
   Eigen::Matrix<double, 2, 1> eigenValues;
   Eigen::Matrix<double, 2, 2> eigenVectors;
 
-  PCA<double, 2, 1>::analyze(samples, transformedSamples, eigenValues,
+  PCA::analyze<double, 2, 1>(samples, transformedSamples, eigenValues,
     eigenVectors);
 
   Histogram<double, 1> hist(-20, 20, 0.05);

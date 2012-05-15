@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
   std::vector<Eigen::Matrix<double, 2, 1> > clusterCenters;
   std::vector<std::vector<size_t> > clusterToData;
   std::vector<size_t> dataToCluster;
-  size_t numIter = KMeansClustering<double, 2>::cluster(samples, clusterCenters,
+  size_t numIter = KMeansClustering::cluster<double, 2>(samples, clusterCenters,
     clusterToData, dataToCluster, 5, 1000, 1e-6, true);
 
   std::cout << "cluster centers: " << std::endl;
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
   std::cout << "converged in: " << numIter << " iterations" << std::endl;
 
   try {
-    KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
+    KMeansClustering::cluster<double, 2>(samples, clusterCenters, clusterToData,
       dataToCluster, 0, 1000, 1e-6, true);
   }
   catch (BadArgumentException<size_t>& e) {
@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
 
   try {
     samples.clear();
-    KMeansClustering<double, 2>::cluster(samples, clusterCenters, clusterToData,
+    KMeansClustering::cluster<double, 2>(samples, clusterCenters, clusterToData,
       dataToCluster, 5, 1000, 1e-6, true);
   }
   catch (BadArgumentException<size_t>& e) {

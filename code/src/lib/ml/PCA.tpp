@@ -20,12 +20,14 @@
 
 #include "exceptions/BadArgumentException.h"
 
+namespace PCA {
+
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
 template <typename T, size_t D, size_t M>
-void PCA<T, D, M>::analyze(const std::vector<Eigen::Matrix<T, D, 1> >& data,
+void analyze(const std::vector<Eigen::Matrix<T, D, 1> >& data,
     std::vector<Eigen::Matrix<T, M, 1> >& transformedData,
     Eigen::Matrix<T, D, 1>& eigenValues, Eigen::Matrix<T, D, D>& eigenVectors) {
 
@@ -62,4 +64,6 @@ void PCA<T, D, M>::analyze(const std::vector<Eigen::Matrix<T, D, 1> >& data,
         (mean.transpose() * eigenVectors.col(D - 1 - j))(0);
     transformedData[i] = point;
   }
+}
+
 }
