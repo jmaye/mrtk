@@ -30,11 +30,28 @@
     \brief Networking utilities
   */
 namespace NetUtils {
+  /** \name Members
+    @{
+    */
+  /// Static base64 characters
+  const std::string base64_chars = 
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz"
+    "0123456789+/";
+ /** @}
+    */
+
   /** \name Methods
     @{
     */
   /// Returns a host's IP from its hostname
   std::string getHostIP(const std::string &serverHost);
+  /// Check if a character is base64 encoded
+  bool isBase64(char c);
+  /// Encodes to base64 representation
+  std::string base64Encode(const std::string &input);
+  /// Decodes base64 representation
+  std::string base64Decode(const std::string &input);
  /** @}
     */
 
