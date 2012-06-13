@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
   Timer::sleep(0.1);
   t_1.interrupt();
   Threads::getInstance().interrupt();
-  T t_3(3, 0.0);
+  T t_3(3, 0.0, true);
   t_3.start();
   t_3.wait();
   T t_4(4, 0.1, true);
