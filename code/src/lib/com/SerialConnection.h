@@ -78,7 +78,7 @@ public:
     SerialParity parity = none, FlowControl flowControl = no, double
     timeout = 2.5);
    /// Destructor
-  ~SerialConnection();
+  virtual ~SerialConnection();
   /** @}
     */
 
@@ -145,7 +145,7 @@ protected:
   /** @}
     */
 
-  /** \name Private members
+  /** \name Protected members
     @{
     */
   /// Path to the serial device
