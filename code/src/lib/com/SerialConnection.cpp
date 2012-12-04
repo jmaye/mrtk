@@ -295,6 +295,8 @@ void SerialConnection::read(char* buffer, size_t numBytes) {
       res = ::read(mHandle, &buffer[bytesRead], numBytes - bytesRead);
       if (res < 0)
         throw SystemException(errno, "SerialConnection::read()::read()");
+      if (res == 0)
+        throw IOException("SerialConnection::read(): connection reset");
       bytesRead += res;
     }
     else
@@ -325,6 +327,8 @@ void SerialConnection::write(const char* buffer, size_t numBytes) {
       if (res < 0)
         throw SystemException(errno,
           "SerialConnection::write()::write()");
+      if (res == 0)
+        throw IOException("SerialConnection::write(): connection reset");
       bytesWritten += res;
     }
     else
