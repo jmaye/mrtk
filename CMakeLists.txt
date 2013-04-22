@@ -5,13 +5,13 @@ include(ReMake)
 remake_set(CMAKE_CXX_FLAGS -std=c++0x CACHE FORCE INIT)
 
 remake_project(
-  online-recog
+  mrtk
   VERSION 0.1
   RELEASE alpha
-  SUMMARY "Online place recognition for mobile robots"
+  SUMMARY "A C++ based library for robotic algorithms and tools development"
   AUTHOR "Jerome Maye"
   CONTACT "jerome.maye@mavt.ethz.ch"
-  HOME "http://aslforge.ethz.ch/projects/online-recog"
+  HOME "https://github.com/jmaye/mrtk"
   LICENSE "GNU Lesser General Public License (LGPL)"
   INSTALL /usr
 )
@@ -21,7 +21,7 @@ remake_pack_deb(libann0 libqt4-gui libqwt5-qt4 libgsl0ldbl libdai)
 remake_pack_deb(
   COMPONENT dev
   DESCRIPTION "Development headers"
-  online-recog
+  mrtk
   libdai-dev
   libann-dev
   libqwt5-qt4-dev
@@ -38,5 +38,5 @@ remake_doc(
 remake_pack_deb(
   COMPONENT doc
   DESCRIPTION "Documentation"
-  online-recog
+  mrtk
 )
