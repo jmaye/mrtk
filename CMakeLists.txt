@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.6)
 
 include(ReMake)
 
-remake_set(CMAKE_CXX_FLAGS -std=c++0x CACHE FORCE INIT)
-
 remake_project(
   mrtk
   VERSION 0.1
@@ -14,6 +12,7 @@ remake_project(
   HOME "https://github.com/jmaye/mrtk"
   LICENSE "GNU Lesser General Public License (LGPL)"
   INSTALL /usr
+  EXTRA_CXX_FLAGS -std=c++0x
 )
 
 remake_pack_deb(libann0 libqt4-gui libqwt5-qt4 libgsl0ldbl libdai)
